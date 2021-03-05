@@ -1,7 +1,7 @@
 import unittest
 import os
 from reeds.function_libs.optimization import eds_energy_offsets
-from reeds.function_libs.analysis import file_management as fM
+from reeds.function_libs.file_management import file_management as fM
 
 in_BRD4_7ligs = os.path.dirname(__file__) + "/data/7ligs"
 in_PNMT_9ligs = os.path.dirname(__file__)+"/data/PNMT_9ligs"

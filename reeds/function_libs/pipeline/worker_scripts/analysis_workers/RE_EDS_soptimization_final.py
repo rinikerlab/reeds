@@ -7,10 +7,10 @@ import pandas as pd
 
 from pygromos.files import repdat
 from pygromos.utils import bash
-from reeds.function_libs.analysis import visualisation as vis
+from reeds.function_libs.visualization import visualisation as vis
 from reeds.function_libs.analysis.analysis import get_s_optimization_roundtrips_per_replica, \
     get_s_optimization_roundtrip_averages
-from reeds.function_libs.analysis.visualisation import visualization_s_optimization_summary, visualize_s_optimisation_convergence,\
+from reeds.function_libs.visualization.visualisation import visualization_s_optimization_summary, visualize_s_optimisation_convergence,\
     visualize_s_optimisation_sampling_optimization
 
 

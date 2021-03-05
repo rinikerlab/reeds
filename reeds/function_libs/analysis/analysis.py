@@ -19,13 +19,11 @@ from typing import List, Dict
 import numpy as np
 import pandas as pd
 
-import reeds
-
 from pygromos.files import repdat, imd
 from pygromos.gromos import gromosPP
 from pygromos.utils import bash
 
-from reeds.function_libs.analysis import visualisation as vis
+from reeds.function_libs.visualization import visualisation as vis
 from reeds.function_libs.optimization import eds_energy_offsets as eoff, eds_s_values as sopt_wrap
 from reeds.function_libs.optimization.src import sopt_Pathstatistic as parseS
 
@@ -293,7 +291,7 @@ def sampling_analysis(ene_traj_csvs: List[pd.DataFrame], s_values: List[float], 
     """
 
     # read all Vy_sx_files!
-    from reeds.function_libs.analysis.visualisation import nice_s_vals
+    from reeds.function_libs.visualization.visualisation import nice_s_vals
     if (verbose): print("\n\n Potential Threshold\n\n")
     potential_treshold = undersampling_occurence_potential_threshold_distribution_based(ene_traj_csvs=ene_traj_csvs)
 

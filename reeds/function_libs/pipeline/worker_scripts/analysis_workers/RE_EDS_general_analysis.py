@@ -7,9 +7,10 @@ from typing import Union, Dict, List
 from pygromos.files import imd, repdat
 from pygromos.utils import bash
 
-from reeds.function_libs.analysis import analysis, file_management
-from reeds.function_libs.analysis import visualisation as vis
-from reeds.function_libs.analysis.file_management import parse_csv_energy_trajectories
+from reeds.function_libs.analysis import analysis
+from reeds.function_libs.file_management import file_management
+from reeds.function_libs.visualization import visualisation as vis
+from reeds.function_libs.file_management.file_management import parse_csv_energy_trajectories
 from reeds.function_libs.utils import s_log_dist as sdist
 from reeds.function_libs.utils.structures import adding_Scheme_new_Replicas
 
