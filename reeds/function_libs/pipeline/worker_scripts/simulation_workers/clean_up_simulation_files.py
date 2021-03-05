@@ -9,7 +9,7 @@ It should be hanged in after each simulation step.
 import argparse
 import glob
 
-from reeds.function_libs.file_management import file_management as fM
+from reeds.function_libs.analysis import file_management as fM
 
 
 def do(in_simulation_dir: str, n_processes: int = 1, verbose: bool = True) -> None:

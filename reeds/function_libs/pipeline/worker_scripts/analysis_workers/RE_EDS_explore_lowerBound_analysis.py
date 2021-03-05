@@ -6,11 +6,10 @@ import numpy as np
 
 from pygromos.files import imd
 from pygromos.utils import bash
-
-import reeds.function_libs.analysis.sampling
-from reeds.function_libs.analysis import parameter_optimization as ana
-from reeds.function_libs.visualization import pot_energy_plots as vis
-from reeds.function_libs.file_management import file_management as fM
+from reeds.function_libs.analysis import analysis as ana
+from reeds.function_libs.analysis import visualisation as vis
+from reeds.function_libs.analysis import file_management as fM
+from reeds.function_libs.utils import s_log_dist
 
 np.set_printoptions(suppress=True)
 from reeds.data import ene_ana_libs
@@ -129,10 +128,10 @@ def do(out_analysis_dir: str, system_name: str,
     out_analysis_plot_dir = out_analysis_dir + "/plots"
     bash.make_folder(out_analysis_plot_dir, "-p")
     ene_trajs = fM.parse_csv_energy_trajectories(data_dir, out_prefix)  # gather potentials
-    sampling_analysis_results, out_plot_dirs = reeds.function_libs.analysis.sampling.sampling_analysis(out_path = out_analysis_plot_dir,
-                                                                                                       ene_traj_csvs = ene_trajs,
-                                                                                                       s_values = s_values[:succsessful_sim_count],
-                                                                                                       pot_tresh = undersampling_pot_tresh)
+    sampling_analysis_results, out_plot_dirs = ana.sampling_analysis(out_path = out_analysis_plot_dir,
+                                                                     ene_traj_csvs = ene_trajs,
+                                                                     s_values = s_values[:succsessful_sim_count],
+                                                                     pot_tresh = undersampling_pot_tresh)
 
     # Plotting the different potential energy distributions
     if control_dict["pot_ene_by_state"]:

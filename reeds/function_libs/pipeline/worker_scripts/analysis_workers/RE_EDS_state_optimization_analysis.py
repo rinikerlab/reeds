@@ -5,8 +5,8 @@ import os
 from pygromos.files import imd
 from pygromos.utils import bash
 from reeds.data import ene_ana_libs
-from reeds.function_libs.visualization import pot_energy_plots as vis
-from reeds.function_libs.file_management import file_management as fM
+from reeds.function_libs.analysis import analysis as ana, visualisation as vis
+from reeds.function_libs.analysis import file_management as fM
 
 
 def do(in_simulation_dir: str, in_topology_path: str, in_imd_path: str,

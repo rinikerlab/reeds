@@ -2,7 +2,7 @@ import copy
 import glob
 import os
 import typing as t
-from inspect import signature
+from inspect import signature, _empty
 from numbers import Number
 from typing import Tuple, List, Union, Dict
 

@@ -19,7 +19,8 @@ import reeds.function_libs.pipeline.module_functions
 from pygromos.euler_submissions import FileManager as fM
 from pygromos.utils import bash
 from reeds.data import imd_templates
-from reeds.function_libs.file_management import file_management as fileReeds
+from reeds.function_libs.analysis import file_management as fileReeds
+from reeds.function_libs.pipeline import generate_euler_job_files as gjs
 from reeds.function_libs.pipeline.jobScheduling_scripts import RE_EDS_simulation_scheduler
 from reeds.function_libs.pipeline.module_functions import adapt_imd_template_eoff
 from reeds.function_libs.pipeline.worker_scripts.analysis_workers import RE_EDS_general_analysis
