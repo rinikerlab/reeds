@@ -1,0 +1,23 @@
+name: test
+channels:
+dependencies:
+    # Base depends
+  - python
+  - pip
+
+    # Testing
+  - pytest
+  - pytest-cov
+  - codecov
+
+    #Science
+  - scipy
+  - numpy
+  - pandas
+  - pytables
+  - matplotlib
+
+    #Docs
+  - sphinx
+  - nbsphinx
+  - m2r

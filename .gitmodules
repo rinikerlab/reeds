@@ -1,0 +1,3 @@
+[submodule "reeds/submodules/pygromos"]
+	path = reeds/submodules/pygromos
+	url = https://github.com/rinikerlab/PyGromosTools.git
