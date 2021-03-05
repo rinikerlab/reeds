@@ -1,0 +1,478 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>reeds.function_libs.optimization.src.sopt_Pathstatistic &mdash; REEDS  documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../../../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../../../" src="../../../../../_static/documentation_options.js"></script>
+        <script src="../../../../../_static/jquery.js"></script>
+        <script src="../../../../../_static/underscore.js"></script>
+        <script src="../../../../../_static/doctools.js"></script>
+        <script src="../../../../../_static/language_data.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
+    
+    <script type="text/javascript" src="../../../../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../../../index.html" class="icon icon-home"> REEDS
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../introduction.html">REEDS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../Examples/index.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_source/modules.html">Documentation</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../../index.html">REEDS</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../../../index.html">Module code</a> &raquo;</li>
+        
+      <li>reeds.function_libs.optimization.src.sopt_Pathstatistic</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for reeds.function_libs.optimization.src.sopt_Pathstatistic</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    This is an old way of using the optimizers. In general I would like to try to avoid this.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">copy</span>
+<span class="kn">from</span> <span class="nn">numbers</span> <span class="kn">import</span> <span class="n">Number</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="kn">from</span> <span class="nn">pygromos.files.repdat</span> <span class="kn">import</span> <span class="n">Repdat</span>
+
+
+<div class="viewcode-block" id="ReplicaPath"><a class="viewcode-back" href="../../../../../_source/reeds.function_libs.optimization.src.html#reeds.function_libs.optimization.src.sopt_Pathstatistic.ReplicaPath">[docs]</a><span class="k">class</span> <span class="nc">ReplicaPath</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;A path of a specific configuration, tracking its current state, assigned</span>
+<span class="sd">    replica level. Tracks current state, assigned replica level and direction</span>
+<span class="sd">    (up or down).</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="ReplicaPath.__init__"><a class="viewcode-back" href="../../../../../_source/reeds.function_libs.optimization.src.html#reeds.function_libs.optimization.src.sopt_Pathstatistic.ReplicaPath.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">level</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">state</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;ReplicaPath</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        level :</span>
+<span class="sd">             Level / Replica ID</span>
+<span class="sd">        state :</span>
+<span class="sd">            State at current level</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_down</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_state</span> <span class="o">=</span> <span class="n">state</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_level</span> <span class="o">=</span> <span class="n">level</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">down</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_down</span>
+
+    <span class="nd">@down</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">down</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="nb">bool</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_down</span> <span class="o">=</span> <span class="n">x</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">state</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_state</span>
+
+    <span class="nd">@state</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_state</span> <span class="o">=</span> <span class="n">x</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">level</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_level</span>
+
+    <span class="nd">@level</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">level</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_level</span> <span class="o">=</span> <span class="n">x</span></div>
+
+
+<div class="viewcode-block" id="Replica"><a class="viewcode-back" href="../../../../../_source/reeds.function_libs.optimization.src.html#reeds.function_libs.optimization.src.sopt_Pathstatistic.Replica">[docs]</a><span class="k">class</span> <span class="nc">Replica</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;A replica with its parameters at a time step.</span>
+
+<span class="sd">    Stores its id and partner id, as well as the current state, determined</span>
+<span class="sd">    from the minimum of energies.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="Replica.__init__"><a class="viewcode-back" href="../../../../../_source/reeds.function_libs.optimization.src.html#reeds.function_libs.optimization.src.sopt_Pathstatistic.Replica.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">id</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">partner_id</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">swap</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">state</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">num_skip_replicas</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Constructor of Replica</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+
+<span class="sd">        num_skip_replicas : int, optional</span>
+<span class="sd">            Number of replicas skipped due to duplication/</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        IOError</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="nb">id</span><span class="p">,</span> <span class="n">Number</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">partner_id</span><span class="p">,</span> <span class="n">Number</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">swap</span><span class="p">,</span> <span class="n">Number</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">state</span><span class="p">,</span>
+                                                                                                                  <span class="nb">list</span><span class="p">)):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_id</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">id</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_partner_id</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">partner_id</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_swap</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">swap</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_state</span> <span class="o">=</span> <span class="n">state</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="nb">min</span><span class="p">(</span><span class="n">state</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span><span class="s2">&quot;Please give me good arguments!&quot;</span><span class="p">)</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">id</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_id</span>
+
+    <span class="nd">@id</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_id</span> <span class="o">=</span> <span class="n">x</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">partner_id</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_partner_id</span>
+
+    <span class="nd">@partner_id</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">partner_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_partner_id</span> <span class="o">=</span> <span class="n">x</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">swap</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swap</span>
+
+    <span class="nd">@swap</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">swap</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">swap</span> <span class="o">=</span> <span class="n">x</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">state</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_state</span>
+
+    <span class="nd">@state</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="nb">list</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_state</span> <span class="o">=</span> <span class="n">x</span></div>
+
+
+<div class="viewcode-block" id="PathStatistic"><a class="viewcode-back" href="../../../../../_source/reeds.function_libs.optimization.src.html#reeds.function_libs.optimization.src.sopt_Pathstatistic.PathStatistic">[docs]</a><span class="k">class</span> <span class="nc">PathStatistic</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Statistic of all paths of initial configurations between different</span>
+<span class="sd">    replica levels. Stores the number of &quot;up&quot; and &quot;down&quot; movements. For &quot;down&quot;,</span>
+<span class="sd">    the counter is incremented only for the corresponding state at the current</span>
+<span class="sd">    replica level.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="PathStatistic.__init__"><a class="viewcode-back" href="../../../../../_source/reeds.function_libs.optimization.src.html#reeds.function_libs.optimization.src.sopt_Pathstatistic.PathStatistic.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">init_block</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Replica</span><span class="p">],</span> <span class="n">n_states</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">s_values</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span>
+                 <span class="n">skipped_s_values</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Constructor of PathStatistic.</span>
+
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        init_block :    List[Replica]</span>
+<span class="sd">            First block of replicas in gromos_file</span>
+<span class="sd">        n_states :  int</span>
+<span class="sd">             Number of states</span>
+<span class="sd">        s_values :   List[float]</span>
+<span class="sd">            Initial S values</span>
+<span class="sd">        skipped_s_values :  List[float]</span>
+<span class="sd">            s_vals to be skipped</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        IOError</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_replicas</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">init_block</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_up</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_replicas</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_down</span> <span class="o">=</span> <span class="p">[[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">n_states</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_replicas</span><span class="p">)]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">paths</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_replicas</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">paths</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ReplicaPath</span><span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">init_block</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">state</span><span class="p">))</span>
+        <span class="c1">#  self.paths[-1].down = False</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">s_values</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">s_values</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">skipped_s_values</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">skipped_s_values</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">append_block</span><span class="p">(</span><span class="n">init_block</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="PathStatistic.append_block"><a class="viewcode-back" href="../../../../../_source/reeds.function_libs.optimization.src.html#reeds.function_libs.optimization.src.sopt_Pathstatistic.PathStatistic.append_block">[docs]</a>    <span class="k">def</span> <span class="nf">append_block</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">block</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Replica</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Adds a block of replicas from a single time step to the statistic.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        block :  List[Replica]</span>
+<span class="sd">             Block of replicas at time step</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># update state</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">paths</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">state</span> <span class="o">=</span> <span class="n">block</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">state</span>
+
+        <span class="c1"># update paths and statistic</span>
+        <span class="k">for</span> <span class="n">rep</span> <span class="ow">in</span> <span class="n">block</span><span class="p">:</span>
+            <span class="n">path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">paths</span><span class="p">[</span><span class="n">rep</span><span class="o">.</span><span class="n">id</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
+            <span class="c1"># going down or up</span>
+            <span class="k">if</span> <span class="n">path</span><span class="o">.</span><span class="n">down</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">n_down</span><span class="p">[</span><span class="n">rep</span><span class="o">.</span><span class="n">id</span> <span class="o">-</span> <span class="mi">1</span><span class="p">][</span><span class="n">path</span><span class="o">.</span><span class="n">state</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="k">elif</span> <span class="ow">not</span> <span class="n">path</span><span class="o">.</span><span class="n">down</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">n_up</span><span class="p">[</span><span class="n">rep</span><span class="o">.</span><span class="n">id</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="c1"># set new path level, ignore swaps with other s=1.0 levels</span>
+            <span class="k">if</span> <span class="n">rep</span><span class="o">.</span><span class="n">swap</span><span class="p">:</span>
+                <span class="n">path</span><span class="o">.</span><span class="n">level</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">rep</span><span class="o">.</span><span class="n">partner_id</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+
+        <span class="c1"># set path direction</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">paths</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">down</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">paths</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">down</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="c1"># sort paths to match new levels</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">paths</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">sl</span><span class="p">:</span> <span class="n">sl</span><span class="o">.</span><span class="n">level</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="generate_PathStatistic_from_file"><a class="viewcode-back" href="../../../../../_source/reeds.function_libs.optimization.src.html#reeds.function_libs.optimization.src.sopt_Pathstatistic.generate_PathStatistic_from_file">[docs]</a><span class="k">def</span> <span class="nf">generate_PathStatistic_from_file</span><span class="p">(</span><span class="n">file_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">trial_range</span><span class="p">:</span> <span class="nb">tuple</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">verbose</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">PathStatistic</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Reads GROMOS repdat file and generates the path statistic.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    file_names :    List[str]</span>
+<span class="sd">        input Files</span>
+<span class="sd">    trial_range :   tuple</span>
+<span class="sd">        give a range of trials to be evaluated (time dimension)</span>
+<span class="sd">    verbose :   bool</span>
+<span class="sd">        Loud and noisy?</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    PathStatistic</span>
+<span class="sd">        Statistic of exchanges between replicas generated from paths taken by initial configurations</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">start_at_trial</span> <span class="o">=</span> <span class="n">end_at_trial</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">trial_range</span> <span class="o">==</span> <span class="kc">None</span><span class="p">):</span>
+        <span class="k">pass</span>
+    <span class="k">elif</span> <span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">trial_range</span><span class="p">)</span> <span class="o">==</span> <span class="nb">int</span><span class="p">):</span>
+        <span class="n">start_at_trial</span> <span class="o">=</span> <span class="n">trial_range</span>
+    <span class="k">elif</span> <span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">trial_range</span><span class="p">)</span> <span class="o">==</span> <span class="nb">tuple</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">trial_range</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">):</span>
+        <span class="n">start_at_trial</span> <span class="o">=</span> <span class="n">trial_range</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">end_at_trial</span> <span class="o">=</span> <span class="n">trial_range</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span><span class="s2">&quot;could not translate the trial range option in read_gromos_file.&quot;</span><span class="p">)</span>
+
+    <span class="c1"># read first file</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">verbose</span><span class="p">):</span> <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Parse Repdat: &quot;</span> <span class="o">+</span> <span class="n">file_name</span><span class="p">)</span>
+    <span class="n">repdat</span> <span class="o">=</span> <span class="n">Repdat</span><span class="p">(</span><span class="n">file_name</span><span class="p">)</span>
+    <span class="n">s_values</span> <span class="o">=</span> <span class="n">repdat</span><span class="o">.</span><span class="n">system</span><span class="o">.</span><span class="n">s</span>
+    <span class="n">num_states</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">repdat</span><span class="o">.</span><span class="n">system</span><span class="o">.</span><span class="n">state_eir</span><span class="p">)</span>
+    <span class="n">num_replicas</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">s_values</span><span class="p">)</span>
+
+    <span class="n">num_skip_replicas</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">clipped_s_values</span> <span class="o">=</span> <span class="n">s_values</span>
+    <span class="n">skipped_s_values</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="c1"># only use the last s=1.0 replica, ignore others</span>
+    <span class="n">num_skip_replicas</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_replicas</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">s_values</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mf">1.0</span><span class="p">:</span>
+            <span class="k">break</span>
+        <span class="n">num_skip_replicas</span> <span class="o">=</span> <span class="n">i</span>
+    <span class="n">skipped_s_values</span> <span class="o">=</span> <span class="n">s_values</span><span class="p">[:</span><span class="n">num_skip_replicas</span><span class="p">]</span>
+    <span class="n">clipped_s_values</span> <span class="o">=</span> <span class="n">s_values</span><span class="p">[</span><span class="n">num_skip_replicas</span><span class="p">:]</span>
+
+    <span class="k">if</span> <span class="n">num_skip_replicas</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">Reading </span><span class="si">%i</span><span class="s2"> replicas with </span><span class="si">%i</span><span class="s2"> states, skipping the first </span><span class="si">%i</span><span class="s2"> replicas.&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">num_replicas</span><span class="p">,</span> <span class="n">num_states</span><span class="p">,</span>
+                                                                                         <span class="n">num_skip_replicas</span><span class="p">),</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">Reading </span><span class="si">%i</span><span class="s2"> replicas with </span><span class="si">%i</span><span class="s2"> states.&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">num_replicas</span><span class="p">,</span> <span class="n">num_states</span><span class="p">),</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="n">verbose</span><span class="p">):</span> <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">readData: &quot;</span><span class="p">)</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">repdat</span><span class="o">.</span><span class="n">DATA</span>
+    <span class="n">runs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">run</span><span class="p">)</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">start_at_trial</span><span class="p">):</span>
+        <span class="n">runs</span> <span class="o">=</span> <span class="n">runs</span><span class="p">[</span><span class="n">runs</span> <span class="o">&gt;</span> <span class="n">start_at_trial</span><span class="p">]</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">end_at_trial</span><span class="p">):</span>
+        <span class="n">runs</span> <span class="o">=</span> <span class="n">runs</span><span class="p">[</span><span class="n">runs</span> <span class="o">&lt;</span> <span class="n">end_at_trial</span><span class="p">]</span>
+    <span class="n">ids</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">ID</span><span class="p">)[</span><span class="n">num_skip_replicas</span><span class="p">:]</span>
+    <span class="n">first</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="n">stat</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="c1"># Here &quot;run&quot; corresponds to the timestep index.</span>
+
+    <span class="k">for</span> <span class="n">cRun</span> <span class="ow">in</span> <span class="n">runs</span><span class="p">:</span>
+        <span class="n">run_block</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">data</span><span class="o">.</span><span class="n">run</span> <span class="o">==</span> <span class="n">cRun</span><span class="p">]</span>
+        <span class="n">clean_run_block</span> <span class="o">=</span> <span class="n">run_block</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">run_block</span><span class="o">.</span><span class="n">ID</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">ids</span><span class="p">)]</span>
+        <span class="n">block</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="c1"># Here we are doing the analysis for each replica (at the specific timestep)</span>
+
+        <span class="k">for</span> <span class="n">row</span><span class="p">,</span> <span class="n">replica</span> <span class="ow">in</span> <span class="n">clean_run_block</span><span class="o">.</span><span class="n">iterrows</span><span class="p">():</span>
+            <span class="n">energies</span> <span class="o">=</span> <span class="p">[</span><span class="n">replica</span><span class="o">.</span><span class="n">state_potentials</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span>
+                        <span class="nb">sorted</span><span class="p">(</span><span class="n">replica</span><span class="o">.</span><span class="n">state_potentials</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;Vr&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)))]</span>
+            <span class="n">block</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                <span class="n">Replica</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="n">replica</span><span class="o">.</span><span class="n">ID</span> <span class="o">-</span> <span class="n">num_skip_replicas</span><span class="p">,</span> <span class="n">partner_id</span><span class="o">=</span><span class="n">replica</span><span class="o">.</span><span class="n">partner</span><span class="p">,</span> <span class="n">swap</span><span class="o">=</span><span class="n">replica</span><span class="o">.</span><span class="n">s</span><span class="p">,</span> <span class="n">state</span><span class="o">=</span><span class="n">energies</span><span class="p">))</span>
+
+        <span class="c1"># build up PathStatistic</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">first</span><span class="p">):</span>
+            <span class="n">stat</span> <span class="o">=</span> <span class="n">PathStatistic</span><span class="p">(</span><span class="n">block</span><span class="p">,</span> <span class="n">num_states</span><span class="p">,</span> <span class="n">clipped_s_values</span><span class="p">,</span> <span class="n">skipped_s_values</span><span class="p">)</span>
+            <span class="n">first</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">stat</span><span class="o">.</span><span class="n">append_block</span><span class="p">(</span><span class="n">block</span><span class="p">)</span>
+    <span class="k">del</span> <span class="n">repdat</span>
+    <span class="k">return</span> <span class="n">stat</span></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, Benjamin Ries, Salome Rieder, Candide Champion. Project structure based on the Computational Molecular Science Python Cookiecutter version 1.3
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

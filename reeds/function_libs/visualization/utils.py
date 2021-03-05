@@ -1,14 +1,25 @@
+from typing import List
+
 import numpy as np
 import pandas as pd
 
-from reeds.function_libs.visualization.pot_energy_plots import color_map_categorical
 
+def nice_s_vals(svals: list,
+                base10=False) -> list:
+    """nice_s_vals
+    this function creates nice s-value labels for the plots
 
-def nice_s_vals(svals: list, base10=False) -> list:
-    """
-    Args:
-        svals (list):
-        base10:
+    Parameters
+    ----------
+    svals : list
+        list of s-values
+    base10 : bool, optional
+        use base 10 (default False)
+
+    Returns
+    -------
+    list
+        list of labels for the s-values
     """
     nicer_labels = []
     if (base10):
@@ -23,24 +34,37 @@ def nice_s_vals(svals: list, base10=False) -> list:
     return nicer_labels
 
 
-def x_axis(ax, xBond: list = None, max_x=None, ammount_of_x_labels=4):
-    """
-    Args:
-        ax:
-        xBond (list):
-        max_x:
-        ammount_of_x_labels:
+def x_axis(ax,
+           xBond: list = None,
+           max_x=None,
+           amount_of_x_labels=4):
+    """x_axis
+    This function formats the x-axis of a subplot
+
+    Parameters
+    ----------
+    ax : AxesSubplot
+    xBond : list, optional
+        minimum and maximum x-axis value. Takes priority over max_x (default None)
+    max_x : int, optional
+        maximum x-axis value (default None)
+    amount_of_x_labels : int
+        amount of x-axis labels (default 4)
+
+    Returns
+    -------
+    None
     """
     if (xBond):
         x_length = xBond[1] - xBond[0]
-        steps = x_length // ammount_of_x_labels if (not x_length // ammount_of_x_labels == 0) else 1
+        steps = x_length // amount_of_x_labels if (not x_length // amount_of_x_labels == 0) else 1
         x_range = range(xBond[0], xBond[1] + 1, steps)
 
         ax.set_xlim(left=xBond[0], right=xBond[1] + 1)
         ax.set_xticks(x_range)
         ax.set_xticklabels(x_range)
     elif (max_x):
-        steps = int(max_x // ammount_of_x_labels) if (max_x // ammount_of_x_labels != 0) else 3
+        steps = int(max_x // amount_of_x_labels) if (max_x // amount_of_x_labels != 0) else 3
 
         x_range = range(0, max_x + 1, steps)
         ax.set_xlim(left=0, right=max_x + 1)
@@ -51,23 +75,29 @@ def x_axis(ax, xBond: list = None, max_x=None, ammount_of_x_labels=4):
     return ax
 
 
-def y_axis_for_s_plots(ax, yBond: tuple = None, s_values: list = None, ammount_of_y_labels=10):
-    """
-        This function builds a nice inverse (so that s=1 is on top)  y-axis.
+def y_axis_for_s_plots(ax,
+                       yBond: tuple = None,
+                       s_values: list = None,
+                       amount_of_y_labels=10):
+    """y_axis_for_s_plots
+    This function builds a nice inverse (so that s=1 is on top) y-axis.
     Parameters
     ----------
-    ax
-    yBond
-    s_values
-    ammount_of_y_labels
+    ax : AxesSubplot
+    yBond : tuple, optional
+        minimum and maximum y-axis value (default None)
+    s_values : list, optional
+        list of s-values (default None)
+    amount_of_y_labels : int, optional
+        amount of y-axis labels (default 10)
 
     Returns
     -------
-
+    None
     """
     if (not isinstance(yBond, type(None))):
         y_range = range(min(-1 * np.array(yBond)), max(-1 * np.array(yBond) + 1))
-        step_size = len(y_range) // ammount_of_y_labels if (len(y_range) // ammount_of_y_labels > 0) else 1
+        step_size = len(y_range) // amount_of_y_labels if (len(y_range) // amount_of_y_labels > 0) else 1
         ax.set_ylim(bottom=min(y_range), top=max(y_range))
         ax.set_yticks(y_range[::step_size])
 
@@ -78,7 +108,7 @@ def y_axis_for_s_plots(ax, yBond: tuple = None, s_values: list = None, ammount_o
         else:
             y_range = list(reversed([-x - 1 for x in range(0, len(s_values))]))
 
-        step_size = len(y_range) // ammount_of_y_labels if (len(y_range) // ammount_of_y_labels > 0) else 1
+        step_size = len(y_range) // amount_of_y_labels if (len(y_range) // amount_of_y_labels > 0) else 1
 
         nice_y = nice_s_vals(s_values) + [""]
         ax.set_ylim([min(y_range), max(y_range)])
@@ -91,12 +121,23 @@ def y_axis_for_s_plots(ax, yBond: tuple = None, s_values: list = None, ammount_o
     return ax
 
 
-def generate_trace_from_transition_dict(transition_dataFrame: pd.DataFrame, transition_range: float = 0.35) -> (
-        dict, float, float):
-    """
-    Args:
-        transition_dataFrame:
-        transition_range (float):
+def generate_trace_from_transition_dict(transition_dataFrame: pd.DataFrame,
+                                        transition_range: float = 0.35) -> (dict, float, float):
+    """generate_trace_from_transition_dict
+    This function creates a replica trace plot from a transition dict
+    Parameters
+    ----------
+    transition_dataFrame : pd.DataFrame
+        pandas dataframe containing the replica transitions
+    transition_range : float, optional
+        default 0.35
+
+    Returns
+    -------
+    traces : dict
+        dict containing replica traces
+    max_x : float
+    max_y : float
     """
     traces = {}
     max_x = 0
@@ -119,14 +160,26 @@ def generate_trace_from_transition_dict(transition_dataFrame: pd.DataFrame, tran
     return traces, max_x, max_y
 
 
-def prepare_system_state_data(transition_dataFrame: pd.DataFrame, cluster_size: int = 10,
+def prepare_system_state_data(transition_dataFrame: pd.DataFrame,
+                              cluster_size: int = 10,
                               sub_cluster_threshold: float = 0.6) -> dict:
-    # prepare transition dict
-    """
-    Args:
-        transition_dataFrame (dict):
-        cluster_size (int):
-        sub_cluster_threshold (float):
+    """prepare_system_state_data
+    This function prepares a transition dict
+
+    Parameters
+    ----------
+    transition_dataFrame : pd.DataFrame
+        pandas dataframe containing information on the transitions
+    cluster_size : int, optional
+        default 10
+    sub_cluster_threshold : float, optional
+        default 0.6
+
+    Returns
+    -------
+    replica_bins : dict
+    marker_color_dict : dict
+    num_states : int
     """
     replica_bins = {}
     for replica in sorted(set(transition_dataFrame.replicaID)):
@@ -138,7 +191,7 @@ def prepare_system_state_data(transition_dataFrame: pd.DataFrame, cluster_size: 
         cur_replica = transition_dataFrame.state_pot.index[0][0] # get current replica index from data frame
         num_states = len(transition_dataFrame.state_pot[cur_replica][0])
 
-        marker_color_dict = color_map_categorical(np.linspace(0, 1, num_states + 1))
+        marker_color_dict =  ps.active_qualitative_map(np.linspace(0, 1, num_states + 1))
         # marker plotting
         ##cluster_dtraj state data, to avoid to see only noise!
         cluster_counter = 0
@@ -178,18 +231,23 @@ def prepare_system_state_data(transition_dataFrame: pd.DataFrame, cluster_size: 
     return replica_bins, marker_color_dict, num_states
 
 
-def discard_high_energy_points(pot_i, threshold:int = 1000):
-    """
+def discard_high_energy_points(pot_i:List[float],
+                               threshold:int = 1000):
+    """discard_high_energy_points
     This is a helper function, which will allow us to filter out
     some of the data we dont want to plot. The default value for the threshold
     is 1000 kJ/mol
 
     Parameters
     ----------
-    pot_i : List of float (e.x. potential energies)
-    threshold: float, upper_threshold above which we discard data points
+    pot_i : List[float]
+        list of potential energies
+    threshold: float, optional
+        upper_threshold above which we discard data points (default 1000)
+
     Returns
     -------
-    List of float (energies below the threshold)
+    List[float]
+        list of energies below the threshold
     """
     return [e for e in pot_i if e < threshold]

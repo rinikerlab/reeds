@@ -1,4 +1,4 @@
-from typing import Union, List
+from typing import List
 
 import numpy as np
 import pandas as pd
@@ -7,221 +7,48 @@ from matplotlib import pyplot as plt
 from reeds.function_libs.utils import plots_style as ps
 from reeds.function_libs.visualization.utils import generate_trace_from_transition_dict, y_axis_for_s_plots, x_axis, \
     prepare_system_state_data
-from reeds.function_libs.visualization.pot_energy_plots import color_map_categorical, figsize, color_map_centered
 
 
-def s_optimization_visualization(s_opt_data: dict, out_path: str = None,
-                                 nRT_range=None, avRT_range=None, s_range=None):
-    niterations = len(s_opt_data)
-
-    y_nRT = []
-    y_RTd = []
-    x = []
-
-    x_svalues = []
-    y_svalues = []
-
-    bar_heights = []
-    bar_x = []
-    for it in sorted(s_opt_data):
-        opti = s_opt_data[it]
-        x.append(it.replace('sopt', ""))
-        y_nRT.append(opti['nRoundTrips'])
-
-        # dirty helper. not needed in future! TODO: remove
-        roundTripTimeavg = 3333333 if (np.nan_to_num(opti['avg_rountrip_durations']) == 0) else np.nan_to_num(
-            opti['avg_rountrip_durations'])
-        y_RTd.append(roundTripTimeavg)
-
-        x_svalues.extend(opti["s_values"])
-        y_svalues.extend([int(it.replace('sopt', "")) for x in range(len(opti["s_values"]))])
-
-        bar_heights.append([opti["state_sampling"][state] for state in opti["state_sampling"]])
-        bar_x.append(np.array(
-            [int(state.replace("V", "").replace("r", "").replace("i", "")) for state in
-             opti["state_domination_sampling"]]))
-
-    y_RTd = np.array(y_RTd) * 20 * 0.002
-    fig, ((ax1, ax2), (ax3, ax4)) = plt.subplots(ncols=2, nrows=2, figsize=ps.figsize_doubleColumn)
-
-    ax1.bar(x=x, height=y_nRT, color="dimgray")
-    ax1.set_title("Total Number Of Roundtrips")
-    ax1.set_ylabel("n [1]")
-    ax1.set_xlabel("s-opt iteration")
-
-    if (not isinstance(nRT_range, type(None))):
-        ax1.set_ylim(nRT_range)
-
-    ax2.bar(x=x, height=y_RTd, color="dimgray")
-    ax2.set_title("Average Roundtrip Time")
-    ax2.set_ylabel("t [ps]")
-    ax2.set_xlabel("s-opt iteration")
-
-    if (not isinstance(avRT_range, type(None))):
-        ax2.set_ylim(avRT_range)
-    else:
-        ax2.set_ylim([0, max(y_RTd) * 1.2])
-
-    x_svalues = (-1 * np.log10(np.array(x_svalues)))[::-1]
-    y_svalues = y_svalues[::-1]
-
-    ax3.scatter(x=x_svalues, y=y_svalues, c="k", alpha=0.6)
-
-    ax3.set_yticks(np.unique(y_svalues))
-    ax3.set_yticklabels(np.unique(y_svalues))
-
-    ax3.set_title("Replica Placement")
-    ax3.set_ylabel("s-opt iteration")
-    ax3.set_xlabel("-log(s)")
-
-    # Making the bottom right corner plot
-
-    num_sopts = len(bar_heights)
-    num_states = (len(bar_heights[0]))
-
-    labels = [str(i) for i in range(1, num_states + 1)]
-
-    # Making the offsets between the different bars
-
-    width = 1 / (niterations * 1.15)
-    x = np.arange(num_states) + 0.5 * num_states * width  # the label locations
-
-    num = num_sopts - 1
-
-    # finding proper offsets
-
-    if num % 2 == 0:
-        offsets = np.arange(-num / 2, num / 2 + 0.001, step=1)
-    else:
-        offsets = np.arange(-num / 2, num / 2 + 0.001)
-
-    for i in range(num_sopts):
-        normalized_heights = bar_heights[i] / np.sum(bar_heights[i])
-        percent_heights = [100 * j for j in normalized_heights]
-
-        ax4.bar(x + offsets[i] * width, percent_heights, width=width,
-                alpha=i / num_sopts * 0.8 + 0.2, color=["C" + str(k) for k in range(num_states)],
-                label="iteration " + str(i + 1))
-
-    xmin = x[0] + offsets[0] / 3
-    xmax = x[num_states - 1] + offsets[num_sopts - 1] / 3
-
-    ax4.hlines(y=100 / num_states, xmin=xmin, xmax=xmax, color="red")
-    ax4.set_xlim([xmin, xmax])
-
-    ax4.set_title("State Sampling For $s=1$")
-    ax4.set_ylabel("fraction [%]")
-    ax4.set_xlabel("states")
-
-    ax4.set_xticks(x)
-    ax4.set_xticklabels(labels)
-    ax4.legend()
-
-    fig.tight_layout()
-
-    if (out_path is None):
-        return fig
-    else:
-        fig.savefig(out_path)
-
-
-def visualize_s_optimisation_sampling_optimization(s_opt_data: dict, out_path: str = None) -> Union[str, plt.figure]:
-    """
-
-    Parameters
-    ----------
-    s_opt_data
-    out_path
-
-    Returns
-    -------
-
-    """
-    fig, ax = plt.subplots(ncols=1, figsize=ps.figsize_doubleColumn)
-    mae_mean = []
-    mae_std = []
-    for iteration, data in s_opt_data.items():
-        mae_mean.append(data['MAE_optimal_sampling'])
-        mae_std.append(data['MAE_std_optimal_sampling'])
-
-    # ax.errorbar(list(range(1,len(maes)+1)), maes, approach_MAE_optSamp_std[approach],
-    ax.plot(list(range(1, len(mae_mean) + 1)), mae_mean, alpha=0.75, c="k")
-
-    ax.set_title("Sampling distribution deviaton from optimal sampling distribution")
-    ax.set_ylabel("MAE [%]")
-    ax.set_xlabel("s-opt iterations")
-
-    fig.tight_layout()
-    fig.subplots_adjust(wspace=0.0, )
-
-    if (out_path is None):
-        fig.show()
-    else:
-        fig.savefig(out_path)
-        plt.close()
-
-
-def visualize_s_optimisation_convergence(s_opt_data: dict, out_path: str = None, convergens_radius: int = 100) -> \
-        Union[str, plt.figure]:
-    """
-        This function visualizes the s-optimization round trip optimization time efficency convergence.
-        Ideally the roundtrip time is  reduced by the s-optimization, if the average time converges towards 1ps it is assumed to be converged.
-
-    Parameters
-    ----------
-    s_opt_data : dict
-        contains statistics over the optimization is generated by RE_EDS_soptimizatoin_final
-    out_path:str, optional
-        if provided, the plot will be saved here. if not provided, the plot will be shown directly.
-
-    Returns
-    -------
-    Union[str, plt.figure]
-        the outpath is returned if one is given. Alternativley the plot direclty will be returned.
-    """
-    y_RTd_efficency = []
-    for it in sorted(s_opt_data):
-        if ("avg_rountrip_duration_optimization_efficiency" in s_opt_data[it]):
-            y_RTd_efficency.append(s_opt_data[it]["avg_rountrip_duration_optimization_efficiency"])
-
-    fig, ax = plt.subplots(nrows=1, ncols=1, figsize=ps.figsize_doubleColumn, sharex=True, sharey=True)
-
-    ax.plot(np.nan_to_num(np.log10(y_RTd_efficency)), label="efficiency", c="k")
-    ax.hlines(y=np.log10(convergens_radius), xmin=0, xmax=8, label="$convergence criterium$", color="grey")
-
-    ax.set_ylim([-2, 4])
-    ax.set_xlim([0, 7])
-    ax.set_xticks(range(len(s_opt_data) - 1))
-    ax.set_xticklabels([str(x) + "_" + str(x + 1) for x in range(1, len(s_opt_data))])
-    ax.set_yticks(range(-1, 4))
-    ax.set_yticklabels(range(-1, 4))
-
-    ax.set_ylabel("$log(\overline{\\tau_j} - \overline{\\tau_i})$ [ps]")
-    ax.set_xlabel("iteration ij")
-    ax.set_title("AvgRoundtriptime optimization efficiency")
-    ax.legend(fontsize=6)
-
-    fig.tight_layout()
-    fig.subplots_adjust(wspace=0.0, hspace=0)
-    if (out_path is None):
-        return fig
-    else:
-        fig.savefig(out_path)
-        plt.close()
-        return out_path
-
-
-def plot_replica_transitions(transition_dict: pd.DataFrame, out_path: str = None, title_prefix: str = "test",
-                             s_values=None, cut_1_replicas=False, xBond: tuple = None, equilibration_border: int = None,
-                             transparency=0.7, use_gradient_colorMap=True, show_repl_leg=False,
+def plot_replica_transitions(transition_dict: pd.DataFrame,
+                             out_path: str = None,
+                             title_prefix: str = "test",
+                             s_values=None,
+                             cut_1_replicas=False,
+                             xBond: tuple = None,
+                             equilibration_border: int = None,
+                             transparency=0.7,
+                             use_gradient_colorMap=True,
+                             show_repl_leg=False,
                              trace_line_width: float = 1) -> str:
+    """plot_replica_transitions
+
+    Parameters
+    ----------
+    transition_dict : pd.DataFrame
+    out_path : str, optional
+    title_prefix : str, optional
+    s_values : List, optional
+    cut_1_replicas : bool, optional
+    xBond : tuple, optional
+    equilibration_border : int, optional
+    transparency : float, optional
+    use_gradient_colorMap : bool, optional
+    show_repl_leg : bool, optional
+    trace_line_width : float, optional
+
+    Returns
+    -------
+    out_path : str
+        output file path
+
+    """
     num_replicas = len(np.unique(transition_dict.replicaID))
 
     if use_gradient_colorMap:
         trace_color_dict = ps.active_qualitative_map(np.linspace(1, 0, num_replicas))
         repnum = num_replicas
     else:
-        trace_color_dict = color_map_categorical.colors[::-1]
+        trace_color_dict = ps.active_qualitative_map.colors[::-1]
         repnum = len(trace_color_dict)
 
     if (cut_1_replicas and s_values):
@@ -233,8 +60,8 @@ def plot_replica_transitions(transition_dict: pd.DataFrame, out_path: str = None
 
     # PREPRAE SETTINGS AND DATA:
     # init
-    ammount_of_x_labels = 5
-    ammount_of_y_labels = 21
+    amount_of_x_labels = 5
+    amount_of_y_labels = 21
 
     # replica_trace options:
     transition_range = 0.35
@@ -246,7 +73,7 @@ def plot_replica_transitions(transition_dict: pd.DataFrame, out_path: str = None
                                                                   transition_range=transition_range)
 
     # DO PLOTTING
-    fig = plt.figure(figsize=figsize)
+    fig = plt.figure(figsize=ps.figsize)
     ax = fig.add_subplot(1, 1, 1)
 
     for replica in range(1, num_replicas + 1):
@@ -269,13 +96,13 @@ def plot_replica_transitions(transition_dict: pd.DataFrame, out_path: str = None
 
     # axis
     if (yBond != None):
-        y_axis_for_s_plots(ax=ax, s_values=s_values, yBond=yBond, ammount_of_y_labels=ammount_of_y_labels)
+        y_axis_for_s_plots(ax=ax, s_values=s_values, yBond=yBond, amount_of_y_labels=amount_of_y_labels)
     else:
-        y_axis_for_s_plots(ax=ax, s_values=s_values, ammount_of_y_labels=ammount_of_y_labels)
+        y_axis_for_s_plots(ax=ax, s_values=s_values, amount_of_y_labels=amount_of_y_labels)
     if (xBond != None):
-        x_axis(ax=ax, xBond=xBond, ammount_of_x_labels=ammount_of_x_labels)
+        x_axis(ax=ax, xBond=xBond, amount_of_x_labels=amount_of_x_labels)
     else:
-        x_axis(ax=ax, max_x=max_exch, ammount_of_x_labels=ammount_of_x_labels)
+        x_axis(ax=ax, max_x=max_exch, amount_of_x_labels=amount_of_x_labels)
 
     fig.suptitle(title_prefix + " - transitions/trial")
     ax.set_xlabel("exchange trials")
@@ -308,22 +135,34 @@ def plot_replica_transitions(transition_dict: pd.DataFrame, out_path: str = None
     return out_path
 
 
-def plot_replica_transitions_min_states(transition_dict: dict, out_path: str, title_prefix: str = "test", s_values=None,
-                                        show_only_states: list = None, cut_1_replicas=False, xBond: tuple = None,
-                                        show_repl_leg=False,
-                                        cluster_size=10, sub_cluster_threshold=0.6):
-    """
-    Args:
-        transition_dict (dict):
-        out_path (str):
-        title_prefix (str):
-        s_values:
-        show_only_states (list):
-        cut_1_replicas:
-        xBond (tuple):
-        show_repl_leg:
-        cluster_size:
-        sub_cluster_threshold:
+def plot_replica_transitions_min_states(transition_dict: dict,
+                                        out_path: str,
+                                        title_prefix: str = "test",
+                                        s_values=None,
+                                        show_only_states: list = None,
+                                        cut_1_replicas=False,
+                                        xBond: tuple = None,
+                                        show_repl_leg: bool = False,
+                                        cluster_size: int = 10,
+                                        sub_cluster_threshold: float = 0.6):
+    """plot_replica_transitions_min_states
+
+    Parameters
+    ----------
+    transition_dict : dict
+    out_path : str
+    title_prefix : str, optional
+    s_values : str, optional
+    show_only_states : list, optional
+    cut_1_replicas : bool, optional
+    xBond : tuple, optional
+    show_repl_leg : bool, optional
+    cluster_size : int, optional
+    sub_cluster_threshold : float, optional
+
+    Returns
+    -------
+    None
     """
     if (cut_1_replicas and s_values):
         count_1 = s_values.count(1.0)  # filter 1 replicas@!
@@ -334,8 +173,8 @@ def plot_replica_transitions_min_states(transition_dict: dict, out_path: str, ti
 
     # general_Settings:
     # init
-    ammount_of_x_labels = 5
-    ammount_of_y_labels = 21
+    amount_of_x_labels = 5
+    amount_of_y_labels = 21
     # replica_trace options:
     transition_range = 0.35
     trace_width = 1
@@ -380,13 +219,13 @@ def plot_replica_transitions_min_states(transition_dict: dict, out_path: str, ti
     # axis
     ax = plt.gca()
     if (yBond != None):
-        y_axis_for_s_plots(ax=ax, s_values=s_values, yBond=yBond, ammount_of_y_labels=ammount_of_y_labels)
+        y_axis_for_s_plots(ax=ax, s_values=s_values, yBond=yBond, amount_of_y_labels=amount_of_y_labels)
     else:
-        y_axis_for_s_plots(ax=ax, s_values=s_values, ammount_of_y_labels=ammount_of_y_labels)
+        y_axis_for_s_plots(ax=ax, s_values=s_values, amount_of_y_labels=amount_of_y_labels)
     if (xBond != None):
-        x_axis(ax=ax, xBond=xBond, ammount_of_x_labels=ammount_of_x_labels)
+        x_axis(ax=ax, xBond=xBond, amount_of_x_labels=amount_of_x_labels)
     else:
-        x_axis(ax=ax, max_x=max_exch, ammount_of_x_labels=ammount_of_x_labels)
+        x_axis(ax=ax, max_x=max_exch, amount_of_x_labels=amount_of_x_labels)
 
     plt.title(title_prefix + " - transitions/trial")
     plt.xlabel("exchange trials")
@@ -416,39 +255,42 @@ def plot_replica_transitions_min_states(transition_dict: dict, out_path: str, ti
                          scatterpoints=3,
                          fontsize=8)
 
-    if (out_path is None):
+    if(out_path is None):
         plt.show()
     else:
         plt.savefig(out_path, bbox_inches='tight', bbox_extra_artists=(lgnd,))
         plt.close()
 
 
-def plot_repPos_replica_histogramm(data: pd.DataFrame, replica_offset: int = 0, out_path: str = None,
-                                   cut_front: int = 0, title: str = "test", s_values: List[float] = None):
+def plot_repPos_replica_histogramm(data: pd.DataFrame,
+                                   replica_offset: int = 0,
+                                   out_path: str = None,
+                                   cut_front: int = 0,
+                                   title: str = "test",
+                                   s_values: List[float] = None):
     """plot_repPos_replica_histogramm
 
-        This function is building a plot, that shows the position counts for each replica in the distribution (histgoram)
+    This function is building a plot, that shows the position counts for each replica in the distribution (histgoram)
 
 
     Parameters
     ----------
     data: pd.DataFrame
         contains repdat information of the single replica traces
-
-    replica_offset
-        cut off the first replicas with s=1
-    out_path
-        write out the figures
-    cut_front
-        cut first steps of traj
-    title
-        plot title
-    s_values
-        s_values for yaxis
+    replica_offset : int, optional
+        cut off the first replicas with s=1 (default 0)
+    out_path : str, optional
+        write out the figures (default None)
+    cut_front : int, optional
+        cut first steps of traj (default 0)
+    title : str, optional
+        plot title (default "test")
+    s_values : List[float], optional
+        s_values for yaxis (default None)
 
     Returns
     -------
-
+    None
 
     """
 
@@ -469,13 +311,13 @@ def plot_repPos_replica_histogramm(data: pd.DataFrame, replica_offset: int = 0, 
     x = np.concatenate(x)
     y = np.concatenate(y)
 
-    fig, ax = plt.subplots(ncols=1, figsize=figsize)
+    fig, ax = plt.subplots(ncols=1, figsize=ps.figsize)
     hist = np.histogram2d(x=x, y=y, bins=(len(np.unique(x)), len(np.unique(y))))
 
     total_steps = np.sum(hist[0], axis=0)
     opt_vals = 1 / len(replicas)
     arr = hist[0] / total_steps
-    surf = ax.imshow(arr.T[::-1], cmap=color_map_centered, vmin=0, vmax=2.1 * opt_vals,
+    surf = ax.imshow(arr.T[::-1], cmap=ps.active_gradient_centered, vmin=0, vmax=2.1 * opt_vals,
                      extent=[min(hist[1]), max(hist[1]), min(hist[2]), max(hist[2])])
 
     steps = len(s_values) // 10 if (len(s_values) // 10 > 0) else 10
@@ -503,4 +345,4 @@ def plot_repPos_replica_histogramm(data: pd.DataFrame, replica_offset: int = 0, 
         plt.close()
         return hist
     else:
-        return fig, hist
+        return fig,  hist

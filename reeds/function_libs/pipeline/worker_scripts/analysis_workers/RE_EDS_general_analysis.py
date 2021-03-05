@@ -7,9 +7,13 @@ from typing import Union, Dict, List
 from pygromos.files import imd, repdat
 from pygromos.utils import bash
 
-from reeds.function_libs.analysis import analysis, file_management
-from reeds.function_libs.analysis import visualisation as vis
-from reeds.function_libs.analysis.file_management import parse_csv_energy_trajectories
+import reeds.function_libs.analysis.free_energy
+import reeds.function_libs.analysis.parameter_optimization
+import reeds.function_libs.analysis.sampling
+import reeds.function_libs.visualization.pot_energy_plots
+import reeds.function_libs.visualization.re_plots
+from reeds.function_libs.file_management import file_management
+from reeds.function_libs.file_management.file_management import parse_csv_energy_trajectories
 from reeds.function_libs.utils import s_log_dist as sdist
 from reeds.function_libs.utils.structures import adding_Scheme_new_Replicas
 
@@ -307,16 +311,16 @@ def do_Reeds_analysis(in_folder: str, out_folder: str, gromos_path: str,
             if (verbose): print("\n\tPlotting end state potential energy distributions (by state)\n")        
             for state_num in range(1, num_states+1):
                 outfile = plot_folder_path + '/' + title_prefix + '_pot_ene_state_' + str(state_num) + '.png'
-                vis.plot_energy_distribution_by_state(energy_trajectories, outfile, state_num, s_values, 
-                                                      manual_xlim = None, shared_xaxis = True)
+                reeds.function_libs.visualization.pot_energy_plots.plot_energy_distribution_by_state(energy_trajectories, outfile, state_num, s_values,
+                                                                                                     manual_xlim = None, shared_xaxis = True)
         
         if sub_control["pot_ene_by_replica"]:
             if (verbose): print("\n\tPlotting end state potential energy distributions (by replica)\n")
             for replica_num in range(1, len(energy_trajectories) + 1):
                 outfile =  plot_folder_path + '/' + title_prefix + '_pot_ene_replica_' + str(replica_num) + '.png'
-                vis.plot_energy_distribution_by_replica(energy_trajectories[replica_num-1], outfile,
-                                                        replica_num, s_values[replica_num-1],
-                                                        manual_xlim = None, shared_xaxis = True)
+                reeds.function_libs.visualization.pot_energy_plots.plot_energy_distribution_by_replica(energy_trajectories[replica_num - 1], outfile,
+                                                                                                       replica_num, s_values[replica_num-1],
+                                                                                                       manual_xlim = None, shared_xaxis = True)
         
         # this variable allows to access particular elements in the pandas DataFrame
         singleStates = ['e' + str(i) for i in range(1, num_states+1)]
@@ -325,24 +329,24 @@ def do_Reeds_analysis(in_folder: str, out_folder: str, gromos_path: str,
         for i, ene_traj in enumerate(energy_trajectories):
             if sub_control["pot_ene_timeseries"]:
                 out_path = plot_folder_path + "/edsState_potential_timeseries_" + str(ene_traj.s) + ".png"
-                vis.plot_potential_timeseries(time=ene_traj.time, potentials=ene_traj[singleStates],
-                                              y_range=(-1000, 1000), title="EDS_stateV_scatter", 
-                                              out_path=out_path)                
+                reeds.function_libs.visualization.pot_energy_plots.plot_potential_timeseries(time=ene_traj.time, potentials=ene_traj[singleStates],
+                                                                                             y_range=(-1000, 1000), title="EDS_stateV_scatter",
+                                                                                             out_path=out_path)
              
             if sub_control["pot_ene_grid_timeseries"]:
                 out_path = plot_folder_path + '/' + title_prefix + '_pot_ene_timeseries_' + str(i+1) + '.png'
                 title = title_prefix + ' potential energy timeseries - s = ' + str(s_values[i])
-                vis.plot_sampling_grid(traj_data = ene_traj, y_range=(-1000, 1000), out_path=out_path, title=title)
+                reeds.function_libs.visualization.pot_energy_plots.plot_sampling_grid(traj_data = ene_traj, y_range=(-1000, 1000), out_path=out_path, title=title)
 
         # Plots related to the reference potential energy (V_R)
 
         if sub_control["ref_timeseries"]:
             outfile = plot_folder_path + '/' + title_prefix + '_ref_pot_ene_timeseries.png'
-            vis.plot_ref_pot_ene_timeseries(energy_trajectories, outfile, s_values)
+            reeds.function_libs.visualization.pot_energy_plots.plot_ref_pot_ene_timeseries(energy_trajectories, outfile, s_values)
 
         if sub_control["ref_distrib"]:
             outfile = plot_folder_path + '/' + title_prefix + '_ref_pot_ene_distrib.png'
-            vis.plot_ref_pot_energy_distribution(energy_trajectories, outfile, s_values)
+            reeds.function_libs.visualization.pot_energy_plots.plot_ref_pot_energy_distribution(energy_trajectories, outfile, s_values)
             
         if (sub_control["distance_restraints"]):
             if (verbose): print("\tPLOT Disres_bias timeseries:\n")
@@ -351,22 +355,22 @@ def do_Reeds_analysis(in_folder: str, out_folder: str, gromos_path: str,
                 out_path = plot_folder_path + "/distance_restraints_" + str(ene_traj.s) + ".png"
                 singleStates = ["totdisres"]
 
-                vis.plot_potential_timeseries(time=ene_traj["time"], potentials=ene_traj[singleStates],
-                                              title="EDS disres Potential s" + str(ene_traj.s), y_label="E/[kj/mol]",
-                                              x_label="t/[ps]",
-                                              out_path=out_path)
+                reeds.function_libs.visualization.pot_energy_plots.plot_potential_timeseries(time=ene_traj["time"], potentials=ene_traj[singleStates],
+                                                                                             title="EDS disres Potential s" + str(ene_traj.s), y_label="E/[kj/mol]",
+                                                                                             x_label="t/[ps]",
+                                                                                             out_path=out_path)
 
         if (sub_control["temperature_2d_plot"]):
             print("\tPLOT temperature 2D histogram:\t")
 
             if (isinstance(imd_file.MULTIBATH, type(None)) and not isinstance(imd_file.STOCHDYN, type(None))):
-                vis.plot_replicaEnsemble_property_2D(ene_trajs=energy_trajectories,
-                                                     out_path=plot_folder_path + "/temperature_heatMap.png",
-                                                     temperature_property="solutemp2")
+                reeds.function_libs.visualization.pot_energy_plots.plot_replicaEnsemble_property_2D(ene_trajs=energy_trajectories,
+                                                                                                    out_path=plot_folder_path + "/temperature_heatMap.png",
+                                                                                                    temperature_property="solutemp2")
             else:
-                vis.plot_replicaEnsemble_property_2D(ene_trajs=energy_trajectories,
-                                                     out_path=plot_folder_path + "/temperature_heatMap.png",
-                                                     temperature_property="solvtemp2")
+                reeds.function_libs.visualization.pot_energy_plots.plot_replicaEnsemble_property_2D(ene_trajs=energy_trajectories,
+                                                                                                    out_path=plot_folder_path + "/temperature_heatMap.png",
+                                                                                                    temperature_property="solvtemp2")
 
             if (verbose): print("DONE\n")
         # del energy_trajectories -- remove if memory without this is fine
@@ -389,15 +393,15 @@ def do_Reeds_analysis(in_folder: str, out_folder: str, gromos_path: str,
             print("\tEoffs(" + str(len(Eoff[0])) + "): ", Eoff[0])
             print("\tS_values(" + str(len(s_values)) + "): ", s_values)
             print("\tsytsemTemp: ", temp)
-            eoff_statistic = analysis.estimate_Eoff(ene_ana_trajs=energy_trajectories, Eoff=Eoff[0], s_values=s_values,
-                                                    out_path=out_dir, temp=temp,
-                                                    pot_tresh=pot_tresh, frac_tresh=frac_tresh, take_last_n=take_last_n)
+            eoff_statistic = reeds.function_libs.analysis.parameter_optimization.estimate_Eoff(ene_ana_trajs=energy_trajectories, Eoff=Eoff[0], s_values=s_values,
+                                                                                               out_path=out_dir, temp=temp,
+                                                                                               pot_tresh=pot_tresh, frac_tresh=frac_tresh, take_last_n=take_last_n)
 
         if (sub_control["sampling_plot"]):
             # plot if states are sampled and minimal state
             print("\tplot sampling: ")
-            analysis.sampling_analysis(out_path=out_dir, ene_traj_csvs=energy_trajectories, s_values=s_values,
-                                       pot_tresh=pot_tresh)
+            reeds.function_libs.analysis.sampling.sampling_analysis(out_path=out_dir, ene_traj_csvs=energy_trajectories, s_values=s_values,
+                                                                    pot_tresh=pot_tresh)
 
         if (verbose): print("Done\n")
         # del energy_trajectories -- remove if memory is ok
@@ -414,16 +418,16 @@ def do_Reeds_analysis(in_folder: str, out_folder: str, gromos_path: str,
         if (sub_control["run_RTO"]):
             print("Start Sopt\n")
             print("repdat_in_file: ", in_file, "\n")
-            svals = analysis.optimize_s(in_file=in_file, out_dir=out_dir,
-                                        title_prefix="s_opt", in_imd=in_imd,
-                                        add_s_vals=add_s_vals, trial_range=s_opt_trial_range,
-                                        state_weights=state_weights,
-                                        run_NLRTO=sub_control["run_NLRTO"], run_NGRTO=sub_control["run_NGRTO"],
-                                        verbose=verbose)
+            svals = reeds.function_libs.analysis.parameter_optimization.optimize_s(in_file=in_file, out_dir=out_dir,
+                                                                                   title_prefix="s_opt", in_imd=in_imd,
+                                                                                   add_s_vals=add_s_vals, trial_range=s_opt_trial_range,
+                                                                                   state_weights=state_weights,
+                                                                                   run_NLRTO=sub_control["run_NLRTO"], run_NGRTO=sub_control["run_NGRTO"],
+                                                                                   verbose=verbose)
 
         if (sub_control["visualize_transitions"]):
             print("\t\tvisualize transitions")
-            analysis.get_s_optimization_transitions(out_dir=out_dir, rep_dat=in_file, title_prefix=title_prefix)
+            reeds.function_libs.analysis.parameter_optimization.get_s_optimization_transitions(out_dir=out_dir, rep_dat=in_file, title_prefix=title_prefix)
 
         if (sub_control["roundtrips"] and sub_control["run_RTO"]):
             print("\t\tshow roundtrips")
@@ -436,9 +440,9 @@ def do_Reeds_analysis(in_folder: str, out_folder: str, gromos_path: str,
 
             # plot
             if verbose: print("Plotting Histogramm")
-            vis.plot_repPos_replica_histogramm(out_path=out_dir + "/replica_repex_pos.png", data=trans_dict,
-                                               title=title_prefix,
-                                               s_values=s_values)
+            reeds.function_libs.visualization.re_plots.plot_repPos_replica_histogramm(out_path=out_dir + "/replica_repex_pos.png", data=trans_dict,
+                                                                                      title=title_prefix,
+                                                                                      s_values=s_values)
 
         if (verbose): print("Done\n")
 
@@ -453,9 +457,9 @@ def do_Reeds_analysis(in_folder: str, out_folder: str, gromos_path: str,
         if energy_trajectories is None:
             energy_trajectories = parse_csv_energy_trajectories(concat_file_folder, ene_trajs_prefix)
 
-        analysis.free_energy_convergence_analysis(ene_ana_trajs=energy_trajectories, out_dir=dfmult_convergence_folder,
-                                                  out_prefix=title_prefix, in_prefix=ene_trajs_prefix, verbose=verbose,
-                                                  dfmult_all_replicas=dfmult_all_replicas)
+        reeds.function_libs.analysis.free_energy.free_energy_convergence_analysis(ene_ana_trajs=energy_trajectories, out_dir=dfmult_convergence_folder,
+                                                                                  out_prefix=title_prefix, in_prefix=ene_trajs_prefix, verbose=verbose,
+                                                                                  dfmult_all_replicas=dfmult_all_replicas)
 
     # When we reach here, we no longer need the data in energy_trajectories, memory can be freed.
     del energy_trajectories

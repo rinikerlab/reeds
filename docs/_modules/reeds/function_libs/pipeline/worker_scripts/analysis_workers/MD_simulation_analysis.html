@@ -1,0 +1,275 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>reeds.function_libs.pipeline.worker_scripts.analysis_workers.MD_simulation_analysis &mdash; REEDS  documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../../../../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../../../../" src="../../../../../../_static/documentation_options.js"></script>
+        <script src="../../../../../../_static/jquery.js"></script>
+        <script src="../../../../../../_static/underscore.js"></script>
+        <script src="../../../../../../_static/doctools.js"></script>
+        <script src="../../../../../../_static/language_data.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
+    
+    <script type="text/javascript" src="../../../../../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../../../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../../../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../../../../index.html" class="icon icon-home"> REEDS
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../introduction.html">REEDS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../Examples/index.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../_source/modules.html">Documentation</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../../../index.html">REEDS</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../../../../index.html">Module code</a> &raquo;</li>
+        
+      <li>reeds.function_libs.pipeline.worker_scripts.analysis_workers.MD_simulation_analysis</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for reeds.function_libs.pipeline.worker_scripts.analysis_workers.MD_simulation_analysis</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Nasty script ;)</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="c1"># !/usr/bin/env python</span>
+<span class="kn">import</span> <span class="nn">os</span>
+
+<span class="kn">from</span> <span class="nn">pygromos.utils</span> <span class="kn">import</span> <span class="n">bash</span>
+<span class="kn">from</span> <span class="nn">reeds.function_libs.file_management</span> <span class="kn">import</span> <span class="n">file_management</span>
+
+<span class="n">template_control_dict</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;concat&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;do&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+               <span class="s2">&quot;sub&quot;</span><span class="p">:</span> <span class="p">{</span>
+                   <span class="s2">&quot;cp_cnf&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+                   <span class="s2">&quot;cat_trc&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+                   <span class="s2">&quot;cat_tre&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+                   <span class="s2">&quot;ene_ana&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+                   <span class="s2">&quot;convert_trcs&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+                   <span class="s2">&quot;cat_repdat&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span> <span class="p">}</span>
+               <span class="p">}</span>
+<span class="p">}</span>
+
+<div class="viewcode-block" id="do"><a class="viewcode-back" href="../../../../../../_source/reeds.function_libs.pipeline.worker_scripts.analysis_workers.html#reeds.function_libs.pipeline.worker_scripts.analysis_workers.MD_simulation_analysis.do">[docs]</a><span class="k">def</span> <span class="nf">do</span><span class="p">(</span><span class="n">in_simulation_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">in_simulation_dir</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">in_topology_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">in_imd_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+       <span class="n">out_analysis_dir</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+       <span class="n">in_ene_ana_lib_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">gromosPP_bin_dir</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">n_processes</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+       <span class="n">trc_take_every_step</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">control_dict</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">verbose</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            this function is concatenating simulatoin files of normal MD runs</span>
+<span class="sd">        #Todo: move to PyGromos</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    in_simulation_name : str</span>
+<span class="sd">        name of the simulation approach</span>
+<span class="sd">    in_simulation_dir : str</span>
+<span class="sd">        path to the simulation dir, containing the gromos simulation files</span>
+<span class="sd">    in_topology_path : str</span>
+<span class="sd">        path to the topology</span>
+<span class="sd">    in_imd_path : str</span>
+<span class="sd">        path to the gromos parameter file</span>
+<span class="sd">    out_analysis_dir : str</span>
+<span class="sd">        path to the out dir</span>
+<span class="sd">    in_ene_ana_lib_path : str</span>
+<span class="sd">        path to the ene_ana library</span>
+<span class="sd">    gromosPP_bin_dir : str</span>
+<span class="sd">        path to the gromos PP binary</span>
+<span class="sd">    n_processes : int</span>
+<span class="sd">        number of processors</span>
+<span class="sd">    trc_take_every_step : int</span>
+<span class="sd">        use every n step</span>
+<span class="sd">    control_dict : dict</span>
+<span class="sd">        which analysis steps shall be performed</span>
+<span class="sd">    verbose : bool</span>
+<span class="sd">        Kaching!</span>
+
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">out_analysis_dir</span><span class="p">)):</span>
+        <span class="n">bash</span><span class="o">.</span><span class="n">make_folder</span><span class="p">(</span><span class="n">out_analysis_dir</span><span class="p">)</span>
+    <span class="k">if</span> <span class="p">(</span><span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">control_dict</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)):</span>
+        <span class="n">control_dict</span> <span class="o">=</span> <span class="n">template_control_dict</span>
+
+    <span class="c1">##################################################</span>
+    <span class="c1">#   ORGANIZE FILES</span>
+    <span class="c1">##################################################</span>
+    <span class="c1"># DO</span>
+    <span class="k">if</span> <span class="p">(</span><span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">out_analysis_dir</span><span class="p">)):</span>
+        <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span><span class="s2">&quot;Could not find: </span><span class="se">\n\t</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">out_analysis_dir</span><span class="p">)</span>
+
+    <span class="n">out_data_dir</span> <span class="o">=</span> <span class="n">out_analysis_dir</span> <span class="o">+</span> <span class="s2">&quot;/data&quot;</span>
+    <span class="k">if</span> <span class="p">(</span><span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">out_data_dir</span><span class="p">)):</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">out_data_dir</span><span class="p">)</span>
+
+    <span class="n">properties</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;totpot&quot;</span><span class="p">,</span> <span class="s2">&quot;ligangle&quot;</span><span class="p">,</span> <span class="s2">&quot;ligtors&quot;</span><span class="p">,</span> <span class="s2">&quot;ligimptors&quot;</span><span class="p">,</span> <span class="s2">&quot;lignonbself&quot;</span><span class="p">,</span> <span class="s2">&quot;lignonbenv&quot;</span><span class="p">]</span>
+    <span class="n">file_management</span><span class="o">.</span><span class="n">project_concatenation</span><span class="p">(</span><span class="n">in_folder</span><span class="o">=</span><span class="n">in_simulation_dir</span><span class="p">,</span> <span class="n">in_topology_path</span><span class="o">=</span><span class="n">in_topology_path</span><span class="p">,</span>
+                                          <span class="n">in_imd</span><span class="o">=</span><span class="n">in_imd_path</span><span class="p">,</span>
+                                          <span class="n">num_replicas</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">control_dict</span><span class="o">=</span><span class="n">control_dict</span><span class="p">[</span><span class="s2">&quot;concat&quot;</span><span class="p">][</span><span class="s2">&quot;sub&quot;</span><span class="p">],</span>
+                                          <span class="n">out_folder</span><span class="o">=</span><span class="n">out_data_dir</span><span class="p">,</span> <span class="n">out_file_prefix</span><span class="o">=</span><span class="n">in_simulation_name</span><span class="p">,</span>
+                                          <span class="n">in_ene_ana_lib_path</span><span class="o">=</span><span class="n">in_ene_ana_lib_path</span><span class="p">,</span> <span class="n">n_processes</span><span class="o">=</span><span class="n">n_processes</span><span class="p">,</span>
+                                          <span class="n">gromosPP_bin_dir</span><span class="o">=</span><span class="n">gromosPP_bin_dir</span><span class="p">,</span> <span class="n">nofinal</span><span class="o">=</span><span class="n">verbose</span><span class="p">,</span>
+                                          <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">,</span> <span class="n">additional_properties</span><span class="o">=</span><span class="n">properties</span><span class="p">)</span></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, Benjamin Ries, Salome Rieder, Candide Champion. Project structure based on the Computational Molecular Science Python Cookiecutter version 1.3
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

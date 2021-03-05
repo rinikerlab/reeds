@@ -1,20 +1,35 @@
+from typing import Dict
+
 import numpy as np
 from matplotlib import pyplot as plt
 
 
-def plot_dF_conv(dF_timewise, title: str, out_path: str, dt: float = (1000),
-                 verbose: bool = False, show_legend: bool = True):
-    """
+def plot_dF_conv(dF_timewise : dict,
+                 title: str,
+                 out_path: str,
+                 dt: float = (1000),
+                 verbose: bool = False,
+                 show_legend: bool = True):
+    """plot_dF_conv
 
-    :param dF_timewise: Dictionary containing the data.
+    Parameters
+    ----------
+    dF_timewise : Dict
+        Dictionary containing the data.
+    title : str
+        plot title
+    out_path : str
+        Path of the directory in which plot will be written
+    dt : float, optional
+        dt for x_axis. (default 1000 - converts ps to ns)
+    verbose : bool, optional
+        verbose output (default False)
+    show_legend : bool, optional
+        (default True)
 
-    :param out_path: Path of the directory in which plot will be written
-
-    :param dt: dt for x_axis. 1000 - converts ps to ns
-
-    :param verbose: parmeter to print out some of the data we are working on.
-
-    :returns: fig, ax
+    Returns
+    -------
+    None
     """
     fig, axes = plt.subplots(nrows=1, ncols=2, figsize=[10, 10])
     fig.tight_layout()
@@ -72,7 +87,28 @@ def plot_dF_conv(dF_timewise, title: str, out_path: str, dt: float = (1000),
     return fig, axes
 
 
-def plot_thermcycle_dF_convergence(dF_time, out_path: str = None, title_prefix: str = "", verbose: bool = True):
+def plot_thermcycle_dF_convergence(dF_time : Dict,
+                                   out_path: str = None,
+                                   title_prefix: str = "",
+                                   verbose: bool = True):
+    """plot_thermcycle_dF_convergence
+
+    Parameters
+    ----------
+    dF_time : Dict
+        Dictionary containing the data.
+    out_path : str, optional
+        output file path (default None)
+    title_prefix : str, optional
+        title prefix (default "")
+    verbose : bool, optional
+        verbose output (default True)
+
+    Returns
+    -------
+    None
+    """
+
     cols = 3
     print(dF_time)
     rows = len(dF_time) // cols if (len(dF_time) % cols == 0) else len(dF_time) // cols + 1

@@ -5,13 +5,7 @@ import numpy as np
 import pandas as pd
 
 import reeds.function_libs.visualization.sampling_plots
-from reeds.function_libs.visualization import pot_energy_plots as vis
-np.set_printoptions(suppress=True)
 
-
-"""
-    Sampling fractions
-"""
 
 def undersampling_occurence_potential_threshold_densityClustering(ene_traj_csvs: List[pd.DataFrame],
                                                                   max_distance_kJ: float = 300,
@@ -24,11 +18,11 @@ def undersampling_occurence_potential_threshold_densityClustering(ene_traj_csvs:
 
     Parameters
     ----------
-    ene_traj_csvs: List[pd.Dataframe]
+    ene_traj_csvs : List[pd.Dataframe]
         a list of pandas dataframes containing the energy data of each state eX
-    max_distance_kJ: float, optional
+    max_distance_kJ : float, optional
         the maximum distance between two points for dbscan clustering (eps) (default:300kJ).
-    sampling_fraction_treshold: float, optional
+    sampling_fraction_treshold : float, optional
         the sampling threshold for detecting undersampling (default: 0.9).
 
     Returns
@@ -37,7 +31,7 @@ def undersampling_occurence_potential_threshold_densityClustering(ene_traj_csvs:
         list of individual identified potential thresholds
     """
     try:
-        from .cluster import DBSCAN
+        from sklearn.cluster import DBSCAN
     except:
         raise Exception("Please provide package sklearn!")
 
@@ -82,19 +76,19 @@ def undersampling_occurence_potential_threshold_densityClustering(ene_traj_csvs:
 def undersampling_occurence_potential_threshold_distribution_based(ene_traj_csvs: List[pd.DataFrame],
                                                                    max_distance_kJ: float = 300,
                                                                    sampling_fraction_treshold: float = 0.9):
-    """
+    """undersampling_occurence_potential_threshold_distribution_based
     This function is estimating the pot_tresh for all states by testing if around the minimal energy 90% of the data is located in a threshold of  max_distance_kJ.
-    The mean and std of the density region will result in pot_tresh = mean+3std
+    The mean and std of the density region will result in pot_tresh = mean+3*std
     This function is cheap in performance.
     ! WARNING REQUIRES SKLEARN
 
     Parameters
     ----------
-    ene_traj_csvs: List[pd.Dataframe]
+    ene_traj_csvs : List[pd.Dataframe]
         a list of pandas dataframes containing the energy data of each state eX
-    max_distance_kJ: float, optional
+    max_distance_kJ : float, optional
         the maximum deviation around minimal energy (default:300kJ).
-    sampling_fraction_treshold: float, optional
+    sampling_fraction_treshold : float, optional
         the sampling threshold for detecting undersampling (default: 0.9).
 
     Returns
@@ -123,7 +117,7 @@ def undersampling_occurence_potential_threshold_distribution_based(ene_traj_csvs
                 threshold = np.mean(below_thresh) + 3 * np.std(below_thresh)
                 pot_tresh.append(threshold)
 
-        # only save undersapmling pot_threshes
+        # only save undersampling pot_threshes
         if (len(pot_tresh) == num_states):
             pot_tresh_pre_rep.append(pot_tresh)
 
@@ -136,18 +130,20 @@ def undersampling_occurence_potential_threshold_distribution_based(ene_traj_csvs
 
 def calculate_sampling_distributions(ene_traj_csvs: List[pd.DataFrame],
                                      potential_treshold: List[float],
-                                     undersampling_occurence_sampling_tresh: float = 0.75) -> Dict[
-    int, Dict[str, Dict[int, float]]]:
-    """
-        This function is using the dominating state sampling and occurrence state sampling definition, to calculate
-        for both definitions the sampling distributions including each stat.
-        Further each replica, having an occurrence sampling >= undersampling_occurence_sampling_tresh for each state is categorized as undersampling.
+                                     undersampling_occurence_sampling_tresh: float = 0.75)-> Dict[int, Dict[str, Dict[int, float]]]:
+    """calculate_sampling_distributions
+    This function is using the dominating state sampling and occurrence state sampling definition, to calculate
+    for both definitions the sampling distributions including each stat.
+    Further each replica, having an occurrence sampling >= undersampling_occurence_sampling_tresh for each state is categorized as undersampling.
 
     Parameters
     ----------
-    ene_traj_csvs
-    potential_treshold
-    undersampling_occurence_sampling_tresh
+    ene_traj_csvs: List[pd.Dataframe]
+        a list of pandas dataframes containing the energy data of each state eX
+    potential_treshold: List[float]
+        a list of potential thresholds for undersampling
+    undersampling_occurence_sampling_tresh: float, optional
+        threshold for the fraction of the energies which has to be below the threshold (default 0.75)
 
     Returns
     -------
@@ -186,10 +182,15 @@ def calculate_sampling_distributions(ene_traj_csvs: List[pd.DataFrame],
     return replica_sampling_dist
 
 
-def sampling_analysis(ene_traj_csvs: List[pd.DataFrame], s_values: List[float], pot_tresh: List[float],
-                      out_path: str = None, xmax: bool = False, verbose: bool = False, do_plot: bool = True) -> str:
-    """
-    This function, is analysing the samplings
+def sampling_analysis(ene_traj_csvs: List[pd.DataFrame],
+                      s_values: List[float],
+                      pot_tresh: List[float],
+                      out_path: str = None,
+                      xmax: bool = False,
+                      do_plot: bool = True,
+                      verbose: bool = False) -> str:
+    """sampling_analysis
+    This function is analysing the samplings
 
     Parameters
     ----------
@@ -199,12 +200,14 @@ def sampling_analysis(ene_traj_csvs: List[pd.DataFrame], s_values: List[float], 
         contains the energy data
     s_values :  List[float]
         list of s_values
-    pot_tresh : float
-        potential energy threshold, for considering a state as sampled
-    xmax :  bool
-        additionally output a plot only with a smaller x_range. (0->xmax)
-    verbose: bool
-        story time :)
+    pot_tresh : List[float]
+        potential energy thresholds, for considering a state as sampled
+    xmax :  bool, optional
+        additionally output a plot only with a smaller x_range. (0->xmax) (default False)
+    do_plot: bool, opptional
+        create additional plots (default True)
+    verbose: bool, optional
+        story time :) (default False)
 
     Returns
     -------

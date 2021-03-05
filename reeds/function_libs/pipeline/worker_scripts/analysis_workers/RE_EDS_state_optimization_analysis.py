@@ -4,9 +4,10 @@ import os
 
 from pygromos.files import imd
 from pygromos.utils import bash
+
+import reeds.function_libs.visualization.pot_energy_plots
 from reeds.data import ene_ana_libs
-from reeds.function_libs.analysis import analysis as ana, visualisation as vis
-from reeds.function_libs.analysis import file_management as fM
+from reeds.function_libs.file_management import file_management as fM
 
 
 def do(in_simulation_dir: str, in_topology_path: str, in_imd_path: str,
@@ -105,16 +106,16 @@ def do(in_simulation_dir: str, in_topology_path: str, in_imd_path: str,
 
     # Plot of all of the potential energy distributions in a single plot:
 
-    vis.plot_optimized_states_potential_energies( outfile= out_analysis_plot_dir + "/optimized_states_potential_energies.png",
-                                                  ene_trajs=ene_trajs)
+    reeds.function_libs.visualization.pot_energy_plots.plot_optimized_states_potential_energies(outfile=out_analysis_plot_dir + "/optimized_states_potential_energies.png",
+                                                                                                ene_trajs=ene_trajs)
 
     if control_dict["plot_ref_timeseries"]:
         outfile = out_analysis_plot_dir + "/optimized_states_ref_potential_ene_timeseries.png"
-        vis.plot_ref_pot_ene_timeseries(ene_trajs, outfile, s_values=[], optimized_state = True)
+        reeds.function_libs.visualization.pot_energy_plots.plot_ref_pot_ene_timeseries(ene_trajs, outfile, s_values=[], optimized_state = True)
 
     if control_dict["plot_ref_distrib"]:
         outfile = out_analysis_plot_dir + "/optimized_states_ref_potential_ene_distrib.png"
-        vis.plot_ref_pot_energy_distribution(ene_trajs, outfile, s_values=[], optimized_state = True)
+        reeds.function_libs.visualization.pot_energy_plots.plot_ref_pot_energy_distribution(ene_trajs, outfile, s_values=[], optimized_state = True)
 
     # do visualisation pot energies
 
@@ -124,15 +125,15 @@ def do(in_simulation_dir: str, in_topology_path: str, in_imd_path: str,
         singleStates = ['e' + str(i) for i in range(1, num_states+1)]
 
         if control_dict["plot_timeseries"]:
-            vis.plot_potential_timeseries(time = ene_traj.time, potentials = ene_traj[singleStates],
-                                          y_range = (-1000, 1000), title = "EDS_stateV_scatter",
-                                          out_path = out_analysis_plot_dir + "/edsState_potential_timeseries_"
+            reeds.function_libs.visualization.pot_energy_plots.plot_potential_timeseries(time = ene_traj.time, potentials = ene_traj[singleStates],
+                                                                                         y_range = (-1000, 1000), title = "EDS_stateV_scatter",
+                                                                                         out_path = out_analysis_plot_dir + "/edsState_potential_timeseries_"
                                                      + str(ene_traj.s) + ".png")
         if control_dict["plot_grid_timeseries"]:
             out_path = out_analysis_plot_dir + "/edsState_potential_timeseries_stageGrid_" + str(ene_traj.s) + ".png"
             title = 'Optimized State potential energy timeseries - System biased to state ' + str(i+1)
-            vis.plot_sampling_grid(traj_data = ene_traj, y_range = (-1000, 1000),
-                                   out_path = out_path, title = title)
+            reeds.function_libs.visualization.pot_energy_plots.plot_sampling_grid(traj_data = ene_traj, y_range = (-1000, 1000),
+                                                                                  out_path = out_path, title = title)
     # compress out_trc/out_tre Files
     if (control_dict["compress"]):
         trx_files = glob.glob(coord_dir + "/*.tr?")

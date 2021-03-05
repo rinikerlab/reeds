@@ -202,8 +202,53 @@
 <div class="section" id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
 </div>
-<div class="section" id="reeds-function-libs-utils-argument-parser-module">
-<h2>reeds.function_libs.utils.argument_parser module<a class="headerlink" href="#reeds-function-libs-utils-argument-parser-module" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-reeds.function_libs.utils.argument_parser">
+<span id="reeds-function-libs-utils-argument-parser-module"></span><h2>reeds.function_libs.utils.argument_parser module<a class="headerlink" href="#module-reeds.function_libs.utils.argument_parser" title="Permalink to this headline">¶</a></h2>
+<p>This file contains the dynamic argument parser used for many functions in the package.
+The usecase for this is either in the bash command line function, or in the submission scripts.</p>
+<dl class="py function">
+<dt id="reeds.function_libs.utils.argument_parser.execute_module_via_bash">
+<code class="sig-prename descclassname">reeds.function_libs.utils.argument_parser.</code><code class="sig-name descname">execute_module_via_bash</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">module_doc</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">execute_function</span><span class="p">:</span> <span class="n">callable</span></em>, <em class="sig-param"><span class="n">requires_additional_args</span><span class="p">:</span> <span class="n">List<span class="p">[</span>Tuple<span class="p">[</span>str<span class="p">, </span>str<span class="p">]</span><span class="p">]</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/reeds/function_libs/utils/argument_parser.html#execute_module_via_bash"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#reeds.function_libs.utils.argument_parser.execute_module_via_bash" title="Permalink to this definition">¶</a></dt>
+<dd><blockquote>
+<div><p>This function checksout the provided do function of a module and builds an parser for bash
+from the provided doc-string (module_doc).</p>
+</div></blockquote>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>module_doc</strong> (<em>str</em>) – documentation of the module</p></li>
+<li><p><strong>execute_function</strong> (<em>callable</em>) – do function of the module</p></li>
+<li><p><strong>requires_additional_args</strong> (<em>List[Tuple[str,str]</em>) – additional required arguments, not in the docs?</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="reeds.function_libs.utils.argument_parser.make_parser_dynamic">
+<code class="sig-prename descclassname">reeds.function_libs.utils.argument_parser.</code><code class="sig-name descname">make_parser_dynamic</code><span class="sig-paren">(</span><em class="sig-param">parser: argparse.ArgumentParser, target_function: callable, additional_argparse_argument: List[reeds.function_libs.utils.structures.specialArgument], function_parameter_exceptions: List[str], verbose: bool = True) -&gt; (&lt;class 'dict'&gt;, &lt;class 'dict'&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/reeds/function_libs/utils/argument_parser.html#make_parser_dynamic"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#reeds.function_libs.utils.argument_parser.make_parser_dynamic" title="Permalink to this definition">¶</a></dt>
+<dd><blockquote>
+<div><p>this function builds an argparse obj from a functions doc-string, this can be used to dynamicly parse the arguments for the function.</p>
+</div></blockquote>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>parser</strong> (<em>argparse.ArgumentParser</em>) – parser to be build</p></li>
+<li><p><strong>target_function</strong> (<em>callable</em>) – function to write the parser for</p></li>
+<li><p><strong>additional_argparse_argument</strong> (<em>List[additional_argparse_argument]</em>) – additional provided parsing arguments? (eg. for single files)</p></li>
+<li><p><strong>function_parameter_exceptions</strong> (<em>List[str]</em>) – parameter not translated into the parser</p></li>
+<li><p><strong>verbose</strong> (<em>bool</em>) – right now only dummy functionality</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>parsed arguments</p>
+</dd>
+</dl>
+</dd></dl>
+
 </div>
 <div class="section" id="module-reeds.function_libs.utils.plots_style">
 <span id="reeds-function-libs-utils-plots-style-module"></span><h2>reeds.function_libs.utils.plots_style module<a class="headerlink" href="#module-reeds.function_libs.utils.plots_style" title="Permalink to this headline">¶</a></h2>

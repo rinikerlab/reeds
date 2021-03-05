@@ -7,12 +7,12 @@ import pandas as pd
 
 from pygromos.files import repdat
 from pygromos.utils import bash
-from reeds.function_libs.analysis import visualisation as vis
-from reeds.function_libs.analysis.analysis import get_s_optimization_roundtrips_per_replica, \
-    get_s_optimization_roundtrip_averages
-from reeds.function_libs.analysis.visualisation import visualization_s_optimization_summary, visualize_s_optimisation_convergence,\
-    visualize_s_optimisation_sampling_optimization
 
+import reeds.function_libs.visualization.re_plots
+from reeds.function_libs.analysis.parameter_optimization import get_s_optimization_roundtrips_per_replica, \
+    get_s_optimization_roundtrip_averages
+from reeds.function_libs.visualization.parameter_optimization_plots import visualization_s_optimization_summary, \
+    visualize_s_optimisation_convergence, visualize_s_optimisation_sampling_optimization
 
 
 def analyse_sopt_iteration(repdat_path: str, out_dir: str, title: str, pot_tresh=0) -> dict:
@@ -75,14 +75,14 @@ def analyse_sopt_iteration(repdat_path: str, out_dir: str, title: str, pot_tresh
 
     del repdat_file
 
-    vis.plot_repPos_replica_histogramm(out_path=out_dir + "/" + title.replace(" ", "_") + "replicaPositions_hist.png",
-                                       data=trans_dict, title=title,
-                                       s_values=s_values[repOff:], replica_offset=repOff)
+    reeds.function_libs.visualization.re_plots.plot_repPos_replica_histogramm(out_path=out_dir + "/" + title.replace(" ", "_") + "replicaPositions_hist.png",
+                                                                              data=trans_dict, title=title,
+                                                                              s_values=s_values[repOff:], replica_offset=repOff)
 
-    vis.plot_replica_transitions(transition_dict=trans_dict,
-                                 out_path=out_dir + "/" + title.replace(" ", "_") + "_transitions.png",
-                                 title_prefix=title,
-                                 s_values=s_values, cut_1_replicas=True, equilibration_border=None)
+    reeds.function_libs.visualization.re_plots.plot_replica_transitions(transition_dict=trans_dict,
+                                                                        out_path=out_dir + "/" + title.replace(" ", "_") + "_transitions.png",
+                                                                        title_prefix=title,
+                                                                        s_values=s_values, cut_1_replicas=True, equilibration_border=None)
     # calc roundtrips:
     stats = get_s_optimization_roundtrips_per_replica(data=trans_dict, repOffsets=repOff,
                                                       min_pos=min_pos, max_pos=max_pos)

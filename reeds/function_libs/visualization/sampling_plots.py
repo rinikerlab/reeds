@@ -1,3 +1,5 @@
+from typing import List
+
 import numpy as np
 from matplotlib import pyplot as plt
 
@@ -5,16 +7,27 @@ from reeds.function_libs.utils import plots_style as ps
 from reeds.function_libs.visualization.utils import nice_s_vals
 
 
-def plot_t_statepres(data: dict, out_path: str = None, title="test", xlim=False):
-    """gives out a plot, showing the if a state is undersampling or the
+def plot_t_statepres(data: dict,
+                     out_path: str = None,
+                     title: str = "test",
+                     xlim: List[int] = False):
+    """plot_t_statepres
+    gives out a plot, showing the if a state is undersampling or the
     dominating (min state) of a system at given t.
 
-    Args:
-        data (dict):
-        states (int):
-        out_path (str):
-        title:
-        xlim:
+    Parameters
+    ----------
+    data : dict
+    out_path : str, optional
+        path for output files (default None)
+    title : str, optional
+        title string (default "test")
+    xlim: List[int], optional
+        default False
+
+    Returns
+    -------
+    None
     """
 
     # sort data:
@@ -72,21 +85,26 @@ def plot_t_statepres(data: dict, out_path: str = None, title="test", xlim=False)
         plt.close()
 
 
-def plot_stateOccurence_hist(data: dict, out_path: str = None,
-                             title: str = "sampling histogramms", verbose=False):
-    """
+def plot_stateOccurence_hist(data: dict,
+                             out_path: str = None,
+                             title: str = "sampling histogramms",
+                             verbose: bool = False):
+    """plot_stateOccurence_hist
+    plot histogram of state occurrence
 
     Parameters
     ----------
-    data
-    out_path
-    pottresh
-    title
-    verbose
+    data : dict
+    out_path : str, optional
+        output file path (default None)
+    title : str, optional
+        title (default "sampling histogramms")
+    verbose : bool
+        verbose output (default False)
 
     Returns
     -------
-
+    None
     """
 
     def autolabel(rects, max_val=1, xpos='center'):
@@ -140,8 +158,30 @@ def plot_stateOccurence_hist(data: dict, out_path: str = None,
         plt.close()
 
 
-def plot_stateOccurence_matrix(data: dict, out_dir: str = None, s_values: list = None,
-                               place_undersampling_threshold: bool = False, title_suffix: str = None):
+def plot_stateOccurence_matrix(data: dict,
+                               out_dir: str = None,
+                               s_values: list = None,
+                               place_undersampling_threshold: bool = False,
+                               title_suffix: str = None):
+    """plot_stateOccurence_matrix
+    This function generates a plot of the state occurrence matrix
+
+    Parameters
+    ----------
+    data: dict
+    out_dir: str, optional
+        output file path (default None)
+    s_values: list, optional
+        list of s-values (default None)
+    place_undersampling_threshold: bool, optional
+        (default False)
+    title_suffix: str, optional
+        suffix for title (default None)
+
+    Returns
+    -------
+    None
+    """
     states_num = len(data[list(data.keys())[0]]["occurence_state"])
 
     occurrence_sampling_matrix = np.array(

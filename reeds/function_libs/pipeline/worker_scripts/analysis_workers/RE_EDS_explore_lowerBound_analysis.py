@@ -6,10 +6,10 @@ import numpy as np
 
 from pygromos.files import imd
 from pygromos.utils import bash
-from reeds.function_libs.analysis import analysis as ana
-from reeds.function_libs.analysis import visualisation as vis
-from reeds.function_libs.analysis import file_management as fM
-from reeds.function_libs.utils import s_log_dist
+
+import reeds.function_libs.analysis.sampling
+import reeds.function_libs.visualization.pot_energy_plots
+from reeds.function_libs.file_management import file_management as fM
 
 np.set_printoptions(suppress=True)
 from reeds.data import ene_ana_libs
@@ -128,37 +128,37 @@ def do(out_analysis_dir: str, system_name: str,
     out_analysis_plot_dir = out_analysis_dir + "/plots"
     bash.make_folder(out_analysis_plot_dir, "-p")
     ene_trajs = fM.parse_csv_energy_trajectories(data_dir, out_prefix)  # gather potentials
-    sampling_analysis_results, out_plot_dirs = ana.sampling_analysis(out_path = out_analysis_plot_dir,
-                                                                     ene_traj_csvs = ene_trajs,
-                                                                     s_values = s_values[:succsessful_sim_count],
-                                                                     pot_tresh = undersampling_pot_tresh)
+    sampling_analysis_results, out_plot_dirs = reeds.function_libs.analysis.sampling.sampling_analysis(out_path = out_analysis_plot_dir,
+                                                                                                       ene_traj_csvs = ene_trajs,
+                                                                                                       s_values = s_values[:succsessful_sim_count],
+                                                                                                       pot_tresh = undersampling_pot_tresh)
 
     # Plotting the different potential energy distributions
     if control_dict["pot_ene_by_state"]:
         for i in range(num_states):
             outfile = out_analysis_plot_dir + '/' + system_name + '_pot_ene_state_' + str(i+1) + '.png'
-            vis.plot_energy_distribution_by_state(ene_trajs, outfile, i+1, s_values)
+            reeds.function_libs.visualization.pot_energy_plots.plot_energy_distribution_by_state(ene_trajs, outfile, i + 1, s_values)
     
     if control_dict["pot_ene_by_replica"]:
         for i in range(len(ene_trajs)):
             outfile = out_analysis_plot_dir + '/' + system_name + '_pot_ene_replica_' + str(i+1) + '.png'
-            vis.plot_energy_distribution_by_replica(ene_trajs[i], outfile, i+1, s_values[i])
+            reeds.function_libs.visualization.pot_energy_plots.plot_energy_distribution_by_replica(ene_trajs[i], outfile, i + 1, s_values[i])
     
     if control_dict["plot_ref_timeseries"]:
         outfile = out_analysis_plot_dir + '/' + system_name + '_ref_pot_ene_timeseries.png'
-        vis.plot_ref_pot_ene_timeseries(ene_trajs, outfile, s_values)
+        reeds.function_libs.visualization.pot_energy_plots.plot_ref_pot_ene_timeseries(ene_trajs, outfile, s_values)
 
     if control_dict["plot_ref_distrib"]:
         outfile = out_analysis_plot_dir + '/' + system_name + '_ref_pot_ene_distrib.png'
-        vis.plot_ref_pot_energy_distribution(ene_trajs, outfile, s_values)
+        reeds.function_libs.visualization.pot_energy_plots.plot_ref_pot_energy_distribution(ene_trajs, outfile, s_values)
 
     # plot the potential energy timeseries as a grid:
     if control_dict["plot_pot_ene_timeseries"]:
         for i, ene_traj in enumerate(ene_trajs):
             out_path = out_analysis_plot_dir + '/' + system_name  + '_pot_ene_timeseries_' + str(i+1) + '.png'
             title = 'Lower Bound Analysis potential energy timeseries - s = ' + str(s_values[i])
-            vis.plot_sampling_grid(traj_data = ene_traj, y_range = (-1000, 1000),
-                                   out_path = out_path, title = title)
+            reeds.function_libs.visualization.pot_energy_plots.plot_sampling_grid(traj_data = ene_traj, y_range = (-1000, 1000),
+                                                                                  out_path = out_path, title = title)
 
 
 

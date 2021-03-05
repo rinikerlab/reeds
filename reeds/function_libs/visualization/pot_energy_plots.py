@@ -1,49 +1,25 @@
-"""
-visualisation
--------------
+from typing import List, Iterable, Tuple
 
-visualisation.py
-This File contains functions which are generating matplotlib plots for reeds sims.
-"""
-
-from typing import Iterable, List, Tuple
-
-# plotting
-import matplotlib
 import numpy as np
 import pandas as pd
-
-from reeds.function_libs.visualization.utils import discard_high_energy_points
-
-matplotlib.use('Agg')
-matplotlib.rcParams['agg.path.chunksize'] = 10000  # avoid chunksize error
-
 from matplotlib import pyplot as plt
 
-# PLOT STYLE
 from reeds.function_libs.utils import plots_style as ps
+from reeds.function_libs.visualization.utils import discard_high_energy_points
 
-# General Plottsettings
-for key, value in ps.plot_layout_settings.items():
-    matplotlib.rcParams[key] = value
 
-color_gradient = ps.active_gradient_map
-color_map_categorical = ps.active_qualitative_map
-color_map_centered = ps.active_gradient_centered
-
-figsize = ps.figsize
-alpha = ps.alpha_val
-
-# Plots
-def plot_optimized_states_potential_energies(outfile:str, ene_trajs):
-    """
+def plot_optimized_states_potential_energies(outfile:str,
+                                             ene_trajs:pd.DataFrame):
+    """plot_optimized_states_potential_energies
     Plots the potential energy distributions of all states in a single plot,
     where the data is represented as a histogram.
 
     Parameters
     ----------
-    outfile: str containing the path to the output png file
-    ene_trajs: pandas DataFrame containing trajectory pot energies
+    outfile: str
+        string containing the path to the output png file
+    ene_trajs: pd.DataFrame
+        pandas dataframe containing potential energy trajectories
 
     Returns
     -------
@@ -110,8 +86,14 @@ def plot_optimized_states_potential_energies(outfile:str, ene_trajs):
 
     return None
 
-def plot_energy_distribution_by_replica(traj_data, outfile, replica_num, s_value, manual_xlim = None, shared_xaxis = True):
-    """
+
+def plot_energy_distribution_by_replica(traj_data : pd.DataFrame,
+                                        outfile : str,
+                                        replica_num : int,
+                                        s_value : int,
+                                        manual_xlim : List[float] = None,
+                                        shared_xaxis : bool = True):
+    """plot_energy_distribution_by_replica
     Plots the potential energy distributions for the data generated
     in a RE-EDS simulation (or for N independant EDS simulations (i.e. lower bound))
 
@@ -120,12 +102,18 @@ def plot_energy_distribution_by_replica(traj_data, outfile, replica_num, s_value
 
     Parameters
     ----------
-    traj_data : pandas DataFrame containing the data for the specific replica of interest
-    outfile : str, name of the output png file
-    replica_num : int, replica number (used an index)
-    s_value : int,   s value associated to this replica
-    manual_xlim: List of float, minimum and maximum value for the x-axes
-    shared_xaxis: boolean, determines if each plot has the same axes limits
+    traj_data : pd.DataFrame
+        pandas DataFrame containing the data for the specific replica of interest
+    outfile : str
+        name of the output png file
+    replica_num : int
+        replica number (used an index)
+    s_value : int
+        s value associated to this replica
+    manual_xlim: List[float], optional
+        minimum and maximum value for the x-axes
+    shared_xaxis: bool, optional
+        determines if each plot has the same axes limits
 
     Returns
     -------
@@ -220,8 +208,14 @@ def plot_energy_distribution_by_replica(traj_data, outfile, replica_num, s_value
 
     return None
 
-def plot_energy_distribution_by_state(energy_trajs, outfile, state_num, s_values, manual_xlim = None, shared_xaxis = True):
-    """
+
+def plot_energy_distribution_by_state(energy_trajs : List[pd.DataFrame],
+                                      outfile : str,
+                                      state_num : int,
+                                      s_values : List[float],
+                                      manual_xlim : List[float] = None,
+                                      shared_xaxis : bool = True):
+    """plot_energy_distribution_by_state
     Plots the potential energy distributions for the data generated
     in a RE-EDS simulation (or for N independant EDS simulations (i.e. lower bound))
 
@@ -230,13 +224,19 @@ def plot_energy_distribution_by_state(energy_trajs, outfile, state_num, s_values
 
     Parameters
     ----------
-    energy_trajs : List of pandas DataFrame containing the data for all states/replicas
-    outfile: str name of the output png file
-    state_num: int number of the state to plot
-    s_values : List of float s-values of all the replicas
-    manual_xlim: List of float, minimum and maximum value for the x-axes
-    shared_xaxis: boolean, determines if each plot has the same axes limits
-                  (this includes all other plots, as this function is called from a loop)
+    energy_trajs : List[pd.DataFrame]
+        List of pandas DataFrame containing the data for all states/replicas
+    outfile: str
+        name of the output png file
+    state_num: int
+        number of the state to plot
+    s_values : List[float]
+        list of float s-values of all the replicas
+    manual_xlim: List[float], optional
+        minimum and maximum value for the x-axes (default None)
+    shared_xaxis: bool
+        determines if each plot has the same axes limits (default True)
+        (this includes all other plots, as this function is called from a loop)
 
     Returns
     -------
@@ -340,8 +340,12 @@ def plot_energy_distribution_by_state(energy_trajs, outfile, state_num, s_values
 
     return None
 
-def plot_ref_pot_energy_distribution(energy_trajs, outfile, s_values, optimized_state:bool = False):
-    """
+
+def plot_ref_pot_energy_distribution(energy_trajs: List[pd.DataFrame],
+                                     outfile: str,
+                                     s_values: List[float],
+                                     optimized_state: bool = False):
+    """plot_ref_pot_energy_distribution
     Plots the reference potential energy distribution
     for either the optimized states, or a set of EDS/RE-EDS
     simulation, for which data has been previously parsed by
@@ -349,11 +353,15 @@ def plot_ref_pot_energy_distribution(energy_trajs, outfile, s_values, optimized_
 
     Parameters
     ----------
-    energy_trajs: List of pandas DataFrame containing traj info
-    outfile: str: path to the output png file
-    s_values: List of s-values corresponding to the different replicas
-               an empty list can be given when optimized_state = True
-    optimized_state: boolean, True when we want to make the plot for the optimized states
+    energy_trajs : List[pd.DataFrame]
+        List of pandas DataFrame containing traj info
+    outfile : str
+        path to the output png file
+    s_values : List[float]
+        List of s-values corresponding to the different replicas
+        an empty list can be given when optimized_state = True
+    optimized_state: bool, optional
+        True when we want to make the plot for the optimized states (default False)
 
     Returns
     -------
@@ -424,8 +432,12 @@ def plot_ref_pot_energy_distribution(energy_trajs, outfile, s_values, optimized_
 
     return None
 
-def plot_ref_pot_ene_timeseries(ene_trajs, outfile, s_values, optimized_state:bool = False):
-    """
+
+def plot_ref_pot_ene_timeseries(ene_trajs: List[pd.DataFrame],
+                                outfile: str,
+                                s_values: List[float],
+                                optimized_state: bool = False):
+    """plot_ref_pot_ene_timeseries
     Plots the reference potential energy timeseries
     for either the optimized states, or a set of EDS/RE-EDS
     simulation, for which data has been previously parsed by
@@ -433,11 +445,15 @@ def plot_ref_pot_ene_timeseries(ene_trajs, outfile, s_values, optimized_state:bo
 
     Parameters
     ----------
-    energy_trajs: List of pandas DataFrame containing traj info
-    outfile: str, path to the output png file
-    s_values: List of float, s-values corresponding to the different replicas
-               an empty list can be given when optimized_state = True
-    optimized_state: boolean, True when we want to make the plot for the optimized states
+    energy_trajs: List[pd.DataFrame]
+        List of pandas DataFrame containing traj info
+    outfile: str
+        path to the output png file
+    s_values: List[float]
+        List of float, s-values corresponding to the different replicas
+        an empty list can be given when optimized_state = True
+    optimized_state: bool
+        True when we want to make the plot for the optimized states (default False)
 
     Returns
     -------
@@ -492,13 +508,12 @@ def plot_ref_pot_ene_timeseries(ene_trajs, outfile, s_values, optimized_state:bo
     return None
 
 
-#
-# This is the violin plot representation of the potential energy
-# distributions, which might be removed.
-#
 def plot_potential_distribution(potentials: (pd.Series or pd.DataFrame), out_path: str,
                                 y_label="V/[kj/mol]", y_range: Iterable[float] = [-1000, 1000],
                                 title: str = "Energy Distribution in range", label_medians: bool = True) -> str:
+    """
+    @ WARNING MIGHT BE REMOVED - OLD Function@
+    """
     # get good suplot distributions
     nstates = sum([1 for x in potentials.columns if (x.startswith("e"))]) - 1  # -1 for reference state
 
@@ -538,22 +553,28 @@ def plot_potential_distribution(potentials: (pd.Series or pd.DataFrame), out_pat
     return out_path
 
 
-def plot_replicaEnsemble_property_2D(ene_trajs: List[pd.DataFrame], out_path: str,
+def plot_replicaEnsemble_property_2D(ene_trajs: List[pd.DataFrame],
+                                     out_path: str,
                                      temperature_property: str = "solvtemp2") -> str:
-    """
-    ..autofunction: plot_replicaEnsemble_property_2D
-    :author: Kay Schaller
+    """plot_replicaEnsemble_property_2D
+    author: Kay Schaller
 
     Plots the temperature time series for all replicas as heat map.
 
-    :param ene_trajs: ene_ana_property object, that contains time and solv2temp property
-    :type ene_trajs: List[ene_traj] - ene_ana_property_traj class from pygromos.files.energy
-    :param temperature_property: is the name of the property, that is representing the Temperature
-    :type temperature_property: str
-    :param out_path: path to output directroy
-    :type out_path:str
-    :return: out_file path
-    :rtype: str
+    Parameters
+    ----------
+    ene_trajs : List[pd.DataFrame]
+        ene_ana_property object, that contains time and solv2temp property
+    out_path : str
+        output file path
+    temperature_property : str, optional
+       is the name of the property, that is representing the Temperature (default "solvtemp2")
+
+    Returns
+    -------
+    str
+        output file name
+
     """
 
     # Params
@@ -598,9 +619,6 @@ def plot_replicaEnsemble_property_2D(ene_trajs: List[pd.DataFrame], out_path: st
     plt.close()
     return outfilename
 
-# comment from Candide:
-# I suggest completely removing this function
-# as it does the same as scatter_potential_timeseries (but not as well in my opinion)
 
 def plot_potential_timeseries(time: pd.Series, potentials: (pd.DataFrame or pd.Series),
                               title: str,
@@ -608,6 +626,11 @@ def plot_potential_timeseries(time: pd.Series, potentials: (pd.DataFrame or pd.S
                               x_label: str = "t", y_label: str = "V/kJ",
                               alpha: float = 0.6,
                               out_path: str = None):
+
+    """
+    @ WARNING MIGHT BE REMOVED - OLD Function@
+    """
+
     fig = plt.figure(figsize=[20, 15])
     ax = fig.add_subplot(1, 1, 1)
     for y in potentials.columns:
@@ -635,12 +658,50 @@ def plot_potential_timeseries(time: pd.Series, potentials: (pd.DataFrame or pd.S
     return out_path
 
 
-def scatter_potential_timeseries(time: pd.Series, potentials: (pd.DataFrame or pd.Series),
+def scatter_potential_timeseries(time: pd.Series,
+                                 potentials: (pd.DataFrame or pd.Series),
                                  title: str,
-                                 y_range: Tuple[float, float] = None, x_range: Tuple[float, float] = None,
-                                 x_label: str = "t", y_label: str = "V [kJ]",
-                                 marker_size=5, alpha: float = 0.5, show_legend=True,
+                                 y_range: Tuple[float, float] = None,
+                                 x_range: Tuple[float, float] = None,
+                                 x_label: str = "t",
+                                 y_label: str = "V [kJ]",
+                                 marker_size=5,
+                                 alpha: float = 0.5,
+                                 show_legend: bool = True,
                                  out_path: str = None):
+
+    """scatter_potential_timeseries
+    This function creates scatter plots of the potential energy timeseries
+
+    Parameters
+    ----------
+    time : pd.Series
+        time series for the x-axis
+    potentials : pd.DataFrame or pd.Series
+        potential energies
+    title : str
+        plot title
+    y_range : Tuple[float, float], optional
+        y-axis ranges (default None)
+    x_range : Tuple[float, float], optional
+        x-axis ranges (default None)
+    x_label : str, optional
+        label for x-axis (default "t")
+    y_label : str, optional
+        label for y-axis (default "V [kJ]")
+    marker_size: int, optional
+        size of markers (default 5)
+    alpha: float
+        default 0.5
+    show_legend : bool, optional
+        show legend (default True)
+    out_path : str, optional
+        path for output (default None)
+
+    Returns
+    -------
+    None
+    """
 
     fig = plt.figure()
     ax = fig.add_subplot(1, 1, 1)
@@ -672,20 +733,28 @@ def scatter_potential_timeseries(time: pd.Series, potentials: (pd.DataFrame or p
     return out_path
 
 
-def plot_sampling_grid(traj_data, out_path= None, y_range = [-1000, 1000], title = None):
-    """
+def plot_sampling_grid(traj_data: pd.DataFrame,
+                       out_path: str= None,
+                       y_range: List[float] = [-1000, 1000],
+                       title: str = None) -> str:
+    """plot_sampling_grid
     Plots the potential energy of each end state in a single plot (grid of subplots)
     where each subplot corresponds to one end state.
 
     Parameters
     ----------
-    traj_data: pandas dataFrame containing timestep/potential energy info of the trajectory.
-    out_path: string containing path to the output file
-    y_range: List (float) containing lower and upper bound for the y-axes
-    title: string Title to give to the plot.
+    traj_data: pd.DataFrame
+        pandas dataFrame containing timestep/potential energy info of the trajectory.
+    out_path: str
+        string containing path to the output file
+    y_range: List[float], optional
+        List (float) containing lower and upper bound for the y-axes (default [-1000, 1000])
+    title: str, optional
+        string Title to give to the plot (default None)
+
     Returns
     -------
-    out_path
+    out_path: str
     """
     nstates = 0
     for elem in traj_data.keys():
@@ -723,4 +792,3 @@ def plot_sampling_grid(traj_data, out_path= None, y_range = [-1000, 1000], title
         plt.close(fig)
 
     return out_path
-

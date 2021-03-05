@@ -1,5 +1,5 @@
 """
-    This module is doing all the post simulation file juggeling needed for gromos.
+    This module is doing all the post simulation file juggling needed for gromos.
 """
 import glob, os, tempfile, warnings
 import multiprocessing as mult
@@ -23,20 +23,42 @@ from reeds.function_libs.utils.structures import adding_Scheme_new_Replicas as a
 """
 
 
-def _thread_worker_cat_trc(job: int, replicaID_range: (Iterable, List[int]), trc_files: Dict[int, List[str]],
-                           out_prefix: str, topology_path: str, out_trcs: dict, dt: float, time: float = 0,
-                           verbose: bool = False, boundary_conditions: str = "r cog", include_all: bool = False):
+def _thread_worker_cat_trc(job: int,
+                           replicaID_range: (Iterable, List[int]),
+                           trc_files: Dict[int, List[str]],
+                           out_prefix: str,
+                           topology_path: str,
+                           out_trcs: dict,
+                           dt: float,
+                           time: float = 0,
+                           verbose: bool = False,
+                           boundary_conditions: str = "r cog",
+                           include_all: bool = False):
     """_thread_worker_cat_trc
         This thread worker_scripts concatenates all .trc files of one replica into one file.
 
     Parameters
     ----------
-    job :   rank of this thread
-    replicaID_range :   x_range - list of all
-    trc_files :     Dict[int, List[str]]
+    job : int
+        rank of this thread
+    replicaID_range : (Iterable, List[int])
+        x_range - list of all
+    trc_files : Dict[int, List[str]]
         Dictionary containing all replicas, with list of all trc files concerning one trc.
     out_prefix : str
         output prefix
+    topology_path : str
+        path to the topology file
+    out_trcs : dict
+        output trajectories
+    dt : float
+        timestep
+    time : float, optional
+        start time (default 0)
+    boundary_conditions : str, optional
+        boundary conditions (default "r cog")
+    include_all : bool, optional
+        include SOLVENT? (default: False)
     verbose : bool
         verbosity?
 
@@ -88,8 +110,34 @@ def _thread_worker_cat_trc(job: int, replicaID_range: (Iterable, List[int]), trc
         if (verbose): print("JOB " + str(job) + ": " + "compress " + compressed_trc + "\t DONE\n")
 
 
-def _thread_worker_cat_tre(job: int, replicaID_range: (Iterable, List[int]), tre_files: Dict[int, List[str]],
-                           out_prefix: str, out_tres: dict, verbose: bool = False):
+def _thread_worker_cat_tre(job: int,
+                           replicaID_range: (Iterable, List[int]),
+                           tre_files: Dict[int, List[str]],
+                           out_prefix: str,
+                           out_tres: dict,
+                           verbose: bool = False):
+    """_thread_worker_cat_tre
+    This functions concatenates energy trajectories
+
+    Parameters
+    ----------
+    job : int
+        rank of this thread
+    replicaID_range : (Iterable, List[int])
+        x_range - list of all
+    tre_files : Dict[int, List[str]]
+        energy trajectory files
+    out_prefix : str
+        prefix for output files
+    out_tres : dict
+    verbose : bool, optional
+        verbose output (default False)
+
+    Returns
+    -------
+    None
+
+    """
     if (verbose): print("JOB " + str(job) + ": range " + str(list(replicaID_range)))
 
     for replicaID in replicaID_range:
@@ -127,8 +175,28 @@ def _thread_worker_cat_tre(job: int, replicaID_range: (Iterable, List[int]), tre
         out_tres.update({replicaID: compressed_tre})
 
 
-def thread_worker_concat_repdat(job: int, repdat_file_out_path: str, repdat_file_paths: (str, List[str]),
-                                verbose: bool = False) -> str:
+def thread_worker_concat_repdat(job: int,
+                                repdat_file_out_path: str,
+                                repdat_file_paths: (str, List[str]),
+                                verbose: bool = False):
+    """thread_worker_concat_repdat
+    This function concatenates repdat files
+
+    Parameters
+    ----------
+    job : int
+        rank of this thread
+    repdat_file_out_path : str
+        output path for concatenated repdat files
+    repdat_file_paths : (str, List[str])
+        path to repdat files
+    verbose : bool, optional  
+        verbose output (default False)
+
+    Returns
+    -------
+    None
+    """
     if (os.path.exists(repdat_file_out_path)):
         warnings.warn("Skipped repdat creation as already existed!: " + repdat_file_out_path)
     else:
@@ -150,17 +218,73 @@ def thread_worker_concat_repdat(job: int, repdat_file_out_path: str, repdat_file
         del repdat_file
 
 
-def _thread_worker_cnfs(job, out_cnfs, in_cnfs, replica_range, out_folder, verbose: bool = False):
+def _thread_worker_cnfs(job : int,
+                        out_cnfs : dict,
+                        in_cnfs : (str, List[str]),
+                        replica_range : List[int],
+                        out_folder : str,
+                        verbose: bool = False):
+    """_thread_worker_cnfs
+
+    Parameters
+    ----------
+    job : int
+        rank of this thread
+    out_cnfs : dict
+    in_cnfs : (str, List[str])
+        list of input cnf files
+    replica_range : List[int]
+        list of replica IDs
+    out_folder : str
+        path to output directory
+    verbose : bool
+        verbose output (default False)
+
+    Returns
+    -------
+    None
+    """
     if (verbose): print("JOB: " + str(job) + " copy to " + out_folder)
     for replicaID in replica_range:
         out_cnfs.update({replicaID: bash.copy_file(in_cnfs[replicaID][-1],
                                                    out_folder + "/" + os.path.basename(in_cnfs[replicaID][-1]))})
 
 
-def _thread_worker_conv_trc(job: int, replica_range: Iterable[int], trc_files: List[str], in_topology_path: str,
-                            gromos_path: str, out_traj: dict,
-                            fit_traj_to_mol: int = 1, boundary_conditions: str = "r",
+def _thread_worker_conv_trc(job: int,
+                            replica_range: Iterable[int],
+                            trc_files: List[str],
+                            in_topology_path: str,
+                            gromos_path: str,
+                            out_traj: dict,
+                            fit_traj_to_mol: int = 1,
+                            boundary_conditions: str = "r",
                             verbose: bool = False):
+    """_thread_worker_conv_trc
+
+    Parameters
+    ----------
+    job : int
+        rank of this thread
+    replica_range : Iterable[int]
+        list of replica IDs
+    trc_files : List[str]
+        list of trc files
+    in_topology_path : str
+        path to input topology file
+    gromos_path : str
+        path to gromos binaries
+    out_traj : dict
+    fit_traj_to_mol : int, optional
+        default 1
+    boundary_conditions : str, optional
+        default "r"
+    verbose: bool, optional
+        verbose output (default False)
+
+    Returns
+    -------
+    None
+    """
     if (verbose): print("JOB: " + str(job) + " RANGE\t" + str(replica_range))
     gromPP = gromosPP.GromosPP(gromos_path)
     first = True
@@ -213,9 +337,14 @@ def _thread_worker_conv_trc(job: int, replica_range: Iterable[int], trc_files: L
 
 def thread_worker_isolate_energies(in_en_file_paths: str,
                                    out_folder: str,
-                                   properties: List[str], replicas: List[int],
-                                   in_ene_ana_lib: str, gromosPP_path: str,
-                                   out_prefix: str = "", tre_prefix: str = "", time=None, dt=None, job: int = -1,
+                                   properties: List[str],
+                                   replicas: List[int],
+                                   in_ene_ana_lib: str,
+                                   gromosPP_path: str,
+                                   out_prefix: str = "",
+                                   tre_prefix: str = "",
+                                   time=None, dt=None,
+                                   job: int = -1,
                                    verbose=True) -> List[str]:
     """isolate_properties_from_tre
         This func uses Ene Ana from gromos to isolate potentials from out_tre Files
@@ -225,19 +354,26 @@ def thread_worker_isolate_energies(in_en_file_paths: str,
     ----------
     in_en_file_paths : str
         path, in which the input tre_folders are situated.
-    out_folder :    str
+    out_folder : str
          output folder, where to write the energy .csvs
-    properties :    List[str]
+    properties : List[str]
         potentials to isolate from the .out_tre Files
-    replicas :  int
-        number of replicas, that should be found
-    in_ene_ana_lib :    str
+    replicas : List[int]
+        list of replicas, that should be found
+    in_ene_ana_lib : str
          path to the ene_ana lib, encoding the out_tre Files
     gromosPP_path : str
         path to the ene_ana lib, encoding the out_tre Files
-    out_prefix :    str, optional
-    tre_prefix :    str, optional
-    verbose :   bool, optional
+    out_prefix : str, optional
+    tre_prefix : str, optional
+    time : float, optional
+        start time (default None)
+    dt : float, optional
+        timestep (default None)
+    job : int, optional
+        rank of current job
+    verbose : bool, optional
+        verbose output (default True)
 
     Returns
     -------
@@ -279,14 +415,50 @@ def thread_worker_isolate_energies(in_en_file_paths: str,
     return result_files
 
 
-def _thread_worker_delete(job: int, file_paths: List[str], verbose: bool = False) -> int:
+def _thread_worker_delete(job: int,
+                          file_paths: List[str],
+                          verbose: bool = False) -> int:
+    """_thread_worker_delete
+    delete files in list
+
+    Parameters
+    ----------
+    job : int
+        rank of current job
+    file_paths : List[str]
+        paths to files which should be deleted
+    verbose : bool, optional
+        verbose output (default False)
+
+    Returns
+    -------
+    int
+    """
     for file_path in file_paths:
         if (verbose): print("JOB" + str(job) + " - rm: " + file_path + "")
         bash.remove_file(file_path)
     return 0
 
 
-def _thread_worker_compress(job: int, in_file_paths: List[str], verbose: bool = False) -> int:
+def _thread_worker_compress(job: int,
+                            in_file_paths: List[str], 
+                            verbose: bool = False) -> int:
+    """_thread_worker_compress
+    compress files in list
+
+    Parameters
+    ----------
+    job : int
+        rank of current job
+    in_file_paths : List[str]
+        paths to files which should be deleted
+    verbose : bool, optional
+        verbose output (default False)
+
+    Returns
+    -------
+    int
+    """
     for file_path in in_file_paths:
         if (verbose): print("JOB" + str(job) + " - gz: " + file_path)
         bash.compress_gzip(in_path=file_path, verbose=verbose)
@@ -299,6 +471,20 @@ def _thread_worker_compress(job: int, in_file_paths: List[str], verbose: bool = 
 
 
 def find_and_unarchive_tar_files(trc_files: List[str], verbose: bool = False):
+    """find_and_unarchive_tar_files
+    find and untar/unzip archived files
+
+    Parameters
+    ----------
+    trc_files : List[str]
+        trajectory files to be untared
+    verbose : bool, optional
+        verbose output (default False)
+
+    Returns
+    -------
+    None
+    """
     # archive handling
     archived_files = list(filter(lambda x: (".tar" in x or ".gz" in x or ".tar.gz" in x), trc_files))
     not_archived_files = list(filter(lambda x: not ("tar" in x or ".gz" in x or ".tar.gz" in x), trc_files))
@@ -348,30 +534,35 @@ def find_and_unarchive_tar_files(trc_files: List[str], verbose: bool = False):
     return use_tre_file_paths, unarchived_files
 
 
-def gather_simulation_replica_file_paths(in_folder: str, replicas: int, filePrefix: str = "",
+def gather_simulation_replica_file_paths(in_folder: str,
+                                         replicas: int,
+                                         filePrefix: str = "",
                                          fileSuffixes: Union[str, List[str]] = [".tre", ".tre.tar.gz"],
-                                         verbose: bool = False, finalNumberingSort=False) -> Dict[int, List[str]]:
-    """gather_replica_file_paths
+                                         verbose: bool = False,
+                                         finalNumberingSort=False) -> Dict[int, List[str]]:
+    """gather_simulation_replica_file_paths
 
-        Finds all trajectory paths in a simulation folder and sorts them by replica.
+    Finds all trajectory paths in a simulation folder and sorts them by replica.
 
 
     Parameters
     ----------
     in_folder : str
         folder, containing the files
-    replicas :  int
+    replicas : int
         Number of replicas
-    filePrefix :    str, optional
-        str prefix the desired files
-    fileSuffixes :    str, optional
-        str suffix of the desired files
+    filePrefix : str, optional
+        str prefix the desired files (default "")
+    fileSuffixes : str, optional
+        str suffix of the desired files (default [".tre", ".tre.tar.gz"])
+    finalNumberingSort : bool, optional
+        default False
     verbose :   bool
         toggle verbosity
 
     Returns
     -------
-
+    Dict[int, List[str]]
     """
 
     if (isinstance(fileSuffixes, str)):
@@ -418,7 +609,31 @@ def gather_simulation_replica_file_paths(in_folder: str, replicas: int, filePref
 
 def gather_simulation_file_paths(in_folder: str, filePrefix: str = "",
                                  fileSuffixes: Union[str, List[str]] = [".tre", ".tre.tar.gz"],
-                                 files_per_folder: int = 1, verbose: bool = False) -> List[str]:
+                                 files_per_folder: int = 1,
+                                 verbose: bool = False) -> List[str]:
+    """gather_simulation_file_paths
+    find energy trajectory files in a folder
+
+    Parameters
+    ----------
+    in_folder : str
+        directory where the files should be searched
+    filePrefix : str, optional
+        prefix of the file name pattern (default "")
+    fileSuffixes : Union[str, List[str]]
+        suffixes of the file name pattern (default [".tre", ".tre.tar.gz"])
+    files_per_folder : int, optional
+        number of files per folder (default 1)
+    verbose : bool, optional
+        verbose output (default False)
+
+    Returns
+    -------
+    List[str]  
+        list of sorted files
+
+    """
+
     files = []
     if (isinstance(fileSuffixes, str)):
         fileSuffixes = [fileSuffixes]
@@ -462,9 +677,44 @@ def gather_simulation_file_paths(in_folder: str, filePrefix: str = "",
 def extract_eds_energies_from_tre(in_dir: str, out_dir: str,
                                   in_ene_ana_lib_path: str,
                                   num_replicas: int, num_states: int,
-                                  in_gromosPP_bin_dir: str = None, out_file_prefix: str = "eds_energies",
+                                  in_gromosPP_bin_dir: str = None,
+                                  out_file_prefix: str = "eds_energies",
                                   additional_properties: Union[Tuple[str], List[str]] = ("solvtemp2", "totdisres"),
-                                  n_processes: int = 1, verbose: bool = False) -> Iterable[str]:
+                                  n_processes: int = 1,
+                                  verbose: bool = False) -> Iterable[str]:
+    """extract_eds_energies_from_tre
+    This function extracts the EDS energies from a Gromos energy trajectory file
+
+    Parameters
+    ----------
+    in_dir : str
+        directory where the tre files are located
+    out_dir : str
+        directory where the concatenated energy file should be stored
+    in_ene_ana_lib_path : str
+        path to the ene_ana library
+    num_replicas : int
+        number of replicas in the system
+    num_states : int
+        number of states in the system
+    in_gromosPP_bin_dir : str, optional
+        path to directory with gromosPP executable (default None)
+    out_file_prefix : str, optional
+        file name prefix for output file (default "eds_energies")
+    additional_properties : Union[Tuple[str], List[str]], optional
+        additional properties given to ene_ana (default ("solvtemp2", "totdisres"))
+    n_processes : int, optional
+        number of parallel processes to use (default 1)
+    verbose : bool, optional
+        verbose output (default False)
+
+    Returns
+    -------
+    Iterable[str]
+        list of energy output files
+    """
+
+
     # gather potentials
     properties = list(additional_properties) + ["eR"] + ["e" + str(state) for state in range(1, num_states + 1)]
 
@@ -479,7 +729,9 @@ def extract_eds_energies_from_tre(in_dir: str, out_dir: str,
         p.join()
 
     else:
-        out_files = thread_worker_isolate_energies(in_en_file_paths=in_dir, out_folder=out_dir, properties=properties,
+        out_files = thread_worker_isolate_energies(in_en_file_paths=in_dir,
+                                                   out_folder=out_dir,
+                                                   properties=properties,
                                                    out_prefix=out_file_prefix,
                                                    in_ene_ana_lib=in_ene_ana_lib_path,
                                                    gromosPP_path=in_gromosPP_bin_dir,
@@ -489,6 +741,20 @@ def extract_eds_energies_from_tre(in_dir: str, out_dir: str,
 
 
 def find_header(path: str) -> int:
+    """find_header
+    this function counts the lines of the header (i.e. how many lines there are
+    until the first line with doesn't start with a '#' is encountered)
+
+    Parameters
+    ----------
+    path : str
+        file path
+
+    Returns
+    -------
+    int
+        number of lines belonging to the header
+    """
     comment_lines = -1
     with open(path, "r") as file:
         for line in file.readlines():
@@ -503,16 +769,15 @@ def find_header(path: str) -> int:
 
 
 def parse_csv_energy_trajectory(in_ene_traj_path: str, verbose: bool = False) -> pd.DataFrame:
-    """
-        parse_one ene_ana csv
+    """parse_csv_energy_trajectory
 
     Parameters
     ----------
     in_ene_traj_path : str
         path to input file
 
-    verbose :   bool
-        loud?
+    verbose : bool, optional
+        verbose output (default False)
 
     Returns
     -------
@@ -526,18 +791,20 @@ def parse_csv_energy_trajectory(in_ene_traj_path: str, verbose: bool = False) ->
     return ene_traj
 
 
-def parse_csv_energy_trajectories(in_folder: str, ene_trajs_prefix: str, verbose: bool = False) -> List[pd.DataFrame]:
-    """
-        searches a directory and loads energy eds csvs as pandas dataframes.
+def parse_csv_energy_trajectories(in_folder: str,
+                                  ene_trajs_prefix: str,
+                                  verbose: bool = False) -> List[pd.DataFrame]:
+    """parse_csv_energy_trajectories
+    searches a directory and loads energy eds csvs as pandas dataframes.
 
     Parameters
     ----------
     in_folder : str
         folder with energy_traj - csvs
-    ene_trajs_prefix :  str
+    ene_trajs_prefix : str
         prefix name
-    verbose :   bool
-        loud?
+    verbose : bool, optional
+        verbose output (default False)
 
     Returns
     -------
@@ -573,15 +840,67 @@ def parse_csv_energy_trajectories(in_folder: str, ene_trajs_prefix: str, verbose
 """
 
 
-def project_concatenation(in_folder: str, in_topology_path: str, in_imd: str, num_replicas: int,
+def project_concatenation(in_folder: str,
+                          in_topology_path: str,
+                          in_imd: str, num_replicas: int,
                           control_dict: Dict[str, bool],
-                          out_folder: str, in_ene_ana_lib_path: str,
+                          out_folder: str,
+                          in_ene_ana_lib_path: str,
                           out_file_prefix: str = "test",
-                          fit_traj_to_mol: int = 1, starting_time: float = 0, include_water_in_trc=True,
-                          additional_properties: Union[Tuple[str], List[str]] = ("solvtemp2", "totdisres"),
+                          fit_traj_to_mol: int = 1,
+                          starting_time: float = 0,
+                          include_water_in_trc=True,
+                          additional_properties: Union[Tuple[str],List[str]] = ("solvtemp2", "totdisres"),
                           n_processes: int = 1,
-                          gromosPP_bin_dir: str = None, verbose: bool = False, nofinal=False,
-                          boundary_conditions: str = "r cog") -> dict:
+                          gromosPP_bin_dir: str = None,
+                          nofinal=False,
+                          boundary_conditions: str = "r cog",
+                          verbose: bool = False) -> dict:
+    """project_concatenation
+    wrapper for the concatenation
+
+    Parameters
+    ----------
+    in_folder : str
+        input directory
+    in_topology_path : str
+        path to the topology file
+    in_imd : str
+        path to the imd file
+    num_replicas : int
+        number of replicas
+    control_dict : Dict[str, bool]
+        control dict to specify what should be executed or skipped
+    out_folder : str
+        output directory
+    in_ene_ana_lib_path : str
+        path to ene_ana lib file
+    out_file_prefix : str, optional
+        prefix for the output file names (default "test")
+    fit_traj_to_mol : int, optional
+        parameter for gromos++ frameout @atomsfit (default 1)
+    starting_time : float, optional
+        start time of trajectory (default 0)
+    include_water_in_trc : bool, optional
+        should water molecules be included in trajectory file? (default True)
+    additional_properties : Union[Tuple[str],List[str]], optional
+        additional properties to give to gromos++ ene_ana (default ("solvtemp2", "totdisres"))
+    n_processes : int, optional
+        number of parallel processes to use (default 1)
+    gromosPP_bin_dir : str, optional
+        path to gromos++ executable (default None)
+    nofinal : bool, optional
+        (default False)
+    boundary_condition : str, optional
+        boundary condition for gromos++ frameout (default "r cog")
+    verbose : bool, optional
+        verbose output (default False)
+
+    Returns
+    -------
+    dict
+        dict containg the out_folder, cnfs, repdat, tres, trcs and dcds
+    """
     if (verbose): print("reading imd file: " + in_imd)
 
     imd_file = imd.Imd(in_imd)
@@ -749,15 +1068,69 @@ def project_concatenation(in_folder: str, in_topology_path: str, in_imd: str, nu
     return out_dict
 
 
-def reeds_project_concatenation(in_folder: str, in_topology_path: str, in_imd: str, num_replicas: int,
+def reeds_project_concatenation(in_folder: str,
+                                in_topology_path: str,
+                                in_imd: str,
+                                num_replicas: int,
                                 control_dict: Dict[str, bool],
-                                out_folder: str, in_ene_ana_lib_path: str,
-                                repdat_file_out_path: str or None, out_file_prefix: str = "test",
-                                fit_traj_to_mol: int = 1, starting_time: float = 0, include_water_in_trc=True,
+                                out_folder: str,
+                                in_ene_ana_lib_path: str,
+                                repdat_file_out_path: str or None,
+                                out_file_prefix: str = "test",
+                                fit_traj_to_mol: int = 1,
+                                starting_time: float = 0,
+                                include_water_in_trc=True,
                                 additional_properties: Union[Tuple[str], List[str]] = ("solvtemp2", "totdisres"),
                                 n_processes: int = 1,
-                                gromosPP_bin_dir: str = None, verbose: bool = False, nofinal=False,
-                                boundary_conditions: str = "r cog") -> dict:
+                                gromosPP_bin_dir: str = None,
+                                nofinal=False,
+                                boundary_conditions: str = "r cog",
+                                verbose: bool = False) -> dict:
+    """reeds_project_concatenation 
+    wrapper for the concatenation for REEDS
+
+    Parameters
+    ----------
+    in_folder : str
+        input directory
+    in_topology_path : str
+        path to the topology file
+    in_imd : str
+        path to the imd file
+    num_replicas : int
+        number of replicas
+    control_dict : Dict[str, bool]
+        control dict to specify what should be executed or skipped
+    out_folder : str
+        output directory
+    in_ene_ana_lib_path : str
+        path to ene_ana lib file
+    out_file_prefix : str, optional
+        prefix for the output file names (default "test")
+    fit_traj_to_mol : int, optional
+        parameter for gromos++ frameout @atomsfit (default 1)
+    starting_time : float, optional
+        start time of trajectory (default 0)
+    include_water_in_trc : bool, optional
+        should water molecules be included in trajectory file? (default True)
+    additional_properties : Union[Tuple[str],List[str]], optional
+        additional properties to give to gromos++ ene_ana (default ("solvtemp2", "totdisres"))
+    n_processes : int, optional
+        number of parallel processes to use (default 1)
+    gromosPP_bin_dir : str, optional
+        path to gromos++ executable (default None)
+    nofinal : bool, optional
+        (default False)
+    boundary_condition : str, optional
+        boundary condition for gromos++ frameout (default "r cog")
+    verbose : bool, optional
+        verbose output (default False)
+
+    Returns
+    -------
+    dict
+        dict containg the out_folder, cnfs, repdat, tres, trcs and dcds
+    """
     if (verbose): print("reading imd file: " + in_imd)
     imd_file = imd.Imd(in_imd)
     dt = float(imd_file.STEP.DT)
@@ -965,8 +1338,32 @@ def reeds_project_concatenation(in_folder: str, in_topology_path: str, in_imd: s
 """
 
 
-def clean_up_dirs(root_dirs: List[str], run_dry: bool = False, delete_stuff: bool = False, n_processors: int = 1,
-                  verbose: bool = True) -> int:
+def clean_up_dirs(root_dirs: List[str],
+                  run_dry: bool = False,
+                  delete_stuff: bool = False,
+                  n_processors: int = 1,
+                  verbose: bool = True):
+    """clean_up_dirs
+    clean up a directory by removing and compressing files/subdirectories
+
+    Parameters
+    ----------
+    root_dirs : List[str]
+        directories to be cleaned
+    run_dry : bool, optional
+        test run? (default False)
+    delete_stuff : bool, optional
+        should simulation.tar.gz be deleted? (default False)
+    n_processors : int, optional
+        number of parallel processes to use (default 1)
+    verbose : bool, optional
+        verbose output (default True)
+
+    Returns
+    -------
+    int
+        None    
+    """
     if (delete_stuff == True):
         warnings.warn(
             "DELETE_STUFF is true -> I will delete simulation.tar.gz folders if there is an ana folder and all .logs")
@@ -1021,8 +1418,32 @@ def clean_up_dirs(root_dirs: List[str], run_dry: bool = False, delete_stuff: boo
         if verbose: print("This was a dry run! so I did not do a thing. :)")
 
 
-def clean_up_euler_dirs(root_dirs: List[str], run_dry: bool = False, delete_stuff: bool = False, n_processors: int = 1,
-                        verbose: bool = True) -> int:
+def clean_up_euler_dirs(root_dirs: List[str],
+                        run_dry: bool = False,
+                        delete_stuff: bool = False,
+                        n_processors: int = 1,
+                        verbose: bool = True):
+    """clean_up_euler_dirs
+
+    Parameters
+    ----------
+    root_dirs : List[str]
+        directories to be cleaned
+    run_dry : bool, optional
+        test run? (default False)
+    delete_stuff : bool, optional
+        should simulation.tar.gz be deleted? (default False)
+    n_processors : int, optional
+        number of parallel processes to use (default 1)
+    verbose : bool, optional
+        verbose output (default True)
+
+    Returns
+    -------
+    int
+        None  
+    """
+
     if (delete_stuff == True):
         warnings.warn(
             "DELETE_STUFF is true -> I will delete simulation.tar.gz folders if there is an ana folder and all .logs")
@@ -1080,6 +1501,19 @@ def clean_up_euler_dirs(root_dirs: List[str], run_dry: bool = False, delete_stuf
 
 
 def compress_folder(in_paths: list) -> str:
+    """compress_folder
+    compress a folder
+    
+    Parameters
+    ----------
+    in_paths : list
+        list of file paths
+
+    Returns
+    -------
+    list
+        list of output file paths
+    """
     # compress data folder?
     out_paths = []
     if (type(in_paths) == str):
@@ -1095,15 +1529,17 @@ def compress_folder(in_paths: list) -> str:
     return out_paths
 
 
-def compress_files(in_paths: List[str], n_processes: int = 1) -> List[str]:
-    """compress a list of files
+def compress_files(in_paths: List[str],
+                   n_processes: int = 1) -> List[str]:
+    """compress_files
+    compress a list of files
 
     Parameters
     ----------
-    in_paths :  List[str]
-
-    n_processes: int
-        how many processes can be used in parallel?
+    in_paths : List[str]
+        input file paths
+    n_processes: int, optional
+        number of parallel processes to use (default 1)
         
     Returns
     -------
@@ -1143,25 +1579,35 @@ def compress_files(in_paths: List[str], n_processes: int = 1) -> List[str]:
 """
 
 
-def adapt_cnfs_to_new_sDistribution(in_old_svals: list, in_new_svals: list, in_cnf_files: List[str],
+def adapt_cnfs_to_new_sDistribution(in_old_svals: list,
+                                    in_new_svals: list,
+                                    in_cnf_files: List[str],
                                     out_cnf_dir: str,
-                                    cnf_prefix: str = "REEDS_EOFF_run", verbose: bool = True):
-    """
-        this function should map coordinate files, belonging to an old s-distribution in an optimal way to a new s-distribution.
-        Therefore it removes or adds coordinate files.
+                                    cnf_prefix: str = "REEDS_EOFF_run",
+                                    verbose: bool = True) -> list:
+    """adapt_cnfs_to_new_sDistribution
+    this function should map coordinate files, belonging to an old s-distribution in an optimal way to a new s-distribution.
+    Therefore it removes or adds coordinate files.
 
     Parameters
     ----------
-    in_old_svals :
-    in_new_svals :
-    in_cnf_files :
-    out_cnf_dir :
-    cnf_prefix :
-    verbose :
+    in_old_svals : list
+        list of old s-values
+    in_new_svals : list
+        list of new s-values
+    in_cnf_files : List[str]
+        list of old cnf files
+    out_cnf_dir : str
+        path to output directory for cnf files
+    cnf_prefix : str, optional
+        prefix for output cnf files (default "REEDS_EOFF_run")
+    verbose : bool, optional
+        verbose output (default True)
 
     Returns
     -------
-
+    list
+        list of output cnf files
     """
     # INPUT PARSING
     if (isinstance(in_cnf_files, List)):
@@ -1203,24 +1649,39 @@ def adapt_cnfs_to_new_sDistribution(in_old_svals: list, in_new_svals: list, in_c
     return out_cnfs
 
 
-def adapt_cnfs_Eoff_to_Sopt(in_old_svals: list, in_new_svals: list,
-                            in_cnf_files: List[str], out_cnf_dir: str,
-                            in_opt_struct_cnf_dir: str, in_num_states: int,
-                            out_cnf_prefix: str = "REEDS_run", LRTO_mode: bool = False) -> List[str]:
-    """
+def adapt_cnfs_Eoff_to_Sopt(in_old_svals: list,
+                            in_new_svals: list,
+                            in_cnf_files: List[str],
+                            out_cnf_dir: str,
+                            in_opt_struct_cnf_dir: str,
+                            in_num_states: int,
+                            out_cnf_prefix: str = "REEDS_run",
+                            LRTO_mode: bool = False) -> List[str]:
+    """adapt_cnfs_Eoff_to_Sopt
+
     Parameters
     ----------
-    in_old_svals :
-    in_new_svals :
-    out_cnf_dir :
-    in_cnf_dir :
-    in_cnf_files :
-    out_cnf_prefix :
-    in_num_states :
-    LRTO_mode :
+    in_old_svals : list
+        list of old s-values
+    in_new_svals : list
+        list of new s-values
+    in_cnf_files : List[str]
+        list of old cnf files
+    out_cnf_dir : str
+        path to output directory for cnf files
+    in_opt_struct_cnf_dir : str
+        input path to where cnf files are located
+    in_num_states : int
+        number of states
+    out_cnf_prefix : str, optional
+        prefix for output cnf files (default "REEDS_run")
+    LRTO_mode : bool, optional
+        add cnfs in LRTO-like fashion (default False)
 
     Returns
     -------
+    List[str]
+        list of output cnf files
     """
 
     # INPUT PARSING
@@ -1267,9 +1728,37 @@ def adapt_cnfs_Eoff_to_Sopt(in_old_svals: list, in_new_svals: list,
     return out_cnfs
 
 
-def map_cnfs_to_svalues(in_old_cnf_files: List[str], out_dir: str, in_old_svals: list, in_new_svals: list,
+def map_cnfs_to_svalues(in_old_cnf_files: List[str],
+                        out_dir: str,
+                        in_old_svals: list,
+                        in_new_svals: list,
                         cnf_prefix: str = "run",
-                        replica_add_scheme: add_scheme = add_scheme.from_bothSides, verbose: bool = True) -> List[str]:
+                        replica_add_scheme: add_scheme = add_scheme.from_bothSides,
+                        verbose: bool = True) -> List[str]:
+    """map_cnfs_to_svalues
+    
+    Parameters
+    ----------
+    in_old_cnf_files : List[str]
+        path to old cnf files
+    out_dir : str
+        path to output directory
+    in_old_svals : list
+        list of old s-values
+    in_new_svals : list
+        list of new s-values
+    cnf_prefix : str, optional
+        prefix for output cnf files (default "run")
+    replica_add_scheme : add_scheme, optional
+        enum for addition scheme from class adding_Scheme_new_Replicas (default from_bothSides)
+    verbose : bool, optional
+        verbose output (Default True)
+
+    Returns
+    -------
+    List[str]
+        list of new cnf files
+    """
     if (type(replica_add_scheme) == type(None)):
         raise IOError("Please provide only one adding scheme for adding the new replicas.")
 
@@ -1310,28 +1799,36 @@ def map_cnfs_to_svalues(in_old_cnf_files: List[str], out_dir: str, in_old_svals:
     return new_cnf_files
 
 
-def add_cnf_sopt_LRTOlike(in_dir: str, out_dir: str, in_old_svals: list, in_new_svals: list,
+def add_cnf_sopt_LRTOlike(in_dir: str,
+                          out_dir: str,
+                          in_old_svals: list,
+                          in_new_svals: list,
                           cnf_prefix: str = "sopt_run",
-                          replica_add_scheme: add_scheme = add_scheme.from_bothSides, verbose: bool = True) -> List[
-    str]:
-    """
+                          replica_add_scheme: add_scheme = add_scheme.from_bothSides,
+                          verbose: bool = True) -> List[str]:
+    """add_cnf_sopt_LRTOlike
+    
+    Parameters
+    ----------
+    in_dir : str
+        path where input cnf files are located
+    out_dir : str
+        path to output directory
+    in_old_svals : list
+        list of old s-values
+    in_new_svals : list
+        list of new s-values
+    cnf_prefix : str, optional
+        prefix for output cnf files (default "sopt_run")
+    replica_add_scheme : add_scheme, optional
+        enum for addition scheme from class adding_Scheme_new_Replicas (default from_bothSides)
+    verbose : bool, optional
+        verbose output (default True)
 
-    :param in_dir:
-    :type in_dir:
-    :param out_dir:
-    :type out_dir:
-    :param in_old_svals:
-    :type in_old_svals:
-    :param in_new_svals:
-    :type in_new_svals:
-    :param cnf_prefix:
-    :type cnf_prefix:
-    :param replica_add_scheme:
-    :type replica_add_scheme:
-    :param verbose:
-    :type verbose:
-    :return:
-    :rtype: List[str]
+    Returns
+    -------
+    List[str]
+        list of new cnf files
     """
     if (type(replica_add_scheme) == type(None)):
         raise IOError("Please provide only one adding scheme for adding the new replicas.")
@@ -1385,8 +1882,31 @@ def add_cnf_sopt_LRTOlike(in_dir: str, out_dir: str, in_old_svals: list, in_new_
     return new_cnf_files
 
 
-def map_old_cnf_files_to_new_svalues(added_svals, in_old_svals, total_number_of_final_cnfs, replica_add_scheme,
-                                     verbose, ):
+def map_old_cnf_files_to_new_svalues(added_svals: list,
+                                     in_old_svals: list,
+                                     total_number_of_final_cnfs: int,
+                                     replica_add_scheme: add_scheme,
+                                     verbose: bool = True):
+
+    """map_old_cnf_files_to_new_svalues
+    
+    Parameters
+    ----------
+    added_svals : list
+        list of new s-values
+    in_old_svals : list
+        list of old s-values
+    total_number_of_final_cnfs: int
+        number of output cnf files
+    replica_add_scheme : add_scheme
+        enum for addition scheme from class adding_Scheme_new_Replicas
+    verbose : bool, optional
+        verbose output (default True)
+
+    Returns
+    -------
+    List
+    """
     # do insert into coordinate Files
     print("final_total_number_of_cnfs: ", total_number_of_final_cnfs)
     number_of_cnfs_left = total_number_of_final_cnfs
@@ -1433,7 +1953,30 @@ def map_old_cnf_files_to_new_svalues(added_svals, in_old_svals, total_number_of_
     return fill_inds
 
 
-def add_map_old_cnf_files_to_new_svalues(added_svals, in_old_svals, offset, replica_add_scheme, verbose, ):
+def add_map_old_cnf_files_to_new_svalues(added_svals: list,
+                                         in_old_svals: list,
+                                         offset: int,
+                                         replica_add_scheme : add_scheme,
+                                         verbose: bool = True):
+    """add_map_old_cnf_files_to_new_svalues
+
+    Parameters
+    ----------
+    added_svals : list
+        list of new s-values
+    in_old_svals : list
+        list of old s-values
+    offset: int
+        offset to total amount of cnfs
+    replica_add_scheme : add_scheme
+        enum for addition scheme from class adding_Scheme_new_Replicas
+    verbose : bool, optional
+        verbose output (default True)
+
+    Returns
+    -------
+    List
+    """
     # do insert into coordinate Files
     if (verbose): print("\ts\tadd\t Sval\t\toffset\t addingScheme")
     # determine cnf coordinate mapping from old s values to new s value structures
@@ -1475,7 +2018,31 @@ def add_map_old_cnf_files_to_new_svalues(added_svals, in_old_svals, offset, repl
     return fill_inds
 
 
-def identify_closest_svalue(in_new_svals, in_old_svals, verbose, relocate_all: bool = False):
+def identify_closest_svalue(in_new_svals: list,
+                            in_old_svals: list,
+                            verbose: bool = True,
+                            relocate_all: bool = False):
+    """identify_closest_svalue
+
+    Parameters
+    ----------
+    in_new_svals : list
+        list of new s-values
+    in_old_svals : list
+        list of old s-values
+    relocate_all : bool, optional
+        default False
+    verbose : bool, optional
+        verbose output (default True)
+
+    Returns
+    -------
+    dict
+        added s-values
+    int
+        offset
+
+    """
     added_svals = {key: 0 for key in range(len(in_old_svals))}
     if verbose: print("\n\tCheckout, where new Values were added: ")
     if (verbose):     print("\tnew_s\t\t\tnearestNum\tnearNumIDX")
@@ -1498,7 +2065,7 @@ def identify_closest_svalue(in_new_svals, in_old_svals, verbose, relocate_all: b
                 "NEW\t{:8.5f}\t\t{:8.5f}\t{:8>}\t".format(round(s_new, 5), round(nearest_s, 5), nearest_s_idx))
             added_svals.update({nearest_s_idx: added_svals[nearest_s_idx] + 1})
 
-    offset = sum([added_svals[s] for s in added_svals])  # offset to total ammount of cnfs
+    offset = sum([added_svals[s] for s in added_svals])  # offset to total amount of cnfs
     return added_svals, offset
 
 
@@ -1507,23 +2074,40 @@ def reduce_cnf_eoff(in_num_states: int, in_opt_struct_cnf_dir: str, in_current_s
                     in_new_svals: List[Number], out_next_cnfs_dir: str, run_prefix="sopt_run",
                     s1_repetitions: int = None,
                     s_repeating_value: float = 1.0, verbose=False) -> list:
-    """This function should facilitate the transition from Eoff -> sopt.
-        Todo: think about adding replicas and also s_values dependent cnf
-        selection. bschroed
+    """reduce_cnf_eoff
+    This function should facilitate the transition from Eoff -> sopt.
+    Todo: think about adding replicas and also s_values dependent cnf
+    selection. bschroed
 
-    Args:
-        in_num_states (int): int which gives the number of states
-        out_num_svals (int): int wich gives the number of s_values assuming there a no !repetitive s_vals!
-        in_opt_struct_cnf_dir (str): path to the optimized eds state .cnfs(each state
-            needs to be present - depends on in_num_states)
-        in_current_sim_cnf_dir (str): the initial .cnf coordinates for the rest of the
-            replicas
-        out_next_cnfs_dir (str): where to store the resulting cnfs.
-        run_prefix: prefix_name for the var
-        verbose: how much blabla? bool
+    Parameters
+    ----------
+    in_num_states : int
+        int which gives the number of states
+    in_opt_struct_cnf_dir : str
+        path to the optimized eds state .cnfs(each state
+        needs to be present - depends on in_num_states)
+    in_current_sim_cnf_dir : str
+        the initial .cnf coordinates for the rest of the
+        replicas
+    in_old_svals : List[Number]
+        list of old s-values
+    in_new_svals : List[number]
+        list of new s-values
+    out_next_cnfs_dir : str
+        where to store the resulting cnfs
+    run_prefix : str, optional
+        prefix_name for the var (default "sopt_run")
+    s1_repetitions : int, optional
+        how many repetitions of s1? (default None)
+    s_repeating_value : float, optional
+        value of s1 (default 1.0)
+    verbose : bool, optional
+        verbose output (default False)
 
-    Returns:
-        returns the paths of the list of reduced cnfs. List[string]
+    Returns
+    -------
+    List[str]
+        returns the paths of the list of reduced cnfs
     """
     collected_files = []
     out_num_svals = len(in_new_svals)

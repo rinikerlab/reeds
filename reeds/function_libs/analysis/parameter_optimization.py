@@ -1,60 +1,58 @@
-"""
-analysis
---------
-
-the :mod:`analysis` contains multiple functions, which can be used:
-
- - concat Files
- - analyse a run
- - generate a result folder for following simulations
-
-This script analyses a Reeds-simulation the two parameters: Eoff and sopt
-"""
-
 import warnings
 from typing import List, Dict
 
 import numpy as np
 import pandas as pd
-
-from pygromos.files import repdat, imd
+from pygromos.files import imd, repdat
 
 import reeds.function_libs.visualization.parameter_optimization_plots
 import reeds.function_libs.visualization.re_plots
-from reeds.function_libs.visualization import pot_energy_plots as vis
 from reeds.function_libs.optimization import eds_energy_offsets as eoff, eds_s_values as sopt_wrap
 from reeds.function_libs.optimization.src import sopt_Pathstatistic as parseS
 
-np.set_printoptions(suppress=True)
-"""
-    Parameter optimization
-"""
 
-
-# Energy Offsets
-
-def estimate_Eoff(ene_ana_trajs: List[pd.DataFrame], Eoff: List[float], s_values: List[float], out_path: str,
+def estimate_Eoff(ene_ana_trajs: List[pd.DataFrame],
+                  Eoff: List[float],
+                  s_values: List[float],
+                  out_path: str,
                   temp: float = 298,
-                  kb: float = 0.00831451, pot_tresh: float = 0.0, frac_tresh: float = [0.9],
-                  convergence_radius: float = 0.05, max_iter=12,
-                  take_last_n: int = None, plot_title_prefix: str = "RE-EDS", visualize: bool = True) -> Dict:
+                  kb: float = 0.00831451,
+                  pot_tresh: float = 0.0,
+                  frac_tresh: List[float] = [0.9],
+                  convergence_radius: float = 0.05, max_iter: int = 12, take_last_n: int = None,
+                  plot_title_prefix: str = "RE-EDS",
+                  visualize: bool = True) -> Dict:
     """estimate_Eoff
-        estimate Energy Offsets of REEDS sim.
+    estimate Energy Offsets of REEDS sim.
 
     Parameters
     ----------
     Eoff :  List[float]
+        list of energy offsets for each state
     s_values :  List[float]
+        list of s-values for each replica
     ene_ana_trajs : List[pd.DataFrame]
+        a list of pandas dataframes containing the energy data of each state eX
     out_path : str
-    plot_title_prefix : str, optional
+        path of the eoff analysis directory
     temp : float, optional
+        temperature (default 298)
     kb: float, optional
+        Boltzmann constant (default 0.00831451)
     pot_tresh : float, optional
-    frac_tresh : float, optional
-    convergence_radius:float, optional
-    max_iter:   float, optional
-    visualize : bool, optional
+        threshold for counting an energy value as being in undersampling (default 0.0)
+    frac_tresh : List[float], optional
+        which fraction of the energies has to be below the pot_tresh for undersampling (default 0.9)
+    convergence_radius : float, optional
+        radius of convergence (default 0.05)
+    max_iter : int, optional
+        maximum number of iterations for eoff estimation (default 12)
+    take_last_n : int, optional
+        only use the last n energy values (default None)
+    plot_title_prefix : str, optional
+        prefix for the plot titles (default "RE-EDS")
+    visualize: bool, optional
+        create plots (default True)
 
     Returns
     -------
@@ -89,6 +87,10 @@ def energyOffset_time_convergence(ene_ana_trajs, out_dir: str, Eoff: List[float]
                                   temp: float = 298, kb: float = 0.00831451, pot_tresh: float = 0.0,
                                   frac_tresh: float = [0.9], convergence_radius: float = 0.05, max_iter=12,
                                   plot_title_prefix: str = "RE-EDS", visualize: bool = True):
+    """
+
+
+    """
     ene_traj = ene_ana_trajs[0]
 
     start_index, end_index = (min(ene_traj.index), max(ene_traj.index))
@@ -134,40 +136,49 @@ def energyOffset_time_convergence(ene_ana_trajs, out_dir: str, Eoff: List[float]
     return state_time_dict
 
 
-# S-optimization
-def optimize_s(in_file: str, add_s_vals: int, out_dir: str, title_prefix: str = "sOpt",
-               state_weights=None, trial_range: (int or tuple) = None,
-               with_skipped: bool = True, verbose: bool = True,
-               run_NLRTO: bool = True, run_NGRTO: bool = False, in_imd: str = None) -> Dict:
-    """optimize s
-        This function is doing the S-optimization for a RE-EDS simulation.
+def optimize_s(in_file: str,
+               add_s_vals: int,
+               out_dir: str,
+               title_prefix: str = "sOpt",
+               state_weights=None,
+               trial_range: (int or tuple) = None,
+               with_skipped: bool = True,
+               verbose: bool = True,
+               run_NLRTO: bool = True,
+               run_NGRTO: bool = False,
+               in_imd: str = None) -> Dict:
+    """optimize_s
+    This function is doing the S-optimization for a RE-EDS simulation.
 
     Parameters
     ----------
-    in_file :   str
+    in_file : str
         input path to repdat-file
-    add_s_vals :    int
+    add_s_vals : int
         number of s_values to be added
-    out_dir :   str
+    out_dir : str
         output_directory path
-    title_prefix :  str, optional
-        title prefix for plots
+    title_prefix : str, optional
+        title prefix for plots (default sOpt)
     state_weights : List[float], optional
-        weights for each individual endstate of eds potential
-    trial_range :   [int, tuple], optional
-        range of trials (time dimension
-    with_skipped :  bool , optional
-        ???
-    verbose :   bool , optional
+        weights for each individual endstate of eds potential (default None)
+    trial_range : [int, tuple], optional
+        range of trials (time dimension) (default None)
+    with_skipped : bool , optional
+        default True
+    verbose : bool, optional
+        verbose output (default True)
     run_NLRTO : bool, optional
+        run N-Local Round Trip Optimizer (N-LRTO) (default True)
     run_NGRTO : bool, optional
-    in_imd :    str, optional
-        this path to an imd file is suggested to be used, as it increases the s_value accuracy.
+        run Multistate Global Round-Trip Time Optimization (N-GRTO) (default False)
+    in_imd : str, optional
+        this path to an imd file is suggested to be used, as it increases the s_value accuracy (default None)
 
     Returns
     -------
     Dict
-
+        s-values (original, N-LRTO optimized, N-GRTO optimized)
     """
 
     # do soptimisation
@@ -228,15 +239,29 @@ def optimize_s(in_file: str, add_s_vals: int, out_dir: str, title_prefix: str = 
     return data
 
 
-def get_s_optimization_transitions(out_dir: str, rep_dat: str, title_prefix, verbose=True):
-    # visualize s-distribution
+def get_s_optimization_transitions(out_dir: str,
+                                   rep_dat: str,
+                                   title_prefix: str,
+                                   verbose: bool = True):
+    """get_s_optimization_transitions
+    This function visualized the replica transitions
+
+    Parameters
+    ----------
+    out_dir : str
+        path where the plots should be stored
+    rep_dat : str
+        path to the repdat file containing the replica transition history
+    title_prefix : str
+        title prefix for plots
+    verbose : bool, optional
+        verbose output (default True)
+
+    Returns
+    -------
+    None
     """
-    Args:
-        out_dir (str):
-        rep_dat (str):
-        title_prefix:
-        verbose:
-    """
+
     if verbose: print("Vizualise \n\t")
     if verbose: print("Plot output in: " + out_dir)
 
@@ -268,7 +293,29 @@ def get_s_optimization_transitions(out_dir: str, rep_dat: str, title_prefix, ver
         #                           cut_1_replicas=True, xBond=(0, 250))
 
 
-def get_s_optimization_roundtrips_per_replica(data, max_pos: int, min_pos: int, repOffsets=0) -> dict:
+def get_s_optimization_roundtrips_per_replica(data: Dict[int, Dict[str,List[float]]],
+                                              max_pos: int,
+                                              min_pos: int,
+                                              repOffsets: int = 0) -> dict:
+    """get_s_optimization_roundtrips_per_replica
+    This function calculates the roundtrips of a replica
+
+    Parameters
+    ----------
+    data : Dict[int, Dict[str,List[float]]]
+        transition traces dictionary from Repdat class
+    max_pos : int
+        maximum position of the replica
+    min_pos : int
+        minimum position of the replica
+    repOffsets : int, optional
+        skip multiple replicas with s = 1
+
+    Returns
+    -------
+    Dict
+        replica statistics, with udated roundtrips information
+    """
     replicas = np.unique(data.replicaID)[repOffsets:]
     max_pos, min_pos = min_pos, max_pos
 
@@ -290,11 +337,32 @@ def get_s_optimization_roundtrips_per_replica(data, max_pos: int, min_pos: int, 
                     lastExtreme = extr.position
                     lastTrial = extr.trial
         replica_stats.update({replica: {"roundtrips": roundtrip_counter, "durations": durations}})
-        
+
     return replica_stats
 
 
-def get_s_optimization_roundtrip_averages(stats):
+def get_s_optimization_roundtrip_averages(stats: dict):
+    """get_s_optimization_roundtrip_averages
+    This function calculates the roundtrip averages
+
+    Parameters
+    ----------
+    stats : dict
+        replica statistics
+
+    Returns
+    -------
+    nReplicaRoundtrips : List
+        list of replicas with at least one roundtrip
+    avg_numberOfRoundtrips : List[float]
+        list of average number of roundtrips per replica
+    avg_roundtrips : List[float]
+        list of average roundtrip duration per replica
+
+    Returns
+    -------
+    None
+    """
     nReplicasRoundtrips = np.sum([1 for stat in stats if (stats[stat]["roundtrips"] > 0)])
     numberOfRoundtrips = [stats[stat]["roundtrips"] for stat in stats]
     avg_numberOfRoundtrips = np.mean(numberOfRoundtrips)

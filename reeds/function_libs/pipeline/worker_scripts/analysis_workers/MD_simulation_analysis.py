@@ -5,9 +5,8 @@ Nasty script ;)
 # !/usr/bin/env python
 import os
 
-from pygromos.gromos import gromosPP
 from pygromos.utils import bash
-from reeds.function_libs.analysis import file_management
+from reeds.function_libs.file_management import file_management
 
 template_control_dict = {
     "concat": {"do": True,

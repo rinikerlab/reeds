@@ -3,17 +3,21 @@ import os
 from typing import List, Dict
 
 import pandas as pd
-import numpy as np
 from pygromos.gromos import gromosPP
 from pygromos.utils import bash
 
 import reeds.function_libs.visualization.free_energy_plots
-from reeds.function_libs.visualization import pot_energy_plots as vis
-np.set_printoptions(suppress=True)
 
 
-def multi_lig_dfmult(num_replicas: int, num_states: int, in_folder, out_file, eR_prefix: str = "eR_s",
-                     eX_prefix: str = "eY_s", temp: int = 298, gromos_binary="dfmult", verbose=True) -> dict:
+def multi_lig_dfmult(num_replicas: int,
+                     num_states: int,
+                     in_folder,
+                     out_file,
+                     eR_prefix: str = "eR_s",
+                     eX_prefix: str = "eY_s",
+                     temp: int = 298,
+                     gromos_binary="dfmult",
+                     verbose=True) -> dict:
     """multi_lig_dfmult
         @ WARNING GOING TO BE REMOVED - OLD Function@
         This function is calculating dfmult with multiple ligands in a system
@@ -32,7 +36,7 @@ def multi_lig_dfmult(num_replicas: int, num_states: int, in_folder, out_file, eR
 
     Returns
     -------
-
+    None
     """
 
     def gen_results_string(results_dict: dict) -> str:
@@ -139,23 +143,39 @@ def multi_lig_dfmult(num_replicas: int, num_states: int, in_folder, out_file, eR
     return results_dict
 
 
-def free_energy_convergence_analysis(ene_ana_trajs: List[pd.DataFrame], out_dir: str, in_prefix: str = "",
-                                     out_prefix: str = "energy_convergence", dfmult_all_replicas: bool = True,
-                                     time_blocks: int = 10, recalulate_all: bool = False, verbose: bool = False):
+def free_energy_convergence_analysis(ene_ana_trajs: List[pd.DataFrame],
+                                     out_dir: str,
+                                     in_prefix: str = "",
+                                     out_prefix: str = "energy_convergence",
+                                     dfmult_all_replicas: bool = True,
+                                     time_blocks: int = 10,
+                                     recalculate_all: bool = False,
+                                     verbose: bool = False):
     """free_energy_convergence
+    This function calculates and visualizes the convergence of the free energy calculation
 
     Parameters
     ----------
     ene_ana_trajs:  List[pd.DataFrame]
-    out_dir :
-    in_prefix :
-    out_prefix :
-    recalulate_all :
-    verbose:    bool, optional
-    time_blocks:    int,    optional
+        a list of pandas dataframes containing the energy data of each state eX
+    out_dir : str
+        path where the plots and data should be stored
+    in_prefix : str, optional
+        prefix for the input files (default "")
+    out_prefix : str, optional
+        prefix for the output files (default "energy_convergence")
+    dfmult_all_replicas : bool, optional
+        calculate free energy differences for all replicas or only s = 1 (default False)
+    time_blocks : int, optional
+        number of time blocks for the convergence visualization (default 10)
+    recalculate_all : bool, optional
+        recalculate or use old summary file (default False)
+    verbose: bool, optional
+        verbose output (default False)
+
     Returns
     -------
-
+    None
     """
 
     if (verbose): print("start dfmult")
@@ -167,7 +187,7 @@ def free_energy_convergence_analysis(ene_ana_trajs: List[pd.DataFrame], out_dir:
 
     # generate time conevergence data
     summary_file_path = out_dir + "/summary_allReplicas_dfmult_timeblocks_" + out_prefix + ".dat"
-    if (False and os.path.exists(summary_file_path) and not recalulate_all):
+    if (False and os.path.exists(summary_file_path) and not recalculate_all):
         if (verbose): print("Found summary file\t LOAD: " + summary_file_path)
         dF_conv_all_replicas = json.load(open(summary_file_path, "rb"))
     else:
@@ -205,23 +225,31 @@ def free_energy_convergence_analysis(ene_ana_trajs: List[pd.DataFrame], out_dir:
     out_dfmult.close()
 
 
-def eds_dF_time_convergence_dfmult(eds_eneTraj: pd.DataFrame, out_dir, time_blocks: int = 10, gromos_bindir: str = None,
+def eds_dF_time_convergence_dfmult(eds_eneTraj: pd.DataFrame,
+                                   out_dir: str,
+                                   time_blocks: int = 10,
+                                   gromos_bindir: str = None,
                                    verbose: bool = False) -> Dict:
-    """dF_time_convergence_dfmult
-
-            This function generates a dictionary, which contains time-dependent dF values.
+    """eds_dF_time_convergence_dfmult
+    This function generates a dictionary, which contains time-dependent dF values.
 
     Parameters
     ----------
-    eds_eneTraj :
-    out_dir :
-    time_blocks :
-    gromos_bindir :
-    verbose :
+    eds_eneTraj : pd.DataFrame
+        pandas dataframe containing energy trajectories
+    out_dir : str
+        path for the output directory
+    time_blocks : int, optional
+        number of time blocks for the free energy convergence calculation (default 10)
+    gromos_bindir : str, optional
+        path to gromos binaries (default None)
+    verbose : bool, optional
+        verbose output (default False)
 
     Returns
     -------
-
+    dF_timewise : Dict
+        dict containing free energies after different time lengths
     """
     # Split the data timewise!
 
@@ -305,8 +333,19 @@ def eds_dF_time_convergence_dfmult(eds_eneTraj: pd.DataFrame, out_dir, time_bloc
 
 
 def gen_results_string(results_dict: dict) -> str:
-    # This func generates an readable output
-    # generate out string:
+    """gen_results_string
+    This function generates a string for the output of the free energy calculations
+
+    Parameters
+    ----------
+    results_dict : dict
+        dict containing the free energy calculations
+
+    Returns
+    -------
+    str
+        nicely formated string for the output of the free energy calculations
+    """
     result_string = ""
     float_format = "{: > 13.3f}"
     str_format = "{:>13}"

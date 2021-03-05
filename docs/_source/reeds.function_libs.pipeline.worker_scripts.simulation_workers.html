@@ -282,11 +282,67 @@ It conductes a gromos md-simulation for RE-EDS.</p>
 </dd></dl>
 
 </div>
-<div class="section" id="reeds-function-libs-pipeline-worker-scripts-simulation-workers-clean-up-simulation-files-module">
-<h2>reeds.function_libs.pipeline.worker_scripts.simulation_workers.clean_up_simulation_files module<a class="headerlink" href="#reeds-function-libs-pipeline-worker-scripts-simulation-workers-clean-up-simulation-files-module" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-reeds.function_libs.pipeline.worker_scripts.simulation_workers.clean_up_simulation_files">
+<span id="reeds-function-libs-pipeline-worker-scripts-simulation-workers-clean-up-simulation-files-module"></span><h2>reeds.function_libs.pipeline.worker_scripts.simulation_workers.clean_up_simulation_files module<a class="headerlink" href="#module-reeds.function_libs.pipeline.worker_scripts.simulation_workers.clean_up_simulation_files" title="Permalink to this headline">¶</a></h2>
+<p>After simulation cleanup
+This module is thought to be used as a clean up script after each run, reducing the need of storage for RE-EDS simulations on Euler or any other cluster :)
+it mainly removes not needed temporary files and compresses long trajectory files.
+It should be hanged in after each simulation step.</p>
+<dl class="py function">
+<dt id="reeds.function_libs.pipeline.worker_scripts.simulation_workers.clean_up_simulation_files.do">
+<code class="sig-prename descclassname">reeds.function_libs.pipeline.worker_scripts.simulation_workers.clean_up_simulation_files.</code><code class="sig-name descname">do</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">in_simulation_dir</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">n_processes</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">1</span></em>, <em class="sig-param"><span class="n">verbose</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">True</span></em><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="../_modules/reeds/function_libs/pipeline/worker_scripts/simulation_workers/clean_up_simulation_files.html#do"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#reeds.function_libs.pipeline.worker_scripts.simulation_workers.clean_up_simulation_files.do" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="simple">
+<dt>do clean_up_simulation_files</dt><dd><p>this function is compressing resulting files form an simulation approach.</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>in_simulation_dir</strong> (<em>str</em>) – path to folder, which contains the raw gromos output</p></li>
+<li><p><strong>n_processes</strong> (<em>int, optional</em>) – how many processes should be used?</p></li>
+<li><p><strong>verbose</strong> (<em>bool, optional</em>) – loud and noisy?</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
 </div>
-<div class="section" id="reeds-function-libs-pipeline-worker-scripts-simulation-workers-prepare-imd-initialisation-module">
-<h2>reeds.function_libs.pipeline.worker_scripts.simulation_workers.prepare_imd_initialisation module<a class="headerlink" href="#reeds-function-libs-pipeline-worker-scripts-simulation-workers-prepare-imd-initialisation-module" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-reeds.function_libs.pipeline.worker_scripts.simulation_workers.prepare_imd_initialisation">
+<span id="reeds-function-libs-pipeline-worker-scripts-simulation-workers-prepare-imd-initialisation-module"></span><h2>reeds.function_libs.pipeline.worker_scripts.simulation_workers.prepare_imd_initialisation module<a class="headerlink" href="#module-reeds.function_libs.pipeline.worker_scripts.simulation_workers.prepare_imd_initialisation" title="Permalink to this headline">¶</a></h2>
+<dl class="py function">
+<dt id="reeds.function_libs.pipeline.worker_scripts.simulation_workers.prepare_imd_initialisation.prepare_imd_initialisation">
+<code class="sig-prename descclassname">reeds.function_libs.pipeline.worker_scripts.simulation_workers.prepare_imd_initialisation.</code><code class="sig-name descname">prepare_imd_initialisation</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">run</span><span class="p">:</span> <span class="n">int</span></em>, <em class="sig-param"><span class="n">in_imd_path</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">tmp_in_imd</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">initialize_first_run</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">True</span></em>, <em class="sig-param"><span class="n">reinitialize</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/reeds/function_libs/pipeline/worker_scripts/simulation_workers/prepare_imd_initialisation.html#prepare_imd_initialisation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#reeds.function_libs.pipeline.worker_scripts.simulation_workers.prepare_imd_initialisation.prepare_imd_initialisation" title="Permalink to this definition">¶</a></dt>
+<dd><blockquote>
+<div><p>this function is taking care of adapting the imd file in an consecutive md-run in multiple steps.</p>
+</div></blockquote>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>run</strong> (<em>int</em>) – ID number of the run</p></li>
+<li><p><strong>in_imd_path</strong> (<em>str</em>) – template imd file, that is used for the simulation run</p></li>
+<li><p><strong>tmp_in_imd</strong> (<em>str</em>) – tmp imd file, used for the final md-run step</p></li>
+<li><p><strong>initialize_first_run</strong> (<em>bool, optional</em>) – use the run initialization options for the first run.  (default: True)</p></li>
+<li><p><strong>reinitialize</strong> (<em>bool, optional</em>) – use the run initialization options of gromos in each step (not recommended!) (default: False)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>none</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>Exception</strong> – something went definetly wrong.</p>
+</dd>
+</dl>
+</dd></dl>
+
 </div>
 <div class="section" id="module-reeds.function_libs.pipeline.worker_scripts.simulation_workers">
 <span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-reeds.function_libs.pipeline.worker_scripts.simulation_workers" title="Permalink to this headline">¶</a></h2>

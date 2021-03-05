@@ -1,0 +1,888 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>reeds.function_libs.visualization package &mdash; REEDS  documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> REEDS
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../introduction.html">REEDS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Examples/index.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="modules.html">Documentation</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">REEDS</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+      <li>reeds.function_libs.visualization package</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/_source/reeds.function_libs.visualization.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  
+<style>
+/* CSS overrides for sphinx_rtd_theme */
+
+/* 24px margin */
+.nbinput.nblast.container,
+.nboutput.nblast.container {
+    margin-bottom: 19px;  /* padding has already 5px */
+}
+
+/* ... except between code cells! */
+.nblast.container + .nbinput.container {
+    margin-top: -19px;
+}
+
+.admonition > p:before {
+    margin-right: 4px;  /* make room for the exclamation icon */
+}
+
+/* Fix math alignment, see https://github.com/rtfd/sphinx_rtd_theme/pull/686 */
+.math {
+    text-align: unset;
+}
+</style>
+<div class="section" id="reeds-function-libs-visualization-package">
+<h1>reeds.function_libs.visualization package<a class="headerlink" href="#reeds-function-libs-visualization-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-reeds.function_libs.visualization.free_energy_plots">
+<span id="reeds-function-libs-visualization-free-energy-plots-module"></span><h2>reeds.function_libs.visualization.free_energy_plots module<a class="headerlink" href="#module-reeds.function_libs.visualization.free_energy_plots" title="Permalink to this headline">¶</a></h2>
+<dl class="py function">
+<dt id="reeds.function_libs.visualization.free_energy_plots.plot_dF_conv">
+<code class="sig-prename descclassname">reeds.function_libs.visualization.free_energy_plots.</code><code class="sig-name descname">plot_dF_conv</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dF_timewise</span><span class="p">:</span> <span class="n">dict</span></em>, <em class="sig-param"><span class="n">title</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">out_path</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">dt</span><span class="p">:</span> <span class="n">float</span> <span class="o">=</span> <span class="default_value">1000</span></em>, <em class="sig-param"><span class="n">verbose</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em>, <em class="sig-param"><span class="n">show_legend</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/reeds/function_libs/visualization/free_energy_plots.html#plot_dF_conv"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#reeds.function_libs.visualization.free_energy_plots.plot_dF_conv" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dF_timewise</strong> (<em>Dict</em>) – Dictionary containing the data.</p></li>
+<li><p><strong>title</strong> (<em>str</em>) – plot title</p></li>
+<li><p><strong>out_path</strong> (<em>str</em>) – Path of the directory in which plot will be written</p></li>
+<li><p><strong>dt</strong> (<em>float, optional</em>) – dt for x_axis. (default 1000 - converts ps to ns)</p></li>
+<li><p><strong>verbose</strong> (<em>bool, optional</em>) – verbose output (default False)</p></li>
+<li><p><strong>show_legend</strong> (<em>bool, optional</em>) – (default True)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="reeds.function_libs.visualization.free_energy_plots.plot_thermcycle_dF_convergence">
+<code class="sig-prename descclassname">reeds.function_libs.visualization.free_energy_plots.</code><code class="sig-name descname">plot_thermcycle_dF_convergence</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dF_time</span><span class="p">:</span> <span class="n">Dict</span></em>, <em class="sig-param"><span class="n">out_path</span><span class="p">:</span> <span class="n">str</span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">title_prefix</span><span class="p">:</span> <span class="n">str</span> <span class="o">=</span> <span class="default_value">''</span></em>, <em class="sig-param"><span class="n">verbose</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/reeds/function_libs/visualization/free_energy_plots.html#plot_thermcycle_dF_convergence"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#reeds.function_libs.visualization.free_energy_plots.plot_thermcycle_dF_convergence" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dF_time</strong> (<em>Dict</em>) – Dictionary containing the data.</p></li>
+<li><p><strong>out_path</strong> (<em>str, optional</em>) – output file path (default None)</p></li>
+<li><p><strong>title_prefix</strong> (<em>str, optional</em>) – title prefix (default “”)</p></li>
+<li><p><strong>verbose</strong> (<em>bool, optional</em>) – verbose output (default True)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="module-reeds.function_libs.visualization.parameter_optimization_plots">
+<span id="reeds-function-libs-visualization-parameter-optimization-plots-module"></span><h2>reeds.function_libs.visualization.parameter_optimization_plots module<a class="headerlink" href="#module-reeds.function_libs.visualization.parameter_optimization_plots" title="Permalink to this headline">¶</a></h2>
+<dl class="py function">
+<dt id="reeds.function_libs.visualization.parameter_optimization_plots.plot_peoe_eoff_time_convergence">
+<code class="sig-prename descclassname">reeds.function_libs.visualization.parameter_optimization_plots.</code><code class="sig-name descname">plot_peoe_eoff_time_convergence</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">state_time_dict</span><span class="p">:</span> <span class="n">dict</span></em>, <em class="sig-param"><span class="n">out_path</span><span class="p">:</span> <span class="n">str</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/reeds/function_libs/visualization/parameter_optimization_plots.html#plot_peoe_eoff_time_convergence"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#reeds.function_libs.visualization.parameter_optimization_plots.plot_peoe_eoff_time_convergence" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>state_time_dict</strong> (<em>dict</em>)</p></li>
+<li><p><strong>out_path</strong> (<em>str</em>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="reeds.function_libs.visualization.parameter_optimization_plots.plot_peoe_eoff_vs_s">
+<code class="sig-prename descclassname">reeds.function_libs.visualization.parameter_optimization_plots.</code><code class="sig-name descname">plot_peoe_eoff_vs_s</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">eoff</span><span class="p">:</span> <span class="n">dict</span></em>, <em class="sig-param"><span class="n">energy_offsets</span><span class="p">:</span> <span class="n">List</span></em>, <em class="sig-param"><span class="n">title</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">out_path</span><span class="p">:</span> <span class="n">str</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/reeds/function_libs/visualization/parameter_optimization_plots.html#plot_peoe_eoff_vs_s"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#reeds.function_libs.visualization.parameter_optimization_plots.plot_peoe_eoff_vs_s" title="Permalink to this definition">¶</a></dt>
+<dd><p>gives out a plot, showing the development of Eoffsets along :param eoff:</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>eoff</strong> (<em>dict</em>) – dictionary with energy offsets for each s value</p></li>
+<li><p><strong>energy_offsets</strong> (<em>List</em>) – list of energy offsets</p></li>
+<li><p><strong>title</strong> (<em>str</em>) – title of the plot</p></li>
+<li><p><strong>out_path</strong> (<em>str</em>) – output file path</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="reeds.function_libs.visualization.parameter_optimization_plots.visualization_s_optimization_summary">
+<code class="sig-prename descclassname">reeds.function_libs.visualization.parameter_optimization_plots.</code><code class="sig-name descname">visualization_s_optimization_summary</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">s_opt_data</span><span class="p">:</span> <span class="n">dict</span></em>, <em class="sig-param"><span class="n">out_path</span><span class="p">:</span> <span class="n">str</span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">nRT_range</span><span class="p">:</span> <span class="n">List<span class="p">[</span>float<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">avRT_range</span><span class="p">:</span> <span class="n">List<span class="p">[</span>float<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; Union<span class="p">[</span>str<span class="p">, </span>matplotlib.pyplot.figure<span class="p">]</span><a class="reference internal" href="../_modules/reeds/function_libs/visualization/parameter_optimization_plots.html#visualization_s_optimization_summary"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#reeds.function_libs.visualization.parameter_optimization_plots.visualization_s_optimization_summary" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>s_opt_data</strong> (<em>dict</em>)</p></li>
+<li><p><strong>out_path</strong> (<em>str, optional</em>)</p></li>
+<li><p><strong>nRT_range</strong> (<em>List[float]</em>)</p></li>
+<li><p><strong>avRT_range</strong> (<em>List[float]</em>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>the outpath is returned if one is given. Alternativley the plot direclty will be returned.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Union[str, plt.figure]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="reeds.function_libs.visualization.parameter_optimization_plots.visualize_s_optimisation_convergence">
+<code class="sig-prename descclassname">reeds.function_libs.visualization.parameter_optimization_plots.</code><code class="sig-name descname">visualize_s_optimisation_convergence</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">s_opt_data</span><span class="p">:</span> <span class="n">dict</span></em>, <em class="sig-param"><span class="n">out_path</span><span class="p">:</span> <span class="n">str</span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">convergens_radius</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">100</span></em><span class="sig-paren">)</span> &#x2192; Union<span class="p">[</span>str<span class="p">, </span>matplotlib.pyplot.figure<span class="p">]</span><a class="reference internal" href="../_modules/reeds/function_libs/visualization/parameter_optimization_plots.html#visualize_s_optimisation_convergence"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#reeds.function_libs.visualization.parameter_optimization_plots.visualize_s_optimisation_convergence" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function visualizes the s-optimization round trip optimization time efficency convergence.
+Ideally the roundtrip time is  reduced by the s-optimization, if the average time converges towards 1ps it is assumed to be converged.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>s_opt_data</strong> (<em>dict</em>) – contains statistics over the optimization is generated by RE_EDS_soptimizatoin_final</p></li>
+<li><p><strong>out_path</strong> (<em>str, optional</em>) – if provided, the plot will be saved here. if not provided, the plot will be shown directly.</p></li>
+<li><p><strong>convergens_radius</strong> (<em>int, optional</em>) – default 100</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>the outpath is returned if one is given. Alternativley the plot direclty will be returned.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Union[str, plt.figure]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="reeds.function_libs.visualization.parameter_optimization_plots.visualize_s_optimisation_sampling_optimization">
+<code class="sig-prename descclassname">reeds.function_libs.visualization.parameter_optimization_plots.</code><code class="sig-name descname">visualize_s_optimisation_sampling_optimization</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">s_opt_data</span><span class="p">:</span> <span class="n">dict</span></em>, <em class="sig-param"><span class="n">out_path</span><span class="p">:</span> <span class="n">str</span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; Union<span class="p">[</span>str<span class="p">, </span>matplotlib.pyplot.figure<span class="p">]</span><a class="reference internal" href="../_modules/reeds/function_libs/visualization/parameter_optimization_plots.html#visualize_s_optimisation_sampling_optimization"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#reeds.function_libs.visualization.parameter_optimization_plots.visualize_s_optimisation_sampling_optimization" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>s_opt_data</strong> (<em>dict</em>)</p></li>
+<li><p><strong>out_path</strong> (<em>str, optional</em>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>the outpath is returned if one is given. Alternativley the plot direclty will be returned.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Union[str, plt.figure]</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="module-reeds.function_libs.visualization.pot_energy_plots">
+<span id="reeds-function-libs-visualization-pot-energy-plots-module"></span><h2>reeds.function_libs.visualization.pot_energy_plots module<a class="headerlink" href="#module-reeds.function_libs.visualization.pot_energy_plots" title="Permalink to this headline">¶</a></h2>
+<dl class="py function">
+<dt id="reeds.function_libs.visualization.pot_energy_plots.plot_energy_distribution_by_replica">
+<code class="sig-prename descclassname">reeds.function_libs.visualization.pot_energy_plots.</code><code class="sig-name descname">plot_energy_distribution_by_replica</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">traj_data</span><span class="p">:</span> <span class="n">pandas.core.frame.DataFrame</span></em>, <em class="sig-param"><span class="n">outfile</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">replica_num</span><span class="p">:</span> <span class="n">int</span></em>, <em class="sig-param"><span class="n">s_value</span><span class="p">:</span> <span class="n">int</span></em>, <em class="sig-param"><span class="n">manual_xlim</span><span class="p">:</span> <span class="n">List<span class="p">[</span>float<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">shared_xaxis</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/reeds/function_libs/visualization/pot_energy_plots.html#plot_energy_distribution_by_replica"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#reeds.function_libs.visualization.pot_energy_plots.plot_energy_distribution_by_replica" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plots the potential energy distributions for the data generated
+in a RE-EDS simulation (or for N independant EDS simulations (i.e. lower bound))</p>
+<p>It generates the plot for a specific replica in which the
+data for each end states is represented in a different subplot.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>traj_data</strong> (<em>pd.DataFrame</em>) – pandas DataFrame containing the data for the specific replica of interest</p></li>
+<li><p><strong>outfile</strong> (<em>str</em>) – name of the output png file</p></li>
+<li><p><strong>replica_num</strong> (<em>int</em>) – replica number (used an index)</p></li>
+<li><p><strong>s_value</strong> (<em>int</em>) – s value associated to this replica</p></li>
+<li><p><strong>manual_xlim</strong> (<em>List[float], optional</em>) – minimum and maximum value for the x-axes</p></li>
+<li><p><strong>shared_xaxis</strong> (<em>bool, optional</em>) – determines if each plot has the same axes limits</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="reeds.function_libs.visualization.pot_energy_plots.plot_energy_distribution_by_state">
+<code class="sig-prename descclassname">reeds.function_libs.visualization.pot_energy_plots.</code><code class="sig-name descname">plot_energy_distribution_by_state</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">energy_trajs</span><span class="p">:</span> <span class="n">List<span class="p">[</span>pandas.core.frame.DataFrame<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">outfile</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">state_num</span><span class="p">:</span> <span class="n">int</span></em>, <em class="sig-param"><span class="n">s_values</span><span class="p">:</span> <span class="n">List<span class="p">[</span>float<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">manual_xlim</span><span class="p">:</span> <span class="n">List<span class="p">[</span>float<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">shared_xaxis</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/reeds/function_libs/visualization/pot_energy_plots.html#plot_energy_distribution_by_state"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#reeds.function_libs.visualization.pot_energy_plots.plot_energy_distribution_by_state" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plots the potential energy distributions for the data generated
+in a RE-EDS simulation (or for N independant EDS simulations (i.e. lower bound))</p>
+<p>The overall plot generated corresponds to a specific end state,
+each replica is represented in a different subplot.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>energy_trajs</strong> (<em>List[pd.DataFrame]</em>) – List of pandas DataFrame containing the data for all states/replicas</p></li>
+<li><p><strong>outfile</strong> (<em>str</em>) – name of the output png file</p></li>
+<li><p><strong>state_num</strong> (<em>int</em>) – number of the state to plot</p></li>
+<li><p><strong>s_values</strong> (<em>List[float]</em>) – list of float s-values of all the replicas</p></li>
+<li><p><strong>manual_xlim</strong> (<em>List[float], optional</em>) – minimum and maximum value for the x-axes (default None)</p></li>
+<li><p><strong>shared_xaxis</strong> (<em>bool</em>) – determines if each plot has the same axes limits (default True)
+(this includes all other plots, as this function is called from a loop)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="reeds.function_libs.visualization.pot_energy_plots.plot_optimized_states_potential_energies">
+<code class="sig-prename descclassname">reeds.function_libs.visualization.pot_energy_plots.</code><code class="sig-name descname">plot_optimized_states_potential_energies</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">outfile</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">ene_trajs</span><span class="p">:</span> <span class="n">pandas.core.frame.DataFrame</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/reeds/function_libs/visualization/pot_energy_plots.html#plot_optimized_states_potential_energies"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#reeds.function_libs.visualization.pot_energy_plots.plot_optimized_states_potential_energies" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plots the potential energy distributions of all states in a single plot,
+where the data is represented as a histogram.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>outfile</strong> (<em>str</em>) – string containing the path to the output png file</p></li>
+<li><p><strong>ene_trajs</strong> (<em>pd.DataFrame</em>) – pandas dataframe containing potential energy trajectories</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="reeds.function_libs.visualization.pot_energy_plots.plot_potential_distribution">
+<code class="sig-prename descclassname">reeds.function_libs.visualization.pot_energy_plots.</code><code class="sig-name descname">plot_potential_distribution</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">potentials</span><span class="p">:</span> <span class="n">pandas.core.series.Series</span></em>, <em class="sig-param"><span class="n">out_path</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">y_label</span><span class="o">=</span><span class="default_value">'V/[kj/mol]'</span></em>, <em class="sig-param"><span class="n">y_range</span><span class="p">:</span> <span class="n">Iterable<span class="p">[</span>float<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">[- 1000, 1000]</span></em>, <em class="sig-param"><span class="n">title</span><span class="p">:</span> <span class="n">str</span> <span class="o">=</span> <span class="default_value">'Energy Distribution in range'</span></em>, <em class="sig-param"><span class="n">label_medians</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">True</span></em><span class="sig-paren">)</span> &#x2192; str<a class="reference internal" href="../_modules/reeds/function_libs/visualization/pot_energy_plots.html#plot_potential_distribution"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#reeds.function_libs.visualization.pot_energy_plots.plot_potential_distribution" title="Permalink to this definition">¶</a></dt>
+<dd><p>&#64; WARNING MIGHT BE REMOVED - OLD Function&#64;</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="reeds.function_libs.visualization.pot_energy_plots.plot_potential_timeseries">
+<code class="sig-prename descclassname">reeds.function_libs.visualization.pot_energy_plots.</code><code class="sig-name descname">plot_potential_timeseries</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">time</span><span class="p">:</span> <span class="n">pandas.core.series.Series</span></em>, <em class="sig-param"><span class="n">potentials</span><span class="p">:</span> <span class="n">pandas.core.frame.DataFrame</span></em>, <em class="sig-param"><span class="n">title</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">y_range</span><span class="p">:</span> <span class="n">Tuple<span class="p">[</span>float<span class="p">, </span>float<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">x_range</span><span class="p">:</span> <span class="n">Tuple<span class="p">[</span>float<span class="p">, </span>float<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">x_label</span><span class="p">:</span> <span class="n">str</span> <span class="o">=</span> <span class="default_value">'t'</span></em>, <em class="sig-param"><span class="n">y_label</span><span class="p">:</span> <span class="n">str</span> <span class="o">=</span> <span class="default_value">'V/kJ'</span></em>, <em class="sig-param"><span class="n">alpha</span><span class="p">:</span> <span class="n">float</span> <span class="o">=</span> <span class="default_value">0.6</span></em>, <em class="sig-param"><span class="n">out_path</span><span class="p">:</span> <span class="n">str</span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/reeds/function_libs/visualization/pot_energy_plots.html#plot_potential_timeseries"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#reeds.function_libs.visualization.pot_energy_plots.plot_potential_timeseries" title="Permalink to this definition">¶</a></dt>
+<dd><p>&#64; WARNING MIGHT BE REMOVED - OLD Function&#64;</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="reeds.function_libs.visualization.pot_energy_plots.plot_ref_pot_ene_timeseries">
+<code class="sig-prename descclassname">reeds.function_libs.visualization.pot_energy_plots.</code><code class="sig-name descname">plot_ref_pot_ene_timeseries</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ene_trajs</span><span class="p">:</span> <span class="n">List<span class="p">[</span>pandas.core.frame.DataFrame<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">outfile</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">s_values</span><span class="p">:</span> <span class="n">List<span class="p">[</span>float<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">optimized_state</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/reeds/function_libs/visualization/pot_energy_plots.html#plot_ref_pot_ene_timeseries"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#reeds.function_libs.visualization.pot_energy_plots.plot_ref_pot_ene_timeseries" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plots the reference potential energy timeseries
+for either the optimized states, or a set of EDS/RE-EDS
+simulation, for which data has been previously parsed by
+parse_csv_energy_trajectories()</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>energy_trajs</strong> (<em>List[pd.DataFrame]</em>) – List of pandas DataFrame containing traj info</p></li>
+<li><p><strong>outfile</strong> (<em>str</em>) – path to the output png file</p></li>
+<li><p><strong>s_values</strong> (<em>List[float]</em>) – List of float, s-values corresponding to the different replicas
+an empty list can be given when optimized_state = True</p></li>
+<li><p><strong>optimized_state</strong> (<em>bool</em>) – True when we want to make the plot for the optimized states (default False)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="reeds.function_libs.visualization.pot_energy_plots.plot_ref_pot_energy_distribution">
+<code class="sig-prename descclassname">reeds.function_libs.visualization.pot_energy_plots.</code><code class="sig-name descname">plot_ref_pot_energy_distribution</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">energy_trajs</span><span class="p">:</span> <span class="n">List<span class="p">[</span>pandas.core.frame.DataFrame<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">outfile</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">s_values</span><span class="p">:</span> <span class="n">List<span class="p">[</span>float<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">optimized_state</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/reeds/function_libs/visualization/pot_energy_plots.html#plot_ref_pot_energy_distribution"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#reeds.function_libs.visualization.pot_energy_plots.plot_ref_pot_energy_distribution" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plots the reference potential energy distribution
+for either the optimized states, or a set of EDS/RE-EDS
+simulation, for which data has been previously parsed by
+parse_csv_energy_trajectories()</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>energy_trajs</strong> (<em>List[pd.DataFrame]</em>) – List of pandas DataFrame containing traj info</p></li>
+<li><p><strong>outfile</strong> (<em>str</em>) – path to the output png file</p></li>
+<li><p><strong>s_values</strong> (<em>List[float]</em>) – List of s-values corresponding to the different replicas
+an empty list can be given when optimized_state = True</p></li>
+<li><p><strong>optimized_state</strong> (<em>bool, optional</em>) – True when we want to make the plot for the optimized states (default False)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="reeds.function_libs.visualization.pot_energy_plots.plot_replicaEnsemble_property_2D">
+<code class="sig-prename descclassname">reeds.function_libs.visualization.pot_energy_plots.</code><code class="sig-name descname">plot_replicaEnsemble_property_2D</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ene_trajs</span><span class="p">:</span> <span class="n">List<span class="p">[</span>pandas.core.frame.DataFrame<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">out_path</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">temperature_property</span><span class="p">:</span> <span class="n">str</span> <span class="o">=</span> <span class="default_value">'solvtemp2'</span></em><span class="sig-paren">)</span> &#x2192; str<a class="reference internal" href="../_modules/reeds/function_libs/visualization/pot_energy_plots.html#plot_replicaEnsemble_property_2D"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#reeds.function_libs.visualization.pot_energy_plots.plot_replicaEnsemble_property_2D" title="Permalink to this definition">¶</a></dt>
+<dd><p>author: Kay Schaller</p>
+<p>Plots the temperature time series for all replicas as heat map.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ene_trajs</strong> (<em>List[pd.DataFrame]</em>) – ene_ana_property object, that contains time and solv2temp property</p></li>
+<li><p><strong>out_path</strong> (<em>str</em>) – output file path</p></li>
+<li><p><strong>temperature_property</strong> (<em>str, optional</em>) – is the name of the property, that is representing the Temperature (default “solvtemp2”)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>output file name</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="reeds.function_libs.visualization.pot_energy_plots.plot_sampling_grid">
+<code class="sig-prename descclassname">reeds.function_libs.visualization.pot_energy_plots.</code><code class="sig-name descname">plot_sampling_grid</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">traj_data</span><span class="p">:</span> <span class="n">pandas.core.frame.DataFrame</span></em>, <em class="sig-param"><span class="n">out_path</span><span class="p">:</span> <span class="n">str</span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">y_range</span><span class="p">:</span> <span class="n">List<span class="p">[</span>float<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">[- 1000, 1000]</span></em>, <em class="sig-param"><span class="n">title</span><span class="p">:</span> <span class="n">str</span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; str<a class="reference internal" href="../_modules/reeds/function_libs/visualization/pot_energy_plots.html#plot_sampling_grid"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#reeds.function_libs.visualization.pot_energy_plots.plot_sampling_grid" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plots the potential energy of each end state in a single plot (grid of subplots)
+where each subplot corresponds to one end state.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>traj_data</strong> (<em>pd.DataFrame</em>) – pandas dataFrame containing timestep/potential energy info of the trajectory.</p></li>
+<li><p><strong>out_path</strong> (<em>str</em>) – string containing path to the output file</p></li>
+<li><p><strong>y_range</strong> (<em>List[float], optional</em>) – List (float) containing lower and upper bound for the y-axes (default [-1000, 1000])</p></li>
+<li><p><strong>title</strong> (<em>str, optional</em>) – string Title to give to the plot (default None)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>out_path</strong></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="reeds.function_libs.visualization.pot_energy_plots.scatter_potential_timeseries">
+<code class="sig-prename descclassname">reeds.function_libs.visualization.pot_energy_plots.</code><code class="sig-name descname">scatter_potential_timeseries</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">time</span><span class="p">:</span> <span class="n">pandas.core.series.Series</span></em>, <em class="sig-param"><span class="n">potentials</span><span class="p">:</span> <span class="n">pandas.core.frame.DataFrame</span></em>, <em class="sig-param"><span class="n">title</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">y_range</span><span class="p">:</span> <span class="n">Tuple<span class="p">[</span>float<span class="p">, </span>float<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">x_range</span><span class="p">:</span> <span class="n">Tuple<span class="p">[</span>float<span class="p">, </span>float<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">x_label</span><span class="p">:</span> <span class="n">str</span> <span class="o">=</span> <span class="default_value">'t'</span></em>, <em class="sig-param"><span class="n">y_label</span><span class="p">:</span> <span class="n">str</span> <span class="o">=</span> <span class="default_value">'V [kJ]'</span></em>, <em class="sig-param"><span class="n">marker_size</span><span class="o">=</span><span class="default_value">5</span></em>, <em class="sig-param"><span class="n">alpha</span><span class="p">:</span> <span class="n">float</span> <span class="o">=</span> <span class="default_value">0.5</span></em>, <em class="sig-param"><span class="n">show_legend</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">True</span></em>, <em class="sig-param"><span class="n">out_path</span><span class="p">:</span> <span class="n">str</span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/reeds/function_libs/visualization/pot_energy_plots.html#scatter_potential_timeseries"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#reeds.function_libs.visualization.pot_energy_plots.scatter_potential_timeseries" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function creates scatter plots of the potential energy timeseries</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>time</strong> (<em>pd.Series</em>) – time series for the x-axis</p></li>
+<li><p><strong>potentials</strong> (<em>pd.DataFrame or pd.Series</em>) – potential energies</p></li>
+<li><p><strong>title</strong> (<em>str</em>) – plot title</p></li>
+<li><p><strong>y_range</strong> (<em>Tuple[float, float], optional</em>) – y-axis ranges (default None)</p></li>
+<li><p><strong>x_range</strong> (<em>Tuple[float, float], optional</em>) – x-axis ranges (default None)</p></li>
+<li><p><strong>x_label</strong> (<em>str, optional</em>) – label for x-axis (default “t”)</p></li>
+<li><p><strong>y_label</strong> (<em>str, optional</em>) – label for y-axis (default “V [kJ]”)</p></li>
+<li><p><strong>marker_size</strong> (<em>int, optional</em>) – size of markers (default 5)</p></li>
+<li><p><strong>alpha</strong> (<em>float</em>) – default 0.5</p></li>
+<li><p><strong>show_legend</strong> (<em>bool, optional</em>) – show legend (default True)</p></li>
+<li><p><strong>out_path</strong> (<em>str, optional</em>) – path for output (default None)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="module-reeds.function_libs.visualization.re_plots">
+<span id="reeds-function-libs-visualization-re-plots-module"></span><h2>reeds.function_libs.visualization.re_plots module<a class="headerlink" href="#module-reeds.function_libs.visualization.re_plots" title="Permalink to this headline">¶</a></h2>
+<dl class="py function">
+<dt id="reeds.function_libs.visualization.re_plots.plot_repPos_replica_histogramm">
+<code class="sig-prename descclassname">reeds.function_libs.visualization.re_plots.</code><code class="sig-name descname">plot_repPos_replica_histogramm</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span><span class="p">:</span> <span class="n">pandas.core.frame.DataFrame</span></em>, <em class="sig-param"><span class="n">replica_offset</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">0</span></em>, <em class="sig-param"><span class="n">out_path</span><span class="p">:</span> <span class="n">str</span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">cut_front</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">0</span></em>, <em class="sig-param"><span class="n">title</span><span class="p">:</span> <span class="n">str</span> <span class="o">=</span> <span class="default_value">'test'</span></em>, <em class="sig-param"><span class="n">s_values</span><span class="p">:</span> <span class="n">List<span class="p">[</span>float<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/reeds/function_libs/visualization/re_plots.html#plot_repPos_replica_histogramm"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#reeds.function_libs.visualization.re_plots.plot_repPos_replica_histogramm" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function is building a plot, that shows the position counts for each replica in the distribution (histgoram)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> (<em>pd.DataFrame</em>) – contains repdat information of the single replica traces</p></li>
+<li><p><strong>replica_offset</strong> (<em>int, optional</em>) – cut off the first replicas with s=1 (default 0)</p></li>
+<li><p><strong>out_path</strong> (<em>str, optional</em>) – write out the figures (default None)</p></li>
+<li><p><strong>cut_front</strong> (<em>int, optional</em>) – cut first steps of traj (default 0)</p></li>
+<li><p><strong>title</strong> (<em>str, optional</em>) – plot title (default “test”)</p></li>
+<li><p><strong>s_values</strong> (<em>List[float], optional</em>) – s_values for yaxis (default None)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="reeds.function_libs.visualization.re_plots.plot_replica_transitions">
+<code class="sig-prename descclassname">reeds.function_libs.visualization.re_plots.</code><code class="sig-name descname">plot_replica_transitions</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">transition_dict</span><span class="p">:</span> <span class="n">pandas.core.frame.DataFrame</span></em>, <em class="sig-param"><span class="n">out_path</span><span class="p">:</span> <span class="n">str</span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">title_prefix</span><span class="p">:</span> <span class="n">str</span> <span class="o">=</span> <span class="default_value">'test'</span></em>, <em class="sig-param"><span class="n">s_values</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">cut_1_replicas</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">xBond</span><span class="p">:</span> <span class="n">tuple</span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">equilibration_border</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">transparency</span><span class="o">=</span><span class="default_value">0.7</span></em>, <em class="sig-param"><span class="n">use_gradient_colorMap</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">show_repl_leg</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">trace_line_width</span><span class="p">:</span> <span class="n">float</span> <span class="o">=</span> <span class="default_value">1</span></em><span class="sig-paren">)</span> &#x2192; str<a class="reference internal" href="../_modules/reeds/function_libs/visualization/re_plots.html#plot_replica_transitions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#reeds.function_libs.visualization.re_plots.plot_replica_transitions" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>transition_dict</strong> (<em>pd.DataFrame</em>)</p></li>
+<li><p><strong>out_path</strong> (<em>str, optional</em>)</p></li>
+<li><p><strong>title_prefix</strong> (<em>str, optional</em>)</p></li>
+<li><p><strong>s_values</strong> (<em>List, optional</em>)</p></li>
+<li><p><strong>cut_1_replicas</strong> (<em>bool, optional</em>)</p></li>
+<li><p><strong>xBond</strong> (<em>tuple, optional</em>)</p></li>
+<li><p><strong>equilibration_border</strong> (<em>int, optional</em>)</p></li>
+<li><p><strong>transparency</strong> (<em>float, optional</em>)</p></li>
+<li><p><strong>use_gradient_colorMap</strong> (<em>bool, optional</em>)</p></li>
+<li><p><strong>show_repl_leg</strong> (<em>bool, optional</em>)</p></li>
+<li><p><strong>trace_line_width</strong> (<em>float, optional</em>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>out_path</strong> – output file path</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="reeds.function_libs.visualization.re_plots.plot_replica_transitions_min_states">
+<code class="sig-prename descclassname">reeds.function_libs.visualization.re_plots.</code><code class="sig-name descname">plot_replica_transitions_min_states</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">transition_dict</span><span class="p">:</span> <span class="n">dict</span></em>, <em class="sig-param"><span class="n">out_path</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">title_prefix</span><span class="p">:</span> <span class="n">str</span> <span class="o">=</span> <span class="default_value">'test'</span></em>, <em class="sig-param"><span class="n">s_values</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">show_only_states</span><span class="p">:</span> <span class="n">list</span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">cut_1_replicas</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">xBond</span><span class="p">:</span> <span class="n">tuple</span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">show_repl_leg</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em>, <em class="sig-param"><span class="n">cluster_size</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">10</span></em>, <em class="sig-param"><span class="n">sub_cluster_threshold</span><span class="p">:</span> <span class="n">float</span> <span class="o">=</span> <span class="default_value">0.6</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/reeds/function_libs/visualization/re_plots.html#plot_replica_transitions_min_states"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#reeds.function_libs.visualization.re_plots.plot_replica_transitions_min_states" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>transition_dict</strong> (<em>dict</em>)</p></li>
+<li><p><strong>out_path</strong> (<em>str</em>)</p></li>
+<li><p><strong>title_prefix</strong> (<em>str, optional</em>)</p></li>
+<li><p><strong>s_values</strong> (<em>str, optional</em>)</p></li>
+<li><p><strong>show_only_states</strong> (<em>list, optional</em>)</p></li>
+<li><p><strong>cut_1_replicas</strong> (<em>bool, optional</em>)</p></li>
+<li><p><strong>xBond</strong> (<em>tuple, optional</em>)</p></li>
+<li><p><strong>show_repl_leg</strong> (<em>bool, optional</em>)</p></li>
+<li><p><strong>cluster_size</strong> (<em>int, optional</em>)</p></li>
+<li><p><strong>sub_cluster_threshold</strong> (<em>float, optional</em>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="module-reeds.function_libs.visualization.sampling_plots">
+<span id="reeds-function-libs-visualization-sampling-plots-module"></span><h2>reeds.function_libs.visualization.sampling_plots module<a class="headerlink" href="#module-reeds.function_libs.visualization.sampling_plots" title="Permalink to this headline">¶</a></h2>
+<dl class="py function">
+<dt id="reeds.function_libs.visualization.sampling_plots.plot_stateOccurence_hist">
+<code class="sig-prename descclassname">reeds.function_libs.visualization.sampling_plots.</code><code class="sig-name descname">plot_stateOccurence_hist</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span><span class="p">:</span> <span class="n">dict</span></em>, <em class="sig-param"><span class="n">out_path</span><span class="p">:</span> <span class="n">str</span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">title</span><span class="p">:</span> <span class="n">str</span> <span class="o">=</span> <span class="default_value">'sampling histogramms'</span></em>, <em class="sig-param"><span class="n">verbose</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/reeds/function_libs/visualization/sampling_plots.html#plot_stateOccurence_hist"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#reeds.function_libs.visualization.sampling_plots.plot_stateOccurence_hist" title="Permalink to this definition">¶</a></dt>
+<dd><p>plot histogram of state occurrence</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> (<em>dict</em>)</p></li>
+<li><p><strong>out_path</strong> (<em>str, optional</em>) – output file path (default None)</p></li>
+<li><p><strong>title</strong> (<em>str, optional</em>) – title (default “sampling histogramms”)</p></li>
+<li><p><strong>verbose</strong> (<em>bool</em>) – verbose output (default False)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="reeds.function_libs.visualization.sampling_plots.plot_stateOccurence_matrix">
+<code class="sig-prename descclassname">reeds.function_libs.visualization.sampling_plots.</code><code class="sig-name descname">plot_stateOccurence_matrix</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span><span class="p">:</span> <span class="n">dict</span></em>, <em class="sig-param"><span class="n">out_dir</span><span class="p">:</span> <span class="n">str</span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">s_values</span><span class="p">:</span> <span class="n">list</span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">place_undersampling_threshold</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em>, <em class="sig-param"><span class="n">title_suffix</span><span class="p">:</span> <span class="n">str</span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/reeds/function_libs/visualization/sampling_plots.html#plot_stateOccurence_matrix"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#reeds.function_libs.visualization.sampling_plots.plot_stateOccurence_matrix" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function generates a plot of the state occurrence matrix</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> (<em>dict</em>)</p></li>
+<li><p><strong>out_dir</strong> (<em>str, optional</em>) – output file path (default None)</p></li>
+<li><p><strong>s_values</strong> (<em>list, optional</em>) – list of s-values (default None)</p></li>
+<li><p><strong>place_undersampling_threshold</strong> (<em>bool, optional</em>) – (default False)</p></li>
+<li><p><strong>title_suffix</strong> (<em>str, optional</em>) – suffix for title (default None)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="reeds.function_libs.visualization.sampling_plots.plot_t_statepres">
+<code class="sig-prename descclassname">reeds.function_libs.visualization.sampling_plots.</code><code class="sig-name descname">plot_t_statepres</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span><span class="p">:</span> <span class="n">dict</span></em>, <em class="sig-param"><span class="n">out_path</span><span class="p">:</span> <span class="n">str</span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">title</span><span class="p">:</span> <span class="n">str</span> <span class="o">=</span> <span class="default_value">'test'</span></em>, <em class="sig-param"><span class="n">xlim</span><span class="p">:</span> <span class="n">List<span class="p">[</span>int<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/reeds/function_libs/visualization/sampling_plots.html#plot_t_statepres"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#reeds.function_libs.visualization.sampling_plots.plot_t_statepres" title="Permalink to this definition">¶</a></dt>
+<dd><p>gives out a plot, showing the if a state is undersampling or the
+dominating (min state) of a system at given t.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> (<em>dict</em>)</p></li>
+<li><p><strong>out_path</strong> (<em>str, optional</em>) – path for output files (default None)</p></li>
+<li><p><strong>title</strong> (<em>str, optional</em>) – title string (default “test”)</p></li>
+<li><p><strong>xlim</strong> (<em>List[int], optional</em>) – default False</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="module-reeds.function_libs.visualization.utils">
+<span id="reeds-function-libs-visualization-utils-module"></span><h2>reeds.function_libs.visualization.utils module<a class="headerlink" href="#module-reeds.function_libs.visualization.utils" title="Permalink to this headline">¶</a></h2>
+<dl class="py function">
+<dt id="reeds.function_libs.visualization.utils.discard_high_energy_points">
+<code class="sig-prename descclassname">reeds.function_libs.visualization.utils.</code><code class="sig-name descname">discard_high_energy_points</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">pot_i</span><span class="p">:</span> <span class="n">List<span class="p">[</span>float<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">threshold</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">1000</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/reeds/function_libs/visualization/utils.html#discard_high_energy_points"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#reeds.function_libs.visualization.utils.discard_high_energy_points" title="Permalink to this definition">¶</a></dt>
+<dd><p>This is a helper function, which will allow us to filter out
+some of the data we dont want to plot. The default value for the threshold
+is 1000 kJ/mol</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>pot_i</strong> (<em>List[float]</em>) – list of potential energies</p></li>
+<li><p><strong>threshold</strong> (<em>float, optional</em>) – upper_threshold above which we discard data points (default 1000)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>list of energies below the threshold</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>List[float]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="reeds.function_libs.visualization.utils.generate_trace_from_transition_dict">
+<code class="sig-prename descclassname">reeds.function_libs.visualization.utils.</code><code class="sig-name descname">generate_trace_from_transition_dict</code><span class="sig-paren">(</span><em class="sig-param">transition_dataFrame: pandas.core.frame.DataFrame</em>, <em class="sig-param">transition_range: float = 0.35) -&gt; (&lt;class 'dict'&gt;</em>, <em class="sig-param">&lt;class 'float'&gt;</em>, <em class="sig-param">&lt;class 'float'&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/reeds/function_libs/visualization/utils.html#generate_trace_from_transition_dict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#reeds.function_libs.visualization.utils.generate_trace_from_transition_dict" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function creates a replica trace plot from a transition dict
+:Parameters: * <strong>transition_dataFrame</strong> (<em>pd.DataFrame</em>) – pandas dataframe containing the replica transitions</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><strong>transition_range</strong> (<em>float, optional</em>) – default 0.35</p></li>
+</ul>
+</div></blockquote>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><ul class="simple">
+<li><p><strong>traces</strong> (<em>dict</em>) – dict containing replica traces</p></li>
+<li><p><strong>max_x</strong> (<em>float</em>)</p></li>
+<li><p><strong>max_y</strong> (<em>float</em>)</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="reeds.function_libs.visualization.utils.nice_s_vals">
+<code class="sig-prename descclassname">reeds.function_libs.visualization.utils.</code><code class="sig-name descname">nice_s_vals</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">svals</span><span class="p">:</span> <span class="n">list</span></em>, <em class="sig-param"><span class="n">base10</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span> &#x2192; list<a class="reference internal" href="../_modules/reeds/function_libs/visualization/utils.html#nice_s_vals"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#reeds.function_libs.visualization.utils.nice_s_vals" title="Permalink to this definition">¶</a></dt>
+<dd><p>this function creates nice s-value labels for the plots</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>svals</strong> (<em>list</em>) – list of s-values</p></li>
+<li><p><strong>base10</strong> (<em>bool, optional</em>) – use base 10 (default False)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>list of labels for the s-values</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="reeds.function_libs.visualization.utils.prepare_system_state_data">
+<code class="sig-prename descclassname">reeds.function_libs.visualization.utils.</code><code class="sig-name descname">prepare_system_state_data</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">transition_dataFrame</span><span class="p">:</span> <span class="n">pandas.core.frame.DataFrame</span></em>, <em class="sig-param"><span class="n">cluster_size</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">10</span></em>, <em class="sig-param"><span class="n">sub_cluster_threshold</span><span class="p">:</span> <span class="n">float</span> <span class="o">=</span> <span class="default_value">0.6</span></em><span class="sig-paren">)</span> &#x2192; dict<a class="reference internal" href="../_modules/reeds/function_libs/visualization/utils.html#prepare_system_state_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#reeds.function_libs.visualization.utils.prepare_system_state_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function prepares a transition dict</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>transition_dataFrame</strong> (<em>pd.DataFrame</em>) – pandas dataframe containing information on the transitions</p></li>
+<li><p><strong>cluster_size</strong> (<em>int, optional</em>) – default 10</p></li>
+<li><p><strong>sub_cluster_threshold</strong> (<em>float, optional</em>) – default 0.6</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>replica_bins</strong> (<em>dict</em>)</p></li>
+<li><p><strong>marker_color_dict</strong> (<em>dict</em>)</p></li>
+<li><p><strong>num_states</strong> (<em>int</em>)</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="reeds.function_libs.visualization.utils.x_axis">
+<code class="sig-prename descclassname">reeds.function_libs.visualization.utils.</code><code class="sig-name descname">x_axis</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ax</span></em>, <em class="sig-param"><span class="n">xBond</span><span class="p">:</span> <span class="n">list</span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">max_x</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">amount_of_x_labels</span><span class="o">=</span><span class="default_value">4</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/reeds/function_libs/visualization/utils.html#x_axis"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#reeds.function_libs.visualization.utils.x_axis" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function formats the x-axis of a subplot</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ax</strong> (<em>AxesSubplot</em>)</p></li>
+<li><p><strong>xBond</strong> (<em>list, optional</em>) – minimum and maximum x-axis value. Takes priority over max_x (default None)</p></li>
+<li><p><strong>max_x</strong> (<em>int, optional</em>) – maximum x-axis value (default None)</p></li>
+<li><p><strong>amount_of_x_labels</strong> (<em>int</em>) – amount of x-axis labels (default 4)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="reeds.function_libs.visualization.utils.y_axis_for_s_plots">
+<code class="sig-prename descclassname">reeds.function_libs.visualization.utils.</code><code class="sig-name descname">y_axis_for_s_plots</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ax</span></em>, <em class="sig-param"><span class="n">yBond</span><span class="p">:</span> <span class="n">tuple</span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">s_values</span><span class="p">:</span> <span class="n">list</span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">amount_of_y_labels</span><span class="o">=</span><span class="default_value">10</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/reeds/function_libs/visualization/utils.html#y_axis_for_s_plots"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#reeds.function_libs.visualization.utils.y_axis_for_s_plots" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function builds a nice inverse (so that s=1 is on top) y-axis.
+:Parameters: * <strong>ax</strong> (<em>AxesSubplot</em>)</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><strong>yBond</strong> (<em>tuple, optional</em>) – minimum and maximum y-axis value (default None)</p></li>
+<li><p><strong>s_values</strong> (<em>list, optional</em>) – list of s-values (default None)</p></li>
+<li><p><strong>amount_of_y_labels</strong> (<em>int, optional</em>) – amount of y-axis labels (default 10)</p></li>
+</ul>
+</div></blockquote>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="module-reeds.function_libs.visualization">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-reeds.function_libs.visualization" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="visualisation">
+<h3>visualisation<a class="headerlink" href="#visualisation" title="Permalink to this headline">¶</a></h3>
+<p>This File contains functions which generate matplotlib plots for RE-EDS simulations.</p>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, Benjamin Ries, Salome Rieder, Candide Champion. Project structure based on the Computational Molecular Science Python Cookiecutter version 1.3
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

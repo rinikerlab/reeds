@@ -1,0 +1,1210 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>reeds.function_libs.optimization.src.s_optimizer &mdash; REEDS  documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../../../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../../../" src="../../../../../_static/documentation_options.js"></script>
+        <script src="../../../../../_static/jquery.js"></script>
+        <script src="../../../../../_static/underscore.js"></script>
+        <script src="../../../../../_static/doctools.js"></script>
+        <script src="../../../../../_static/language_data.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
+    
+    <script type="text/javascript" src="../../../../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../../../index.html" class="icon icon-home"> REEDS
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../introduction.html">REEDS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../Examples/index.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_source/modules.html">Documentation</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../../index.html">REEDS</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../../../index.html">Module code</a> &raquo;</li>
+        
+      <li>reeds.function_libs.optimization.src.s_optimizer</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for reeds.function_libs.optimization.src.s_optimizer</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    eds_optimization  - A library for optimization of input values for eds simulations</span>
+<span class="sd">        This module is containing all the replica exchange round trip alogrithms, described by Sidler et al. and Katzgraber et al. 2006.</span>
+
+<span class="sd">    References:</span>
+<span class="sd">        - Sidler et al. 2017</span>
+<span class="sd">        - Katzgraber et al. 2006</span>
+
+<span class="sd">    @author bries</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+
+<span class="kn">from</span> <span class="nn">pygromos.files</span> <span class="kn">import</span> <span class="n">repdat</span>
+<span class="kn">from</span> <span class="nn">reeds.function_libs.optimization.src</span> <span class="kn">import</span> <span class="n">sopt_Pathstatistic</span>
+<span class="kn">from</span> <span class="nn">reeds.function_libs.optimization.src.util</span> <span class="kn">import</span> <span class="n">get_str_from_list</span>
+
+
+<span class="c1"># Fields</span>
+<div class="viewcode-block" id="Replica_Flow_Position"><a class="viewcode-back" href="../../../../../_source/reeds.function_libs.optimization.src.html#reeds.function_libs.optimization.src.s_optimizer.Replica_Flow_Position">[docs]</a><span class="k">class</span> <span class="nc">Replica_Flow_Position</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Pair of Replica and corresponding replica visit fraction f from Eq. 11.</span>
+
+<span class="sd">    Stores additional S values between S_i and S_i+1 with a counter,</span>
+<span class="sd">    for equidisftant distribution of new S values in interval.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="Replica_Flow_Position.__init__"><a class="viewcode-back" href="../../../../../_source/reeds.function_libs.optimization.src.html#reeds.function_libs.optimization.src.s_optimizer.Replica_Flow_Position.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">s</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">f</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Constructor of SFPair.</span>
+
+<span class="sd">        :param s: S value of replica</span>
+<span class="sd">        :param f: f value calculated from path statistic</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">s</span> <span class="o">=</span> <span class="n">s</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">f</span> <span class="o">=</span> <span class="n">f</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">num_s_in_interval</span> <span class="o">=</span> <span class="mi">1</span>  <span class="c1"># [s_i, s_i+1)</span></div></div>
+
+
+
+<div class="viewcode-block" id="_RTOptimizer"><a class="viewcode-back" href="../../../../../_source/reeds.function_libs.optimization.src.html#reeds.function_libs.optimization.src.s_optimizer._RTOptimizer">[docs]</a><span class="k">class</span> <span class="nc">_RTOptimizer</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Base class for RTO optimizers</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="_RTOptimizer.__init__"><a class="viewcode-back" href="../../../../../_source/reeds.function_libs.optimization.src.html#reeds.function_libs.optimization.src.s_optimizer._RTOptimizer.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">replica_exchange_statistics</span><span class="p">:</span> <span class="p">(</span><span class="n">sopt_Pathstatistic</span><span class="o">.</span><span class="n">PathStatistic</span> <span class="ow">or</span> <span class="n">repdat</span><span class="o">.</span><span class="n">Repdat</span><span class="p">),</span>
+                 <span class="n">state_weights</span><span class="p">:</span><span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            This baseclass is the common substructure of all optimizer approaches.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        replica_exchange_statistics: (sopt_Pathstatistic.PathStatistic or repdat.Repdat)</span>
+<span class="sd">            input for the replica exchange statistics</span>
+<span class="sd">        state_weights : List[float]</span>
+<span class="sd">            weigthing of the different states.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">statistic</span> <span class="o">=</span> <span class="n">replica_exchange_statistics</span>  <span class="c1"># statistic containing repdat</span>
+
+        <span class="k">if</span> <span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">replica_exchange_statistics</span><span class="p">)</span> <span class="o">==</span> <span class="n">sopt_Pathstatistic</span><span class="o">.</span><span class="n">PathStatistic</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_replica_position_flow_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_calculate_replica_visit_fraction</span><span class="p">(</span><span class="n">n_up_list</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">statistic</span><span class="o">.</span><span class="n">n_up</span><span class="p">,</span>
+                                                                                      <span class="n">n_down_list</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">statistic</span><span class="o">.</span><span class="n">n_down</span><span class="p">,</span>
+                                                                                      <span class="n">s_in</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">statistic</span><span class="o">.</span><span class="n">s_values</span><span class="p">,</span>
+                                                                                      <span class="n">state_weights</span><span class="o">=</span><span class="n">state_weights</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">replica_exchange_statistics</span><span class="p">)</span> <span class="o">==</span> <span class="n">repdat</span><span class="o">.</span><span class="n">Repdat</span><span class="p">):</span>
+            <span class="n">replica_position_counts_per_state</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">statistic</span><span class="o">.</span><span class="n">get_replicaPosition_dependend_nup_ndown_for_each_state</span><span class="p">()</span>
+
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;count replicated S&quot;</span><span class="p">)</span>
+            <span class="n">orig</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">statistic</span><span class="o">.</span><span class="n">system</span><span class="o">.</span><span class="n">s</span>
+            <span class="n">replicated_s_values</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">set</span><span class="p">(</span><span class="n">orig</span><span class="p">)</span> <span class="k">if</span> <span class="p">(</span><span class="n">orig</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">)]</span>
+            <span class="n">s_without_skipped_s</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">replica_index_without_skipped_s</span> <span class="o">=</span> <span class="p">[]</span>
+
+            <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">orig</span><span class="p">:</span>
+                <span class="k">if</span> <span class="p">(</span><span class="n">x</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">replica_index_without_skipped_s</span><span class="p">):</span>
+                    <span class="n">replica_index_without_skipped_s</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">orig</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+                    <span class="n">s_without_skipped_s</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+            <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">statistic</span><span class="p">,</span> <span class="s2">&quot;skipped_s_values&quot;</span><span class="p">,</span> <span class="n">replicated_s_values</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;left: &quot;</span><span class="p">,</span> <span class="n">s_without_skipped_s</span><span class="p">)</span>
+
+            <span class="c1"># reformat the file structurer for getting flows</span>
+            <span class="c1">##up can not destinguish states at the moment!</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">replica_position_counts_per_state</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+            <span class="n">replicas_without_skipped_s</span> <span class="o">=</span> <span class="p">[</span><span class="n">key</span> <span class="k">for</span> <span class="n">ind</span><span class="p">,</span> <span class="n">key</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">replica_position_counts_per_state</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span> <span class="k">if</span>
+                                          <span class="p">(</span><span class="n">ind</span> <span class="ow">in</span> <span class="n">replica_index_without_skipped_s</span><span class="p">)]</span>
+            <span class="n">n_up</span> <span class="o">=</span> <span class="p">[</span><span class="nb">sum</span><span class="p">(</span><span class="n">replica_position_counts_per_state</span><span class="p">[</span><span class="n">replica_position</span><span class="p">][</span><span class="s2">&quot;tot_nup&quot;</span><span class="p">])</span> <span class="k">for</span> <span class="n">replica_position</span> <span class="ow">in</span>
+                    <span class="n">replicas_without_skipped_s</span><span class="p">]</span>
+            <span class="n">n_down</span> <span class="o">=</span> <span class="p">[</span><span class="n">replica_position_counts_per_state</span><span class="p">[</span><span class="n">replica_position</span><span class="p">][</span><span class="s2">&quot;tot_nup&quot;</span><span class="p">]</span> <span class="k">for</span> <span class="n">replica_position</span> <span class="ow">in</span>
+                      <span class="n">replicas_without_skipped_s</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_replica_position_flow_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_calculate_replica_visit_fraction</span><span class="p">(</span><span class="n">n_up_list</span><span class="o">=</span><span class="n">n_up</span><span class="p">,</span>
+                                                                                      <span class="n">n_down_list</span><span class="o">=</span><span class="n">n_down</span><span class="p">,</span>
+                                                                                      <span class="n">s_in</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">statistic</span><span class="o">.</span><span class="n">system</span><span class="o">.</span><span class="n">s</span><span class="p">[</span>
+                                                                                     <span class="bp">self</span><span class="o">.</span><span class="n">statistic</span><span class="o">.</span><span class="n">skipped_s_values</span><span class="p">:],</span>
+                                                                                      <span class="n">state_weights</span><span class="o">=</span><span class="n">state_weights</span><span class="p">)</span>
+
+        <span class="c1"># visit fractions</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_replica_position_flow_list</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">sf</span><span class="p">:</span> <span class="n">sf</span><span class="o">.</span><span class="n">s</span><span class="p">,</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_replica_position_flow_list_opt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_replica_position_flow_list</span>
+
+        <span class="c1"># svalues:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">orig_replica_parameters</span> <span class="o">=</span> <span class="p">[</span><span class="n">f</span><span class="o">.</span><span class="n">s</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_replica_position_flow_list</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">opt_replica_parameters</span> <span class="o">=</span> <span class="kc">None</span></div>
+
+    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">col_format_string</span> <span class="o">=</span> <span class="s2">&quot;|</span><span class="si">{0:&gt;10}</span><span class="s2">|</span><span class="se">\t</span><span class="si">{1:&gt;10}</span><span class="s2">|</span><span class="se">\t</span><span class="si">{2:&gt;10}</span><span class="s2">|</span><span class="se">\t</span><span class="si">{3:&gt;10}</span><span class="s2">|</span><span class="se">\n</span><span class="s2">&quot;</span>
+        <span class="n">offset</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">statistic</span><span class="o">.</span><span class="n">skipped_s_values</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
+        <span class="n">message</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">SOPT - &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">=================</span><span class="se">\n</span><span class="s2">&quot;</span>
+        <span class="n">warn_msg</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+        <span class="c1"># print statistic</span>
+        <span class="k">if</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">statistic</span><span class="o">.</span><span class="n">n_up</span> <span class="o">!=</span> <span class="kc">None</span><span class="p">):</span>
+            <span class="k">if</span> <span class="p">(</span><span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;state_weights&quot;</span><span class="p">)):</span>
+                <span class="n">message</span> <span class="o">+=</span> <span class="s2">&quot;</span><span class="se">\n\t</span><span class="s2">&gt; State-WEIGHTS: &quot;</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">state_weights</span><span class="p">))</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n\n</span><span class="s2">&quot;</span>
+            <span class="n">message</span> <span class="o">+=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">## FLOW STATISTICS</span><span class="se">\n\n</span><span class="s2">&quot;</span>
+            <span class="n">message</span> <span class="o">+=</span> <span class="s2">&quot;|s        | n_up    |  &quot;</span> <span class="o">+</span> <span class="s2">&quot;|</span><span class="se">\t</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+                <span class="p">[</span><span class="s2">&quot;n_down_state_&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span> <span class="o">+</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">statistic</span><span class="o">.</span><span class="n">n_down</span><span class="p">[</span><span class="mi">0</span><span class="p">]))])</span> <span class="o">+</span> <span class="s2">&quot;|</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="n">message</span> <span class="o">+=</span> <span class="s2">&quot;|---</span><span class="se">\t</span><span class="s2">|---</span><span class="se">\t</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="s2">&quot;|---</span><span class="se">\t</span><span class="s2">&quot;</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">statistic</span><span class="o">.</span><span class="n">n_down</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">+</span> <span class="s2">&quot;|</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">statistic</span><span class="o">.</span><span class="n">n_up</span><span class="p">)):</span>
+                <span class="n">n_dwon_text</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;</span><span class="si">{:8d}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">val</span><span class="p">)</span> <span class="k">for</span> <span class="n">val</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">statistic</span><span class="o">.</span><span class="n">n_down</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span>
+                <span class="n">message</span> <span class="o">+=</span> <span class="s1">&#39;|</span><span class="se">\t</span><span class="si">{:f}</span><span class="s1"> | </span><span class="si">{:7d}</span><span class="s1"> |&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">statistic</span><span class="o">.</span><span class="n">s_values</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">statistic</span><span class="o">.</span><span class="n">n_up</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="o">+</span> <span class="s1">&#39;|</span><span class="se">\t</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+                    <span class="n">n_dwon_text</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;|</span><span class="se">\n</span><span class="s2">&quot;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">warn_msg</span> <span class="o">+=</span> <span class="s2">&quot;WARNING!!!: statistic is not available!&quot;</span>
+
+        <span class="c1"># added S vals</span>
+        <span class="k">if</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_replica_position_flow_list_opt</span> <span class="o">!=</span> <span class="kc">None</span><span class="p">):</span>
+            <span class="n">message</span> <span class="o">+=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">## ADDED-S</span><span class="se">\n\n</span><span class="s2">&quot;</span>
+            <span class="k">if</span> <span class="p">(</span><span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;c_prime&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;ds&quot;</span><span class="p">)):</span>
+                <span class="n">message</span> <span class="o">+=</span> <span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&gt; ds = &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ds</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span>
+                <span class="n">message</span> <span class="o">+=</span> <span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&gt; C_PRIME = &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">c_prime</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span>
+
+            <span class="n">message</span> <span class="o">+=</span> <span class="n">col_format_string</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s2">&quot;repID&quot;</span><span class="p">,</span> <span class="s2">&quot;s&quot;</span><span class="p">,</span> <span class="s2">&quot;f(s)&quot;</span><span class="p">,</span> <span class="s2">&quot;svals_in_interval&quot;</span><span class="p">)</span>
+            <span class="n">message</span> <span class="o">+=</span> <span class="n">col_format_string</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">)</span>
+            <span class="n">message</span> <span class="o">+=</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+                <span class="p">[</span><span class="n">col_format_string</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="n">offset</span><span class="p">),</span> <span class="nb">str</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">s</span><span class="p">),</span> <span class="nb">str</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">f</span><span class="p">,</span> <span class="mi">4</span><span class="p">)),</span> <span class="nb">str</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">num_s_in_interval</span> <span class="o">-</span> <span class="mi">1</span><span class="p">))</span>
+                 <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_replica_position_flow_list_opt</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">])])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">warn_msg</span> <span class="o">+=</span> <span class="s2">&quot;WARNING!!!: did not add s_vals yet!&quot;</span>
+
+        <span class="c1"># calculate new s values</span>
+        <span class="n">message</span> <span class="o">+=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">## S_VALUES</span><span class="se">\n\n</span><span class="s2">&quot;</span>
+        <span class="k">if</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">statistic</span><span class="o">.</span><span class="n">s_values</span> <span class="o">!=</span> <span class="kc">None</span><span class="p">):</span>
+            <span class="n">message</span> <span class="o">+=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">### Input s_values: used for statistics: #&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">statistic</span><span class="o">.</span><span class="n">s_values</span><span class="p">))</span>
+            <span class="n">message</span> <span class="o">+=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2"> &gt; &quot;</span> <span class="o">+</span> <span class="n">get_str_from_list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">statistic</span><span class="o">.</span><span class="n">s_values</span><span class="p">,</span> <span class="s1">&#39;float&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n\n</span><span class="s2">&quot;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">warn_msg</span> <span class="o">+=</span> <span class="s2">&quot;WARNING!!!: RTO has no s_values available!&quot;</span>
+
+        <span class="k">if</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">opt_replica_parameters</span> <span class="o">!=</span> <span class="kc">None</span><span class="p">):</span>
+            <span class="n">message</span> <span class="o">+=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">### New s_values: #&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">opt_replica_parameters</span><span class="p">))</span>
+            <span class="n">message</span> <span class="o">+=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2"> &gt; &quot;</span> <span class="o">+</span> <span class="p">(</span><span class="n">get_str_from_list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">opt_replica_parameters</span><span class="p">,</span> <span class="s1">&#39;float&#39;</span><span class="p">))</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n\n</span><span class="s2">&quot;</span>
+
+            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">statistic</span><span class="p">,</span> <span class="s2">&quot;skipped_s_values&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">statistic</span><span class="o">.</span><span class="n">skipped_s_values</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">message</span> <span class="o">+=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">### New s values including skipped values: #&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span>
+                    <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">statistic</span><span class="o">.</span><span class="n">skipped_s_values</span><span class="p">)</span> <span class="o">+</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">opt_replica_parameters</span><span class="p">))</span>
+                <span class="n">message</span> <span class="o">+=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2"> &gt; &quot;</span> <span class="o">+</span> <span class="n">get_str_from_list</span><span class="p">(</span>
+                    <span class="nb">sorted</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">opt_replica_parameters</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">statistic</span><span class="o">.</span><span class="n">skipped_s_values</span><span class="p">)[::</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="s1">&#39;float&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n\n</span><span class="s2">&quot;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">warn_msg</span> <span class="o">+=</span> <span class="s2">&quot;WARNING!!!: optimized s_vals are not available!</span><span class="se">\n</span><span class="s2">&quot;</span>
+        <span class="k">return</span> <span class="n">message</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="n">warn_msg</span>
+
+    <span class="c1"># Basic Functions</span>
+<div class="viewcode-block" id="_RTOptimizer.optimize"><a class="viewcode-back" href="../../../../../_source/reeds.function_libs.optimization.src.html#reeds.function_libs.optimization.src.s_optimizer._RTOptimizer.optimize">[docs]</a>    <span class="k">def</span> <span class="nf">optimize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">add_replicas</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;The function is not implemented yet: &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">optimize</span><span class="p">))</span></div>
+
+    <span class="k">def</span> <span class="nf">_calculate_replica_visit_fraction</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">s_in</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="n">n_up_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span>
+                                          <span class="n">n_down_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">]],</span>
+                                          <span class="n">state_weights</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">]:</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;The function is not implemented yet: &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_calculate_replica_visit_fraction</span><span class="p">))</span>
+
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">replica_position_flow_list</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_replica_position_flows</span><span class="p">()</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">replica_position_flow_list_opt</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_replica_position_flows_optimization</span><span class="p">()</span>
+
+<div class="viewcode-block" id="_RTOptimizer.get_replica_position_flows"><a class="viewcode-back" href="../../../../../_source/reeds.function_libs.optimization.src.html#reeds.function_libs.optimization.src.s_optimizer._RTOptimizer.get_replica_position_flows">[docs]</a>    <span class="k">def</span> <span class="nf">get_replica_position_flows</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            Returns the replica-position  flow distribution and the number of replicas in a bin</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        pd.Dataframe</span>
+<span class="sd">            contains the flow distribution</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="n">x</span> <span class="p">:</span><span class="nb">vars</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_replica_position_flow_list</span><span class="p">[</span><span class="n">x</span><span class="p">])</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_replica_position_flow_list</span><span class="p">))})</span><span class="o">.</span><span class="n">T</span></div>
+
+<div class="viewcode-block" id="_RTOptimizer.get_replica_position_flows_optimization"><a class="viewcode-back" href="../../../../../_source/reeds.function_libs.optimization.src.html#reeds.function_libs.optimization.src.s_optimizer._RTOptimizer.get_replica_position_flows_optimization">[docs]</a>    <span class="k">def</span> <span class="nf">get_replica_position_flows_optimization</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            Returns the optimized replica-position flow distribution and the number of added replicas in a bin</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        pd.Dataframe</span>
+<span class="sd">            contains the flow distribution</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="n">x</span> <span class="p">:</span><span class="nb">vars</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_replica_position_flow_list_opt</span><span class="p">[</span><span class="n">x</span><span class="p">])</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_replica_position_flow_list_opt</span><span class="p">))})</span><span class="o">.</span><span class="n">T</span></div>
+
+
+<div class="viewcode-block" id="_RTOptimizer.get_new_replica_dist"><a class="viewcode-back" href="../../../../../_source/reeds.function_libs.optimization.src.html#reeds.function_libs.optimization.src.s_optimizer._RTOptimizer.get_new_replica_dist">[docs]</a>    <span class="k">def</span> <span class="nf">get_new_replica_dist</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get the current replica parameters.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">             List of current parameters values</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">result_dist</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_replica_position_flow_list_opt</span> <span class="o">==</span> <span class="kc">None</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">opt_replica_parameters</span> <span class="o">==</span> <span class="kc">None</span><span class="p">):</span>
+            <span class="nb">print</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">opt_replica_parameters</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span>
+                <span class="s2">&quot;Can not give back new_replica distribution, first run optimization! (get_new_replica_dist)&quot;</span><span class="p">)</span>
+
+        <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">statistic</span><span class="p">,</span> <span class="s2">&quot;skipped_s_values&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">statistic</span><span class="o">.</span><span class="n">skipped_s_values</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">statistic</span><span class="o">.</span><span class="n">skipped_s_values</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">opt_replica_parameters</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">opt_replica_parameters</span></div>
+
+    <span class="c1"># Optimizer</span>
+<div class="viewcode-block" id="_RTOptimizer._optimize_GRTO"><a class="viewcode-back" href="../../../../../_source/reeds.function_libs.optimization.src.html#reeds.function_libs.optimization.src.s_optimizer._RTOptimizer._optimize_GRTO">[docs]</a>    <span class="k">def</span> <span class="nf">_optimize_GRTO</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">add_replicas</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">ds</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.0001</span><span class="p">,</span> <span class="n">verbose</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+                       <span class="n">detail_verbose</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            optimization in GRTO style</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        add_replicas: int</span>
+<span class="sd">            add number of replicas</span>
+<span class="sd">        ds : int</span>
+<span class="sd">            integration step size</span>
+<span class="sd">        verbose : bool</span>
+<span class="sd">            verbosity</span>
+<span class="sd">        detail_verbose : int</span>
+<span class="sd">            level of verbosity</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">f_n_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_replica_position_flow_list</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">old_s_dist</span> <span class="o">=</span> <span class="p">[</span><span class="n">f</span><span class="o">.</span><span class="n">s</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">f_n_list</span><span class="p">]</span>
+        <span class="n">smin</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">old_s_dist</span><span class="p">)</span>
+        <span class="n">smax</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">old_s_dist</span><span class="p">)</span>
+        <span class="n">old_num_replicas</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">old_s_dist</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ds</span> <span class="o">=</span> <span class="n">ds</span>
+
+        <span class="k">assert</span> <span class="p">(</span>
+                           <span class="n">smin</span> <span class="o">/</span> <span class="mi">10</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="n">ds</span><span class="p">,</span> <span class="s2">&quot;ds (integration step) in _optimize_GRTO is not small enough. Please ensure that ds is a tenth of smin. ds= &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span>
+            <span class="n">ds</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2"> should be at least: &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">smin</span> <span class="o">/</span> <span class="mi">10</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_replica_position_flow_list_opt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_replica_position_flow_list</span>
+        <span class="n">new_replica_num</span> <span class="o">=</span> <span class="n">add_replicas</span> <span class="o">+</span> <span class="n">old_num_replicas</span>
+
+        <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;smin &quot;</span><span class="p">,</span> <span class="n">smin</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;smax &quot;</span><span class="p">,</span> <span class="n">smax</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;list:flow,svals &quot;</span><span class="p">,</span> <span class="p">[(</span><span class="n">f</span><span class="o">.</span><span class="n">f</span><span class="p">,</span> <span class="n">f</span><span class="o">.</span><span class="n">s</span><span class="p">)</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">f_n_list</span><span class="p">])</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;old_num_replicas: &quot;</span><span class="p">,</span> <span class="n">old_num_replicas</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;add_replicas: &quot;</span><span class="p">,</span> <span class="n">add_replicas</span><span class="p">)</span>
+
+        <span class="c1"># 1: calculate normalisation factor c_prime from troyer 2006</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">detail_verbose</span> <span class="o">==</span> <span class="mi">1</span><span class="p">):</span>
+            <span class="n">norm_verbose</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">norm_verbose</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">c_prime</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_calculate_normalisation_c_prime</span><span class="p">(</span><span class="n">old_s_dist</span><span class="o">=</span><span class="n">old_s_dist</span><span class="p">,</span> <span class="n">f_n_list</span><span class="o">=</span><span class="n">f_n_list</span><span class="p">,</span> <span class="n">ds</span><span class="o">=</span><span class="n">ds</span><span class="p">,</span>
+                                                             <span class="n">verbose</span><span class="o">=</span><span class="n">norm_verbose</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n\n</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;1/C_prime&quot;</span><span class="p">,</span> <span class="mi">1</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">c_prime</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;C_prime&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">c_prime</span><span class="p">)</span>
+
+        <span class="c1"># 2: set new S_distribution with area cals</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">detail_verbose</span> <span class="o">==</span> <span class="mi">2</span><span class="p">):</span>
+            <span class="n">add_verbose</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">add_verbose</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="n">new_s_dist</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_add_s_values_accord_to_flow_area</span><span class="p">(</span><span class="n">old_s_dist</span><span class="o">=</span><span class="n">old_s_dist</span><span class="p">,</span> <span class="n">f_n_list</span><span class="o">=</span><span class="n">f_n_list</span><span class="p">,</span>
+                                                            <span class="n">c_prime</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">c_prime</span><span class="p">,</span> <span class="n">ds</span><span class="o">=</span><span class="n">ds</span><span class="p">,</span>
+                                                            <span class="n">new_replica_num</span><span class="o">=</span><span class="n">new_replica_num</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="n">add_verbose</span><span class="p">)</span>
+        <span class="n">new_s_dist_round</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nice_sval_list</span><span class="p">(</span><span class="n">new_s_dist</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">opt_replica_parameters</span> <span class="o">=</span> <span class="n">new_s_dist_round</span>
+
+        <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">old_s_vals&quot;</span><span class="p">,</span> <span class="n">old_s_dist</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;new_s dist &quot;</span><span class="p">,</span> <span class="n">new_s_dist</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;new_s dist round &quot;</span><span class="p">,</span> <span class="n">new_s_dist_round</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;len old, new&quot;</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">old_s_dist</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">new_s_dist</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="_RTOptimizer._optimize_LRTO"><a class="viewcode-back" href="../../../../../_source/reeds.function_libs.optimization.src.html#reeds.function_libs.optimization.src.s_optimizer._RTOptimizer._optimize_LRTO">[docs]</a>    <span class="k">def</span> <span class="nf">_optimize_LRTO</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">add_replicas</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            optimization in LRTO style (Katzgraber et al. 2006)</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        add_replicas : int</span>
+<span class="sd">            number of replicas to add.</span>
+<span class="sd">        verbose : bool</span>
+<span class="sd">            not used here</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># if verbose:</span>
+        <span class="c1">#    raise IOError(&quot;verbosity was not yet implemented! for _optimize_LRTO&quot;)</span>
+
+        <span class="c1"># new distribution init</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_replica_position_flow_list_opt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_replica_position_flow_list</span>
+
+        <span class="c1"># fill in replicas to replica flow gaps</span>
+        <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">add_replicas</span><span class="p">):</span>
+            <span class="c1"># find_maximal flow difference in distribution</span>
+            <span class="n">index</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_find_max_diff_index</span><span class="p">()</span>
+            <span class="c1"># add a replica to max diff</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_add_dummy_replica_to_intervall</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
+
+        <span class="c1"># fill up linearly gaps with new  replica parametrs (s_values)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">opt_replica_parameters</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="c1"># add initial val 1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">opt_replica_parameters</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_replica_position_flow_list_opt</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">s</span><span class="p">)</span>
+
+        <span class="c1"># interpolate between existing replica parameters, for taking dummy replicas into account.</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_replica_position_flow_list_opt</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
+            <span class="n">sf</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_replica_position_flow_list_opt</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">opt_replica_parameters</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sf</span><span class="o">.</span><span class="n">s</span><span class="p">)</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">sf</span><span class="o">.</span><span class="n">num_s_in_interval</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">):</span>
+                <span class="c1"># calculate the range, which needed to be distributed over additional replicas</span>
+                <span class="n">ds</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_replica_position_flow_list_opt</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">s</span> <span class="o">-</span> <span class="n">sf</span><span class="o">.</span><span class="n">s</span><span class="p">)</span> <span class="o">/</span> <span class="nb">float</span><span class="p">(</span><span class="n">sf</span><span class="o">.</span><span class="n">num_s_in_interval</span><span class="p">)</span>
+                <span class="c1"># actual adding s_vals</span>
+                <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">sf</span><span class="o">.</span><span class="n">num_s_in_interval</span><span class="p">):</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">opt_replica_parameters</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sf</span><span class="o">.</span><span class="n">s</span> <span class="o">+</span> <span class="n">j</span> <span class="o">*</span> <span class="n">ds</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">opt_replica_parameters</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">opt_replica_parameters</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nice_sval_list</span><span class="p">(</span><span class="n">svals_list</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">opt_replica_parameters</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">index</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_replica_position_flow_list_opt</span><span class="p">)):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_add_dummy_replica_to_intervall</span><span class="p">(</span><span class="n">index</span><span class="p">)</span></div>
+
+
+
+
+    <span class="c1"># Flow calculations calculate f_n for optimizers - preparation</span>
+<div class="viewcode-block" id="_RTOptimizer._calculate_replica_visit_fraction_one_state"><a class="viewcode-back" href="../../../../../_source/reeds.function_libs.optimization.src.html#reeds.function_libs.optimization.src.s_optimizer._RTOptimizer._calculate_replica_visit_fraction_one_state">[docs]</a>    <span class="k">def</span> <span class="nf">_calculate_replica_visit_fraction_one_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">s_in</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="n">n_up_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span>
+                                                    <span class="n">n_down_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            Sidler et al. 2017 - Eq. 5 - calculate the fraction of replicas, that have visited this replica_position position in a certain state, for 1 state.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        s_in : List[float]</span>
+<span class="sd">            input s-distribution</span>
+<span class="sd">        n_up_list : List[float]</span>
+<span class="sd">             replicas moving up (coming from down)</span>
+<span class="sd">        n_down_list : List[List[float]]</span>
+<span class="sd">            replicas moving down (coming from up)</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        List[float]</span>
+<span class="sd">             gives the fraction of how many replicas visited a replica_position position.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># get ammounts of replicas and states</span>
+        <span class="n">num_states</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">n_down_list</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="n">num_replicas</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">s_in</span><span class="p">)</span>
+
+        <span class="c1"># Calculate f(s) for input s values and states</span>
+        <span class="n">replica_visits_fraction</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+
+        <span class="k">for</span> <span class="n">replica_position</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_replicas</span><span class="p">):</span>
+            <span class="c1"># init list with Replica_Flow_position objects</span>
+            <span class="n">replica_visits_fraction</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Replica_Flow_Position</span><span class="p">(</span><span class="n">s_in</span><span class="p">[</span><span class="n">replica_position</span><span class="p">],</span> <span class="mi">0</span><span class="p">))</span>
+            <span class="n">f_n</span> <span class="o">=</span> <span class="mf">0.0</span>
+
+            <span class="c1"># calc</span>
+            <span class="n">n_up</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">(</span><span class="n">n_up_list</span><span class="p">[</span><span class="n">replica_position</span><span class="p">])</span>
+            <span class="n">n_down</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">(</span><span class="mf">0.0</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">state</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_states</span><span class="p">):</span>
+                <span class="n">n_down</span> <span class="o">+=</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">(</span><span class="n">n_down_list</span><span class="p">[</span><span class="n">replica_position</span><span class="p">][</span><span class="n">state</span><span class="p">])</span>
+
+            <span class="k">if</span> <span class="p">(</span><span class="n">n_up</span> <span class="o">+</span> <span class="n">n_down</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">):</span>
+                <span class="n">f_n</span> <span class="o">=</span> <span class="n">n_down</span> <span class="o">/</span> <span class="p">(</span><span class="n">n_up</span> <span class="o">+</span> <span class="n">n_down</span><span class="p">)</span>
+
+            <span class="n">replica_visits_fraction</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">f</span> <span class="o">=</span> <span class="n">f_n</span>
+
+        <span class="k">return</span> <span class="n">replica_visits_fraction</span></div>
+
+<div class="viewcode-block" id="_RTOptimizer._calculate_replica_visit_fraction_n_states"><a class="viewcode-back" href="../../../../../_source/reeds.function_libs.optimization.src.html#reeds.function_libs.optimization.src.s_optimizer._RTOptimizer._calculate_replica_visit_fraction_n_states">[docs]</a>    <span class="k">def</span> <span class="nf">_calculate_replica_visit_fraction_n_states</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">s_in</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="n">n_up_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span>
+                                                   <span class="n">n_down_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">]],</span>
+                                                   <span class="n">state_weights</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            Sidler et al. 2017 - Eq. 11 - calculate the fraction of replicas, that have visited this replica position in a certain state. for N-states!</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        s_in : List[float]</span>
+<span class="sd">            list of input s-values</span>
+<span class="sd">        n_up_list : List[float]</span>
+<span class="sd">            replicas moving up (coming from down)</span>
+<span class="sd">        n_down_list : List[float]</span>
+<span class="sd">            replicas moving down (coming from up)</span>
+<span class="sd">        state_weights : List[float]</span>
+<span class="sd">            weigth factors for the different states in the replicas</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        List[float]</span>
+<span class="sd">            gives the fraction of how many replicas visited a replica position.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># get ammounts of replicas and states</span>
+        <span class="n">num_states</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">n_down_list</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="n">num_replicas</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">s_in</span><span class="p">)</span>
+
+        <span class="c1"># w - weights for each state</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">state_weights</span> <span class="o">==</span> <span class="kc">None</span><span class="p">):</span>
+            <span class="n">state_weights</span> <span class="o">=</span> <span class="p">[</span><span class="mf">1.0</span> <span class="o">/</span> <span class="n">num_states</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_states</span><span class="p">)]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">state_weights</span> <span class="o">=</span> <span class="n">state_weights</span>
+
+        <span class="c1"># Calculate f(s) for input s values and states</span>
+        <span class="n">replica_visits_fraction</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+
+        <span class="k">for</span> <span class="n">replica</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_replicas</span><span class="p">):</span>
+            <span class="c1"># init list with Replica_Flow_position objects</span>
+            <span class="n">replica_visits_fraction</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Replica_Flow_Position</span><span class="p">(</span><span class="n">s_in</span><span class="p">[</span><span class="n">replica</span><span class="p">],</span> <span class="mi">0</span><span class="p">))</span>
+            <span class="n">f_n</span> <span class="o">=</span> <span class="mf">0.0</span>
+
+            <span class="c1"># calc</span>
+            <span class="n">n_up</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">n_up_list</span><span class="p">[</span><span class="n">replica</span><span class="p">])</span>
+            <span class="k">for</span> <span class="n">state</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_states</span><span class="p">):</span>
+                <span class="n">weigth</span> <span class="o">=</span> <span class="n">state_weights</span><span class="p">[</span><span class="n">state</span><span class="p">]</span>
+                <span class="n">n_down</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">n_down_list</span><span class="p">[</span><span class="n">replica</span><span class="p">][</span><span class="n">state</span><span class="p">])</span>
+
+                <span class="k">if</span> <span class="p">(</span><span class="n">n_up</span> <span class="o">+</span> <span class="n">n_down</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">):</span>
+                    <span class="n">f_n</span> <span class="o">+=</span> <span class="p">(</span><span class="n">weigth</span> <span class="o">*</span> <span class="n">n_down</span> <span class="o">*</span> <span class="n">num_states</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">n_up</span> <span class="o">+</span> <span class="n">n_down</span> <span class="o">*</span> <span class="n">num_states</span><span class="p">)</span>  <span class="c1"># Eq. 11</span>
+
+            <span class="n">replica_visits_fraction</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">f</span> <span class="o">=</span> <span class="n">f_n</span>
+
+        <span class="k">return</span> <span class="n">replica_visits_fraction</span></div>
+
+<div class="viewcode-block" id="_RTOptimizer._calculate_replica_visit_fraction_n_states_equalized"><a class="viewcode-back" href="../../../../../_source/reeds.function_libs.optimization.src.html#reeds.function_libs.optimization.src.s_optimizer._RTOptimizer._calculate_replica_visit_fraction_n_states_equalized">[docs]</a>    <span class="k">def</span> <span class="nf">_calculate_replica_visit_fraction_n_states_equalized</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">s_in</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="n">n_up_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span>
+                                                             <span class="n">n_down_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">]],</span>
+                                                             <span class="n">state_weights</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        @DEVELOP! - try and thing about it!</span>
+<span class="sd">        Modified Sidler et al. 2017 - Eq. 11 - calculate the fraction of replicas, that have visited this replica position in a certain state. for N-states!</span>
+<span class="sd">        Difference is factor N for the states comming down, try to evaluate down and up as equals.</span>
+<span class="sd">        :param n_up_in: replicas moving up (coming from down)</span>
+<span class="sd">        :param n_down_in: replicas moving down (coming from up)</span>
+<span class="sd">        :param num_replicas: total number of replicas</span>
+<span class="sd">        :param state_weights:</span>
+<span class="sd">        :return: replica_visits_fraction: gives the fraction of how many replicas visited a replica position.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># get ammounts of replicas and states</span>
+        <span class="n">num_states</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">n_down_list</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="n">num_replicas</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">s_in</span><span class="p">)</span>
+
+        <span class="c1"># w - weights for each state</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">state_weights</span> <span class="o">==</span> <span class="kc">None</span><span class="p">):</span>
+            <span class="n">state_weights</span> <span class="o">=</span> <span class="p">[</span><span class="mf">1.0</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_states</span><span class="p">)]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">state_weights</span> <span class="o">=</span> <span class="n">state_weights</span>
+
+        <span class="c1"># Calculate f(s) for input s values and states</span>
+        <span class="n">replica_visits_fraction</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+
+        <span class="k">for</span> <span class="n">replica</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_replicas</span><span class="p">):</span>
+            <span class="c1"># init list with Replica_Flow_position objects</span>
+            <span class="n">replica_visits_fraction</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Replica_Flow_Position</span><span class="p">(</span><span class="n">s_in</span><span class="p">[</span><span class="n">replica</span><span class="p">],</span> <span class="mi">0</span><span class="p">))</span>
+            <span class="n">f_n</span> <span class="o">=</span> <span class="mf">0.0</span>
+
+            <span class="c1"># calc</span>
+            <span class="n">n_up</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">n_up_list</span><span class="p">[</span><span class="n">replica</span><span class="p">])</span>
+            <span class="n">n_down</span> <span class="o">=</span> <span class="mf">0.0</span>
+            <span class="k">for</span> <span class="n">state</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_states</span><span class="p">):</span>
+                <span class="n">state_weight</span> <span class="o">=</span> <span class="n">state_weights</span><span class="p">[</span><span class="n">state</span><span class="p">]</span>
+                <span class="n">state_n_down</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">n_down_list</span><span class="p">[</span><span class="n">replica</span><span class="p">][</span><span class="n">state</span><span class="p">])</span>
+                <span class="n">n_down</span> <span class="o">+=</span> <span class="n">state_weight</span> <span class="o">*</span> <span class="n">state_n_down</span>
+
+            <span class="k">if</span> <span class="p">(</span><span class="n">n_up</span> <span class="o">+</span> <span class="n">n_down</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">):</span>  <span class="c1"># if the denominator is not zero, else 0.0</span>
+                <span class="n">f_n</span> <span class="o">+=</span> <span class="n">n_down</span> <span class="o">/</span> <span class="p">(</span><span class="n">n_up</span> <span class="o">+</span> <span class="n">n_down</span><span class="p">)</span>  <span class="c1"># modified version of eq. 11 (putted sums inside the division.)</span>
+
+            <span class="n">replica_visits_fraction</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">f</span> <span class="o">=</span> <span class="n">f_n</span>
+
+        <span class="k">return</span> <span class="n">replica_visits_fraction</span></div>
+
+    <span class="c1"># FUNCTIONs for GRTO</span>
+<div class="viewcode-block" id="_RTOptimizer._add_s_values_accord_to_flow_area_fast"><a class="viewcode-back" href="../../../../../_source/reeds.function_libs.optimization.src.html#reeds.function_libs.optimization.src.s_optimizer._RTOptimizer._add_s_values_accord_to_flow_area_fast">[docs]</a>    <span class="k">def</span> <span class="nf">_add_s_values_accord_to_flow_area_fast</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">old_s_dist</span><span class="p">:</span> <span class="nb">list</span><span class="p">,</span> <span class="n">f_n_list</span><span class="p">:</span> <span class="nb">list</span><span class="p">,</span> <span class="n">c_prime</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">,</span> <span class="n">ds</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+                                               <span class="n">new_replica_num</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        @DEVELOPING!</span>
+<span class="sd">        Think more thorrow about it! not working at this time</span>
+
+<span class="sd">        :param old_s_dist:</span>
+<span class="sd">        :param f_n_list:</span>
+<span class="sd">        :param c_prime:</span>
+<span class="sd">        :param ds:</span>
+<span class="sd">        :param new_replica_num:</span>
+<span class="sd">        :param verbose:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;fast version is not implemented and tested. &quot;</span><span class="p">)</span>
+        <span class="c1"># add initial s_value (smin comes later)</span>
+        <span class="n">replicas_to_add</span> <span class="o">=</span> <span class="n">new_replica_num</span> <span class="o">-</span> <span class="mi">2</span>  <span class="c1"># because min and max s_values are again in s_distribution</span>
+        <span class="n">smax</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">old_s_dist</span><span class="p">)</span>
+        <span class="n">new_s_dist</span> <span class="o">=</span> <span class="p">[</span><span class="n">smax</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_add_dummy_replica_to_intervall</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_replica_position_flow_list_opt</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+
+        <span class="c1"># define relative area content of each replica</span>
+        <span class="n">add_if</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">(</span><span class="mf">1.0</span><span class="p">)</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">(</span><span class="n">new_replica_num</span> <span class="o">-</span> <span class="mi">2</span><span class="p">))</span>  <span class="c1"># Todo: rename sensefull!</span>
+        <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">()</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Add Replicas&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">add_if&quot;</span><span class="p">,</span> <span class="n">add_if</span><span class="p">)</span>
+
+        <span class="n">area</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">index</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">old_s_dist</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>
+            <span class="c1"># get svals</span>
+            <span class="n">s_i</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">(</span><span class="n">old_s_dist</span><span class="p">[</span><span class="n">index</span><span class="p">])</span>
+            <span class="n">s_j</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">(</span><span class="n">old_s_dist</span><span class="p">[</span><span class="n">index</span> <span class="o">+</span> <span class="mi">1</span><span class="p">])</span>
+
+            <span class="k">if</span> <span class="p">(</span><span class="n">index</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">old_s_dist</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>
+                <span class="n">ammount_of_ds</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">s_i</span> <span class="o">-</span> <span class="n">s_j</span><span class="p">)</span> <span class="o">/</span> <span class="n">ds</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">ammount_of_ds</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">s_i</span> <span class="o">-</span> <span class="n">s_j</span><span class="p">)</span> <span class="o">/</span> <span class="n">ds</span><span class="p">)</span>
+
+            <span class="c1"># get precalculated flows</span>
+            <span class="n">f_n_i</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">(</span><span class="n">f_n_list</span><span class="p">[</span><span class="n">index</span><span class="p">]</span><span class="o">.</span><span class="n">f</span><span class="p">)</span>
+            <span class="n">f_n_j</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">(</span><span class="n">f_n_list</span><span class="p">[</span><span class="n">index</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">f</span><span class="p">)</span>
+
+            <span class="c1"># calc c_prime contribution</span>
+            <span class="n">nominator</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">(</span><span class="n">f_n_i</span> <span class="o">-</span> <span class="n">f_n_j</span><span class="p">)</span>
+            <span class="n">denominator</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">((</span><span class="n">s_i</span> <span class="o">-</span> <span class="n">s_j</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span>
+            <span class="n">area</span> <span class="o">+=</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">(</span><span class="n">c_prime</span> <span class="o">*</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">nominator</span> <span class="o">/</span> <span class="n">denominator</span><span class="p">))</span> <span class="o">*</span> <span class="n">ds</span> <span class="o">*</span> <span class="n">ammount_of_ds</span><span class="p">))</span>
+
+            <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">()</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;STEP STATISTIC&quot;</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">index&quot;</span><span class="p">,</span> <span class="n">index</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">f_n i, i+1: &quot;</span><span class="p">,</span> <span class="n">f_n_i</span><span class="p">,</span> <span class="n">f_n_j</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">s i, i+1: &quot;</span><span class="p">,</span> <span class="n">s_i</span><span class="p">,</span> <span class="n">s_j</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">ammount_ds:&quot;</span><span class="p">,</span> <span class="n">ammount_of_ds</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">denominator: &quot;</span><span class="p">,</span> <span class="n">denominator</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">nominator: &quot;</span><span class="p">,</span> <span class="n">nominator</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">tmp_area: &quot;</span><span class="p">,</span> <span class="n">area</span><span class="p">)</span>
+
+            <span class="c1"># add new s_val if area is big enough</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">area</span> <span class="o">&gt;</span> <span class="n">add_if</span><span class="p">):</span>
+                <span class="c1"># adding area:</span>
+                <span class="n">tmp_add_replicas</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">area</span> <span class="o">//</span> <span class="n">add_if</span><span class="p">)</span>
+                <span class="n">tmp_rest_area</span> <span class="o">=</span> <span class="n">area</span> <span class="o">%</span> <span class="n">add_if</span>
+                <span class="n">area_percentage</span> <span class="o">=</span> <span class="p">(</span><span class="n">add_if</span> <span class="o">*</span> <span class="n">tmp_add_replicas</span><span class="p">)</span> <span class="o">/</span> <span class="n">area</span>
+                <span class="n">s_dist</span> <span class="o">=</span> <span class="p">(</span><span class="n">area_percentage</span> <span class="o">*</span> <span class="nb">abs</span><span class="p">(</span><span class="n">s_j</span> <span class="o">-</span> <span class="n">s_i</span><span class="p">))</span> <span class="o">/</span> <span class="n">tmp_add_replicas</span>
+
+                <span class="n">s_values</span> <span class="o">=</span> <span class="p">[</span><span class="n">s_i</span> <span class="o">-</span> <span class="n">s_dist</span> <span class="o">*</span> <span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">tmp_add_replicas</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)]</span>
+
+                <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;ADDING SVALS &lt;--&quot;</span><span class="p">)</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">replicas to add: &quot;</span><span class="p">,</span> <span class="n">replicas_to_add</span><span class="p">)</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">add replicas to interval&quot;</span><span class="p">,</span> <span class="n">tmp_add_replicas</span><span class="p">)</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">area percentage for replicas of s_intervall: &quot;</span><span class="p">,</span> <span class="n">area_percentage</span><span class="p">)</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">add s_distance from s_i*x: &quot;</span><span class="p">,</span> <span class="n">s_dist</span><span class="p">)</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">added svals: &quot;</span><span class="p">,</span> <span class="n">s_values</span><span class="p">)</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">rest area of interval&quot;</span><span class="p">,</span> <span class="n">tmp_rest_area</span><span class="p">)</span>
+
+                <span class="n">new_s_dist</span> <span class="o">+=</span> <span class="n">s_values</span>
+                <span class="n">replicas_to_add</span> <span class="o">-=</span> <span class="n">tmp_add_replicas</span>
+                <span class="n">bucket_index</span> <span class="o">=</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_replica_position_flow_list_opt</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">index</span>
+                <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">tmp_add_replicas</span><span class="p">)):</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_add_dummy_replica_to_intervall</span><span class="p">(</span><span class="n">bucket_index</span><span class="p">)</span>
+                <span class="n">area</span> <span class="o">=</span> <span class="n">tmp_rest_area</span>
+
+        <span class="n">smin</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">old_s_dist</span><span class="p">)</span>
+        <span class="n">new_s_dist</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">smin</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_add_dummy_replica_to_intervall</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">new_s_dist</span></div>
+
+<div class="viewcode-block" id="_RTOptimizer._add_s_values_accord_to_flow_area"><a class="viewcode-back" href="../../../../../_source/reeds.function_libs.optimization.src.html#reeds.function_libs.optimization.src.s_optimizer._RTOptimizer._add_s_values_accord_to_flow_area">[docs]</a>    <span class="k">def</span> <span class="nf">_add_s_values_accord_to_flow_area</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">old_s_dist</span><span class="p">:</span> <span class="nb">list</span><span class="p">,</span> <span class="n">f_n_list</span><span class="p">:</span> <span class="nb">list</span><span class="p">,</span> <span class="n">c_prime</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">,</span> <span class="n">ds</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+                                          <span class="n">new_replica_num</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            This function is required for GRTO algorithm.</span>
+<span class="sd">            it calculates the new position for the replicas accordingt to the integral of the flow curve over all replicas</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        old_s_dist : List[float]</span>
+<span class="sd">            old s-values</span>
+<span class="sd">        f_n_list : List[List[float]]</span>
+<span class="sd">            state dependendt flow lsit</span>
+<span class="sd">        c_prime : float</span>
+<span class="sd">            coefficient for flow//replicas</span>
+<span class="sd">        ds : float</span>
+<span class="sd">            integral step size</span>
+<span class="sd">        new_replica_num : int</span>
+<span class="sd">            adding replicas</span>
+<span class="sd">        verbose : bool</span>
+<span class="sd">            verbosity level</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        List[float]</span>
+<span class="sd">            new_s_dist</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">smin</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">old_s_dist</span><span class="p">)</span>
+        <span class="n">smax</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">old_s_dist</span><span class="p">)</span>
+        <span class="n">replicas_to_add</span> <span class="o">=</span> <span class="n">new_replica_num</span> <span class="o">-</span> <span class="mi">2</span>
+
+        <span class="n">new_s_dist</span> <span class="o">=</span> <span class="p">[</span><span class="n">smax</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_add_dummy_replica_to_intervall</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_replica_position_flow_list_opt</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+
+        <span class="n">add_if</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">(</span><span class="mf">1.0</span><span class="p">)</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">(</span><span class="n">new_replica_num</span> <span class="o">-</span> <span class="mi">1</span><span class="p">))</span>  <span class="c1"># Todo: rename sensefull!</span>
+        <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">()</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Add Replicas&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;add_if&quot;</span><span class="p">,</span> <span class="n">add_if</span><span class="p">)</span>
+
+        <span class="n">area</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">current_replica_index</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="nb">reversed</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">smin</span> <span class="o">+</span> <span class="n">ds</span><span class="p">,</span> <span class="n">smax</span><span class="p">,</span> <span class="n">ds</span><span class="p">)):</span>
+            <span class="c1"># get precalculated flows</span>
+            <span class="n">f_n_i</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">(</span><span class="n">f_n_list</span><span class="p">[</span><span class="n">current_replica_index</span><span class="p">]</span><span class="o">.</span><span class="n">f</span><span class="p">)</span>
+            <span class="n">f_n_j</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">(</span><span class="n">f_n_list</span><span class="p">[</span><span class="n">current_replica_index</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">f</span><span class="p">)</span>
+            <span class="c1"># get svals</span>
+            <span class="n">s_i</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">(</span><span class="n">old_s_dist</span><span class="p">[</span><span class="n">current_replica_index</span><span class="p">])</span>
+            <span class="n">s_j</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">(</span><span class="n">old_s_dist</span><span class="p">[</span><span class="n">current_replica_index</span> <span class="o">+</span> <span class="mi">1</span><span class="p">])</span>
+
+            <span class="c1"># calc c_prime contribution</span>
+            <span class="n">nominator</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">(</span><span class="n">f_n_j</span> <span class="o">-</span> <span class="n">f_n_i</span><span class="p">)</span>
+            <span class="n">denominator</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">((</span><span class="n">s_j</span> <span class="o">-</span> <span class="n">s_i</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span>
+
+            <span class="n">area</span> <span class="o">+=</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">(</span><span class="n">c_prime</span> <span class="o">*</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">nominator</span> <span class="o">/</span> <span class="n">denominator</span><span class="p">))</span> <span class="o">*</span> <span class="n">ds</span><span class="p">))</span>
+
+            <span class="c1"># add new s_val if area is big enough</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">area</span> <span class="o">&gt;</span> <span class="n">add_if</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+                    <span class="nb">print</span><span class="p">()</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;adding replica: &quot;</span><span class="p">,</span> <span class="n">replicas_to_add</span><span class="p">)</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;s: &quot;</span><span class="p">,</span> <span class="n">s</span><span class="p">)</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;area: &quot;</span><span class="p">,</span> <span class="n">area</span><span class="p">)</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;current_rep: &quot;</span><span class="p">,</span> <span class="n">current_replica_index</span><span class="p">)</span>
+
+                <span class="n">replicas_to_add</span> <span class="o">-=</span> <span class="mi">1</span>
+                <span class="n">new_s_dist</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_add_dummy_replica_to_intervall</span><span class="p">(</span>
+                    <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_replica_position_flow_list_opt</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">current_replica_index</span><span class="p">)</span>
+                <span class="n">area</span> <span class="o">=</span> <span class="mi">0</span>
+
+            <span class="k">if</span> <span class="p">(</span><span class="n">s</span> <span class="o">&lt;</span> <span class="n">s_j</span><span class="p">):</span>
+                <span class="n">current_replica_index</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            if verbose:</span>
+<span class="sd">                print()</span>
+<span class="sd">                print(&quot;s_value: &quot;, s)</span>
+<span class="sd">                print(&quot;current_replica: &quot;, current_replica_index)</span>
+<span class="sd">                print(&quot;f_n i, i+1: &quot;, f_n_i, f_n_j)</span>
+<span class="sd">                print(&quot;s i, i+1: &quot;, s_i, s_j)</span>
+<span class="sd">                print(&quot;nominator: &quot;, nominator)</span>
+<span class="sd">                print(&quot;denominator: &quot;, denominator)</span>
+<span class="sd">                print(&quot;area&quot;, area)</span>
+<span class="sd">            &quot;&quot;&quot;</span>
+
+        <span class="n">new_s_dist</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">smin</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_add_dummy_replica_to_intervall</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">new_s_dist</span></div>
+
+<div class="viewcode-block" id="_RTOptimizer._calculate_normalisation_c_prime"><a class="viewcode-back" href="../../../../../_source/reeds.function_libs.optimization.src.html#reeds.function_libs.optimization.src.s_optimizer._RTOptimizer._calculate_normalisation_c_prime">[docs]</a>    <span class="k">def</span> <span class="nf">_calculate_normalisation_c_prime</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">old_s_dist</span><span class="p">:</span> <span class="nb">list</span><span class="p">,</span> <span class="n">f_n_list</span><span class="p">:</span> <span class="nb">list</span><span class="p">,</span> <span class="n">ds</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+                                         <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        old_s_dist : List[float]</span>
+<span class="sd">            s-list</span>
+<span class="sd">        f_n_list : List[List[float]]</span>
+<span class="sd">            flows of the replicas state dependend</span>
+<span class="sd">        ds : float</span>
+<span class="sd">            stepsize in the integral</span>
+<span class="sd">        verbose : bool, optional</span>
+<span class="sd">            verbosity on?</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        float</span>
+<span class="sd">            c_prime</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">c_prime</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">index</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">old_s_dist</span><span class="p">)):</span>
+            <span class="c1"># get svals</span>
+            <span class="n">s_i</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">(</span><span class="n">old_s_dist</span><span class="p">[</span><span class="n">index</span><span class="p">])</span>
+            <span class="n">s_j</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">(</span><span class="n">old_s_dist</span><span class="p">[</span><span class="n">index</span> <span class="o">-</span> <span class="mi">1</span><span class="p">])</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">index</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">old_s_dist</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>
+                <span class="n">ammount_of_ds</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">s_j</span> <span class="o">-</span> <span class="n">s_i</span><span class="p">)</span> <span class="o">/</span> <span class="n">ds</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">ammount_of_ds</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">s_j</span> <span class="o">-</span> <span class="n">s_i</span><span class="p">)</span> <span class="o">/</span> <span class="n">ds</span><span class="p">)</span>
+
+            <span class="c1"># get precalculated flows</span>
+            <span class="n">f_n_i</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">(</span><span class="n">f_n_list</span><span class="p">[</span><span class="n">index</span><span class="p">]</span><span class="o">.</span><span class="n">f</span><span class="p">)</span>
+            <span class="n">f_n_j</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">(</span><span class="n">f_n_list</span><span class="p">[</span><span class="n">index</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">f</span><span class="p">)</span>
+
+            <span class="c1"># calc c_prime contribution</span>
+            <span class="n">nominator</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">(</span><span class="n">f_n_j</span> <span class="o">-</span> <span class="n">f_n_i</span><span class="p">)</span>
+            <span class="n">denominator</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">((</span><span class="n">s_j</span> <span class="o">-</span> <span class="n">s_i</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span>
+            <span class="n">c_prime</span> <span class="o">+=</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">nominator</span> <span class="o">/</span> <span class="n">denominator</span><span class="p">))</span> <span class="o">*</span> <span class="n">ds</span> <span class="o">*</span> <span class="n">ammount_of_ds</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">()</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;index&quot;</span><span class="p">,</span> <span class="n">index</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;f_n i-1, i: &quot;</span><span class="p">,</span> <span class="n">f_n_j</span><span class="p">,</span> <span class="n">f_n_i</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;s i-1, i: &quot;</span><span class="p">,</span> <span class="n">s_j</span><span class="p">,</span> <span class="n">s_i</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;ammount_ds:&quot;</span><span class="p">,</span> <span class="n">ammount_of_ds</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;denominator: &quot;</span><span class="p">,</span> <span class="n">denominator</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;nominator: &quot;</span><span class="p">,</span> <span class="n">nominator</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;tmp_cprime: &quot;</span><span class="p">,</span> <span class="n">c_prime</span><span class="p">)</span>
+
+        <span class="n">c_prime</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">(</span><span class="n">c_prime</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">c_prime</span></div>
+
+<div class="viewcode-block" id="_RTOptimizer._calculate_normalisation_c_prime_integral"><a class="viewcode-back" href="../../../../../_source/reeds.function_libs.optimization.src.html#reeds.function_libs.optimization.src.s_optimizer._RTOptimizer._calculate_normalisation_c_prime_integral">[docs]</a>    <span class="k">def</span> <span class="nf">_calculate_normalisation_c_prime_integral</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">old_s_dist</span><span class="p">:</span> <span class="nb">list</span><span class="p">,</span> <span class="n">f_n_list</span><span class="p">:</span> <span class="nb">list</span><span class="p">,</span> <span class="n">ds</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+                                                  <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">                Deapriceated: Old implementation, doing a real integral. Not needed for a linear propagation. - slow</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        old_s_dist : List[float]</span>
+<span class="sd">            s-list</span>
+<span class="sd">        f_n_list : List[List[float]]</span>
+<span class="sd">            flows of the replicas state dependend</span>
+<span class="sd">        ds : float</span>
+<span class="sd">            stepsize in the integral</span>
+<span class="sd">        verbose : bool, optional</span>
+<span class="sd">            verbosity on?</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        float</span>
+<span class="sd">            c_prime</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">smin</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">old_s_dist</span><span class="p">)</span>
+        <span class="n">smax</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">old_s_dist</span><span class="p">)</span>
+
+        <span class="n">current_replica_index</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">c_prime</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">tmp_c_p</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">ds_count</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="c1"># Old real integral slow! for a linear case here.</span>
+        <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="nb">reversed</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">smin</span> <span class="o">+</span> <span class="n">ds</span><span class="p">,</span> <span class="n">smax</span><span class="p">,</span> <span class="n">ds</span><span class="p">)):</span>
+
+            <span class="c1"># get svals</span>
+            <span class="n">s_i</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">(</span><span class="n">old_s_dist</span><span class="p">[</span><span class="n">current_replica_index</span><span class="p">])</span>
+            <span class="n">s_j</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">(</span><span class="n">old_s_dist</span><span class="p">[</span><span class="n">current_replica_index</span> <span class="o">+</span> <span class="mi">1</span><span class="p">])</span>
+
+            <span class="k">if</span> <span class="p">(</span><span class="n">s</span> <span class="o">&lt;</span> <span class="n">s_j</span><span class="p">):</span>
+                <span class="nb">print</span><span class="p">()</span>
+                <span class="nb">print</span><span class="p">(</span><span class="n">ds</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;f_n i, i+1: &quot;</span><span class="p">,</span> <span class="n">f_n_i</span><span class="p">,</span> <span class="n">f_n_j</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;s i, i+1: &quot;</span><span class="p">,</span> <span class="n">s_i</span><span class="p">,</span> <span class="n">s_j</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;local c: &quot;</span><span class="p">,</span> <span class="n">c_prime</span> <span class="o">-</span> <span class="n">tmp_c_p</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;ammount of ds: &quot;</span><span class="p">,</span> <span class="n">ds_count</span><span class="p">)</span>
+                <span class="n">tmp_c_p</span> <span class="o">=</span> <span class="n">c_prime</span>
+                <span class="n">ds_count</span> <span class="o">=</span> <span class="mi">0</span>
+                <span class="n">current_replica_index</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="c1"># get new svals</span>
+                <span class="n">s_i</span> <span class="o">=</span> <span class="n">s_j</span>
+                <span class="n">s_j</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">(</span><span class="n">old_s_dist</span><span class="p">[</span><span class="n">current_replica_index</span> <span class="o">+</span> <span class="mi">1</span><span class="p">])</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;new: s i, i+1: &quot;</span><span class="p">,</span> <span class="n">s_i</span><span class="p">,</span> <span class="n">s_j</span><span class="p">)</span>
+
+            <span class="c1"># get precalculated flows</span>
+            <span class="n">f_n_i</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">(</span><span class="n">f_n_list</span><span class="p">[</span><span class="n">current_replica_index</span><span class="p">]</span><span class="o">.</span><span class="n">f</span><span class="p">)</span>
+            <span class="n">f_n_j</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">(</span><span class="n">f_n_list</span><span class="p">[</span><span class="n">current_replica_index</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">f</span><span class="p">)</span>
+
+            <span class="c1"># calc c_prime contribution</span>
+            <span class="n">nominator</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">(</span><span class="n">f_n_i</span> <span class="o">-</span> <span class="n">f_n_j</span><span class="p">)</span>
+            <span class="n">denominator</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">((</span><span class="n">s_i</span> <span class="o">-</span> <span class="n">s_j</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span>
+
+            <span class="n">c_prime</span> <span class="o">+=</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">nominator</span> <span class="o">/</span> <span class="n">denominator</span><span class="p">))</span> <span class="o">*</span> <span class="n">ds</span><span class="p">)</span>
+            <span class="n">ds_count</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">()</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;s: &quot;</span><span class="p">,</span> <span class="n">s</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;current_replica: &quot;</span><span class="p">,</span> <span class="n">current_replica_index</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;f_n i, i+1: &quot;</span><span class="p">,</span> <span class="n">f_n_i</span><span class="p">,</span> <span class="n">f_n_j</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;s i, i+1: &quot;</span><span class="p">,</span> <span class="n">s_i</span><span class="p">,</span> <span class="n">s_j</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;denominator: &quot;</span><span class="p">,</span> <span class="n">denominator</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;nominator: &quot;</span><span class="p">,</span> <span class="n">nominator</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;tmp_cprime: &quot;</span><span class="p">,</span> <span class="n">c_prime</span><span class="p">)</span>
+        <span class="n">c_prime</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">(</span><span class="n">c_prime</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">c_prime</span></div>
+
+    <span class="c1"># Functions for LRTO</span>
+<div class="viewcode-block" id="_RTOptimizer._find_max_diff_index"><a class="viewcode-back" href="../../../../../_source/reeds.function_libs.optimization.src.html#reeds.function_libs.optimization.src.s_optimizer._RTOptimizer._find_max_diff_index">[docs]</a>    <span class="k">def</span> <span class="nf">_find_max_diff_index</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            Find maximal flow loss off replicas</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        int</span>
+<span class="sd">            index of upper replica position of the bottle neck</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">index</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">diff_max</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="c1"># get biggest flow loss in the replica set.</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_replica_position_flow_list</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>
+            <span class="n">diff</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_replica_position_flow_list</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">f</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_replica_position_flow_list</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">f</span><span class="p">)</span> <span class="o">/</span> <span class="nb">float</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_replica_position_flow_list</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">num_s_in_interval</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">diff</span> <span class="o">&gt;</span> <span class="n">diff_max</span><span class="p">:</span>
+                <span class="n">diff_max</span> <span class="o">=</span> <span class="n">diff</span>
+                <span class="n">index</span> <span class="o">=</span> <span class="n">i</span>
+
+        <span class="k">return</span> <span class="n">index</span></div>
+
+    <span class="c1"># general useable fuctions</span>
+<div class="viewcode-block" id="_RTOptimizer._add_dummy_replica_to_intervall"><a class="viewcode-back" href="../../../../../_source/reeds.function_libs.optimization.src.html#reeds.function_libs.optimization.src.s_optimizer._RTOptimizer._add_dummy_replica_to_intervall">[docs]</a>    <span class="k">def</span> <span class="nf">_add_dummy_replica_to_intervall</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">:</span><span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            index of lower replica, of the gap where a new replica should be added</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        index : int</span>
+<span class="sd">            index of the replica bucket</span>
+
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># add replica to bucket</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_replica_position_flow_list_opt</span><span class="p">[</span><span class="n">index</span><span class="p">]</span><span class="o">.</span><span class="n">num_s_in_interval</span> <span class="o">+=</span> <span class="mi">1</span></div>
+
+    <span class="k">def</span> <span class="nf">_nice_sval_list</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">svals_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="n">sig_digits</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">6</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">]:</span>
+        <span class="n">round_list</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">svals_list</span><span class="p">:</span>
+            <span class="n">number</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">s</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)</span>
+            <span class="n">count_digits</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="k">if</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">number</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">):</span>
+                <span class="n">round_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">s</span><span class="p">))</span>
+                <span class="k">continue</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">number</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
+                    <span class="k">if</span> <span class="p">(</span><span class="n">x</span> <span class="o">!=</span> <span class="s2">&quot;.&quot;</span> <span class="ow">and</span> <span class="n">x</span> <span class="o">!=</span> <span class="s2">&quot;0&quot;</span><span class="p">):</span>
+                        <span class="n">count_digits</span> <span class="o">+=</span> <span class="mi">3</span>
+                        <span class="k">break</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">count_digits</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="n">round_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">count_digits</span> <span class="o">+</span> <span class="n">sig_digits</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">round_list</span></div>
+
+
+<div class="viewcode-block" id="N_LRTO"><a class="viewcode-back" href="../../../../../_source/reeds.function_libs.optimization.src.html#reeds.function_libs.optimization.src.s_optimizer.N_LRTO">[docs]</a><span class="k">class</span> <span class="nc">N_LRTO</span><span class="p">(</span><span class="n">_RTOptimizer</span><span class="p">):</span>
+
+<div class="viewcode-block" id="N_LRTO.__init__"><a class="viewcode-back" href="../../../../../_source/reeds.function_libs.optimization.src.html#reeds.function_libs.optimization.src.s_optimizer.N_LRTO.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">replica_exchange_statistics</span><span class="p">,</span> <span class="n">state_weights</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            Performs a Local roundtrip optimization</span>
+<span class="sd">            Sidler et al. 2017</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        replica_exchange_statistics:  (sopt_Pathstatistic.PathStatistic or repdat.Repdat)</span>
+<span class="sd">            the exchange statistics, that should be analysed</span>
+<span class="sd">        state_weights : List[float]</span>
+<span class="sd">            weights for the individual states in a replica, used to optimize the s-distribution state dependingly</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">replica_exchange_statistics</span><span class="p">,</span> <span class="n">state_weights</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">=</span> <span class="s2">&quot;N-LRTO&quot;</span></div>
+
+<div class="viewcode-block" id="N_LRTO._calculate_replica_visit_fraction"><a class="viewcode-back" href="../../../../../_source/reeds.function_libs.optimization.src.html#reeds.function_libs.optimization.src.s_optimizer.N_LRTO._calculate_replica_visit_fraction">[docs]</a>    <span class="k">def</span> <span class="nf">_calculate_replica_visit_fraction</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">s_in</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="n">n_up_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span>
+                                          <span class="n">n_down_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">]],</span>
+                                          <span class="n">state_weights</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            see _RTOptimizer._calculate_replica_visit_fraction_n_states</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_calculate_replica_visit_fraction_n_states</span><span class="p">(</span><span class="n">s_in</span><span class="o">=</span><span class="n">s_in</span><span class="p">,</span> <span class="n">n_up_list</span><span class="o">=</span><span class="n">n_up_list</span><span class="p">,</span> <span class="n">n_down_list</span><span class="o">=</span><span class="n">n_down_list</span><span class="p">,</span>
+                                                               <span class="n">state_weights</span><span class="o">=</span><span class="n">state_weights</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="N_LRTO.optimize"><a class="viewcode-back" href="../../../../../_source/reeds.function_libs.optimization.src.html#reeds.function_libs.optimization.src.s_optimizer.N_LRTO.optimize">[docs]</a>    <span class="k">def</span> <span class="nf">optimize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">add_replicas</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            see _RTOptimizer._optimize_LRTO</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_optimize_LRTO</span><span class="p">(</span><span class="n">add_replicas</span><span class="o">=</span><span class="n">add_replicas</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="Equalized_N_LRTO"><a class="viewcode-back" href="../../../../../_source/reeds.function_libs.optimization.src.html#reeds.function_libs.optimization.src.s_optimizer.Equalized_N_LRTO">[docs]</a><span class="k">class</span> <span class="nc">Equalized_N_LRTO</span><span class="p">(</span><span class="n">_RTOptimizer</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">   DEAPRECIATED</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">replica_exchange_statistics</span><span class="p">,</span> <span class="n">state_weights</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">replica_exchange_statistics</span><span class="p">,</span> <span class="n">state_weights</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">=</span> <span class="s2">&quot;EqN-LRTO&quot;</span>
+
+<div class="viewcode-block" id="Equalized_N_LRTO._calculate_replica_visit_fraction"><a class="viewcode-back" href="../../../../../_source/reeds.function_libs.optimization.src.html#reeds.function_libs.optimization.src.s_optimizer.Equalized_N_LRTO._calculate_replica_visit_fraction">[docs]</a>    <span class="k">def</span> <span class="nf">_calculate_replica_visit_fraction</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">s_in</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="n">n_up_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span>
+                                          <span class="n">n_down_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">]],</span>
+                                          <span class="n">state_weights</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            see _RTOptimizer._calculate_replica_visit_fraction_n_states_equalized</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_calculate_replica_visit_fraction_n_states_equalized</span><span class="p">(</span><span class="n">s_in</span><span class="o">=</span><span class="n">s_in</span><span class="p">,</span> <span class="n">n_up_list</span><span class="o">=</span><span class="n">n_up_list</span><span class="p">,</span>
+                                                                         <span class="n">n_down_list</span><span class="o">=</span><span class="n">n_down_list</span><span class="p">,</span>
+                                                                         <span class="n">state_weights</span><span class="o">=</span><span class="n">state_weights</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Equalized_N_LRTO.optimize"><a class="viewcode-back" href="../../../../../_source/reeds.function_libs.optimization.src.html#reeds.function_libs.optimization.src.s_optimizer.Equalized_N_LRTO.optimize">[docs]</a>    <span class="k">def</span> <span class="nf">optimize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">add_replicas</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            see _RTOptimizer._optimize_LRTO</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_optimize_LRTO</span><span class="p">(</span><span class="n">add_replicas</span><span class="o">=</span><span class="n">add_replicas</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="N_GRTO"><a class="viewcode-back" href="../../../../../_source/reeds.function_libs.optimization.src.html#reeds.function_libs.optimization.src.s_optimizer.N_GRTO">[docs]</a><span class="k">class</span> <span class="nc">N_GRTO</span><span class="p">(</span><span class="n">_RTOptimizer</span><span class="p">):</span>
+<div class="viewcode-block" id="N_GRTO.__init__"><a class="viewcode-back" href="../../../../../_source/reeds.function_libs.optimization.src.html#reeds.function_libs.optimization.src.s_optimizer.N_GRTO.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">replica_exchange_statistics</span><span class="p">,</span> <span class="n">state_weights</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            Performs a global roundtrip optimization</span>
+<span class="sd">            Sidler et al. 2017</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        replica_exchange_statistics:  (sopt_Pathstatistic.PathStatistic or repdat.Repdat)</span>
+<span class="sd">            the exchange statistics, that should be analysed</span>
+<span class="sd">        state_weights : List[float]</span>
+<span class="sd">            weights for the individual states in a replica, used to optimize the s-distribution state dependingly</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">replica_exchange_statistics</span><span class="p">,</span> <span class="n">state_weights</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">=</span> <span class="s2">&quot;N-GRTO&quot;</span></div>
+
+<div class="viewcode-block" id="N_GRTO._calculate_replica_visit_fraction"><a class="viewcode-back" href="../../../../../_source/reeds.function_libs.optimization.src.html#reeds.function_libs.optimization.src.s_optimizer.N_GRTO._calculate_replica_visit_fraction">[docs]</a>    <span class="k">def</span> <span class="nf">_calculate_replica_visit_fraction</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">s_in</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="n">n_up_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span>
+                                          <span class="n">n_down_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">]],</span>
+                                          <span class="n">state_weights</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            see _RTOptimizer._calculate_replica_visit_fraction_n_states</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_calculate_replica_visit_fraction_n_states</span><span class="p">(</span><span class="n">s_in</span><span class="o">=</span><span class="n">s_in</span><span class="p">,</span> <span class="n">n_up_list</span><span class="o">=</span><span class="n">n_up_list</span><span class="p">,</span> <span class="n">n_down_list</span><span class="o">=</span><span class="n">n_down_list</span><span class="p">,</span>
+                                                               <span class="n">state_weights</span><span class="o">=</span><span class="n">state_weights</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="N_GRTO.optimize"><a class="viewcode-back" href="../../../../../_source/reeds.function_libs.optimization.src.html#reeds.function_libs.optimization.src.s_optimizer.N_GRTO.optimize">[docs]</a>    <span class="k">def</span> <span class="nf">optimize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">add_replicas</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">ds</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.0001</span><span class="p">,</span> <span class="n">verbose</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">detail_verbose</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            see _RTOptimizer._optimize_GRTO</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_optimize_GRTO</span><span class="p">(</span><span class="n">add_replicas</span><span class="o">=</span><span class="n">add_replicas</span><span class="p">,</span> <span class="n">ds</span><span class="o">=</span><span class="n">ds</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">,</span> <span class="n">detail_verbose</span><span class="o">=</span><span class="n">detail_verbose</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="One_GRTO"><a class="viewcode-back" href="../../../../../_source/reeds.function_libs.optimization.src.html#reeds.function_libs.optimization.src.s_optimizer.One_GRTO">[docs]</a><span class="k">class</span> <span class="nc">One_GRTO</span><span class="p">(</span><span class="n">_RTOptimizer</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Performs a global roundtrip optimization</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="One_GRTO.__init__"><a class="viewcode-back" href="../../../../../_source/reeds.function_libs.optimization.src.html#reeds.function_libs.optimization.src.s_optimizer.One_GRTO.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">replica_exchange_statistics</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            Performs a global roundtrip optimization</span>
+<span class="sd">            Katgraber et al. 2006</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        replica_exchange_statistics:  (sopt_Pathstatistic.PathStatistic or repdat.Repdat)</span>
+<span class="sd">            the exchange statistics, that should be analysed</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">replica_exchange_statistics</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">=</span> <span class="s2">&quot;1-GRTO&quot;</span></div>
+
+<div class="viewcode-block" id="One_GRTO.optimize"><a class="viewcode-back" href="../../../../../_source/reeds.function_libs.optimization.src.html#reeds.function_libs.optimization.src.s_optimizer.One_GRTO.optimize">[docs]</a>    <span class="k">def</span> <span class="nf">optimize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">add_replicas</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">ds</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.0001</span><span class="p">,</span> <span class="n">verbose</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">detail_verbose</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            see _RTOptimizer._optimize_GRTO</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_optimize_GRTO</span><span class="p">(</span><span class="n">add_replicas</span><span class="o">=</span><span class="n">add_replicas</span><span class="p">,</span> <span class="n">ds</span><span class="o">=</span><span class="n">ds</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">,</span> <span class="n">detail_verbose</span><span class="o">=</span><span class="n">detail_verbose</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="One_GRTO._calculate_replica_visit_fraction"><a class="viewcode-back" href="../../../../../_source/reeds.function_libs.optimization.src.html#reeds.function_libs.optimization.src.s_optimizer.One_GRTO._calculate_replica_visit_fraction">[docs]</a>    <span class="k">def</span> <span class="nf">_calculate_replica_visit_fraction</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">s_in</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="n">n_up_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span>
+                                          <span class="n">n_down_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">]],</span>
+                                          <span class="n">state_weights</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            see _RTOptimizer._calculate_replica_visit_fraction_one_state</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_calculate_replica_visit_fraction_one_state</span><span class="p">(</span><span class="n">n_up_list</span><span class="o">=</span><span class="n">n_up_list</span><span class="p">,</span> <span class="n">n_down_list</span><span class="o">=</span><span class="n">n_down_list</span><span class="p">,</span> <span class="n">s_in</span><span class="o">=</span><span class="n">s_in</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="One_LRTO"><a class="viewcode-back" href="../../../../../_source/reeds.function_libs.optimization.src.html#reeds.function_libs.optimization.src.s_optimizer.One_LRTO">[docs]</a><span class="k">class</span> <span class="nc">One_LRTO</span><span class="p">(</span><span class="n">_RTOptimizer</span><span class="p">):</span>
+
+<div class="viewcode-block" id="One_LRTO.__init__"><a class="viewcode-back" href="../../../../../_source/reeds.function_libs.optimization.src.html#reeds.function_libs.optimization.src.s_optimizer.One_LRTO.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">replica_exchange_statistics</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            Performs a Local roundtrip optimization</span>
+<span class="sd">            Katzgraber et al. 2006</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        replica_exchange_statistics:  (sopt_Pathstatistic.PathStatistic or repdat.Repdat)</span>
+<span class="sd">            the exchange statistics, that should be analysed</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">replica_exchange_statistics</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">=</span> <span class="s2">&quot;1-LRTO&quot;</span></div>
+
+<div class="viewcode-block" id="One_LRTO.optimize"><a class="viewcode-back" href="../../../../../_source/reeds.function_libs.optimization.src.html#reeds.function_libs.optimization.src.s_optimizer.One_LRTO.optimize">[docs]</a>    <span class="k">def</span> <span class="nf">optimize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">add_replicas</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">ds</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.001</span><span class="p">,</span> <span class="n">verbose</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+                 <span class="n">detail_verbose</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            see _RTOptimizer._optimize_LRTO</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_optimize_LRTO</span><span class="p">(</span><span class="n">add_replicas</span><span class="o">=</span><span class="n">add_replicas</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="One_LRTO._calculate_replica_visit_fraction"><a class="viewcode-back" href="../../../../../_source/reeds.function_libs.optimization.src.html#reeds.function_libs.optimization.src.s_optimizer.One_LRTO._calculate_replica_visit_fraction">[docs]</a>    <span class="k">def</span> <span class="nf">_calculate_replica_visit_fraction</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">s_in</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="n">n_up_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span>
+                                          <span class="n">n_down_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">]],</span>
+                                          <span class="n">state_weights</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            see _RTOptimizer._calculate_replica_visit_fraction_one_state</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_calculate_replica_visit_fraction_one_state</span><span class="p">(</span><span class="n">n_up_list</span><span class="o">=</span><span class="n">n_up_list</span><span class="p">,</span> <span class="n">n_down_list</span><span class="o">=</span><span class="n">n_down_list</span><span class="p">,</span> <span class="n">s_in</span><span class="o">=</span><span class="n">s_in</span><span class="p">)</span></div></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, Benjamin Ries, Salome Rieder, Candide Champion. Project structure based on the Computational Molecular Science Python Cookiecutter version 1.3
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
