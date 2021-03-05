@@ -5,7 +5,7 @@ import os
 from pygromos.files import imd
 from pygromos.utils import bash
 from reeds.data import ene_ana_libs
-from reeds.function_libs.visualization import visualisation as vis
+from reeds.function_libs.visualization import pot_energy_plots as vis
 from reeds.function_libs.file_management import file_management as fM
 
 

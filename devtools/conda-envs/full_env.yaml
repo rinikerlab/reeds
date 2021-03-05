@@ -11,6 +11,7 @@ dependencies:
   - codecov
 
     #Science
+  - sklearn
   - scipy
   - numpy
   - pandas
