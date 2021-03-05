@@ -1,0 +1,38 @@
+reeds.function\_libs.analysis package
+=====================================
+
+Submodules
+----------
+
+reeds.function\_libs.analysis.analysis module
+---------------------------------------------
+
+.. automodule:: reeds.function_libs.analysis.analysis
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+reeds.function\_libs.analysis.file\_management module
+-----------------------------------------------------
+
+.. automodule:: reeds.function_libs.analysis.file_management
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+reeds.function\_libs.analysis.visualisation module
+--------------------------------------------------
+
+.. automodule:: reeds.function_libs.analysis.visualisation
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+
+Module contents
+---------------
+
+.. automodule:: reeds.function_libs.analysis
+   :members:
+   :undoc-members:
+   :show-inheritance:

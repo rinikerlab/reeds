@@ -1,0 +1,314 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>REEDS &mdash; REEDS  documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="REEDS" href="introduction.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="#" class="icon icon-home"> REEDS
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="introduction.html">REEDS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Examples/index.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="_source/modules.html">Documentation</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="#">REEDS</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="#">Docs</a> &raquo;</li>
+        
+      <li>REEDS</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/index.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  
+<style>
+/* CSS overrides for sphinx_rtd_theme */
+
+/* 24px margin */
+.nbinput.nblast.container,
+.nboutput.nblast.container {
+    margin-bottom: 19px;  /* padding has already 5px */
+}
+
+/* ... except between code cells! */
+.nblast.container + .nbinput.container {
+    margin-top: -19px;
+}
+
+.admonition > p:before {
+    margin-right: 4px;  /* make room for the exclamation icon */
+}
+
+/* Fix math alignment, see https://github.com/rtfd/sphinx_rtd_theme/pull/686 */
+.math {
+    text-align: unset;
+}
+</style>
+<div class="section" id="reeds">
+<h1>REEDS<a class="headerlink" href="#reeds" title="Permalink to this headline">¶</a></h1>
+<a class="reference external image-reference" href="https://github.com/SchroederB/REEDS_Pipeline/actions/workflows/CI.yaml"><img alt="CI" src="https://github.com/SchroederB/REEDS_Pipeline/actions/workflows/CI.yaml/badge.svg" /></a>
+<a class="reference external image-reference" href="https://schroederb.github.io/REEDS_Pipeline/"><img alt="Documentation" src="https://img.shields.io/badge/Documentation-here-white.svg" /></a>
+<p>The aim of the module is to make the RE-EDS pipeline accesible to everyone! :)</p>
+<p>This Project contains:</p>
+<ul class="simple">
+<li><p>For python 3.6:</p>
+<ul>
+<li><p>Reeds parameter optimization and analysis Funcs -&gt;funcLibs</p></li>
+<li><p>reeds simulation pipeline -&gt; Scripts</p></li>
+<li><p>reeds theory scripts (generating the beautiful harmPot plots) -&gt;Scripts</p></li>
+</ul>
+</li>
+<li><p>gromos Reeds Versions</p></li>
+<li><p>gromos Files for REEDS</p></li>
+<li><p>submodule: PyGromos is already included in the repo</p></li>
+</ul>
+<p>The project is structured into two folders:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">*</span> <span class="n">The</span> <span class="n">function_libs</span> <span class="n">folder</span> <span class="n">contains</span> <span class="nb">all</span> <span class="n">the</span> <span class="n">code</span> <span class="n">you</span> <span class="n">could</span> <span class="n">use</span> <span class="ow">in</span> <span class="n">one</span> <span class="n">of</span> <span class="n">your</span> <span class="n">scripts</span><span class="o">.</span>
+<span class="o">*</span> <span class="n">The</span> <span class="n">scripts</span> <span class="n">folder</span> <span class="n">contains</span> <span class="n">code</span> <span class="n">bits</span><span class="p">,</span> <span class="n">you</span> <span class="n">could</span> <span class="n">already</span> <span class="n">use</span> <span class="k">with</span> <span class="n">slight</span> <span class="n">adaptations</span> <span class="k">for</span> <span class="n">your</span> <span class="n">own</span> <span class="n">project</span><span class="o">.</span>
+</pre></div>
+</div>
+<p>For using this repository, clone it (like the command below) into a directory on your machine and add the path to the repo to your python path.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>git clone --recurse-submodules &lt;repo url&gt;
+PYTHONPATH=${PYTHONPATH}:/path/to/reeds_Repo/reeds
+</pre></div>
+</div>
+<dl class="simple">
+<dt>If you want to update the code of the PyGromos submodule, you can do this:</dt><dd><p>git submodule init
+git submodule update</p>
+</dd>
+</dl>
+<p>Please if your writing code for this repository, first develop it on an own branch.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">branch</span> <span class="n">MyBranch</span>    <span class="c1">#generate your branch</span>
+<span class="n">git</span> <span class="n">checkout</span> <span class="n">MyBranch</span>  <span class="c1">#switch to your branch</span>
+<span class="n">git</span> <span class="n">merge</span> <span class="n">master</span>   <span class="c1">#for adding new features from master to your branch</span>
+</pre></div>
+</div>
+<p>Try to write test cases for your implemented features in /scritps/test. (there are already examples)
+So it is easier to maintain the code and add additional features.</p>
+<p>If you find a bug or any thing else, please raise an Issue.</p>
+<p>required packages:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">-</span> <span class="n">numpydoc</span>
+<span class="o">-</span> <span class="n">mdtraj</span>
+<span class="o">-</span> <span class="n">matplotlib</span>
+<span class="o">-</span> <span class="n">numpy</span>
+<span class="o">-</span> <span class="n">pandas</span>
+<span class="o">-</span> <span class="n">scipy</span>
+<span class="o">-</span> <span class="n">rdkit</span>
+</pre></div>
+</div>
+<p>If you find a bug or have an idea for a cool new feature, you are welcom to raise an Issue at the git page. :)
+P.s.: I can recommend Pycharm from dstar, for exploring the repository.</p>
+<div class="section" id="copyright">
+<h2>Copyright<a class="headerlink" href="#copyright" title="Permalink to this headline">¶</a></h2>
+<p>Copyright (c) 2020, Benjamin Ries, Salome Rieder, Candide Champion</p>
+<div class="section" id="acknowledgements">
+<h3>Acknowledgements<a class="headerlink" href="#acknowledgements" title="Permalink to this headline">¶</a></h3>
+<p>Project based on the
+<a class="reference external" href="https://github.com/molssi/cookiecutter-cms">Computational Molecular Science Python Cookiecutter</a> version 1.3.</p>
+<div class="toctree-wrapper compound">
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="introduction.html">REEDS</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="introduction.html#copyright">Copyright</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="Examples/index.html">Examples</a><ul class="simple">
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="_source/modules.html">Documentation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="_source/reeds.html">reeds package</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="indices-and-tables">
+<h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h1>
+<ul class="simple">
+<li><p><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></p></li>
+<li><p><a class="reference internal" href="py-modindex.html"><span class="std std-ref">Module Index</span></a></p></li>
+<li><p><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></p></li>
+</ul>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="introduction.html" class="btn btn-neutral float-right" title="REEDS" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, Benjamin Ries, Salome Rieder, Candide Champion. Project structure based on the Computational Molecular Science Python Cookiecutter version 1.3
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

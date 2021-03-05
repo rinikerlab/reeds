@@ -1,0 +1,1501 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>RE-EDS Sampling Analysis &mdash; REEDS  documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> REEDS
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../introduction.html">REEDS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="index.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_source/modules.html">Documentation</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">REEDS</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+      <li>RE-EDS Sampling Analysis</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/Examples/State_Sampling_Analysis.ipynb.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  
+<style>
+/* CSS for nbsphinx extension */
+
+/* remove conflicting styling from Sphinx themes */
+div.nbinput.container,
+div.nbinput.container div.prompt,
+div.nbinput.container div.input_area,
+div.nbinput.container div[class*=highlight],
+div.nbinput.container div[class*=highlight] pre,
+div.nboutput.container,
+div.nboutput.container div.prompt,
+div.nboutput.container div.output_area,
+div.nboutput.container div[class*=highlight],
+div.nboutput.container div[class*=highlight] pre {
+    background: none;
+    border: none;
+    padding: 0 0;
+    margin: 0;
+    box-shadow: none;
+}
+
+/* avoid gaps between output lines */
+div.nboutput.container div[class*=highlight] pre {
+    line-height: normal;
+}
+
+/* input/output containers */
+div.nbinput.container,
+div.nboutput.container {
+    display: -webkit-flex;
+    display: flex;
+    align-items: flex-start;
+    margin: 0;
+    width: 100%;
+}
+@media (max-width: 540px) {
+    div.nbinput.container,
+    div.nboutput.container {
+        flex-direction: column;
+    }
+}
+
+/* input container */
+div.nbinput.container {
+    padding-top: 5px;
+}
+
+/* last container */
+div.nblast.container {
+    padding-bottom: 5px;
+}
+
+/* input prompt */
+div.nbinput.container div.prompt pre {
+    color: #307FC1;
+}
+
+/* output prompt */
+div.nboutput.container div.prompt pre {
+    color: #BF5B3D;
+}
+
+/* all prompts */
+div.nbinput.container div.prompt,
+div.nboutput.container div.prompt {
+    width: 4.5ex;
+    padding-top: 5px;
+    position: relative;
+    user-select: none;
+}
+
+div.nbinput.container div.prompt > div,
+div.nboutput.container div.prompt > div {
+    position: absolute;
+    right: 0;
+    margin-right: 0.3ex;
+}
+
+@media (max-width: 540px) {
+    div.nbinput.container div.prompt,
+    div.nboutput.container div.prompt {
+        width: unset;
+        text-align: left;
+        padding: 0.4em;
+    }
+    div.nboutput.container div.prompt.empty {
+        padding: 0;
+    }
+
+    div.nbinput.container div.prompt > div,
+    div.nboutput.container div.prompt > div {
+        position: unset;
+    }
+}
+
+/* disable scrollbars on prompts */
+div.nbinput.container div.prompt pre,
+div.nboutput.container div.prompt pre {
+    overflow: hidden;
+}
+
+/* input/output area */
+div.nbinput.container div.input_area,
+div.nboutput.container div.output_area {
+    -webkit-flex: 1;
+    flex: 1;
+    overflow: auto;
+}
+@media (max-width: 540px) {
+    div.nbinput.container div.input_area,
+    div.nboutput.container div.output_area {
+        width: 100%;
+    }
+}
+
+/* input area */
+div.nbinput.container div.input_area {
+    border: 1px solid #e0e0e0;
+    border-radius: 2px;
+    background: #f5f5f5;
+}
+
+/* override MathJax center alignment in output cells */
+div.nboutput.container div[class*=MathJax] {
+    text-align: left !important;
+}
+
+/* override sphinx.ext.imgmath center alignment in output cells */
+div.nboutput.container div.math p {
+    text-align: left;
+}
+
+/* standard error */
+div.nboutput.container div.output_area.stderr {
+    background: #fdd;
+}
+
+/* ANSI colors */
+.ansi-black-fg { color: #3E424D; }
+.ansi-black-bg { background-color: #3E424D; }
+.ansi-black-intense-fg { color: #282C36; }
+.ansi-black-intense-bg { background-color: #282C36; }
+.ansi-red-fg { color: #E75C58; }
+.ansi-red-bg { background-color: #E75C58; }
+.ansi-red-intense-fg { color: #B22B31; }
+.ansi-red-intense-bg { background-color: #B22B31; }
+.ansi-green-fg { color: #00A250; }
+.ansi-green-bg { background-color: #00A250; }
+.ansi-green-intense-fg { color: #007427; }
+.ansi-green-intense-bg { background-color: #007427; }
+.ansi-yellow-fg { color: #DDB62B; }
+.ansi-yellow-bg { background-color: #DDB62B; }
+.ansi-yellow-intense-fg { color: #B27D12; }
+.ansi-yellow-intense-bg { background-color: #B27D12; }
+.ansi-blue-fg { color: #208FFB; }
+.ansi-blue-bg { background-color: #208FFB; }
+.ansi-blue-intense-fg { color: #0065CA; }
+.ansi-blue-intense-bg { background-color: #0065CA; }
+.ansi-magenta-fg { color: #D160C4; }
+.ansi-magenta-bg { background-color: #D160C4; }
+.ansi-magenta-intense-fg { color: #A03196; }
+.ansi-magenta-intense-bg { background-color: #A03196; }
+.ansi-cyan-fg { color: #60C6C8; }
+.ansi-cyan-bg { background-color: #60C6C8; }
+.ansi-cyan-intense-fg { color: #258F8F; }
+.ansi-cyan-intense-bg { background-color: #258F8F; }
+.ansi-white-fg { color: #C5C1B4; }
+.ansi-white-bg { background-color: #C5C1B4; }
+.ansi-white-intense-fg { color: #A1A6B2; }
+.ansi-white-intense-bg { background-color: #A1A6B2; }
+
+.ansi-default-inverse-fg { color: #FFFFFF; }
+.ansi-default-inverse-bg { background-color: #000000; }
+
+.ansi-bold { font-weight: bold; }
+.ansi-underline { text-decoration: underline; }
+
+
+div.nbinput.container div.input_area div[class*=highlight] > pre,
+div.nboutput.container div.output_area div[class*=highlight] > pre,
+div.nboutput.container div.output_area div[class*=highlight].math,
+div.nboutput.container div.output_area.rendered_html,
+div.nboutput.container div.output_area > div.output_javascript,
+div.nboutput.container div.output_area:not(.rendered_html) > img{
+    padding: 5px;
+}
+
+/* fix copybtn overflow problem in chromium (needed for 'sphinx_copybutton') */
+div.nbinput.container div.input_area > div[class^='highlight'],
+div.nboutput.container div.output_area > div[class^='highlight']{
+    overflow-y: hidden;
+}
+
+/* hide copybtn icon on prompts (needed for 'sphinx_copybutton') */
+.prompt a.copybtn {
+    display: none;
+}
+
+/* Some additional styling taken form the Jupyter notebook CSS */
+div.rendered_html table {
+  border: none;
+  border-collapse: collapse;
+  border-spacing: 0;
+  color: black;
+  font-size: 12px;
+  table-layout: fixed;
+}
+div.rendered_html thead {
+  border-bottom: 1px solid black;
+  vertical-align: bottom;
+}
+div.rendered_html tr,
+div.rendered_html th,
+div.rendered_html td {
+  text-align: right;
+  vertical-align: middle;
+  padding: 0.5em 0.5em;
+  line-height: normal;
+  white-space: normal;
+  max-width: none;
+  border: none;
+}
+div.rendered_html th {
+  font-weight: bold;
+}
+div.rendered_html tbody tr:nth-child(odd) {
+  background: #f5f5f5;
+}
+div.rendered_html tbody tr:hover {
+  background: rgba(66, 165, 245, 0.2);
+}
+
+/* CSS overrides for sphinx_rtd_theme */
+
+/* 24px margin */
+.nbinput.nblast.container,
+.nboutput.nblast.container {
+    margin-bottom: 19px;  /* padding has already 5px */
+}
+
+/* ... except between code cells! */
+.nblast.container + .nbinput.container {
+    margin-top: -19px;
+}
+
+.admonition > p:before {
+    margin-right: 4px;  /* make room for the exclamation icon */
+}
+
+/* Fix math alignment, see https://github.com/rtfd/sphinx_rtd_theme/pull/686 */
+.math {
+    text-align: unset;
+}
+</style>
+<div class="section" id="RE-EDS-Sampling-Analysis">
+<h1>RE-EDS Sampling Analysis<a class="headerlink" href="#RE-EDS-Sampling-Analysis" title="Permalink to this headline">¶</a></h1>
+<p>In this jupyter notebook I want to focus on the two types of sampling by RE-EDS: * Occurrence Sampling * Dominating Sampling</p>
+<p>Authors: Salome Rieder, Benjamin Ries</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="c1">#Imports</span>
+<span class="kn">import</span> <span class="nn">os</span><span class="o">,</span> <span class="nn">sys</span>
+
+<span class="c1"># if you have path issues, you can try this:</span>
+<span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;/cluster/home/bschroed/code/reeds&quot;</span><span class="p">)</span>
+
+<span class="o">%</span><span class="k">matplotlib</span> inline
+<span class="kn">from</span> <span class="nn">reeds.function_libs.analysis</span> <span class="kn">import</span> <span class="n">visualisation</span> <span class="k">as</span> <span class="n">vis</span>
+
+
+<span class="c1">#import reeds</span>
+<span class="kn">from</span> <span class="nn">reeds.function_libs.analysis</span> <span class="kn">import</span> <span class="n">file_management</span> <span class="k">as</span> <span class="n">fM</span>
+<span class="kn">from</span> <span class="nn">reeds.function_libs.analysis</span> <span class="kn">import</span> <span class="n">analysis</span> <span class="k">as</span> <span class="n">ana</span>
+
+</pre></div>
+</div>
+</div>
+<div class="section" id="Read-In-Data">
+<h2>Read In Data<a class="headerlink" href="#Read-In-Data" title="Permalink to this headline">¶</a></h2>
+<p>here we can read in some data, if you are on euler, this should work for you. You need: * Energy files * s-values</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="c1">#Here some projet data</span>
+<span class="n">s_vals</span><span class="o">=</span> <span class="p">[</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.5623413</span><span class="p">,</span> <span class="mf">0.3162278</span><span class="p">,</span> <span class="mf">0.1778279</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.0562341</span><span class="p">,</span> <span class="mf">0.0316228</span><span class="p">,</span> <span class="mf">0.0177828</span><span class="p">,</span> <span class="mf">0.01</span><span class="p">,</span> <span class="mf">0.0056234</span><span class="p">,</span> <span class="mf">0.0031623</span><span class="p">,</span> <span class="mf">0.0017783</span><span class="p">,</span> <span class="mf">0.001</span><span class="p">,</span> <span class="mf">0.0005623</span><span class="p">,</span> <span class="mf">0.0003162</span><span class="p">,</span> <span class="mf">0.0001778</span><span class="p">,</span> <span class="mf">0.0001</span><span class="p">,</span> <span class="mf">5.62e-05</span><span class="p">,</span> <span class="mf">3.16e-05</span><span class="p">,</span> <span class="mf">1.78e-05</span><span class="p">,</span> <span class="mf">1e-05</span><span class="p">]</span>
+<span class="n">data_dir</span> <span class="o">=</span> <span class="s2">&quot;/cluster/work/igc/bschroed/REEDS/CHK1/complex_d5/b_lowerBound/analysis/data&quot;</span>
+<span class="n">out_prefix</span> <span class="o">=</span> <span class="s2">&quot;CHK1_disres5_complex_find_lower_bound_energies&quot;</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">ene_traj_csvs</span> <span class="o">=</span> <span class="n">fM</span><span class="o">.</span><span class="n">parse_csv_energy_trajectories</span><span class="p">(</span><span class="n">data_dir</span><span class="p">,</span> <span class="n">out_prefix</span><span class="p">)</span>    <span class="c1">#gather potentials</span>
+<span class="n">ene_traj_csvs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">s</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&#39;s1&#39;
+</pre></div></div>
+</div>
+</div>
+<div class="section" id="Single-compartments">
+<h2>Single compartments<a class="headerlink" href="#Single-compartments" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="finding-potential-thresholds">
+<h3>finding potential thresholds<a class="headerlink" href="#finding-potential-thresholds" title="Permalink to this headline">¶</a></h3>
+<p>first for categorizing undersampling states in the replicas, we define a potential energy threshold, that characterizes the states as beeing sampled. This is possible due to the density enriched regions, caused by active sampling.</p>
+<div class="section" id="classic">
+<h4>classic<a class="headerlink" href="#classic" title="Permalink to this headline">¶</a></h4>
+<p>in Sidler et al. 2016, the potential threshold was defined for all states as 0. This is a good start, but not true for all systems.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[19]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">pot_tresh_classic</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">7</span><span class="p">)]</span>
+
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="density-based-clustering">
+<h4>density based clustering<a class="headerlink" href="#density-based-clustering" title="Permalink to this headline">¶</a></h4>
+<p>This approach is actually a bit costy. It performce a DBSCAN density clustering on the energies to find high density areas. If 90% of the data of one state lies in the cluster with the minimal potential energy cluster, the pot_thresh is defined by the assumption of normality of the data as:</p>
+<p>$ V_{thresh} = <span class="math">\overline{V_{i_{clustered}}}</span> + 3 * <span class="math">\sigma</span><em>{i</em>{clustered}} $</p>
+<p>By definition all data not lying under this threshold is considered as an outlier for normal distributions and therefore not part of an activley sampled state.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[20]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">pot_tresh_db_clust</span> <span class="o">=</span> <span class="n">ana</span><span class="o">.</span><span class="n">undersampling_occurence_potential_threshold_densityClustering</span><span class="p">(</span><span class="n">ene_traj_csvs</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;clustering&quot;</span><span class="p">,</span><span class="n">pot_tresh_db_clust</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+clustering [-511.42828519 -487.76364177 -473.81142854 -544.30178399 -534.09930392]
+</pre></div></div>
+</div>
+</div>
+<div class="section" id="minimal-energy+threshold-=-distribution-based">
+<h4>minimal energy+threshold = distribution based<a class="headerlink" href="#minimal-energy+threshold-=-distribution-based" title="Permalink to this headline">¶</a></h4>
+<p>This approach is way more performant and is the current default. It checks if 90% of the data of one state is in maximally 300kJ away from the lowest energy. Afterwards again the pot_thresh is defined by the assumption of normality of the data as:</p>
+<p>$ V_{i_{thresh}} = <span class="math">\overline{V_{i_{clustered}}}</span> + 3 * <span class="math">\sigma</span><em>{i</em>{clustered}} $</p>
+<p>By definition all data not lying under this threshold is considered as an outlier for normal distributions and therefore not part of an activley sampled state.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[23]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">pot_tresh_dist_cut</span> <span class="o">=</span> <span class="n">ana</span><span class="o">.</span><span class="n">undersampling_occurence_potential_threshold_distribution_based</span><span class="p">(</span><span class="n">ene_traj_csvs</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;distrib&quot;</span><span class="p">,</span> <span class="n">pot_tresh_dist_cut</span><span class="p">)</span>
+
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+distrib [-511.42828519 -488.11025    -474.83640034 -544.30178399 -534.43310833]
+</pre></div></div>
+</div>
+</div>
+</div>
+<div class="section" id="calculating-sampling-distributions">
+<h3>calculating sampling distributions<a class="headerlink" href="#calculating-sampling-distributions" title="Permalink to this headline">¶</a></h3>
+<p>Next we calculate the state sampling distributions for each replica.</p>
+<p>The dominating state sampling distribution based on the fraction of a state having the minimal potential energy contribution to the reference state. This state is assumed to be the state domninating the sampling of the reference state due to the definition of the laws of motion.</p>
+<p>Second the state occurrence sampling is calculated. This sampling counts how often a state is below its before defined <span class="math notranslate nohighlight">\(V_{i_{thresh}}\)</span>. Every state frame counted here is considered to be partially sampled or contributing to the reference state.</p>
+<p>Finally the categorization of replicas regarding if they are undersampling or not is performed. An undersampling Replica has a very high occurence sampling fraction (<span class="math notranslate nohighlight">\(&gt;0.75\)</span>) of all states.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[24]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">sampling_distributions</span> <span class="o">=</span> <span class="n">ana</span><span class="o">.</span><span class="n">calculate_sampling_distributions</span><span class="p">(</span><span class="n">ene_traj_csvs</span><span class="p">,</span> <span class="n">potential_treshold</span><span class="o">=</span><span class="n">pot_tresh_dist_cut</span><span class="p">)</span>
+<span class="n">sampling_distributions</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[24]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+{1: {&#39;dominating_state&#39;: {1: 0, 2: 0, 3: 0, 4: 1.0, 5: 0},
+  &#39;occurence_state&#39;: {1: 0.002, 2: 0.0, 3: 0.0, 4: 1.0, 5: 0.0},
+  &#39;undersampling&#39;: False},
+ 2: {&#39;dominating_state&#39;: {1: 0, 2: 0, 3: 0, 4: 1.0, 5: 0},
+  &#39;occurence_state&#39;: {1: 0.002, 2: 0.0, 3: 0.0, 4: 1.0, 5: 0.0},
+  &#39;undersampling&#39;: False},
+ 3: {&#39;dominating_state&#39;: {1: 0, 2: 0, 3: 0, 4: 1.0, 5: 0},
+  &#39;occurence_state&#39;: {1: 0.002, 2: 0.0, 3: 0.0, 4: 1.0, 5: 0.0},
+  &#39;undersampling&#39;: False},
+ 4: {&#39;dominating_state&#39;: {1: 0, 2: 0, 3: 0, 4: 1.0, 5: 0},
+  &#39;occurence_state&#39;: {1: 0.002, 2: 0.0, 3: 0.0, 4: 1.0, 5: 0.0},
+  &#39;undersampling&#39;: False},
+ 5: {&#39;dominating_state&#39;: {1: 0, 2: 0, 3: 0, 4: 1.0, 5: 0},
+  &#39;occurence_state&#39;: {1: 0.003, 2: 0.0, 3: 0.0, 4: 1.0, 5: 0.001},
+  &#39;undersampling&#39;: False},
+ 6: {&#39;dominating_state&#39;: {1: 0, 2: 0, 3: 0, 4: 0.496, 5: 0.504},
+  &#39;occurence_state&#39;: {1: 0.005, 2: 0.004, 3: 0.0, 4: 0.85, 5: 0.539},
+  &#39;undersampling&#39;: False},
+ 7: {&#39;dominating_state&#39;: {1: 0.009, 2: 0.001, 3: 0, 4: 0.243, 5: 0.747},
+  &#39;occurence_state&#39;: {1: 0.969, 2: 0.803, 3: 0.0, 4: 0.998, 5: 0.999},
+  &#39;undersampling&#39;: False},
+ 8: {&#39;dominating_state&#39;: {1: 0.029, 2: 0.001, 3: 0.004, 4: 0.335, 5: 0.631},
+  &#39;occurence_state&#39;: {1: 0.995, 2: 0.985, 3: 0.312, 4: 1.0, 5: 0.999},
+  &#39;undersampling&#39;: False},
+ 9: {&#39;dominating_state&#39;: {1: 0.033, 2: 0.005, 3: 0.011, 4: 0.338, 5: 0.613},
+  &#39;occurence_state&#39;: {1: 0.996, 2: 0.986, 3: 0.988, 4: 0.997, 5: 0.999},
+  &#39;undersampling&#39;: True},
+ 10: {&#39;dominating_state&#39;: {1: 0.045, 2: 0.012, 3: 0.032, 4: 0.41, 5: 0.501},
+  &#39;occurence_state&#39;: {1: 0.995, 2: 0.996, 3: 0.996, 4: 0.999, 5: 0.997},
+  &#39;undersampling&#39;: True},
+ 11: {&#39;dominating_state&#39;: {1: 0.053, 2: 0.009, 3: 0.032, 4: 0.404, 5: 0.502},
+  &#39;occurence_state&#39;: {1: 0.998, 2: 0.998, 3: 0.997, 4: 0.997, 5: 0.995},
+  &#39;undersampling&#39;: True},
+ 12: {&#39;dominating_state&#39;: {1: 0.036, 2: 0.008, 3: 0.025, 4: 0.39, 5: 0.541},
+  &#39;occurence_state&#39;: {1: 0.997, 2: 0.997, 3: 0.997, 4: 0.999, 5: 0.995},
+  &#39;undersampling&#39;: True},
+ 13: {&#39;dominating_state&#39;: {1: 0.042, 2: 0.007, 3: 0.024, 4: 0.374, 5: 0.553},
+  &#39;occurence_state&#39;: {1: 0.998, 2: 0.999, 3: 0.997, 4: 0.999, 5: 0.998},
+  &#39;undersampling&#39;: True},
+ 14: {&#39;dominating_state&#39;: {1: 0.047, 2: 0.013, 3: 0.024, 4: 0.438, 5: 0.478},
+  &#39;occurence_state&#39;: {1: 0.996, 2: 0.998, 3: 0.997, 4: 0.998, 5: 0.998},
+  &#39;undersampling&#39;: True},
+ 15: {&#39;dominating_state&#39;: {1: 0.044, 2: 0.008, 3: 0.023, 4: 0.46, 5: 0.465},
+  &#39;occurence_state&#39;: {1: 1.0, 2: 0.994, 3: 0.996, 4: 0.999, 5: 0.996},
+  &#39;undersampling&#39;: True},
+ 16: {&#39;dominating_state&#39;: {1: 0.057, 2: 0.012, 3: 0.028, 4: 0.43, 5: 0.473},
+  &#39;occurence_state&#39;: {1: 0.999, 2: 0.997, 3: 0.998, 4: 0.997, 5: 0.993},
+  &#39;undersampling&#39;: True},
+ 17: {&#39;dominating_state&#39;: {1: 0.054, 2: 0.004, 3: 0.029, 4: 0.423, 5: 0.49},
+  &#39;occurence_state&#39;: {1: 0.999, 2: 0.999, 3: 0.997, 4: 0.999, 5: 0.998},
+  &#39;undersampling&#39;: True},
+ 18: {&#39;dominating_state&#39;: {1: 0.057, 2: 0.013, 3: 0.038, 4: 0.441, 5: 0.451},
+  &#39;occurence_state&#39;: {1: 0.999, 2: 0.998, 3: 0.997, 4: 0.998, 5: 0.999},
+  &#39;undersampling&#39;: True},
+ 19: {&#39;dominating_state&#39;: {1: 0.059, 2: 0.008, 3: 0.034, 4: 0.436, 5: 0.463},
+  &#39;occurence_state&#39;: {1: 0.995, 2: 0.991, 3: 0.994, 4: 0.99, 5: 0.99},
+  &#39;undersampling&#39;: True},
+ 20: {&#39;dominating_state&#39;: {1: 0.066, 2: 0.019, 3: 0.031, 4: 0.484, 5: 0.4},
+  &#39;occurence_state&#39;: {1: 1.0, 2: 0.997, 3: 0.997, 4: 1.0, 5: 0.996},
+  &#39;undersampling&#39;: True}}
+</pre></div></div>
+</div>
+</div>
+<div class="section" id="Plotting-analysis">
+<h3>Plotting analysis<a class="headerlink" href="#Plotting-analysis" title="Permalink to this headline">¶</a></h3>
+<p>Here we want to visualize the generated data</p>
+<div class="section" id="Sampling-timeseries">
+<h4>Sampling timeseries<a class="headerlink" href="#Sampling-timeseries" title="Permalink to this headline">¶</a></h4>
+<p>This plot shows the timeseries of the sampling per simulatoin steps.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[25]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">num_states</span><span class="o">=</span> <span class="mi">5</span>
+<span class="n">select_states</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;e&quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="n">num_states</span><span class="o">+</span><span class="mi">1</span><span class="p">)]</span>
+<span class="n">replica</span> <span class="o">=</span> <span class="mi">1</span>
+
+
+<span class="k">for</span> <span class="n">ind</span><span class="p">,</span> <span class="n">replica</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">ene_traj_csvs</span><span class="p">):</span>
+    <span class="n">dominating_state_sampling</span> <span class="o">=</span> <span class="n">replica</span><span class="p">[</span><span class="n">select_states</span><span class="p">]</span><span class="o">.</span><span class="n">idxmin</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;e&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">regex</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="n">occurrence_sampling_replica</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">state</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="o">+</span><span class="n">num_states</span><span class="p">):</span>
+        <span class="n">occurrence_sampling_state_replica</span> <span class="o">=</span> <span class="n">replica</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="n">replica</span><span class="p">[</span><span class="s2">&quot;e&quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">state</span><span class="p">)]</span> <span class="o">&lt;</span> <span class="n">pot_tresh_dist_cut</span><span class="p">[</span><span class="n">state</span><span class="o">-</span><span class="mi">1</span><span class="p">]]</span>
+        <span class="n">occurrence_sampling_replica</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">occurrence_sampling_state_replica</span><span class="p">)</span>
+
+    <span class="n">data</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;occurrence_t&quot;</span><span class="p">:</span> <span class="n">occurrence_sampling_replica</span><span class="p">,</span> <span class="s2">&quot;dominating_state&quot;</span><span class="p">:</span><span class="n">dominating_state_sampling</span><span class="p">}</span>
+    <span class="n">vis</span><span class="o">.</span><span class="n">plot_t_statepres</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span> <span class="n">out_path</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/Examples_State_Sampling_Analysis_15_0.png" src="../_images/Examples_State_Sampling_Analysis_15_0.png" />
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/Examples_State_Sampling_Analysis_15_1.png" src="../_images/Examples_State_Sampling_Analysis_15_1.png" />
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/Examples_State_Sampling_Analysis_15_2.png" src="../_images/Examples_State_Sampling_Analysis_15_2.png" />
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/Examples_State_Sampling_Analysis_15_3.png" src="../_images/Examples_State_Sampling_Analysis_15_3.png" />
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/Examples_State_Sampling_Analysis_15_4.png" src="../_images/Examples_State_Sampling_Analysis_15_4.png" />
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/Examples_State_Sampling_Analysis_15_5.png" src="../_images/Examples_State_Sampling_Analysis_15_5.png" />
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/Examples_State_Sampling_Analysis_15_6.png" src="../_images/Examples_State_Sampling_Analysis_15_6.png" />
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/Examples_State_Sampling_Analysis_15_7.png" src="../_images/Examples_State_Sampling_Analysis_15_7.png" />
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/Examples_State_Sampling_Analysis_15_8.png" src="../_images/Examples_State_Sampling_Analysis_15_8.png" />
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/Examples_State_Sampling_Analysis_15_9.png" src="../_images/Examples_State_Sampling_Analysis_15_9.png" />
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/Examples_State_Sampling_Analysis_15_10.png" src="../_images/Examples_State_Sampling_Analysis_15_10.png" />
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/Examples_State_Sampling_Analysis_15_11.png" src="../_images/Examples_State_Sampling_Analysis_15_11.png" />
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/Examples_State_Sampling_Analysis_15_12.png" src="../_images/Examples_State_Sampling_Analysis_15_12.png" />
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/Examples_State_Sampling_Analysis_15_13.png" src="../_images/Examples_State_Sampling_Analysis_15_13.png" />
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/Examples_State_Sampling_Analysis_15_14.png" src="../_images/Examples_State_Sampling_Analysis_15_14.png" />
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/Examples_State_Sampling_Analysis_15_15.png" src="../_images/Examples_State_Sampling_Analysis_15_15.png" />
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/Examples_State_Sampling_Analysis_15_16.png" src="../_images/Examples_State_Sampling_Analysis_15_16.png" />
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/Examples_State_Sampling_Analysis_15_17.png" src="../_images/Examples_State_Sampling_Analysis_15_17.png" />
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/Examples_State_Sampling_Analysis_15_18.png" src="../_images/Examples_State_Sampling_Analysis_15_18.png" />
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/Examples_State_Sampling_Analysis_15_19.png" src="../_images/Examples_State_Sampling_Analysis_15_19.png" />
+</div>
+</div>
+</div>
+<div class="section" id="Sampling-histogramm">
+<h4>Sampling histogramm<a class="headerlink" href="#Sampling-histogramm" title="Permalink to this headline">¶</a></h4>
+<p>this visualisation shows the histogram of sampling per replica position.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[26]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="k">for</span> <span class="n">ind</span><span class="p">,</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">sampling_distributions</span><span class="p">):</span>
+    <span class="n">vis</span><span class="o">.</span><span class="n">plot_stateOccurence_hist</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">sampling_distributions</span><span class="p">[</span><span class="n">x</span><span class="p">],</span> <span class="n">out_path</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/Examples_State_Sampling_Analysis_17_0.png" src="../_images/Examples_State_Sampling_Analysis_17_0.png" />
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/Examples_State_Sampling_Analysis_17_1.png" src="../_images/Examples_State_Sampling_Analysis_17_1.png" />
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/Examples_State_Sampling_Analysis_17_2.png" src="../_images/Examples_State_Sampling_Analysis_17_2.png" />
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/Examples_State_Sampling_Analysis_17_3.png" src="../_images/Examples_State_Sampling_Analysis_17_3.png" />
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/Examples_State_Sampling_Analysis_17_4.png" src="../_images/Examples_State_Sampling_Analysis_17_4.png" />
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/Examples_State_Sampling_Analysis_17_5.png" src="../_images/Examples_State_Sampling_Analysis_17_5.png" />
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/Examples_State_Sampling_Analysis_17_6.png" src="../_images/Examples_State_Sampling_Analysis_17_6.png" />
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/Examples_State_Sampling_Analysis_17_7.png" src="../_images/Examples_State_Sampling_Analysis_17_7.png" />
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/Examples_State_Sampling_Analysis_17_8.png" src="../_images/Examples_State_Sampling_Analysis_17_8.png" />
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/Examples_State_Sampling_Analysis_17_9.png" src="../_images/Examples_State_Sampling_Analysis_17_9.png" />
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/Examples_State_Sampling_Analysis_17_10.png" src="../_images/Examples_State_Sampling_Analysis_17_10.png" />
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/Examples_State_Sampling_Analysis_17_11.png" src="../_images/Examples_State_Sampling_Analysis_17_11.png" />
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/Examples_State_Sampling_Analysis_17_12.png" src="../_images/Examples_State_Sampling_Analysis_17_12.png" />
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/Examples_State_Sampling_Analysis_17_13.png" src="../_images/Examples_State_Sampling_Analysis_17_13.png" />
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/Examples_State_Sampling_Analysis_17_14.png" src="../_images/Examples_State_Sampling_Analysis_17_14.png" />
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/Examples_State_Sampling_Analysis_17_15.png" src="../_images/Examples_State_Sampling_Analysis_17_15.png" />
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/Examples_State_Sampling_Analysis_17_16.png" src="../_images/Examples_State_Sampling_Analysis_17_16.png" />
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/Examples_State_Sampling_Analysis_17_17.png" src="../_images/Examples_State_Sampling_Analysis_17_17.png" />
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/Examples_State_Sampling_Analysis_17_18.png" src="../_images/Examples_State_Sampling_Analysis_17_18.png" />
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/Examples_State_Sampling_Analysis_17_19.png" src="../_images/Examples_State_Sampling_Analysis_17_19.png" />
+</div>
+</div>
+</div>
+<div class="section" id="Sampling-matrix">
+<h4>Sampling matrix<a class="headerlink" href="#Sampling-matrix" title="Permalink to this headline">¶</a></h4>
+<p>This plot shows a summary histogram of all replica positions. The colored line is the border to undersampling.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[27]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">vis</span><span class="o">.</span><span class="n">plot_stateOccurence_matrix</span><span class="p">(</span><span class="n">sampling_distributions</span><span class="p">,</span>
+                           <span class="c1">#out_dir=os.getcwd(),</span>
+                           <span class="n">s_values</span><span class="o">=</span><span class="n">s_vals</span><span class="p">,</span>
+                           <span class="n">place_undersampling_threshold</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+/cluster/home/bschroed/code/reeds/reeds/function_libs/analysis/visualisation.py:603: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  fig.tight_layout()
+/cluster/home/bschroed/code/reeds/reeds/function_libs/analysis/visualisation.py:646: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  fig.tight_layout()
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/Examples_State_Sampling_Analysis_19_1.png" src="../_images/Examples_State_Sampling_Analysis_19_1.png" />
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/Examples_State_Sampling_Analysis_19_2.png" src="../_images/Examples_State_Sampling_Analysis_19_2.png" />
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="All-together-in-one-function">
+<h2>All together in one function<a class="headerlink" href="#All-together-in-one-function" title="Permalink to this headline">¶</a></h2>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[29]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">sampling_analysis_results</span><span class="p">,</span> <span class="n">out_plot_dir</span> <span class="o">=</span> <span class="n">ana</span><span class="o">.</span><span class="n">sampling_analysis</span><span class="p">(</span><span class="n">out_path</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">(),</span> <span class="n">pot_tresh</span><span class="o">=</span><span class="n">pot_tresh_dist_cut</span><span class="p">,</span>
+                                                                <span class="n">ene_traj_csvs</span><span class="o">=</span><span class="n">ene_traj_csvs</span><span class="p">,</span>
+                                                                <span class="n">s_values</span><span class="o">=</span><span class="n">s_vals</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">sampling_analysis_results</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+
+
+ Potential Threshold
+
+
+
+
+ Sampling Timeseries
+
+
+         replica s1
+         replica s2
+         replica s3
+         replica s4
+         replica s5
+         replica s6
+         replica s7
+         replica s8
+         replica s9
+         replica s10
+         replica s11
+         replica s12
+         replica s13
+         replica s14
+         replica s15
+         replica s16
+         replica s17
+         replica s18
+         replica s19
+         replica s20
+
+
+ Calculate Sampling Distributions
+
+
+
+
+ Sampling Histograms
+
+
+
+
+ Sampling Matrix
+
+
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[29]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+{&#39;undersamlingThreshold&#39;: 9,
+ &#39;potentialThreshold&#39;: array([-511.42828519, -488.11025   , -474.83640034, -544.30178399,
+        -534.43310833]),
+ &#39;samplingDistributions&#39;: {1: {&#39;dominating_state&#39;: {1: 0,
+    2: 0,
+    3: 0,
+    4: 1.0,
+    5: 0},
+   &#39;occurence_state&#39;: {1: 0.002, 2: 0.0, 3: 0.0, 4: 1.0, 5: 0.0},
+   &#39;undersampling&#39;: False},
+  2: {&#39;dominating_state&#39;: {1: 0, 2: 0, 3: 0, 4: 1.0, 5: 0},
+   &#39;occurence_state&#39;: {1: 0.002, 2: 0.0, 3: 0.0, 4: 1.0, 5: 0.0},
+   &#39;undersampling&#39;: False},
+  3: {&#39;dominating_state&#39;: {1: 0, 2: 0, 3: 0, 4: 1.0, 5: 0},
+   &#39;occurence_state&#39;: {1: 0.002, 2: 0.0, 3: 0.0, 4: 1.0, 5: 0.0},
+   &#39;undersampling&#39;: False},
+  4: {&#39;dominating_state&#39;: {1: 0, 2: 0, 3: 0, 4: 1.0, 5: 0},
+   &#39;occurence_state&#39;: {1: 0.002, 2: 0.0, 3: 0.0, 4: 1.0, 5: 0.0},
+   &#39;undersampling&#39;: False},
+  5: {&#39;dominating_state&#39;: {1: 0, 2: 0, 3: 0, 4: 1.0, 5: 0},
+   &#39;occurence_state&#39;: {1: 0.003, 2: 0.0, 3: 0.0, 4: 1.0, 5: 0.001},
+   &#39;undersampling&#39;: False},
+  6: {&#39;dominating_state&#39;: {1: 0, 2: 0, 3: 0, 4: 0.496, 5: 0.504},
+   &#39;occurence_state&#39;: {1: 0.005, 2: 0.004, 3: 0.0, 4: 0.85, 5: 0.539},
+   &#39;undersampling&#39;: False},
+  7: {&#39;dominating_state&#39;: {1: 0.009, 2: 0.001, 3: 0, 4: 0.243, 5: 0.747},
+   &#39;occurence_state&#39;: {1: 0.969, 2: 0.803, 3: 0.0, 4: 0.998, 5: 0.999},
+   &#39;undersampling&#39;: False},
+  8: {&#39;dominating_state&#39;: {1: 0.029, 2: 0.001, 3: 0.004, 4: 0.335, 5: 0.631},
+   &#39;occurence_state&#39;: {1: 0.995, 2: 0.985, 3: 0.312, 4: 1.0, 5: 0.999},
+   &#39;undersampling&#39;: False},
+  9: {&#39;dominating_state&#39;: {1: 0.033, 2: 0.005, 3: 0.011, 4: 0.338, 5: 0.613},
+   &#39;occurence_state&#39;: {1: 0.996, 2: 0.986, 3: 0.988, 4: 0.997, 5: 0.999},
+   &#39;undersampling&#39;: True},
+  10: {&#39;dominating_state&#39;: {1: 0.045, 2: 0.012, 3: 0.032, 4: 0.41, 5: 0.501},
+   &#39;occurence_state&#39;: {1: 0.995, 2: 0.996, 3: 0.996, 4: 0.999, 5: 0.997},
+   &#39;undersampling&#39;: True},
+  11: {&#39;dominating_state&#39;: {1: 0.053, 2: 0.009, 3: 0.032, 4: 0.404, 5: 0.502},
+   &#39;occurence_state&#39;: {1: 0.998, 2: 0.998, 3: 0.997, 4: 0.997, 5: 0.995},
+   &#39;undersampling&#39;: True},
+  12: {&#39;dominating_state&#39;: {1: 0.036, 2: 0.008, 3: 0.025, 4: 0.39, 5: 0.541},
+   &#39;occurence_state&#39;: {1: 0.997, 2: 0.997, 3: 0.997, 4: 0.999, 5: 0.995},
+   &#39;undersampling&#39;: True},
+  13: {&#39;dominating_state&#39;: {1: 0.042, 2: 0.007, 3: 0.024, 4: 0.374, 5: 0.553},
+   &#39;occurence_state&#39;: {1: 0.998, 2: 0.999, 3: 0.997, 4: 0.999, 5: 0.998},
+   &#39;undersampling&#39;: True},
+  14: {&#39;dominating_state&#39;: {1: 0.047, 2: 0.013, 3: 0.024, 4: 0.438, 5: 0.478},
+   &#39;occurence_state&#39;: {1: 0.996, 2: 0.998, 3: 0.997, 4: 0.998, 5: 0.998},
+   &#39;undersampling&#39;: True},
+  15: {&#39;dominating_state&#39;: {1: 0.044, 2: 0.008, 3: 0.023, 4: 0.46, 5: 0.465},
+   &#39;occurence_state&#39;: {1: 1.0, 2: 0.994, 3: 0.996, 4: 0.999, 5: 0.996},
+   &#39;undersampling&#39;: True},
+  16: {&#39;dominating_state&#39;: {1: 0.057, 2: 0.012, 3: 0.028, 4: 0.43, 5: 0.473},
+   &#39;occurence_state&#39;: {1: 0.999, 2: 0.997, 3: 0.998, 4: 0.997, 5: 0.993},
+   &#39;undersampling&#39;: True},
+  17: {&#39;dominating_state&#39;: {1: 0.054, 2: 0.004, 3: 0.029, 4: 0.423, 5: 0.49},
+   &#39;occurence_state&#39;: {1: 0.999, 2: 0.999, 3: 0.997, 4: 0.999, 5: 0.998},
+   &#39;undersampling&#39;: True},
+  18: {&#39;dominating_state&#39;: {1: 0.057, 2: 0.013, 3: 0.038, 4: 0.441, 5: 0.451},
+   &#39;occurence_state&#39;: {1: 0.999, 2: 0.998, 3: 0.997, 4: 0.998, 5: 0.999},
+   &#39;undersampling&#39;: True},
+  19: {&#39;dominating_state&#39;: {1: 0.059, 2: 0.008, 3: 0.034, 4: 0.436, 5: 0.463},
+   &#39;occurence_state&#39;: {1: 0.995, 2: 0.991, 3: 0.994, 4: 0.99, 5: 0.99},
+   &#39;undersampling&#39;: True},
+  20: {&#39;dominating_state&#39;: {1: 0.066, 2: 0.019, 3: 0.031, 4: 0.484, 5: 0.4},
+   &#39;occurence_state&#39;: {1: 1.0, 2: 0.997, 3: 0.997, 4: 1.0, 5: 0.996},
+   &#39;undersampling&#39;: True}}}
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[30]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="c1"># Show plots</span>
+<span class="kn">from</span> <span class="nn">IPython.core.display</span> <span class="kn">import</span> <span class="n">Image</span><span class="p">,</span> <span class="n">display</span>
+
+<span class="k">for</span> <span class="n">png</span> <span class="ow">in</span> <span class="p">[</span><span class="n">picture</span> <span class="k">for</span> <span class="n">picture</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">())</span> <span class="k">if</span><span class="p">(</span><span class="n">picture</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;.png&quot;</span><span class="p">))]:</span>
+    <span class="n">display</span><span class="p">(</span><span class="n">Image</span><span class="p">(</span><span class="n">png</span><span class="p">))</span>
+
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/Examples_State_Sampling_Analysis_22_0.png" src="../_images/Examples_State_Sampling_Analysis_22_0.png" />
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/Examples_State_Sampling_Analysis_22_1.png" src="../_images/Examples_State_Sampling_Analysis_22_1.png" />
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/Examples_State_Sampling_Analysis_22_2.png" src="../_images/Examples_State_Sampling_Analysis_22_2.png" />
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/Examples_State_Sampling_Analysis_22_3.png" src="../_images/Examples_State_Sampling_Analysis_22_3.png" />
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/Examples_State_Sampling_Analysis_22_4.png" src="../_images/Examples_State_Sampling_Analysis_22_4.png" />
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/Examples_State_Sampling_Analysis_22_5.png" src="../_images/Examples_State_Sampling_Analysis_22_5.png" />
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/Examples_State_Sampling_Analysis_22_6.png" src="../_images/Examples_State_Sampling_Analysis_22_6.png" />
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/Examples_State_Sampling_Analysis_22_7.png" src="../_images/Examples_State_Sampling_Analysis_22_7.png" />
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/Examples_State_Sampling_Analysis_22_8.png" src="../_images/Examples_State_Sampling_Analysis_22_8.png" />
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/Examples_State_Sampling_Analysis_22_9.png" src="../_images/Examples_State_Sampling_Analysis_22_9.png" />
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/Examples_State_Sampling_Analysis_22_10.png" src="../_images/Examples_State_Sampling_Analysis_22_10.png" />
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/Examples_State_Sampling_Analysis_22_11.png" src="../_images/Examples_State_Sampling_Analysis_22_11.png" />
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/Examples_State_Sampling_Analysis_22_12.png" src="../_images/Examples_State_Sampling_Analysis_22_12.png" />
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/Examples_State_Sampling_Analysis_22_13.png" src="../_images/Examples_State_Sampling_Analysis_22_13.png" />
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/Examples_State_Sampling_Analysis_22_14.png" src="../_images/Examples_State_Sampling_Analysis_22_14.png" />
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/Examples_State_Sampling_Analysis_22_15.png" src="../_images/Examples_State_Sampling_Analysis_22_15.png" />
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/Examples_State_Sampling_Analysis_22_16.png" src="../_images/Examples_State_Sampling_Analysis_22_16.png" />
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/Examples_State_Sampling_Analysis_22_17.png" src="../_images/Examples_State_Sampling_Analysis_22_17.png" />
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/Examples_State_Sampling_Analysis_22_18.png" src="../_images/Examples_State_Sampling_Analysis_22_18.png" />
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/Examples_State_Sampling_Analysis_22_19.png" src="../_images/Examples_State_Sampling_Analysis_22_19.png" />
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/Examples_State_Sampling_Analysis_22_20.png" src="../_images/Examples_State_Sampling_Analysis_22_20.png" />
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/Examples_State_Sampling_Analysis_22_21.png" src="../_images/Examples_State_Sampling_Analysis_22_21.png" />
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/Examples_State_Sampling_Analysis_22_22.png" src="../_images/Examples_State_Sampling_Analysis_22_22.png" />
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/Examples_State_Sampling_Analysis_22_23.png" src="../_images/Examples_State_Sampling_Analysis_22_23.png" />
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/Examples_State_Sampling_Analysis_22_24.png" src="../_images/Examples_State_Sampling_Analysis_22_24.png" />
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/Examples_State_Sampling_Analysis_22_25.png" src="../_images/Examples_State_Sampling_Analysis_22_25.png" />
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/Examples_State_Sampling_Analysis_22_26.png" src="../_images/Examples_State_Sampling_Analysis_22_26.png" />
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/Examples_State_Sampling_Analysis_22_27.png" src="../_images/Examples_State_Sampling_Analysis_22_27.png" />
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/Examples_State_Sampling_Analysis_22_28.png" src="../_images/Examples_State_Sampling_Analysis_22_28.png" />
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/Examples_State_Sampling_Analysis_22_29.png" src="../_images/Examples_State_Sampling_Analysis_22_29.png" />
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/Examples_State_Sampling_Analysis_22_30.png" src="../_images/Examples_State_Sampling_Analysis_22_30.png" />
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/Examples_State_Sampling_Analysis_22_31.png" src="../_images/Examples_State_Sampling_Analysis_22_31.png" />
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/Examples_State_Sampling_Analysis_22_32.png" src="../_images/Examples_State_Sampling_Analysis_22_32.png" />
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/Examples_State_Sampling_Analysis_22_33.png" src="../_images/Examples_State_Sampling_Analysis_22_33.png" />
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/Examples_State_Sampling_Analysis_22_34.png" src="../_images/Examples_State_Sampling_Analysis_22_34.png" />
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/Examples_State_Sampling_Analysis_22_35.png" src="../_images/Examples_State_Sampling_Analysis_22_35.png" />
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/Examples_State_Sampling_Analysis_22_36.png" src="../_images/Examples_State_Sampling_Analysis_22_36.png" />
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/Examples_State_Sampling_Analysis_22_37.png" src="../_images/Examples_State_Sampling_Analysis_22_37.png" />
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/Examples_State_Sampling_Analysis_22_38.png" src="../_images/Examples_State_Sampling_Analysis_22_38.png" />
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/Examples_State_Sampling_Analysis_22_39.png" src="../_images/Examples_State_Sampling_Analysis_22_39.png" />
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/Examples_State_Sampling_Analysis_22_40.png" src="../_images/Examples_State_Sampling_Analysis_22_40.png" />
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/Examples_State_Sampling_Analysis_22_41.png" src="../_images/Examples_State_Sampling_Analysis_22_41.png" />
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, Benjamin Ries, Salome Rieder, Candide Champion. Project structure based on the Computational Molecular Science Python Cookiecutter version 1.3
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

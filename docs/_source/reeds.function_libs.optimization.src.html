@@ -1,0 +1,543 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>reeds.function_libs.optimization.src package &mdash; REEDS  documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="reeds.function_libs.pipeline package" href="reeds.function_libs.pipeline.html" />
+    <link rel="prev" title="reeds.function_libs.optimization package" href="reeds.function_libs.optimization.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> REEDS
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../introduction.html">REEDS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Examples/index.html">Examples</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">Documentation</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="reeds.html">reeds package</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="reeds.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="reeds.data.html">reeds.data package</a></li>
+<li class="toctree-l4 current"><a class="reference internal" href="reeds.function_libs.html">reeds.function_libs package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="reeds.modules.html">reeds.modules package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="reeds.tests.html">reeds.tests package</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="reeds.html#submodules">Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="reeds.html#module-reeds.reeds">reeds.reeds module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="reeds.html#module-reeds">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">REEDS</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="modules.html">Documentation</a> &raquo;</li>
+        
+          <li><a href="reeds.html">reeds package</a> &raquo;</li>
+        
+          <li><a href="reeds.function_libs.html">reeds.function_libs package</a> &raquo;</li>
+        
+          <li><a href="reeds.function_libs.optimization.html">reeds.function_libs.optimization package</a> &raquo;</li>
+        
+      <li>reeds.function_libs.optimization.src package</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/_source/reeds.function_libs.optimization.src.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  
+<style>
+/* CSS overrides for sphinx_rtd_theme */
+
+/* 24px margin */
+.nbinput.nblast.container,
+.nboutput.nblast.container {
+    margin-bottom: 19px;  /* padding has already 5px */
+}
+
+/* ... except between code cells! */
+.nblast.container + .nbinput.container {
+    margin-top: -19px;
+}
+
+.admonition > p:before {
+    margin-right: 4px;  /* make room for the exclamation icon */
+}
+
+/* Fix math alignment, see https://github.com/rtfd/sphinx_rtd_theme/pull/686 */
+.math {
+    text-align: unset;
+}
+</style>
+<div class="section" id="reeds-function-libs-optimization-src-package">
+<h1>reeds.function_libs.optimization.src package<a class="headerlink" href="#reeds-function-libs-optimization-src-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-reeds.function_libs.optimization.src.energy_offset_estimator">
+<span id="reeds-function-libs-optimization-src-energy-offset-estimator-module"></span><h2>reeds.function_libs.optimization.src.energy_offset_estimator module<a class="headerlink" href="#module-reeds.function_libs.optimization.src.energy_offset_estimator" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="reeds.function_libs.optimization.src.energy_offset_estimator.EnergyOffset">
+<em class="property">class </em><code class="sig-prename descclassname">reeds.function_libs.optimization.src.energy_offset_estimator.</code><code class="sig-name descname">EnergyOffset</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">mean</span></em>, <em class="sig-param"><span class="n">std</span></em><span class="sig-paren">)</span><a class="headerlink" href="#reeds.function_libs.optimization.src.energy_offset_estimator.EnergyOffset" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></p>
+<dl class="py attribute">
+<dt id="reeds.function_libs.optimization.src.energy_offset_estimator.EnergyOffset.mean">
+<code class="sig-name descname">mean</code><a class="headerlink" href="#reeds.function_libs.optimization.src.energy_offset_estimator.EnergyOffset.mean" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 0</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="reeds.function_libs.optimization.src.energy_offset_estimator.EnergyOffset.std">
+<code class="sig-name descname">std</code><a class="headerlink" href="#reeds.function_libs.optimization.src.energy_offset_estimator.EnergyOffset.std" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 1</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="reeds.function_libs.optimization.src.energy_offset_estimator.EnergyStatistic">
+<em class="property">class </em><code class="sig-prename descclassname">reeds.function_libs.optimization.src.energy_offset_estimator.</code><code class="sig-name descname">EnergyStatistic</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">offsets</span></em>, <em class="sig-param"><span class="n">minCount</span></em>, <em class="sig-param"><span class="n">negCount</span></em>, <em class="sig-param"><span class="n">eoff_per_replica</span></em><span class="sig-paren">)</span><a class="headerlink" href="#reeds.function_libs.optimization.src.energy_offset_estimator.EnergyStatistic" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></p>
+<dl class="py attribute">
+<dt id="reeds.function_libs.optimization.src.energy_offset_estimator.EnergyStatistic.eoff_per_replica">
+<code class="sig-name descname">eoff_per_replica</code><a class="headerlink" href="#reeds.function_libs.optimization.src.energy_offset_estimator.EnergyStatistic.eoff_per_replica" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 3</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="reeds.function_libs.optimization.src.energy_offset_estimator.EnergyStatistic.minCount">
+<code class="sig-name descname">minCount</code><a class="headerlink" href="#reeds.function_libs.optimization.src.energy_offset_estimator.EnergyStatistic.minCount" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 1</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="reeds.function_libs.optimization.src.energy_offset_estimator.EnergyStatistic.negCount">
+<code class="sig-name descname">negCount</code><a class="headerlink" href="#reeds.function_libs.optimization.src.energy_offset_estimator.EnergyStatistic.negCount" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 2</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="reeds.function_libs.optimization.src.energy_offset_estimator.EnergyStatistic.offsets">
+<code class="sig-name descname">offsets</code><a class="headerlink" href="#reeds.function_libs.optimization.src.energy_offset_estimator.EnergyStatistic.offsets" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 0</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="reeds.function_libs.optimization.src.energy_offset_estimator.Eoff_estimator">
+<em class="property">class </em><code class="sig-prename descclassname">reeds.function_libs.optimization.src.energy_offset_estimator.</code><code class="sig-name descname">Eoff_estimator</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">eir_old_init</span><span class="p">:</span> <span class="n">List<span class="p">[</span>float<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">vvr</span><span class="p">:</span> <span class="n">List<span class="p">[</span>List<span class="p">[</span>float<span class="p">]</span><span class="p">]</span></span></em>, <em class="sig-param"><span class="n">vvy</span><span class="p">:</span> <span class="n">List<span class="p">[</span>List<span class="p">[</span>List<span class="p">[</span>float<span class="p">]</span><span class="p">]</span><span class="p">]</span></span></em>, <em class="sig-param"><span class="n">s_values</span><span class="p">:</span> <span class="n">List<span class="p">[</span>float<span class="p">]</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/reeds/function_libs/optimization/src/energy_offset_estimator.html#Eoff_estimator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#reeds.function_libs.optimization.src.energy_offset_estimator.Eoff_estimator" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt id="reeds.function_libs.optimization.src.energy_offset_estimator.Eoff_estimator.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">eir_old_init</span><span class="p">:</span> <span class="n">List<span class="p">[</span>float<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">vvr</span><span class="p">:</span> <span class="n">List<span class="p">[</span>List<span class="p">[</span>float<span class="p">]</span><span class="p">]</span></span></em>, <em class="sig-param"><span class="n">vvy</span><span class="p">:</span> <span class="n">List<span class="p">[</span>List<span class="p">[</span>List<span class="p">[</span>float<span class="p">]</span><span class="p">]</span><span class="p">]</span></span></em>, <em class="sig-param"><span class="n">s_values</span><span class="p">:</span> <span class="n">List<span class="p">[</span>float<span class="p">]</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/reeds/function_libs/optimization/src/energy_offset_estimator.html#Eoff_estimator.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#reeds.function_libs.optimization.src.energy_offset_estimator.Eoff_estimator.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="simple">
+<dt>Args:</dt><dd><p>eir_old_init:
+vvr:
+vvy:
+s_values:</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="reeds.function_libs.optimization.src.energy_offset_estimator.Eoff_estimator._calc_form_5">
+<code class="sig-name descname">_calc_form_5</code><span class="sig-paren">(</span><em class="sig-param">vr: List[float], vy: List[List[float]], s_in: List[float], beta: float, num_states: int, max_iter: int, rho: float = 0.0) -&gt; (typing.List[float], &lt;class 'int'&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/reeds/function_libs/optimization/src/energy_offset_estimator.html#Eoff_estimator._calc_form_5"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#reeds.function_libs.optimization.src.energy_offset_estimator.Eoff_estimator._calc_form_5" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate “form 5” of original cc program to estimate new offsets for
+a single s value :param self.eir_old_init: Energy offsets used in
+simulation. :param vr: Reference energies :param vy: Energies for each
+state :param s_in: s values :param beta: kb*T :param num_states: number
+of states :param max_iter: maximum number of iterations :param rho:
+convergence criteria :return: New energy offsets</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>vr:
+vy:
+s_in:
+beta (float):
+num_states (int):
+max_iter (int):
+rho (float):</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="reeds.function_libs.optimization.src.energy_offset_estimator.Eoff_estimator._calculate_E_i_r">
+<code class="sig-name descname">_calculate_E_i_r</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">vr</span><span class="p">:</span> <span class="n">List<span class="p">[</span>float<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">vy</span><span class="p">:</span> <span class="n">List<span class="p">[</span>List<span class="p">[</span>float<span class="p">]</span><span class="p">]</span></span></em>, <em class="sig-param"><span class="n">eir_old</span><span class="p">:</span> <span class="n">List<span class="p">[</span>float<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">s_ref</span><span class="p">:</span> <span class="n">float</span></em>, <em class="sig-param"><span class="n">s_stat</span><span class="p">:</span> <span class="n">float</span></em>, <em class="sig-param"><span class="n">beta</span><span class="p">:</span> <span class="n">float</span></em>, <em class="sig-param"><span class="n">p_i</span><span class="p">:</span> <span class="n">int</span></em>, <em class="sig-param"><span class="n">num_states</span><span class="p">:</span> <span class="n">int</span></em><span class="sig-paren">)</span> &#x2192; float<a class="reference internal" href="../_modules/reeds/function_libs/optimization/src/energy_offset_estimator.html#Eoff_estimator._calculate_E_i_r"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#reeds.function_libs.optimization.src.energy_offset_estimator.Eoff_estimator._calculate_E_i_r" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate new energy offset</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>vr: Reference energies per state
+vy: Energies per state
+eir_old: Energy offsets of previous iteration
+s_ref (float): Reference s value
+s_stat (float): s value
+beta (float): kb*T
+p_i (int): index of state considered
+num_states (int): number of states</p>
+</dd>
+<dt>Returns:</dt><dd><p>new offset for state</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="reeds.function_libs.optimization.src.energy_offset_estimator.Eoff_estimator._calculate_f_ir">
+<code class="sig-name descname">_calculate_f_ir</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">vr</span><span class="p">:</span> <span class="n">List<span class="p">[</span>float<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">vy</span><span class="p">:</span> <span class="n">List<span class="p">[</span>List<span class="p">[</span>float<span class="p">]</span><span class="p">]</span></span></em>, <em class="sig-param"><span class="n">eir_old</span><span class="p">:</span> <span class="n">List<span class="p">[</span>float<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">s_ref</span><span class="p">:</span> <span class="n">float</span></em>, <em class="sig-param"><span class="n">s_stat</span><span class="p">:</span> <span class="n">float</span></em>, <em class="sig-param"><span class="n">beta</span><span class="p">:</span> <span class="n">float</span></em>, <em class="sig-param"><span class="n">p_i</span><span class="p">:</span> <span class="n">int</span></em>, <em class="sig-param"><span class="n">num_states</span><span class="p">:</span> <span class="n">int</span></em><span class="sig-paren">)</span> &#x2192; float<a class="reference internal" href="../_modules/reeds/function_libs/optimization/src/energy_offset_estimator.html#Eoff_estimator._calculate_f_ir"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#reeds.function_libs.optimization.src.energy_offset_estimator.Eoff_estimator._calculate_f_ir" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate new energy offset</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>vr: Reference energies per state
+vy: Energies per state
+eir_old: Energy offsets of previous iteration
+s_ref (float): Reference s value
+s_stat (float): s value
+beta (float): kb*T
+p_i (int): index of state considered
+num_states (int): number of states</p>
+</dd>
+<dt>Returns:</dt><dd><p>new offset for state</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="reeds.function_libs.optimization.src.energy_offset_estimator.Eoff_estimator._ln_exp_avg">
+<code class="sig-name descname">_ln_exp_avg</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">values</span><span class="p">:</span> <span class="n">List<span class="p">[</span>float<span class="p">]</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/reeds/function_libs/optimization/src/energy_offset_estimator.html#Eoff_estimator._ln_exp_avg"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#reeds.function_libs.optimization.src.energy_offset_estimator.Eoff_estimator._ln_exp_avg" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="simple">
+<dt>Log average.</dt><dd><p>implementation for Potential energies, avoiding overflows errors</p>
+</dd>
+<dt>Args:</dt><dd><p>values: List of input values.</p>
+</dd>
+<dt>Returns:</dt><dd><p>Log average</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="reeds.function_libs.optimization.src.energy_offset_estimator.Eoff_estimator.optimize_energy_offsets">
+<code class="sig-name descname">optimize_energy_offsets</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">beta</span><span class="p">:</span> <span class="n">float</span></em>, <em class="sig-param"><span class="n">frac_tresh</span><span class="p">:</span> <span class="n">List<span class="p">[</span>float<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">max_iter</span><span class="p">:</span> <span class="n">int</span></em>, <em class="sig-param"><span class="n">rho</span><span class="p">:</span> <span class="n">float</span></em>, <em class="sig-param"><span class="n">pot_tresh</span><span class="p">:</span> <span class="n">float</span> <span class="o">=</span> <span class="default_value">0.0</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/reeds/function_libs/optimization/src/energy_offset_estimator.html#Eoff_estimator.optimize_energy_offsets"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#reeds.function_libs.optimization.src.energy_offset_estimator.Eoff_estimator.optimize_energy_offsets" title="Permalink to this definition">¶</a></dt>
+<dd><p>Optimizes the energy offsets based on simulation results.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>beta (float): k_b * T
+frac_tresh: Threshold on fraction of negative energies
+max_iter (int): Maximum iterations
+rho (float): convergence threshold
+pot_tresh (float): b</p>
+</dd>
+<dt>Returns:</dt><dd><p>List of new energy offsets for each s value.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-reeds.function_libs.optimization.src.energy_offset_optimization">
+<span id="reeds-function-libs-optimization-src-energy-offset-optimization-module"></span><h2>reeds.function_libs.optimization.src.energy_offset_optimization module<a class="headerlink" href="#module-reeds.function_libs.optimization.src.energy_offset_optimization" title="Permalink to this headline">¶</a></h2>
+<dl class="py function">
+<dt id="reeds.function_libs.optimization.src.energy_offset_optimization.calc_form_5">
+<code class="sig-prename descclassname">reeds.function_libs.optimization.src.energy_offset_optimization.</code><code class="sig-name descname">calc_form_5</code><span class="sig-paren">(</span><em class="sig-param">eir_old_init: List[float], vr: List[float], vy: List[List[float]], s_in: List[float], beta: float, num_states: int, max_iter: int, rho: float = 0.0) -&gt; (typing.List[float], &lt;class 'int'&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/reeds/function_libs/optimization/src/energy_offset_optimization.html#calc_form_5"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#reeds.function_libs.optimization.src.energy_offset_optimization.calc_form_5" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate “form 5” of original cc program to estimate new offsets for a
+single s value</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>eir_old_init: Energy offsets used in simulation.
+vr: Reference energies
+vy: Energies for each state
+s_in: s values
+beta (float): kb*T
+num_states (int): number of states
+max_iter (int): maximum number of iterations
+rho (float): convergence criteria</p>
+</dd>
+<dt>Returns:</dt><dd><p>New energy offsets</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="reeds.function_libs.optimization.src.energy_offset_optimization.calculate_f_ir">
+<code class="sig-prename descclassname">reeds.function_libs.optimization.src.energy_offset_optimization.</code><code class="sig-name descname">calculate_f_ir</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">vr</span><span class="p">:</span> <span class="n">List<span class="p">[</span>float<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">vy</span><span class="p">:</span> <span class="n">List<span class="p">[</span>List<span class="p">[</span>float<span class="p">]</span><span class="p">]</span></span></em>, <em class="sig-param"><span class="n">eir_old</span><span class="p">:</span> <span class="n">List<span class="p">[</span>float<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">s_ref</span><span class="p">:</span> <span class="n">float</span></em>, <em class="sig-param"><span class="n">s_stat</span><span class="p">:</span> <span class="n">float</span></em>, <em class="sig-param"><span class="n">beta</span><span class="p">:</span> <span class="n">float</span></em>, <em class="sig-param"><span class="n">p_i</span><span class="p">:</span> <span class="n">int</span></em>, <em class="sig-param"><span class="n">num_states</span><span class="p">:</span> <span class="n">int</span></em><span class="sig-paren">)</span> &#x2192; float<a class="reference internal" href="../_modules/reeds/function_libs/optimization/src/energy_offset_optimization.html#calculate_f_ir"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#reeds.function_libs.optimization.src.energy_offset_optimization.calculate_f_ir" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate new energy offset</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>vr: Reference energies per state
+vy: Energies per state
+eir_old: Energy offsets of previous iteration
+s_ref (float): Reference s value
+s_stat (float): s value
+beta (float): kb*T
+p_i (int): index of state considered
+num_states (int): number of states</p>
+</dd>
+<dt>Returns:</dt><dd><p>new offset for state</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="reeds.function_libs.optimization.src.energy_offset_optimization.ln_exp_avg">
+<code class="sig-prename descclassname">reeds.function_libs.optimization.src.energy_offset_optimization.</code><code class="sig-name descname">ln_exp_avg</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">values</span><span class="p">:</span> <span class="n">List<span class="p">[</span>float<span class="p">]</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/reeds/function_libs/optimization/src/energy_offset_optimization.html#ln_exp_avg"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#reeds.function_libs.optimization.src.energy_offset_optimization.ln_exp_avg" title="Permalink to this definition">¶</a></dt>
+<dd><p>Log average.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>values: List of input values.</p>
+</dd>
+<dt>Returns:</dt><dd><p>Log average</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="reeds.function_libs.optimization.src.energy_offset_optimization.optimize_energy_offsets">
+<code class="sig-prename descclassname">reeds.function_libs.optimization.src.energy_offset_optimization.</code><code class="sig-name descname">optimize_energy_offsets</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">eir_old_init</span><span class="p">:</span> <span class="n">List<span class="p">[</span>float<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">vvr</span><span class="p">:</span> <span class="n">List<span class="p">[</span>List<span class="p">[</span>float<span class="p">]</span><span class="p">]</span></span></em>, <em class="sig-param"><span class="n">vvy</span><span class="p">:</span> <span class="n">List<span class="p">[</span>List<span class="p">[</span>List<span class="p">[</span>float<span class="p">]</span><span class="p">]</span><span class="p">]</span></span></em>, <em class="sig-param"><span class="n">s_values</span><span class="p">:</span> <span class="n">List<span class="p">[</span>float<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">beta</span><span class="p">:</span> <span class="n">float</span></em>, <em class="sig-param"><span class="n">frac_tresh</span><span class="p">:</span> <span class="n">List<span class="p">[</span>float<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">max_iter</span><span class="p">:</span> <span class="n">int</span></em>, <em class="sig-param"><span class="n">rho</span><span class="p">:</span> <span class="n">float</span></em>, <em class="sig-param"><span class="n">pot_tresh</span><span class="p">:</span> <span class="n">float</span> <span class="o">=</span> <span class="default_value">0.0</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/reeds/function_libs/optimization/src/energy_offset_optimization.html#optimize_energy_offsets"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#reeds.function_libs.optimization.src.energy_offset_optimization.optimize_energy_offsets" title="Permalink to this definition">¶</a></dt>
+<dd><p>Optimizes the energy offsets based on simulation results.</p>
+<dl>
+<dt>Args:</dt><dd><p>eir_old_init: Energy offsets used in simulation.
+vvr: Reference.
+vvy: Energies for each s value and state. Outer index: s value. Inner</p>
+<blockquote>
+<div><p>index: state</p>
+</div></blockquote>
+<p>s_values: s values
+beta (float): k_b * T
+frac_tresh: Threshold on fraction of negative energies
+max_iter (int): Maximum iterations
+rho (float): convergence threshold
+pot_tresh (float): b</p>
+</dd>
+<dt>Returns:</dt><dd><p>List of new energy offsets for each s value.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="reeds-function-libs-optimization-src-s-optimizer-module">
+<h2>reeds.function_libs.optimization.src.s_optimizer module<a class="headerlink" href="#reeds-function-libs-optimization-src-s-optimizer-module" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="reeds-function-libs-optimization-src-sopt-pathstatistic-module">
+<h2>reeds.function_libs.optimization.src.sopt_Pathstatistic module<a class="headerlink" href="#reeds-function-libs-optimization-src-sopt-pathstatistic-module" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-reeds.function_libs.optimization.src.util">
+<span id="reeds-function-libs-optimization-src-util-module"></span><h2>reeds.function_libs.optimization.src.util module<a class="headerlink" href="#module-reeds.function_libs.optimization.src.util" title="Permalink to this headline">¶</a></h2>
+<dl class="py function">
+<dt id="reeds.function_libs.optimization.src.util.get_str_from_list">
+<code class="sig-prename descclassname">reeds.function_libs.optimization.src.util.</code><code class="sig-name descname">get_str_from_list</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">in_list</span><span class="p">:</span> <span class="n">List</span></em>, <em class="sig-param"><span class="n">val_type</span><span class="p">:</span> <span class="n">str</span> <span class="o">=</span> <span class="default_value">''</span></em>, <em class="sig-param"><span class="n">n_per_line</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">10</span></em><span class="sig-paren">)</span> &#x2192; str<a class="reference internal" href="../_modules/reeds/function_libs/optimization/src/util.html#get_str_from_list"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#reeds.function_libs.optimization.src.util.get_str_from_list" title="Permalink to this definition">¶</a></dt>
+<dd><p>Pretty print of list of values.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>in_list</strong> (<em>List</em>) – List of values to print.</p></li>
+<li><p><strong>val_type</strong> (<em>str</em>) – Print style of type. Possible values: “float”, “int”, “”</p></li>
+<li><p><strong>n_per_line</strong> (<em>int</em>) – Maximum number of values per line</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>message</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="reeds.function_libs.optimization.src.util.read_gromos_csv">
+<code class="sig-prename descclassname">reeds.function_libs.optimization.src.util.</code><code class="sig-name descname">read_gromos_csv</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">fileName</span></em>, <em class="sig-param"><span class="n">sep</span><span class="o">=</span><span class="default_value">' '</span></em>, <em class="sig-param"><span class="n">column</span><span class="o">=</span><span class="default_value">1</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/reeds/function_libs/optimization/src/util.html#read_gromos_csv"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#reeds.function_libs.optimization.src.util.read_gromos_csv" title="Permalink to this definition">¶</a></dt>
+<dd><blockquote>
+<div><p>&#64;Old-deapreciated
+reads in a repdat file.</p>
+</div></blockquote>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>fileName</strong> (<em>str</em>) – path to the repdat file</p></li>
+<li><p><strong>sep</strong> (<em>str</em>) – seperator char</p></li>
+<li><p><strong>column</strong> (<em>int</em>)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="module-reeds.function_libs.optimization.src">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-reeds.function_libs.optimization.src" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="reeds.function_libs.pipeline.html" class="btn btn-neutral float-right" title="reeds.function_libs.pipeline package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="reeds.function_libs.optimization.html" class="btn btn-neutral float-left" title="reeds.function_libs.optimization package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, Benjamin Ries, Salome Rieder, Candide Champion. Project structure based on the Computational Molecular Science Python Cookiecutter version 1.3
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

@@ -1,0 +1,21 @@
+reeds.function\_libs package
+============================
+
+Subpackages
+-----------
+
+.. toctree::
+   :maxdepth: 4
+
+   reeds.function_libs.analysis
+   reeds.function_libs.optimization
+   reeds.function_libs.pipeline
+   reeds.function_libs.utils
+
+Module contents
+---------------
+
+.. automodule:: reeds.function_libs
+   :members:
+   :undoc-members:
+   :show-inheritance:

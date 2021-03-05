@@ -1,0 +1,693 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>reeds.function_libs.pipeline package &mdash; REEDS  documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="reeds.function_libs.pipeline.jobScheduling_scripts package" href="reeds.function_libs.pipeline.jobScheduling_scripts.html" />
+    <link rel="prev" title="reeds.function_libs.optimization.src package" href="reeds.function_libs.optimization.src.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> REEDS
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../introduction.html">REEDS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Examples/index.html">Examples</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">Documentation</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="reeds.html">reeds package</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="reeds.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="reeds.data.html">reeds.data package</a></li>
+<li class="toctree-l4 current"><a class="reference internal" href="reeds.function_libs.html">reeds.function_libs package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="reeds.modules.html">reeds.modules package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="reeds.tests.html">reeds.tests package</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="reeds.html#submodules">Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="reeds.html#module-reeds.reeds">reeds.reeds module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="reeds.html#module-reeds">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">REEDS</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="modules.html">Documentation</a> &raquo;</li>
+        
+          <li><a href="reeds.html">reeds package</a> &raquo;</li>
+        
+          <li><a href="reeds.function_libs.html">reeds.function_libs package</a> &raquo;</li>
+        
+      <li>reeds.function_libs.pipeline package</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/_source/reeds.function_libs.pipeline.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  
+<style>
+/* CSS overrides for sphinx_rtd_theme */
+
+/* 24px margin */
+.nbinput.nblast.container,
+.nboutput.nblast.container {
+    margin-bottom: 19px;  /* padding has already 5px */
+}
+
+/* ... except between code cells! */
+.nblast.container + .nbinput.container {
+    margin-top: -19px;
+}
+
+.admonition > p:before {
+    margin-right: 4px;  /* make room for the exclamation icon */
+}
+
+/* Fix math alignment, see https://github.com/rtfd/sphinx_rtd_theme/pull/686 */
+.math {
+    text-align: unset;
+}
+</style>
+<div class="section" id="reeds-function-libs-pipeline-package">
+<h1>reeds.function_libs.pipeline package<a class="headerlink" href="#reeds-function-libs-pipeline-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="subpackages">
+<h2>Subpackages<a class="headerlink" href="#subpackages" title="Permalink to this headline">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="reeds.function_libs.pipeline.jobScheduling_scripts.html">reeds.function_libs.pipeline.jobScheduling_scripts package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="reeds.function_libs.pipeline.jobScheduling_scripts.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="reeds.function_libs.pipeline.jobScheduling_scripts.html#reeds-function-libs-pipeline-jobscheduling-scripts-md-simulation-scheduler-module">reeds.function_libs.pipeline.jobScheduling_scripts.MD_simulation_scheduler module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="reeds.function_libs.pipeline.jobScheduling_scripts.html#reeds-function-libs-pipeline-jobscheduling-scripts-re-eds-simulation-scheduler-module">reeds.function_libs.pipeline.jobScheduling_scripts.RE_EDS_simulation_scheduler module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="reeds.function_libs.pipeline.jobScheduling_scripts.html#reeds-function-libs-pipeline-jobscheduling-scripts-scheduler-functions-module">reeds.function_libs.pipeline.jobScheduling_scripts.scheduler_functions module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="reeds.function_libs.pipeline.jobScheduling_scripts.html#module-reeds.function_libs.pipeline.jobScheduling_scripts">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="reeds.function_libs.pipeline.worker_scripts.html">reeds.function_libs.pipeline.worker_scripts package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="reeds.function_libs.pipeline.worker_scripts.html#subpackages">Subpackages</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="reeds.function_libs.pipeline.worker_scripts.analysis_workers.html">reeds.function_libs.pipeline.worker_scripts.analysis_workers package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="reeds.function_libs.pipeline.worker_scripts.analysis_workers.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="reeds.function_libs.pipeline.worker_scripts.analysis_workers.html#reeds-function-libs-pipeline-worker-scripts-analysis-workers-md-simulation-analysis-module">reeds.function_libs.pipeline.worker_scripts.analysis_workers.MD_simulation_analysis module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="reeds.function_libs.pipeline.worker_scripts.analysis_workers.html#reeds-function-libs-pipeline-worker-scripts-analysis-workers-re-eds-explore-lowerbound-analysis-module">reeds.function_libs.pipeline.worker_scripts.analysis_workers.RE_EDS_explore_lowerBound_analysis module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="reeds.function_libs.pipeline.worker_scripts.analysis_workers.html#reeds-function-libs-pipeline-worker-scripts-analysis-workers-re-eds-general-analysis-module">reeds.function_libs.pipeline.worker_scripts.analysis_workers.RE_EDS_general_analysis module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="reeds.function_libs.pipeline.worker_scripts.analysis_workers.html#reeds-function-libs-pipeline-worker-scripts-analysis-workers-re-eds-soptimization-final-module">reeds.function_libs.pipeline.worker_scripts.analysis_workers.RE_EDS_soptimization_final module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="reeds.function_libs.pipeline.worker_scripts.analysis_workers.html#reeds-function-libs-pipeline-worker-scripts-analysis-workers-re-eds-state-optimization-analysis-module">reeds.function_libs.pipeline.worker_scripts.analysis_workers.RE_EDS_state_optimization_analysis module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="reeds.function_libs.pipeline.worker_scripts.analysis_workers.html#module-reeds.function_libs.pipeline.worker_scripts.analysis_workers">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="reeds.function_libs.pipeline.worker_scripts.simulation_workers.html">reeds.function_libs.pipeline.worker_scripts.simulation_workers package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="reeds.function_libs.pipeline.worker_scripts.simulation_workers.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="reeds.function_libs.pipeline.worker_scripts.simulation_workers.html#module-reeds.function_libs.pipeline.worker_scripts.simulation_workers.MD_simulation_run_worker">reeds.function_libs.pipeline.worker_scripts.simulation_workers.MD_simulation_run_worker module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="reeds.function_libs.pipeline.worker_scripts.simulation_workers.html#module-reeds.function_libs.pipeline.worker_scripts.simulation_workers.RE_EDS_simulation_run_worker">reeds.function_libs.pipeline.worker_scripts.simulation_workers.RE_EDS_simulation_run_worker module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="reeds.function_libs.pipeline.worker_scripts.simulation_workers.html#reeds-function-libs-pipeline-worker-scripts-simulation-workers-clean-up-simulation-files-module">reeds.function_libs.pipeline.worker_scripts.simulation_workers.clean_up_simulation_files module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="reeds.function_libs.pipeline.worker_scripts.simulation_workers.html#reeds-function-libs-pipeline-worker-scripts-simulation-workers-prepare-imd-initialisation-module">reeds.function_libs.pipeline.worker_scripts.simulation_workers.prepare_imd_initialisation module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="reeds.function_libs.pipeline.worker_scripts.simulation_workers.html#module-reeds.function_libs.pipeline.worker_scripts.simulation_workers">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="reeds.function_libs.pipeline.worker_scripts.html#module-reeds.function_libs.pipeline.worker_scripts">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-reeds.function_libs.pipeline.generate_euler_job_files">
+<span id="reeds-function-libs-pipeline-generate-euler-job-files-module"></span><h2>reeds.function_libs.pipeline.generate_euler_job_files module<a class="headerlink" href="#module-reeds.function_libs.pipeline.generate_euler_job_files" title="Permalink to this headline">¶</a></h2>
+<p>#TODO: Remove as not used</p>
+<p>from pygromos.euler_submissions.FileManager import Simulation_System as sys
+from reeds.function_libs.pipeline.jobScheduling_scripts import RE_EDS_simulation_scheduler</p>
+<dl>
+<dt>def build_md_job_script(script_out_path: str, job_name: str, system: sys.System, in_protocol: str, out_dir: str,</dt><dd><blockquote>
+<div><blockquote>
+<div><p>gromosXX_bin: str,
+repetitions: int, equil_runs: int = 0, offset: int = 1, nmpi: int = 1, nomp: int = 0,
+work_dir: str = None,
+analysis_script: str = None,
+run_script: str = RE_EDS_simulation_scheduler.__file__, duration: str = “23:59”,
+write_free_energy_traj: bool = False,
+last_sim_dir: str = None, previous_runID: int = None):</p>
+</div></blockquote>
+<p>“””</p>
+<p>script_out_path :
+job_name :
+system :
+in_protocol :
+out_dir :
+gromosXX_bin :
+repetitions :
+equil_runs :
+offset :
+nmpi :
+nomp :
+work_dir :
+analysis_script :
+run_script :
+duration :
+write_free_energy_traj :
+last_sim_dir :
+previous_runID :</p>
+<p>“””
+import os
+in_imd = in_protocol
+in_cnf = system.coordinates
+in_top = system.top.top_path
+in_ptp = system.top.pertubation_path
+in_disres = system.top.disres_path</p>
+<p># for copying old Files
+old_imd_command = “”
+copyCommand = False
+if (last_sim_dir != None and not os.path.exists(in_imd)):</p>
+<blockquote>
+<div><p>copyCommand = True
+if (previous_runID != None):</p>
+<blockquote>
+<div><dl class="simple">
+<dt>old_imd_command = “jobID=$(bsub -W 0:20 -J “” + job_name + “_copy” -w “done(” + str(</dt><dd><p>previous_runID) + “)” “cp ” + str(last_sim_dir) + “/next.imd ” + in_imd + ” &amp;&amp; “</p>
+</dd>
+</dl>
+</div></blockquote>
+<dl class="simple">
+<dt>else:</dt><dd><dl class="simple">
+<dt>old_imd_command = “jobID=$(bsub -W 0:20 -J “” + job_name + “_copy” “cp ” + str(</dt><dd><p>last_sim_dir) + “/next.imd ” + in_imd + ” &amp;&amp; “</p>
+</dd>
+</dl>
+</dd>
+<dt>old_imd_command += ” cp ” + str(last_sim_dir) + “/<a href="#id1"><span class="problematic" id="id2">*</span></a>cnf ” + os.path.dirname(</dt><dd><p>in_cnf) + “” | cut -d “&lt;” -f2 | cut -d “&gt;” -f1)</p>
+</dd>
+</dl>
+</div></blockquote>
+</div></blockquote>
+<p>echo “Submitted copying last Files: ${jobID}”</p>
+</dd>
+</dl>
+<p>“</p>
+<blockquote>
+<div><p>in_files = (“#FILES</p>
+</div></blockquote>
+<dl class="simple">
+<dt>“</dt><dd><p>“TOP=”” + in_top + “”</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>“</dt><dd><p>“COORD=”” + in_cnf + “”</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>“</dt><dd><p>“IMDRUN=” + in_imd + “</p>
+</dd>
+</dl>
+<dl>
+<dt>“</dt><dd><blockquote>
+<div><p>)</p>
+</div></blockquote>
+<p>variable_args = “”
+if (in_ptp != None):</p>
+<blockquote>
+<div><p>variable_args += ” -perttop ${PERTTOP} ”
+in_files += “PERTTOP=”” + str(in_ptp) + “”</p>
+</div></blockquote>
+</dd>
+</dl>
+<p>“</p>
+<blockquote>
+<div><dl class="simple">
+<dt>if (in_disres != None):</dt><dd><p>variable_args += ” -disres ${DISRES} ”
+in_files += “DISRES=”” + str(in_disres) + “”</p>
+</dd>
+</dl>
+</div></blockquote>
+<dl class="simple">
+<dt>“</dt><dd><p>in_files += “</p>
+</dd>
+</dl>
+<p>“</p>
+<blockquote>
+<div><p># final python command - submitting sopt_job chain
+pythoncommand = “”python ${RUNSCRIPT} -outdir ${OUTDIR} -imd “${IMDRUN}” -top ${TOP} ” + variable_args + ” -offsetstep ${OFFSET} -coord ${COORD} -nmpi ${MPI} -nomp ${OMP} -bin ${BIN} -simulation_runs ${PRODUCTIONTIME} -jobname ${JOBNAME} -equilibration_runs ” + str(</p>
+<blockquote>
+<div><p>equil_runs) + ” -duration_per_job ” + duration + ” “”</p>
+</div></blockquote>
+<dl class="simple">
+<dt>if (work_dir != None):</dt><dd><p>pythoncommand += ” -workdir ” + work_dir</p>
+</dd>
+<dt>if (previous_runID != None or copyCommand):</dt><dd><p>pythoncommand += ” -waitFor ${jobID}”</p>
+</dd>
+<dt>if analysis_script != None:</dt><dd><p>pythoncommand += ” -analysisScript ” + analysis_script</p>
+</dd>
+<dt>if (write_free_energy_traj):</dt><dd><p>pythoncommand += ” -write_free_energy_traj”</p>
+</dd>
+</dl>
+<p>pythoncommand += “””</p>
+<dl class="simple">
+<dt>script_text = (“#!/bin/bash”</dt><dd><p>“</p>
+</dd>
+</dl>
+</div></blockquote>
+<dl class="simple">
+<dt>“</dt><dd><p>“OMP=” + str(nomp) + “</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>“</dt><dd><p>“MPI=” + str(nmpi) + “</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>“</dt><dd><p>“</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>“</dt><dd><p>“JOBNAME=”” + job_name + “”</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>“</dt><dd><p>“OUTDIR=” + out_dir + “</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>“</dt><dd><p>“</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>“</dt><dd><p>“#LSF</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>“</dt><dd><p>“BIN=”” + gromosXX_bin + “”</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>“</dt><dd><p>“RUNSCRIPT=” + run_script + “</p>
+</dd>
+</dl>
+<dl>
+<dt>“</dt><dd><blockquote>
+<div><p>“jobID=” + str(</p>
+</div></blockquote>
+<p>previous_runID) + ”  #Wait for this sopt_job</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>“</dt><dd><p>“PRODUCTIONTIME=” + str(repetitions) + “</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>“</dt><dd><p>“OFFSET=” + str(offset) + “</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>“</dt><dd><p>“</p>
+</dd>
+</dl>
+<dl>
+<dt>“</dt><dd><ul class="simple">
+<li><p>in_files +</p></li>
+</ul>
+<p>“</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>“</dt><dd><p>“#do</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>“</dt><dd><p>“echo “JOB: ${JOBNAME}”</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>“</dt><dd><p>“echo “reserve MPI <a href="#id3"><span class="problematic" id="id4">*</span></a>OMP : ${MPI} * ${OMP} CPUS”</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>“</dt><dd><p>“mkdir -p ${OUTDIR}</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>“</dt><dd><p>“cd $BASEDIR</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>“</dt><dd><p>“echo “got Initial JobID: ${jobID}”</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>“</dt><dd><p>“” + old_imd_command + “</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>“</dt><dd><p>“</p>
+</dd>
+</dl>
+<p>PYTHONCOMMANDRUN=” + str(pythoncommand) + ”
+“</p>
+<blockquote>
+<div><p>“</p>
+</div></blockquote>
+<dl class="simple">
+<dt>“</dt><dd><p>“##Run Production</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>“</dt><dd><p>“eval “$PYTHONCOMMANDRUN”</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>“</dt><dd><p>“</p>
+</dd>
+</dl>
+<dl>
+<dt>“</dt><dd><blockquote>
+<div><p>“cd ..”)</p>
+</div></blockquote>
+<p>script = open(script_out_path, “w”)
+script.write(script_text)
+script.close()
+return script_out_path</p>
+</dd>
+<dt>def build_MD_analysis_script(in_simulation_name: str, in_folder: str, in_topology_path: str,</dt><dd><blockquote>
+<div><p>out_dir: str, out_script_path: str,
+in_ene_ana_lib: str, gromosPP_path: str):</p>
+</div></blockquote>
+<p>import_text = “#!/usr/bin/env python</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>“</dt><dd><p>import_text += “#################################</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>“</dt><dd><p>import_text += “# This is a small automatic generated ana_script wrapper.</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>“</dt><dd><p>import_text += “#################################</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>“</dt><dd><p>import_text += “from reeds.function_libs.jobScheduling_scripts import MD_simulation_analysis as ana</p>
+</dd>
+</dl>
+<p>“</p>
+<blockquote>
+<div><p>dependencies_text = “# INPUT DIRS/PATHS</p>
+</div></blockquote>
+<dl class="simple">
+<dt>“</dt><dd><p>dependencies_text += “##binary or file paths</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>“</dt><dd><p>dependencies_text += “in_ene_ana_lib = “” + in_ene_ana_lib + “”</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>“</dt><dd><p>dependencies_text += “gromosPP_path = “” + gromosPP_path + “”</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>“</dt><dd><p>dependencies_text += “</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>“</dt><dd><p>dependencies_text += “##dependencies</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>“</dt><dd><p>dependencies_text += “in_simulation_name = “” + in_simulation_name + “”</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>“</dt><dd><p>dependencies_text += “in_folder = “” + in_folder + “”</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>“</dt><dd><p>dependencies_text += “in_topology_path = “” + in_topology_path + “”</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>“</dt><dd><p>dependencies_text += “out_dir = “” + out_dir + “”</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>“</dt><dd><p>dependencies_text += “</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>“</dt><dd><p>dependencies_text += “##controls</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>“</dt><dd><p>dependencies_text += “control_dict = {</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>“</dt><dd><p>dependencies_text += “”concat”: {“do”: True,</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>“</dt><dd><p>dependencies_text += ”      “sub”: {</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>“</dt><dd><p>dependencies_text += ”              “tre”: True,</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>“</dt><dd><p>dependencies_text += ”              “cnf”: True,</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>“</dt><dd><p>dependencies_text += ”              “trc”: True,</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>“</dt><dd><p>dependencies_text += ”              “convert_trc_xtc”: True</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>“</dt><dd><p>dependencies_text += ”              }</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>“</dt><dd><p>dependencies_text += ”      },</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>“</dt><dd><p>dependencies_text += “”ene_ana”:{“do”:True}</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>“</dt><dd><p>dependencies_text += “}</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>“</dt><dd><p>dependencies_text += “trc_take_every_step = 1</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>“</dt><dd><p>dependencies_text += “</p>
+</dd>
+</dl>
+<p>“</p>
+<blockquote>
+<div><p>command_text = “ana.do(in_simulation_name=in_simulation_name, in_folder=in_folder, ”                    “in_topology_path=in_topology_path, out_dir=out_dir,”                    “in_ene_ana_lib=in_ene_ana_lib, gromosPP_path=gromosPP_path)</p>
+</div></blockquote>
+<p>“</p>
+<blockquote>
+<div><p>script_text = import_text + dependencies_text + command_text</p>
+<p>ana_file = open(out_script_path, “w”)
+ana_file.write(script_text)
+ana_file.close()</p>
+<p>return out_script_path</p>
+</div></blockquote>
+</div>
+<div class="section" id="reeds-function-libs-pipeline-module-functions-module">
+<h2>reeds.function_libs.pipeline.module_functions module<a class="headerlink" href="#reeds-function-libs-pipeline-module-functions-module" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-reeds.function_libs.pipeline">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-reeds.function_libs.pipeline" title="Permalink to this headline">¶</a></h2>
+<p>The pipeline submodule is providing functionality to queue RE-EDS runs into a job-scheduling system.
+Therefore the submodule is divided into two parts: scheduler and workers.</p>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="reeds.function_libs.pipeline.jobScheduling_scripts.html" class="btn btn-neutral float-right" title="reeds.function_libs.pipeline.jobScheduling_scripts package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="reeds.function_libs.optimization.src.html" class="btn btn-neutral float-left" title="reeds.function_libs.optimization.src package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, Benjamin Ries, Salome Rieder, Candide Champion. Project structure based on the Computational Molecular Science Python Cookiecutter version 1.3
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

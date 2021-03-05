@@ -1,0 +1,30 @@
+reeds.tests.REEDS\_sopt package
+===============================
+
+Submodules
+----------
+
+reeds.tests.REEDS\_sopt.test\_reeds\_sopt\_wrap module
+------------------------------------------------------
+
+.. automodule:: reeds.tests.REEDS_sopt.test_reeds_sopt_wrap
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+reeds.tests.REEDS\_sopt.test\_reeds\_soptimizers module
+-------------------------------------------------------
+
+.. automodule:: reeds.tests.REEDS_sopt.test_reeds_soptimizers
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+
+Module contents
+---------------
+
+.. automodule:: reeds.tests.REEDS_sopt
+   :members:
+   :undoc-members:
+   :show-inheritance:

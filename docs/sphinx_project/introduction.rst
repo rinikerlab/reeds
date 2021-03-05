@@ -3,14 +3,14 @@ REEDS
 =====
 
 
-.. image:: https://github.com/REPLACE_WITH_OWNER_ACCOUNT/reeds/workflows/CI/badge.svg
-   :target: https://github.com/REPLACE_WITH_OWNER_ACCOUNT/reeds/actions?query=branch%3Amaster+workflow%3ACI
-   :alt: GitHub Actions Build Status
+.. image:: https://github.com/SchroederB/REEDS_Pipeline/actions/workflows/CI.yaml/badge.svg
+   :target: https://github.com/SchroederB/REEDS_Pipeline/actions/workflows/CI.yaml
+   :alt: CI
 
 
-.. image:: https://codecov.io/gh/REPLACE_WITH_OWNER_ACCOUNT/REEDS/branch/master/graph/badge.svg
-   :target: https://codecov.io/gh/REPLACE_WITH_OWNER_ACCOUNT/REEDS/branch/master
-   :alt: codecov
+.. image:: https://img.shields.io/badge/Documentation-here-white.svg
+   :target: https://schroederb.github.io/REEDS_Pipeline/
+   :alt: Documentation
 
 
 The aim of the module is to make the RE-EDS pipeline accesible to everyone! :)
