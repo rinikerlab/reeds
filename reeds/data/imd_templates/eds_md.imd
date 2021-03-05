@@ -1,0 +1,150 @@
+TITLE
+        Automatically generated input file
+        dsidler Sat Oct 21 10:51:41 2017
+END
+SYSTEM
+#      NPM      NSM
+         1     1172
+END
+STEP
+#   NSTLIM          T        DT
+     100000         0     0.002
+END
+EDS
+# EDS        0,1
+#              0: no enveloping distribution sampling (EDS) [default]
+#              1: enveloping distribution sampling
+# ALPHLJ: >= 0.0 Lennard-Jones soft-core parameter
+#  ALPHC: >= 0.0 Coulomb-RF soft-core parameter
+# FORM       1-3
+#              1: Single s Hamiltonian
+#              2: Hamiltonian with NUMSTATES*(NUMSTATES-1)/2 (pairwise) s parameters
+#              3: Hamiltonian with (NUMSTATES-1) s parameters
+# NUMSTATES >1  : number of states
+# if NUMSTATES != 3:
+# S         >0.0: smoothness parameter(s)
+# if NUMSTATES == 3:
+# i   j   S     : state pair i j and associated s parameter
+# EIR           : energy offsets for states
+#
+# EDS
+  1
+# SOFT CORE
+# ALPHLJ  ALPHC
+  0.0     0.0
+# FUNCTIONAL FORM
+  1
+# NUMSTATES
+  6
+# S
+  1.0
+# EIR
+        -1000              0           0              0           1000           0
+END
+BOUNDCOND
+#      NTB    NDFMIN
+         1         3
+END
+MULTIBATH
+# ALGORITHM:
+#      weak-coupling:      use weak-coupling scheme
+#      nose-hoover:        use Nose Hoover scheme
+#      nose-hoover-chains: use Nose Hoover chains scheme
+# NUM: number of chains in Nose Hoover chains scheme
+#      !! only specify NUM when needed !!
+# NBATHS: number of temperature baths to couple to
+#          ALGORITHM
+                   0
+#  NBATHS
+         2
+# TEMP0(1 ... NBATHS)  TAU(1 ... NBATHS)
+       298       0.1
+       298       0.1
+
+#   DOFSET: number of distiguishable sets of d.o.f.
+         2
+# LAST(1 ... DOFSET)  COMBATH(1 ... DOFSET)  IRBATH(1 ... DOFSET)
+       196         1         1      3712         2         2
+END
+PRESSURESCALE
+# COUPLE   SCALE    COMP    TAUP  VIRIAL
+       2       1 0.0004575      0.5        2
+# SEMIANISOTROPIC COUPLINGS(X, Y, Z)
+       1        1        1
+# PRES0(1...3,1...3)
+ 0.06102       0       0
+       0 0.06102       0
+       0       0 0.06102
+END
+FORCE
+# bonds     angles    improper  dihedral  electrostatic vdW
+  0        1        1        1        1        1
+# NEGR    NRE(1)    NRE(2)    ...      NRE(NEGR)
+     7      33       63       96      130      165      198     3712
+END
+CONSTRAINT
+# NTC
+    3
+#      NTCP  NTCP0(1)
+          1    0.0001
+#      NTCS  NTCS0(1)
+          1    0.0001
+END
+PAIRLIST
+# algorithm    NSNB   RCUTP   RCUTL    SIZE    TYPE
+          0       5     0.8     1.4     0.4       0
+END
+NONBONDED
+# NLRELE
+         1
+#  APPAK    RCRF   EPSRF  NSLFEXCL
+         0       1.4      66.7         1
+# NSHAPE  ASHAPE  NA2CLC   TOLA2   EPSLS
+         3       1.4         2     1e-10         0
+#    NKX     NKY     NKZ   KCUT
+        10        10        10       100
+#    NGX     NGY     NGZ  NASORD  NFDORD  NALIAS  NSPORD
+        32        32        32         3         2         3         4
+# NQEVAL  FACCUR  NRDGRD  NWRGRD
+    100000       1.6         0         0
+#  NLRLJ  SLVDNS
+         0      33.3
+END
+INITIALISE
+# Default values for NTI values: 0
+#   NTIVEL    NTISHK    NTINHT    NTINHB
+         1         3         0         0
+#   NTISHI    NTIRTC    NTICOM
+         1         0         0
+#   NTISTI
+         0
+#       IG     TEMPI
+    210185       298
+END
+COMTRANSROT
+#     NSCM
+      1000
+END
+DISTANCERES
+# NTDIR
+#   0 : no distance restraining
+#   -1,1 : use CDIS
+#   -2,2: use W0*CDIS
+#   NTDIR < 0 : time averaging
+#   NTDIR > 0 : no time averaging
+# NTDIRA = 1: read in time averaged distances (for continuation run)
+# NTDIRA = 0: don't read them in, recalc from scratch
+# NTWDIR >= 0 write every NTWDIRth step dist. restr. information to external file
+#     NTDIR  NTDIRA    CDIR    DIR0  TAUDIR  FORCESCALE VDIR NTWDIR
+          1       0    1000       1       1       0       0       0
+END
+PRINTOUT
+#NTPR: print out energies, etc. every NTPR steps
+#NTPP: =1 perform dihedral angle transition monitoring
+#     NTPR      NTPP
+        10          0
+END
+WRITETRAJ
+#    NTWX     NTWSE      NTWV      NTWF      NTWE      NTWG      NTWB
+      200          0         0         0      100         0         0
+END

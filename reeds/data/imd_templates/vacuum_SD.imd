@@ -1,0 +1,84 @@
+TITLE
+Ligand in vaccum
+END
+SYSTEM
+#      NPM      NSM
+         1        0
+END
+INITIALISE
+#    NTIVEL   NTISHK   NTINHT    NTINHB    NTISHI  NTIRTC     NTICOM   NTISTI      IG     TEMPI
+         1         0        0         0         1       0          0        1  210185     298.0
+END
+STEP
+#   NSTLIM         T        DT
+        10       0.0     0.001
+END
+BOUNDCOND
+#      NTB     NDFMIN
+         0         0
+END
+COMTRANSROT
+#   NSCM
+    1000
+END
+WRITETRAJ
+# NTWSE = configuration selection parameter
+# =0: write normal trajectory
+# >0: chose min energy for writing configurations
+#     NTWX     NTWSE      NTWV      NTWF    NTWE      NTWG      NTWB
+         1         0         0         0       1         0         0
+END
+PRINTOUT
+#NTPR: print out energies, etc. every NTPR steps
+#NTPP: =1 perform dihedral angle transition monitoring
+#     NTPR     NTPP
+         1        0
+END
+FORCE
+#      NTF array
+# bonds    angles    imp.     dihe     charge nonbonded
+  1        1         1        1        1  1
+# NEGR    NRE(1)    NRE(2)    ...      NRE(NEGR)
+     1    6034
+END
+CONSTRAINT
+#      NTC       NTCP   NTCP0(1)     NTCS      NTCS0(1)
+         2          1    0.00010        1      0.00010
+END
+PAIRLIST
+#       algorithm: standard(0) (gromos96 like pairlist)
+#                            grid(1) (XX grid pairlist)
+#       SIZE:      grid cell size (or auto = 0.5 * RCUTP)
+#       TYPE:      chargegoup(0) (chargegroup based cutoff)
+#                                atomic(1) (atom based cutoff)
+#
+#       algorithm         NSNB  RCUTP   RCUTL     SIZE  TYPE
+                0            1    7.0     7.0      3.5     1
+END
+# Longrange reaction field correction
+NONBONDED
+# NLRELE    APPAK      RCRF     EPSRF  NSLFEXCL
+       1      0.0       100000.0        1    1
+# NSHAPE   ASHAPE    NA2CLC   TOLA2   EPSLS
+       3       1.0        2   1e-10       0
+# NKX    NKY   NKZ    KCUT
+   10     10    10     100
+# NGX   NGY   NGZ  NASORD  NFDORD   NALIAS  NSPORD
+   32    32    32       3       2        3       4
+# NQEVAL   FACCUR   NRDGRD   NWRGRD   NLRLJ    SLVDNS
+  100000      1.6        0        0       0      33.3
+END
+COVALENTFORM
+# NTBBH: 0,1 controls bond-stretching potential
+#        0: quartic form (default)
+#        1: harmonic form
+# NTBAH: 0,1 controls bond-angle bending potential
+#        0: cosine-harmonic (default)
+#        1: harmonic
+# NTBDN: 0,1 controls torsional dihedral potential
+#        0: arbitrary phase shifts (default)
+#        1: phase shifts limited to 0 and 180 degrees.
+#   NTBBH    NTBAH    NTBDN
+        1        1        1
+END
+

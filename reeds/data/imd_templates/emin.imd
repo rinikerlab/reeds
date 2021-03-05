@@ -1,0 +1,86 @@
+TITLE
+steepest descent energy minimization of the peptide in water
+END
+# minimize for 20 cycles
+ENERGYMIN
+#     NTEM    NCYC    DELE    DX0     DXM   NMIN   FLIM
+         1      200      0.1   0.01    0.05   2000    0.0
+END
+# we have 1 solute and 895 solvent
+SYSTEM
+#      NPM      NSM
+         1      910
+END
+INITIALISE
+#    NTIVEL   NTISHK   NTINHT    NTINHB    NTISHI  NTIRTC     NTICOM   NTISTI      IG     TEMPI
+         0         0        0         0         1       0          0        0  210185     300.0
+END
+# do 2000 steps
+STEP
+#   NSTLIM         T        DT
+      3000       0.0     0.002
+END
+# do it with rectangular periodic boundary conditions
+BOUNDCOND
+#      NTB    NDFMIN
+         1         1
+END
+# every 10 steps print the energy in the output file.
+PRINTOUT
+#NTPR: print out energies, etc. every NTPR steps
+#NTPP: =1 perform dihedral angle transition monitoring
+#     NTPR          NTPP
+        10             0
+END
+# use the shake algorithm to constrain the bond lengths.
+CONSTRAINT
+#      NTC       NTCP   NTCP0(1)     NTCS      NTCS0(1)
+         3          1    0.00010        1      0.00010
+END
+FORCE
+# NTF(1..6): 0,1 determines terms used in force calculation
+#             0: do not include terms
+#             1: include terms
+# NEGR: ABS(NEGR): number of energy groups
+#             > 0: use energy groups
+#             < 0: use energy and force groups
+# NRE(1..NEGR): >= 1.0 last atom in each energy group
+# NTF(1) NTF(2) NTF(3) NTF(4) NTF(5)        NTF(6)
+# bonds     angles    improper  dihedral  electrostatic vdW
+  0         1         1         1         1             1
+# NEGR    NRE(1)    NRE(2)    ...      NRE(NEGR)
+     2      71     2801
+END
+# with rectangular periodic boundary conditions we may use
+# the grid based pairlist generation
+PAIRLIST
+#       algorithm: standard (0) (gromos96 like pairlist)
+#                            grid (1) (XX grid pairlist)
+#       SIZE:      grid cell size (or auto = 0.5 * RCUTP)
+#       TYPE:      chargegoup (0) (chargegroup based cutoff)
+#                                atomic (1) (atom based cutoff)
+#
+#  algorithm            NSNB    RCUTP   RCUTL   SIZE    TYPE
+        0               5         0.8     1.4   0.4     0
+END
+NONBONDED
+# NLRELE    APPAK      RCRF     EPSRF  NSLFEXCL
+       1      0.0       1.4        61     1
+# NSHAPE   ASHAPE    NA2CLC   TOLA2   EPSLS
+      -1       1.4        2   1e-10       0
+# NKX    NKY   NKZ    KCUT
+   10     10    10     100
+# NGX   NGY   NGZ  NASORD  NFDORD   NALIAS  NSPORD
+   32    32    32       3       2        3       4
+# NQEVAL   FACCUR   NRDGRD   NWRGRD   NLRLJ    SLVDNS
+  100000      1.6        0        0       0      33.3
+END
+POSITIONRES
+# values for NTPOR:
+#  0: no position re(con)straining
+#  1: use CPOR
+#  2: use SPOR/ ATOMIC B-FACTORS
+#  3: position constraining
+# NTPOR       NTPORB     NTPORS      CPOR
+      1            1          0     2.5E4
+END
