@@ -1,8 +1,8 @@
 REEDS
 ==============================
 [//]: # (Badges)
-[![CI](https://github.com/SchroederB/reed/actions/workflows/CI.yaml/badge.svg)](https://github.com/SchroederB/REEDS_Pipeline/actions/workflows/CI.yaml)
-[![Documentation](https://img.shields.io/badge/Documentation-here-white.svg)](https://schroederb.github.io/REEDS_Pipeline/)
+[![CI](https://github.com/SchroederB/reeds/actions/workflows/CI.yaml/badge.svg)](https://github.com/SchroederB/reeds/actions/workflows/CI.yaml)
+[![Documentation](https://img.shields.io/badge/Documentation-here-white.svg)](https://schroederb.github.io/reeds/)
 
 
 
