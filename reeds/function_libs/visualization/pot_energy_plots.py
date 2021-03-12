@@ -4,7 +4,7 @@ import numpy as np
 import pandas as pd
 from matplotlib import pyplot as plt
 
-from reeds.function_libs.utils import plots_style as ps
+from reeds.function_libs.visualization import plots_style as ps
 from reeds.function_libs.visualization.utils import discard_high_energy_points
 
 

@@ -4,7 +4,7 @@ import numpy as np
 import pandas as pd
 from matplotlib import pyplot as plt
 
-from reeds.function_libs.utils import plots_style as ps
+from reeds.function_libs.visualization import plots_style as ps
 from reeds.function_libs.visualization.utils import generate_trace_from_transition_dict, y_axis_for_s_plots, x_axis, \
     prepare_system_state_data
 

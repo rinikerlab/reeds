@@ -3,7 +3,7 @@ from typing import List
 import numpy as np
 from matplotlib import pyplot as plt
 
-from reeds.function_libs.utils import plots_style as ps
+from reeds.function_libs.visualization import plots_style as ps
 from reeds.function_libs.visualization.utils import nice_s_vals
 
 

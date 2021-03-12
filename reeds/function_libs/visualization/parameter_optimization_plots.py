@@ -3,7 +3,7 @@ from typing import List, Union
 import numpy as np
 from matplotlib import pyplot as plt
 
-from reeds.function_libs.utils import plots_style as ps
+from reeds.function_libs.visualization import plots_style as ps
 
 
 def plot_peoe_eoff_vs_s(eoff: dict,

@@ -3,6 +3,7 @@ from typing import List
 import numpy as np
 import pandas as pd
 
+from reeds.function_libs.visualization import plots_style as ps
 
 def nice_s_vals(svals: list,
                 base10=False) -> list:
