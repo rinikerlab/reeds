@@ -60,6 +60,7 @@ jobs:
       shell: bash -l {0}
 
       run: |
+        conda activate test
         pytest -v --cov=pygromos --cov-report=xml --color=yes pygromos/tests/ #
         
     - name: CodeCov
