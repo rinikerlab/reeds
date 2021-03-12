@@ -20,6 +20,7 @@ jobs:
     strategy:
       matrix:
         os: [ ubuntu-latest, macOS-latest] #macOS-latest, windows-latest
+
         python-version: [3.7]
 
     steps:
@@ -33,7 +34,6 @@ jobs:
         ulimit -a
 
 
-    # More info on options: https://github.com/goanpeca/setup-miniconda
     - uses: conda-incubator/setup-miniconda@v2
       with:
         python-version: ${{ matrix.python-version }}
