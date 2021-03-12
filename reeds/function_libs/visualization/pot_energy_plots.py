@@ -92,7 +92,9 @@ def plot_energy_distribution_by_replica(traj_data : pd.DataFrame,
                                         replica_num : int,
                                         s_value : int,
                                         manual_xlim : List[float] = None,
-                                        shared_xaxis : bool = True):
+                                        shared_xaxis : bool = True, 
+                                        sampling_thresholds = None, 
+                                        undersampling_thresholds = None):
     """plot_energy_distribution_by_replica
     Plots the potential energy distributions for the data generated
     in a RE-EDS simulation (or for N independant EDS simulations (i.e. lower bound))
@@ -114,12 +116,17 @@ def plot_energy_distribution_by_replica(traj_data : pd.DataFrame,
         minimum and maximum value for the x-axes
     shared_xaxis: bool, optional
         determines if each plot has the same axes limits
-
+    sampling_thresholds: List [float], optional
+        list (length = number of end states) of the potential thresholds which 
+        determines when a state is physically sampled. If given this is added to the plot.
+    undersampling_thresholds: List [float], optional
+        list (length = number of end states) of the undersampling potential thresholds which 
+        determines when a state is is undersampling. If given this is added to the plot.
     Returns
     -------
     None
     """
-
+    
     # find number of states and replicas:
     nstates = 0
     for elem in traj_data.keys():
@@ -192,7 +199,13 @@ def plot_energy_distribution_by_replica(traj_data : pd.DataFrame,
             low_lim  = low_lim - 0.1 * abs(low_lim)
             high_lim = high_lim + 0.1* abs(high_lim)
             xlimits  = [low_lim, high_lim]
-
+        
+        # Draw a vertical line to delimit physical and undersampling if requested. 
+        if sampling_thresholds is not None:
+            axes[row_num, col_num].axvline(x=sampling_thresholds[i], color = 'black', lw = 1, ls = '--')
+        if undersampling_thresholds is not None:
+            axes[row_num, col_num].axvline(x=undersampling_thresholds[i], color = 'grey', lw = 1, ls = '--')
+        
         axes[row_num, col_num].set_xlim(xlimits)
         axes[row_num, col_num].set_ylabel('Count')
         axes[row_num, col_num].set_xlabel(r'$V_{i}$ [kJ/mol]')
