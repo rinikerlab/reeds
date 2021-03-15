@@ -749,7 +749,9 @@ def scatter_potential_timeseries(time: pd.Series,
 def plot_sampling_grid(traj_data: pd.DataFrame,
                        out_path: str= None,
                        y_range: List[float] = [-1000, 1000],
-                       title: str = None) -> str:
+                       title: str = None, 
+                       sampling_thresholds = None,
+                       undersampling_thresholds = None) -> str:
     """plot_sampling_grid
     Plots the potential energy of each end state in a single plot (grid of subplots)
     where each subplot corresponds to one end state.
@@ -764,7 +766,12 @@ def plot_sampling_grid(traj_data: pd.DataFrame,
         List (float) containing lower and upper bound for the y-axes (default [-1000, 1000])
     title: str, optional
         string Title to give to the plot (default None)
-
+    sampling_thresholds: List [float], optional
+        list (length = number of end states) of the potential thresholds which 
+        determines when a state is physically sampled. If given this is added to the plot.
+    undersampling_thresholds: List [float], optional
+        list (length = number of end states) of the undersampling potential thresholds which 
+        determines when a state is is undersampling. If given this is added to the plot.
     Returns
     -------
     out_path: str
@@ -797,7 +804,13 @@ def plot_sampling_grid(traj_data: pd.DataFrame,
             ax.set_ylabel('V [kJ/mol]', fontsize = 16)
         if (nrows > 1 and ncols > 1 and i / ((nrows - 1) * (ncols - 1)) > 1):
             ax.set_xlabel('time [ps]', fontsize = 16)
-
+        
+        # Add horizontal lines to show the thresholds
+        if sampling_thresholds is not None:
+          ax.axhline(y=sampling_thresholds[i], color = 'black', lw = 1, ls = '--')
+        if undersampling_thresholds is not None:
+          ax.axhline(y=undersampling_thresholds[i], color = 'grey', lw = 1, ls = '--')
+        
     fig.tight_layout()
 
     if (out_path is not None):
