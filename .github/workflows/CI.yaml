@@ -61,7 +61,7 @@ jobs:
 
       run: |
         conda activate test
-        pytest -v --cov=pygromos --cov-report=xml --color=yes pygromos/tests/ #
+        pytest -v --cov=pygromos --cov-report=xml --color=yes reeds/tests/ #
         
     - name: CodeCov
       uses: codecov/codecov-action@v1
