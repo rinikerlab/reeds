@@ -30,7 +30,7 @@ def analyse_sopt_iteration(repdat_path: str, out_dir: str, title: str, pot_tresh
         output dir for the analysis
     title: str
         title of the iteration
-    pot_tresh : float, optional
+    pot_tresh : Union[float, List[float]], optional
         potential threshold for observing
     Returns
     -------
@@ -59,11 +59,16 @@ def analyse_sopt_iteration(repdat_path: str, out_dir: str, title: str, pot_tresh
     print("extremePos: ", min_pos, max_pos)
     replica1 = repdat_file.DATA.loc[repdat_file.DATA.ID == 1]
 
+
+    if (isinstance(pot_tresh, float)):
+        pot_tresh = [pot_tresh for x in range(len(replica1.iloc[0].state_potentials))]
+
+
     for rowID, row in replica1.iterrows():
         state_pots = row.state_potentials
 
         for state in state_pots:
-            if (state_pots[state] < pot_tresh):
+            if (state_pots[state] < pot_tresh[state]):
                 occurrence_counts[state] += 1
 
         id_ene = {val: key for key, val in state_pots.items()}
@@ -133,7 +138,7 @@ def do(sopt_root_dir: str, pot_tresh=0, title="", out_dir: str = None, rt_conver
     ----------
     sopt_root_dir : str
         directory containing all s-optimization iterations
-    pot_tresh : int, optional
+    pot_tresh : Union[float, List[float]], optional
         potential energy threshold, determining undersampling (default: 0)
     title : str, optional
         title of run (default: "")
@@ -155,13 +160,13 @@ def do(sopt_root_dir: str, pot_tresh=0, title="", out_dir: str = None, rt_conver
     sopt_data = {}
     repdat_files = {}
     converged = False
-    print("\n\nLoading precomputed data for iteration: ", end="\t")
     for iteration_folder in sorted(sopt_dirs):
         iteration = int(iteration_folder.replace("sopt", ""))
         repdat = glob.glob(sopt_root_dir + "/" + iteration_folder + "/analysis/data/*repdat*")
         out_iteration_file_path = out_dir + "/" + iteration_folder + "_ana_data.npy"
 
         if (os.path.exists(out_iteration_file_path)):
+            print("\n\nLoading precomputed data for iteration: ", end="\t")
             print( iteration, end="\t")
             sopt_it_stats = pickle.load(open(out_iteration_file_path, "rb"))
             sopt_data.update({iteration_folder: sopt_it_stats})
