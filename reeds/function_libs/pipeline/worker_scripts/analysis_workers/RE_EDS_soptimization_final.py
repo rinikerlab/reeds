@@ -175,7 +175,8 @@ def do(sopt_root_dir: str, pot_tresh=0, title="", out_dir: str = None, rt_conver
 
             pickle.dump(obj=sopt_it_stats, file=open(out_iteration_file_path, "wb"))
             sopt_data.update({iteration_folder: sopt_it_stats})
-
+        else:
+            continue
         # round trip time efficiency
         if (iteration > 1):
             sopt_it_stats.update({"avg_rountrip_duration_optimization_efficiency": sopt_data["sopt"+str(iteration- 1)]["avg_rountrip_durations"] -sopt_it_stats["avg_rountrip_durations"]})

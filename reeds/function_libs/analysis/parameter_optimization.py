@@ -67,6 +67,9 @@ def estimate_Eoff(ene_ana_trajs: List[pd.DataFrame],
         ene_ana_trajs = ene_ana_trajs[-take_last_n:]
         s_values = s_values[-take_last_n:]
         print("using Replicas: ", len(ene_ana_trajs), s_values)
+
+    if(isinstance(pot_tresh, float)):
+        pot_tresh = [pot_tresh for x in range(len(Eoff))]
     statistic = eoff.estEoff(ene_ana_trajs=ene_ana_trajs, out_path=out_path + "/Eoff_estimate.out", Temp=temp,
                              s_values=s_values, Eoff=Eoff, frac_tresh=frac_tresh, pot_tresh=pot_tresh,
                              convergenceradius=convergence_radius, kb=kb, max_iter=max_iter)

@@ -162,7 +162,8 @@ def visualization_s_optimization_summary(s_opt_data: dict,
         x_svalues.extend(opti["s_values"])
         y_svalues.extend([int(it.replace('sopt', "")) for x in range(len(opti["s_values"]))])
 
-        bar_heights.append([opti["state_sampling"][state] for state in opti["state_sampling"]])
+        #bar_heights.append([opti["state_sampling"][state] for state in opti["state_sampling"]])
+        bar_heights.append([opti["state_domination_sampling"][state] for state in opti["state_domination_sampling"]])
         bar_x.append(np.array(
             [int(state.replace("V", "").replace("r", "").replace("i", "")) for state in opti["state_domination_sampling"]]))
 
@@ -185,7 +186,8 @@ def visualization_s_optimization_summary(s_opt_data: dict,
     if (not isinstance(avRT_range, type(None))):
         ax2.set_ylim(avRT_range)
     else:
-        ax2.set_ylim([0, max(y_RTd) * 1.2])
+        pass
+        #ax2.set_ylim([0, max(y_RTd) * 1.2])
 
     x_svalues = (-1 * np.log10(np.array(x_svalues)))[::-1]
     y_svalues = y_svalues[::-1]
@@ -200,8 +202,8 @@ def visualization_s_optimization_summary(s_opt_data: dict,
     ax3.set_xlabel("-log(s)")
 
     # Making the bottom right corner plot
-
     num_sopts = len(bar_heights)
+    print(bar_heights)
     num_states = (len(bar_heights[0]))
 
     labels = [str(i) for i in range(1, num_states+1)]
@@ -319,8 +321,8 @@ def visualize_s_optimisation_sampling_optimization(s_opt_data:dict,
     mae_mean = []
     mae_std = []
     for iteration, data in s_opt_data.items():
-        mae_mean.append(data['MAE_optimal_sampling'])
-        mae_std.append(data['MAE_std_optimal_sampling'])
+        mae_mean.append(data['sampling_distribution_optimal_deviation_s1']['MAE'])
+        mae_std.append(data['sampling_distribution_optimal_deviation_s1']['MAE_std'])
 
     #ax.errorbar(list(range(1,len(maes)+1)), maes, approach_MAE_optSamp_std[approach],
     ax.plot(list(range(1, len(mae_mean) + 1)), mae_mean, alpha=0.75, c="k")
