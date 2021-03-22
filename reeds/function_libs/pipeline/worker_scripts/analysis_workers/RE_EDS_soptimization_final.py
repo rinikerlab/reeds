@@ -61,8 +61,8 @@ def analyse_sopt_iteration(repdat_path: str, out_dir: str, title: str, pot_tresh
 
 
     if (isinstance(pot_tresh, float)):
-        pot_tresh = [pot_tresh for x in range(len(replica1.iloc[0].state_potentials))]
-
+        pot_tresh = {x:pot_tresh for x in replica1.iloc[0].state_potentials}
+    print("potTresh", pot_tresh)
 
     for rowID, row in replica1.iterrows():
         state_pots = row.state_potentials
@@ -148,7 +148,7 @@ def do(sopt_root_dir: str, pot_tresh=0, title="", out_dir: str = None, rt_conver
         roundtrip time convergence criterium  in ps(default: 10ps)
 
     """
-    sopt_dirs = [x for x in os.listdir(sopt_root_dir) if ("sopt" in x and os.path.isdir(x))]
+    sopt_dirs = [x for x in os.listdir(sopt_root_dir) if ("sopt" in x and os.path.isdir(sopt_root_dir+"/"+x))]
 
     # sopt out_dir
     if (isinstance(out_dir, type(None))):
@@ -160,14 +160,15 @@ def do(sopt_root_dir: str, pot_tresh=0, title="", out_dir: str = None, rt_conver
     sopt_data = {}
     repdat_files = {}
     converged = False
+    print(sopt_dirs)
     for iteration_folder in sorted(sopt_dirs):
         iteration = int(iteration_folder.replace("sopt", ""))
+        print( iteration, end="\t")
         repdat = glob.glob(sopt_root_dir + "/" + iteration_folder + "/analysis/data/*repdat*")
         out_iteration_file_path = out_dir + "/" + iteration_folder + "_ana_data.npy"
 
         if (os.path.exists(out_iteration_file_path)):
             print("\n\nLoading precomputed data for iteration: ", end="\t")
-            print( iteration, end="\t")
             sopt_it_stats = pickle.load(open(out_iteration_file_path, "rb"))
             sopt_data.update({iteration_folder: sopt_it_stats})
 

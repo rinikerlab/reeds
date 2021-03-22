@@ -146,7 +146,7 @@ def visualization_s_optimization_summary(s_opt_data: dict,
 
     x_svalues = []
     y_svalues = []
-
+    print(s_opt_data)
     bar_heights = []
     bar_x = []
     for it in sorted(s_opt_data):
@@ -203,7 +203,6 @@ def visualization_s_optimization_summary(s_opt_data: dict,
 
     # Making the bottom right corner plot
     num_sopts = len(bar_heights)
-    print(bar_heights)
     num_states = (len(bar_heights[0]))
 
     labels = [str(i) for i in range(1, num_states+1)]
