@@ -83,6 +83,8 @@ def plot_sampling_convergence(ene_trajs, opt_trajs, outfile, title = None, trim_
         ax.plot(time, percent_sampling.T[i], color = colors[i], label = 'state ' + str(i+1),
                 marker = "D", ms = 4, ls = '-', lw = 1)  
         
+    ax.set_ylim(-3, np.max(percent_sampling)+3)
+
     ax.set_xlabel('time [ns]')
     ax.set_ylabel('% - sampling')
     
