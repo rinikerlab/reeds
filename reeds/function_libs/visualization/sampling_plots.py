@@ -6,6 +6,92 @@ from matplotlib import pyplot as plt
 from reeds.function_libs.visualization import plots_style as ps
 from reeds.function_libs.visualization.utils import nice_s_vals
 
+import reeds.function_libs.visualization.plots_style as ps
+
+def plot_sampling_convergence(ene_trajs, opt_trajs, outfile, title = None, trim_beg = 0.1):
+    """
+    This function will plot the convergence of the physical sampling for the s = 1 replica
+    of a RE-EDS simulation. It defines thresholds from the optimized state trajectories (average)
+    and considers any conf. below that threshold as sampled. The value is then multipled by two
+    as we only look at the left side of the distribution.     
+
+    Parameters
+    ----------
+    ene_trajs: List [pandas DataFrame]    
+        contains the potential energy trajectories for each replica of the RE-EDS
+        simulation.
+    opt_trajs: List [pandas DataFrame]    
+        contains the potential energy trajectories for each end state
+    outfile: str
+        path where the plot generated is saved
+    title: str
+        title to give the plot
+    trim_beg: float
+        fraction of the optimized state distribution to remove before 
+        finding the energy thresholds (equil.)
+    Returns
+    -------
+        None
+    """
+    
+    # 1 : Find the pot. energy thresholds to use. 
+    # Here we use the average value of the optimized state distrib
+    # And subsequently multiply by two the % calculated afterwards. 
+    
+    num_states = len(opt_trajs)
+    
+    thresholds = np.zeros(num_states)
+    nsteps = len(opt_trajs[0]['e1'])
+        
+    lower_trim = int(trim_beg * nsteps)
+        
+    for i, traj in enumerate(opt_trajs):
+        thresholds[i] = np.average(traj['e'+str(i+1)][lower_trim:])
+    
+    # 2: Calculate the %-sampling of each end state for replica s = 1 only
+    n_steps = len(ene_trajs[0]['e1'])
+    
+    # Total simulation time in nanoseconds
+    tot_time = round(ene_trajs[0]['time'][n_steps-1] / 1000)
+    
+    # Make n-slices from these number of timesteps
+    upper_idx = np.arange(5,101, 5) * n_steps / 100
+    time = np.arange(5,101, 5) * tot_time / 100
+    
+    # Array to keep the information
+    percent_sampling = np.zeros([len(upper_idx), num_states])
+    
+    # 3: Calculate the sampling: Here we might want to plug in the function doing this.
+    for i in range(len(upper_idx)):
+        for j in range(num_states):
+            traj = ene_trajs[0]['e'+str(j+1)][0:int(upper_idx[i])]
+            percent_sampling[i][j] = 2 * round(100 * np.sum(traj < thresholds[j]) / len(traj),1)
+    
+    fig = plt.figure(figsize=[10,6])
+    ax = plt.subplot(111)
+    
+    # General plotting options:
+    colors = ps.candide_colors
+    if title is None: title = 'Sampling convergence in the simulation (s = 1)'
+    ax.set_title(title)
+    
+    box = ax.get_position()
+    ax.set_position([box.x0, box.y0, box.width * 0.8, box.height])
+    
+    # 4: Plot the sampling for each state
+    for i in range(num_states):
+        ax.plot(time, percent_sampling.T[i], color = colors[i], label = 'state ' + str(i+1),
+                marker = "D", ms = 4, ls = '-', lw = 1)  
+        
+    ax.set_xlabel('time [ns]')
+    ax.set_ylabel('% - sampling')
+    
+    ax.legend(loc='upper center', bbox_to_anchor=(1.15, 0.75), fancybox=True,
+              shadow=True, ncol=1, fontsize = 12, edgecolor='black')
+
+    plt.savefig(outfile, facecolor='white')
+    
+    return None
 
 def plot_t_statepres(data: dict,
                      out_path: str = None,
