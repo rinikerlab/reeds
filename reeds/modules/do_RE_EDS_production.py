@@ -156,7 +156,7 @@ int
             "in_ene_ana_lib": in_ene_ana_lib_path,
             "n_processors": 5,
             "pot_tresh": pot_tresh,
-            "frac_tresh": [0.1],
+            "frac_tresh": [0.9],
             "dfmult_all_replicas": False,
             "verbose": True,
             "grom_file_prefix": simSystem.name,
