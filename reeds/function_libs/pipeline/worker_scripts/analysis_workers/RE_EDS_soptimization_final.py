@@ -21,7 +21,6 @@ def analyse_sopt_iteration(repdat_path: str, out_dir: str, title: str, pot_tresh
         analysis of a single optimization iteration.
         - analyse sampling, round trips, round trip time
         - generate replica transition plots, position histogram
-        -
 
     Parameters
     ----------
