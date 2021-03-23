@@ -1,4 +1,4 @@
-from typing import List, Iterable, Tuple
+from typing import List, Iterable, Tuple, Union
 
 import numpy as np
 import pandas as pd
@@ -88,13 +88,13 @@ def plot_optimized_states_potential_energies(outfile:str,
 
 
 def plot_energy_distribution_by_replica(traj_data : pd.DataFrame,
-                                        outfile : str,
                                         replica_num : int,
-                                        s_value : int,
+                                        s_value : float,
+                                        outfile_path: str=None,
                                         manual_xlim : List[float] = None,
-                                        shared_xaxis : bool = True, 
-                                        sampling_thresholds = None, 
-                                        undersampling_thresholds = None):
+                                        shared_xaxis : bool = True,
+                                        sampling_thresholds = None,
+                                        undersampling_thresholds = None)->Union[str, None]:
     """plot_energy_distribution_by_replica
     Plots the potential energy distributions for the data generated
     in a RE-EDS simulation (or for N independant EDS simulations (i.e. lower bound))
@@ -106,12 +106,12 @@ def plot_energy_distribution_by_replica(traj_data : pd.DataFrame,
     ----------
     traj_data : pd.DataFrame
         pandas DataFrame containing the data for the specific replica of interest
-    outfile : str
-        name of the output png file
     replica_num : int
         replica number (used an index)
-    s_value : int
+    s_value : float
         s value associated to this replica
+    outfile_path : str, optional
+        name of the output png file
     manual_xlim: List[float], optional
         minimum and maximum value for the x-axes
     shared_xaxis: bool, optional
@@ -122,9 +122,11 @@ def plot_energy_distribution_by_replica(traj_data : pd.DataFrame,
     undersampling_thresholds: List [float], optional
         list (length = number of end states) of the undersampling potential thresholds which 
         determines when a state is is undersampling. If given this is added to the plot.
+
     Returns
     -------
-    None
+    str, None
+        outpath
     """
     
     # find number of states and replicas:
@@ -215,11 +217,15 @@ def plot_energy_distribution_by_replica(traj_data : pd.DataFrame,
 
     # Done plotting everything, save the figure
 
-    plt.tight_layout()
-    plt.savefig(outfile, facecolor='white')
-    plt.close()
+    fig.tight_layout()
 
-    return None
+    if(outfile_path is None):
+        fig.show()
+    else:
+        fig.savefig(outfile_path, facecolor='white')
+        fig.close()
+
+    return outfile_path
 
 
 def plot_energy_distribution_by_state(energy_trajs : List[pd.DataFrame],
@@ -803,5 +809,7 @@ def plot_sampling_grid(traj_data: pd.DataFrame,
     if (out_path is not None):
         fig.savefig(out_path)
         plt.close(fig)
+    else:
+        fig.show()
 
     return out_path

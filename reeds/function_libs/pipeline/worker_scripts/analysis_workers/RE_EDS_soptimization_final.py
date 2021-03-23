@@ -4,6 +4,7 @@ import pickle
 
 import numpy as np
 import pandas as pd
+from typing import Union, List
 
 from pygromos.files import repdat
 from pygromos.utils import bash
@@ -124,7 +125,7 @@ def analyse_sopt_iteration(repdat_path: str, out_dir: str, title: str, pot_tresh
     return sopt_it
 
 
-def do(sopt_root_dir: str, pot_tresh=0, title="", out_dir: str = None, rt_convergence=100):
+def do(sopt_root_dir: str, pot_tresh:Union[List, float]=0, title="", out_dir: str = None, rt_convergence=100):
     """
         This function does the final analysis of an s-optimization. It analyses the outcome of the full s-optimization iterations.
         Features:
@@ -175,7 +176,6 @@ def do(sopt_root_dir: str, pot_tresh=0, title="", out_dir: str = None, rt_conver
         elif (len(repdat) == 1):
             print("\nCalculate statistics for iteration: ", iteration)
             repdat_files.update({iteration: repdat[0]})
-
             sopt_it_stats = analyse_sopt_iteration(repdat_path=repdat_files[iteration], out_dir=out_dir,
                                                    title="s-opt " + str(iteration), pot_tresh=pot_tresh)
 
