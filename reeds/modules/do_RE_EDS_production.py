@@ -96,7 +96,9 @@ int
     try:
 
         # Get System Information
-        ##generate imd_templates
+        
+        # Generate appropriate imd file from the template
+        
         print("Writing imd_templates")
         cnf = cnf_cls.Cnf(in_simSystem.coordinates[0])
         residues = cnf.get_residues()
@@ -106,20 +108,24 @@ int
 
         #in_imd_path = bash.copy_file(in_template_imd, in_imd_path)
 
-        #remove multi s=1
+        # Remove multi s=1 (so there is only 1)
         imd_file = imd.Imd(in_template_imd)
         s_1_ammount = list(map(float, imd_file.REPLICA_EDS.RES)).count(1.0)
         imd_file.edit_REEDS(SVALS=imd_file.REPLICA_EDS.RES[s_1_ammount-1:])
         numsvals = int(imd_file.REPLICA_EDS.NRES)
         imd_file.write(in_imd_path)
 
-        # copy coordinates reduced:
+        # Copy coordinates to path/to/input/coord
+
         new_cnfs = list(sorted(in_simSystem.coordinates, key=lambda x: int(x.split("_")[-1].replace(".cnf", ""))))[s_1_ammount-1:]
         new_coords = []
         for ind, new_cnf in enumerate(new_cnfs):
             new_coord = bash.copy_file(new_cnf, coord_dir+"/"+in_simSystem.name+"_"+str(ind+1)+".cnf" )
             new_coords.append(new_coord)
-        setattr(in_simSystem, "coordinates", new_coords)
+        
+        # Set the gromos System coordinates to these new cooreds. 
+        #setattr(in_simSystem, "coordinates", new_coords) # this was the previous code
+        setattr(simSystem, "coordinates", new_coords)
 
         # fix for euler!
         if (numsvals > 30):
@@ -168,18 +174,18 @@ int
                                                                                                  target_function=RE_EDS_general_analysis.do_Reeds_analysis,
                                                                                                  variable_dict=analysis_vars)
 
-        ##Build Job Script
+        # Build Job Script 
         if (verbose): print("Scheduling Script")
-        ###needed local vars
-        jobname = in_simSystem.name
-
+        
+        jobname = simSystem.name
+        
         schedule_jobs_script_path = reeds.function_libs.pipeline.module_functions.write_job_script(
-            out_script_path=out_root_dir + "/schedule_production_jobs.py",
-            target_function=RE_EDS_simulation_scheduler.do,
-            variable_dict=locals())
+                                        out_script_path=out_root_dir + "/schedule_production_jobs.py",
+                                        target_function=RE_EDS_simulation_scheduler.do,
+                                        variable_dict=locals())
 
-        ##set access
-        bash.execute("chmod +x " + schedule_jobs_script_path + " " + in_analysis_script_path)  # make executables
+        # Make simulation and analysis jobs executable
+        bash.execute("chmod +x " + schedule_jobs_script_path + " " + in_analysis_script_path)
 
     except Exception as err:
         print("#####################################################################################")
