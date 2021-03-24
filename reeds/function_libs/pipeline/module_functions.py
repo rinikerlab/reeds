@@ -679,7 +679,7 @@ def write_job_script(out_script_path: str, target_function: callable, variable_d
     for key in s.parameters:
         if (key in variable_dict):
             value = variable_dict[key]
-            if (key == "in_simSystem"):  # this is a nasty way! ... tends to fail!
+            if (key == "in_simSystem"):  # this is a nasty way! ... tends to fail! MAKE SURE CALL POINT HAS a variable like this!
                 sys = value
                 vars_string += sys.get_script_generation_command(var_name=key, var_prefixes="system")
             elif (isinstance(value, Dict)):

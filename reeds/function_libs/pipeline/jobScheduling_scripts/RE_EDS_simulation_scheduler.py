@@ -110,8 +110,12 @@ int
         if (verbose): print(in_imd_path)
         prefix_command = ""
         if (initial_command != ""):
-            prefix_command += initial_command + " && "
-        prefix_command += " cp " + in_imd_path + " " + prepared_imd + " && "
+            prefix_command += initial_command + "\n\n"
+        
+        # Candide: I comment out this line to see what happens !
+        # For the production it needs to be commented out.
+
+        #prefix_command += " cp " + in_imd_path + " " + prepared_imd + " && "
 
         # sim vars logs
         out_prefix = jobname

@@ -123,8 +123,10 @@ int
             new_coord = bash.copy_file(new_cnf, coord_dir+"/"+in_simSystem.name+"_"+str(ind+1)+".cnf" )
             new_coords.append(new_coord)
         
-        # Set the gromos System coordinates to these new cooreds. 
-        #setattr(in_simSystem, "coordinates", new_coords) # this was the previous code
+        # Set the gromos System coordinates to these new coords. 
+        # This variable is accessed when giving locals() to write_job_script
+        # I will set it for both in case!
+        setattr(in_simSystem, "coordinates", new_coords) # this was the previous code
         setattr(simSystem, "coordinates", new_coords)
 
         # fix for euler!
@@ -178,11 +180,11 @@ int
         if (verbose): print("Scheduling Script")
         
         jobname = simSystem.name
-        
+         
         schedule_jobs_script_path = reeds.function_libs.pipeline.module_functions.write_job_script(
                                         out_script_path=out_root_dir + "/schedule_production_jobs.py",
                                         target_function=RE_EDS_simulation_scheduler.do,
-                                        variable_dict=locals())
+                                        variable_dict = locals())
 
         # Make simulation and analysis jobs executable
         bash.execute("chmod +x " + schedule_jobs_script_path + " " + in_analysis_script_path)
