@@ -58,7 +58,7 @@ P.s.: I can recommend Pycharm from dstar, for exploring the repository.
 
 ### Copyright
 
-Copyright (c) 2020, Benjamin Ries, Salome Rieder, Candide Champion
+Copyright (c) 2020, Benjamin Ries, Salomé Rieder, Candide Champion
 
 
 #### Acknowledgements
