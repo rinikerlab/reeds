@@ -154,54 +154,73 @@ def chain_submission(gromosXX_bin_dir: str, in_imd_path: str, simSystem:Simulati
         tmp_in_imd = tmp_outdir + "/" + tmp_outprefix + ".imd"
         tmp_out_cnf = tmp_outdir + "/" + tmp_outprefix + ".cnf"
 
-        # Checks if run should be skipped!
+        # Checks if run should be skipped (useful for rerun in case of crash)!
         do_skip, previous_job_ID = do_skip_job(tmp_out_cnf=tmp_out_cnf, simSystem=simSystem, tmp_jobname=tmp_jobname,
                                                job_submission_system=job_submission_system,
                                                previous_job=previous_job_ID,
                                                do_not_doubly_submit_to_queue=do_not_doubly_submit_to_queue,
                                                verbose=verbose)
-
+            
+        # Note: Prefix command sometimes contains important previous commands to run
+        #       in the sopt for example. 
         if (not do_skip):
             bash.make_folder(tmp_outdir)
+            
+            # We will write the arguments to the python script in a bash array 
+            # to make it simpler to read in our input files. 
+            prefix_command += "\n#Command to initiliaze imd file properly.\n" 
+            prefix_command += "init_args=(\n"
+            prefix_command += "-run " + str(run) + " \n"
+            prefix_command += "-in_imd_path " + in_imd_path + " \n"
+            prefix_command += "-tmp_in_imd " + tmp_in_imd + " \n"
+            prefix_command += "-initialize_first_run " + str(initialize_first_run) + " \n"
+            prefix_command += "-reinitialize " + str(reinitialize) + " \n"
+            prefix_command += ")\n"
 
             # build COMMAND:
-            prefix_command += "sleep 2s && "
-            prefix_command += "python " + prepare_imd_initialisation.__file__ + " "
-            prefix_command += "-run " + str(run) + " "
-            prefix_command += "-in_imd_path " + in_imd_path + " "
-            prefix_command += "-tmp_in_imd " + tmp_in_imd + " "
-            prefix_command += "-initialize_first_run " + str(initialize_first_run) + " "
-            prefix_command += "-reinitialize " + str(reinitialize) + " "
-            prefix_command += " && sleep 2s "
-            # && cp " + in_imd_path + " " + tmp_in_imd + " " # initial
+            #prefix_command += "sleep 2s && "
+            prefix_command += "python " + prepare_imd_initialisation.__file__ + " \"${init_args[@]}\" \n"
+            prefix_command += "sleep 2s\n" 
+            
+            # add/removed line below as a test! 
+            #prefix_command += "cp " + in_imd_path + " " + tmp_in_imd + " \n" 
+            # && cp " + in_imd_path + " " + tmp_in_imd + " \n"            
 
             # optionals:
             add_option = ""
             if (write_free_energy_traj):
                 add_option += "-write_free_energy_traj"
-
-            # formulate commands
-            md_script_command = prefix_command + " && "
-            md_script_command += "python " + slave_script + " "
-            md_script_command += "-in_imd " + tmp_in_imd + " "
-            md_script_command += "-in_top " + simSystem.top.top_path + " "
-
+            
+            # As above: write the arguments into a bash array:
+            
+            md_script_command = prefix_command + "\n\n#Command to submit job\n"
+            
+            md_script_command += "\nmd_args=(\n"
+            md_script_command += "-in_imd " + tmp_in_imd + "\n"
+            md_script_command += "-in_top " + simSystem.top.top_path + "\n"
+            
             if(hasattr(simSystem.top, "disres_path") and not simSystem.top.disres_path is None):
-                md_script_command += "-in_disres " + simSystem.top.disres_path + " "
+                md_script_command += "-in_disres " + simSystem.top.disres_path + "\n"
             elif(hasattr(simSystem.top, "posres_path")):
-                md_script_command += "-in_posres " + simSystem.top.posres_path + " "
-                md_script_command += "-in_refpos " + simSystem.top.refpos_path + " "
+                md_script_command += "-in_posres " + simSystem.top.posres_path + "\n"
+                md_script_command += "-in_refpos " + simSystem.top.refpos_path + "\n"
             else:
                 raise ValueError("No restraint file, suuuure?")
-            md_script_command += "-in_perttop " + simSystem.top.pertubation_path + " "
-            md_script_command += "-in_coord " + simSystem.coordinates + " "
-            md_script_command += "-nmpi " + str(nmpi) + " "
-            md_script_command += "-gromosXX_bin_dir " + gromosXX_bin_dir + " "
-            md_script_command += "-out_dir " + tmp_outdir + " "
-            md_script_command += "-work_dir " + str(work_dir) + " "
+            
+            md_script_command += "-in_perttop " + simSystem.top.pertubation_path + "\n"
+            md_script_command += "-in_coord " + simSystem.coordinates + "\n"
+            md_script_command += "-nmpi " + str(nmpi) + "\n"
+            md_script_command += "-gromosXX_bin_dir " + gromosXX_bin_dir + "\n"
+            md_script_command += "-out_dir " + tmp_outdir + "\n"
+            md_script_command += "-work_dir " + str(work_dir) + "\n"
             md_script_command += add_option
+            md_script_command += ")\n"
+            
+            # Write the line which will call the script            
+                
+            md_script_command += "python " + slave_script + "  \"${md_args[@]}\" \n"
 
-            print("COMMAND: ", md_script_command)
+            print("COMMAND: \n", md_script_command)
 
             try:
                 if (verbose): print("\tSIMULATION")
@@ -215,15 +234,25 @@ def chain_submission(gromosXX_bin_dir: str, in_imd_path: str, simSystem:Simulati
                                                                         outLog=outLog, errLog=errLog,
                                                                         nmpi=nmpi, end_mail=True, verbose=verbose)
 
-                # schedule - simulation cleanup:
-                ##this mainly tars files.
+                # schedule - simulation cleanup (tar/gz the tre/trc):
+                
                 if (verbose): print("\tCLEANING")
                 clean_up_processes = 10 if (nmpi > 10) else nmpi
-                clean_up_command = "python " + str(clean_up.__file__) + "  -in_simulation_dir " + str(tmp_outdir) + "" \
-                                                                                                                    " -n_processes " + str(
-                    clean_up_processes)
-                outLog = tmp_outdir + "/" + out_prefix + "_cleanUp.out"
-                errLog = tmp_outdir + "/" + out_prefix + "_cleanUp.err"
+                
+                # CAREFUL : This is a temporary fix for the nans!
+                clean_up_command = "\nnumCnfs=`ls *.cnf | wc -l`\n"
+                clean_up_command += "numNineties=`grep \"90.000000000   90.000000000   90.000000000\" *.cnf | wc -l`\n"
+                clean_up_command += "echo \"Found ${numNineties} lines with the correct angles\"\n"
+                clean_up_command += "echo \"Out of ${numCnfs} conformations\"\n"
+
+                clean_up_command += "sed -i 's/nan/0.0/g' *.trc\n"
+                clean_up_command += "sed -i 's/nan/0.0/g' *.cnf\n"
+
+                clean_up_command += "python " + str(clean_up.__file__) + "  -in_simulation_dir " + \
+                                    str(tmp_outdir) + " -n_processes " + str(clean_up_processes)
+                
+                outLog = tmp_outdir + "/" + out_prefix + "_cleanup.out"
+                errLog = tmp_outdir + "/" + out_prefix + "_cleanup.err"
                 clean_id = job_submission_system.submit_to_queue(command=clean_up_command,
                                                                  jobName=tmp_jobname + "_cleanUP",
                                                                  queue_after_jobID=previous_job_ID,
