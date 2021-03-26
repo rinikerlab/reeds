@@ -50,6 +50,7 @@ jobs:
       # conda setup requires this special shell
       shell: bash -l {0}
       run: |
+        git submodule update --recursive
         python -m pip install . --no-deps
         conda list
 
@@ -61,6 +62,7 @@ jobs:
 
       run: |
         conda activate test
+        git submodule update --recursive
         pytest -v --cov=pygromos --cov-report=xml --color=yes reeds/tests/ #
         
     - name: CodeCov
