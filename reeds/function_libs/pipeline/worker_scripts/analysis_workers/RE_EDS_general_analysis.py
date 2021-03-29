@@ -393,9 +393,9 @@ def do_Reeds_analysis(in_folder: str, out_folder: str, gromos_path: str,
             print("\tEoffs(" + str(len(Eoff[0])) + "): ", Eoff[0])
             print("\tS_values(" + str(len(s_values)) + "): ", s_values)
             print("\tsytsemTemp: ", temp)
-            eoff_statistic = reeds.function_libs.analysis.parameter_optimization.estimate_Eoff(ene_ana_trajs=energy_trajectories, Eoff=Eoff[0], s_values=s_values,
-                                                                                               out_path=out_dir, temp=temp,
-                                                                                               pot_tresh=pot_tresh, frac_tresh=frac_tresh, take_last_n=take_last_n)
+            new_eoffs = reeds.function_libs.analysis.parameter_optimization.estimate_Eoff(ene_ana_trajs=energy_trajectories, Eoff=Eoff[0], s_values=s_values,
+                                                                                          out_path=out_dir, temp=temp,
+                                                                                          pot_tresh=pot_tresh, frac_tresh=frac_tresh, take_last_n=take_last_n)
 
         if (sub_control["sampling_plot"]):
             # plot if states are sampled and minimal state
@@ -513,12 +513,15 @@ def do_Reeds_analysis(in_folder: str, out_folder: str, gromos_path: str,
 
         ##New EnergyOffsets?
         if sub_control["write_eoff"] and control_dict["eoffset"]:
-            Eoff = []
-            for offset in eoff_statistic[0]:
-                offset = str(offset).split('=')[1]
-                offset = offset.split(',')[0]
-                Eoff.append(str(round(float(offset), 2)))
-            imd_file.edit_REEDS(EIR=Eoff)
+            
+            # Candide : commented this out
+            
+            #Eoff = []
+            #for offset in eoff_statistic[0]:
+            #    offset = str(offset).split('=')[1]
+            #    offset = offset.split(',')[0]
+            #    Eoff.append(str(round(float(offset), 2)))
+            imd_file.edit_REEDS(EIR=np.round(new_eoffs, 2))
         elif (sub_control["write_eoff"] and not control_dict["Eoff"]["sub"]["calc_eoff"]):
             warnings.warn("Could not set Eoffs to imd, as not calculated in this run!")
 

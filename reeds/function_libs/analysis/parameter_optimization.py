@@ -10,6 +10,10 @@ import reeds.function_libs.visualization.re_plots
 from reeds.function_libs.optimization import eds_energy_offsets as eoff, eds_s_values as sopt_wrap
 from reeds.function_libs.optimization.src import sopt_Pathstatistic as parseS
 
+# when we switch to the new offsets: 
+import reeds.function_libs.optimization.new_energy_offsets as estimate
+from reeds.function_libs.visualization.parameter_optimization_plots import plot_offsets_vs_s
+
 
 def estimate_Eoff(ene_ana_trajs: List[pd.DataFrame],
                   Eoff: List[float],
@@ -62,26 +66,36 @@ def estimate_Eoff(ene_ana_trajs: List[pd.DataFrame],
 
     # TODO: NEW AND BETTER?
     # calculate energy offsets:
+    
+    # Candide's new code:
+    (all_eoffs, new_eoffs) = estimate.estimate_energy_offsets(ene_ana_trajs, initial_offsets= Eoff, s_values= s_values,
+                                                               out_path = out_path + "/New_eoff_estimate.out", temp= temp,
+                                                               pot_tresh= pot_tresh, frac_tresh= frac_tresh, trim_beg= 0.0
+                                                              )
+    
+    plot_offsets_vs_s(all_eoffs, s_values=s_values,out_path = out_path + "/Eoffs_vs_s.png")
+    
+    # Candide : temporarily uncommented everything below
 
-    if take_last_n is not None:
-        ene_ana_trajs = ene_ana_trajs[-take_last_n:]
-        s_values = s_values[-take_last_n:]
-        print("using Replicas: ", len(ene_ana_trajs), s_values)
-    if(isinstance(pot_tresh, float)):
-        pot_tresh = [pot_tresh for x in range(len(Eoff))]
-    statistic = eoff.estEoff(ene_ana_trajs=ene_ana_trajs, out_path=out_path + "/Eoff_estimate.out", Temp=temp,
-                             s_values=s_values, Eoff=Eoff, frac_tresh=frac_tresh, pot_tresh=pot_tresh,
-                             convergenceradius=convergence_radius, kb=kb, max_iter=max_iter)
-
+    #if take_last_n is not None:
+    #    ene_ana_trajs = ene_ana_trajs[-take_last_n:]
+    #    s_values = s_values[-take_last_n:]
+    #    print("using Replicas: ", len(ene_ana_trajs), s_values)
+    #if(isinstance(pot_tresh, float)):
+    #    pot_tresh = [pot_tresh for x in range(len(Eoff))]
+    #statistic = eoff.estEoff(ene_ana_trajs=ene_ana_trajs, out_path=out_path + "/Eoff_estimate.out", Temp=temp,
+    #                         s_values=s_values, Eoff=Eoff, frac_tresh=frac_tresh, pot_tresh=pot_tresh,
+    #                         convergenceradius=convergence_radius, kb=kb, max_iter=max_iter)
+    
     # make plots and gather stuff!
-    if (visualize):
-        eoff_per_replica = statistic[3]
-        energy_offsets = statistic[0]
+    #if (visualize):
+    #    eoff_per_replica = statistic[3]
+    #    energy_offsets = statistic[0]
 
         # plott mean eoffs vs. sf
-        reeds.function_libs.visualization.parameter_optimization_plots.plot_peoe_eoff_vs_s(eoff_per_replica, energy_offsets, title=plot_title_prefix + " - Eoff/s",
-                                                                                           out_path=out_path + "/" + plot_title_prefix + "_eoffs_vs_s.png")
-    return statistic
+        #reeds.function_libs.visualization.parameter_optimization_plots.plot_peoe_eoff_vs_s(eoff_per_replica, energy_offsets, title=plot_title_prefix + " - Eoff/s",
+        #                                                                                   out_path=out_path + "/" + plot_title_prefix + "_eoffs_vs_s.png")
+    return new_eoffs
 
 
 def energyOffset_time_convergence(ene_ana_trajs, out_dir: str, Eoff: List[float], s_values: List[float],

@@ -89,6 +89,82 @@ def plot_peoe_eoff_vs_s(eoff: dict,
     plt.close()
 
 
+def plot_offsets_vs_s(energy_offsets, s_values: List, out_path: str, title: str = None, s_increment:int = 2):
+    """
+    plot_offsets_vs_s creates a plot of the energy offsets predicted at each of the replicas.
+    The plot contains two sub-plots, one of which shows the data recentered to the average
+    value among all replicas, and the other simply showing the raw data.
+
+    Parameters
+    ----------
+    energy_offsets : numpy 2-D array
+        matrix of energy offsets where each row corresponds to a replica
+        and each column to a specific end-state.
+    s_values: List
+        list of s-values
+    out_path : str
+        output file path
+    title : str
+        title of the plot
+    s_increment: int
+        determines how many s-values are displayed on the plot. default value of 
+        2 means we take every other s-value.
+    
+    Returns
+    -------
+    None
+    """
+
+    colors = ps.candide_colors
+    num_states = len(energy_offsets.T)
+    
+    fig, (ax1, ax2) = plt.subplots(nrows=2, figsize=(7,6))
+    
+    if title is None: title = 'Energy Offsets predicted at all s-values'
+    fig.suptitle(title)
+
+    x = range(len(s_values))
+
+    # plot
+    for i in range(num_states):
+        eoffs = energy_offsets.T[i]
+        eoffs_recentered = eoffs - np.average(eoffs)
+
+        ax1.plot(x, eoffs_recentered, lw = 1, ms = 3, marker = 'D', c = colors[i], 
+                 label = 'state ' + str(i+1))
+        ax2.plot(x, eoffs, lw = 1, ms = 3, marker = 'D', c = colors[i])
+    
+    # Change box format to match legend 
+    box1 = ax1.get_position()
+    ax1.set_position([box1.x0, box1.y0, box1.width * 0.8, box1.height])
+    
+    box2 = ax2.get_position()
+    ax2.set_position([box2.x0, box2.y0, box2.width * 0.8, box2.height])
+    
+    fig.legend(loc='upper center', bbox_to_anchor=(0.85, 0.65), fancybox=True,
+              shadow=True, ncol=1, fontsize = 12, edgecolor='black')
+
+    # labels for the y-axis
+    ax1.set_ylabel("$(E_i^R(s)-\overline{E}_i^R)$ [kJ/mol]")
+    ax2.set_ylabel("$E^R_i(s)$ [kJ/mol]")
+
+    ax2.set_xlabel("s-value")
+ 
+    # labels for the x-axis
+    ax1.set_xticks(x[::s_increment])
+    ax1.set_xticklabels(labels=[])
+    
+    ax2.set_xticks(x[::s_increment])
+    
+    ax2.set_xticklabels(s_values[::s_increment], fontsize = 8)
+    plt.setp(ax2.get_xticklabels(), rotation=45, ha="right",
+         rotation_mode="anchor")
+    
+    fig.savefig(out_path, facecolor='white')
+    plt.close()
+    return None
+
+
 def plot_peoe_eoff_time_convergence(state_time_dict: dict,
                                     out_path: str):
     """plot_peoe_eoff_time_convergence
