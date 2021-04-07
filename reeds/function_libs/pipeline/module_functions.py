@@ -258,15 +258,12 @@ def adapt_imd_template_eoff(system: fM.System, imd_out_path: str, imd_path: str,
     if (verbose): print(s_num)
     if (old_svals is not None):  # pirority! are overwriting range!
         if ((s_range is not None) and (s_num is not None) and (isinstance(s_range[0], Number) and isinstance(s_range[1], Number))):
-            print ('case 1')
             svals = s_log_dist.get_log_s_distribution_between(start=s_range[0], end=s_range[-1], num=s_num)
         elif (s_num is not None):  # reduce svalues (with log dist)
-            print ('case 2')
             svals = s_log_dist.get_log_s_distribution_between(start=old_svals[0], end=old_svals[-1], num=s_num)
         else:
             svals = old_svals
     elif (s_num is not None) and (isinstance(s_range[0], Number) and isinstance(s_range[1], Number)):
-        print ('case 3')
         svals = s_log_dist.get_log_s_distribution_between(start=s_range[0], end=s_range[-1], num=s_num)
     else:
         raise IOError(
