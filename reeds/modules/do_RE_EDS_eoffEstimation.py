@@ -170,7 +170,7 @@ int
             print(coordinate_dir + "/" + cnf_prefix)
 
             out_cnfs = [
-                bash.copy_file(s_value_coord[s], coordinate_dir + "/" + cnf_prefix + "_ssm_s" + str(ind + 1) + ".cnf")
+                bash.copy_file(s_value_coord[s], coordinate_dir + "/" + cnf_prefix + "_ssm_" + str(ind + 1) + ".cnf")
                 for ind, s in enumerate(s_value_coord)]
             simSystem.coordinates = out_cnfs
 
