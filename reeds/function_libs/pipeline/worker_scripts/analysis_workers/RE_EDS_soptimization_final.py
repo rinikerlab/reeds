@@ -85,7 +85,7 @@ def analyse_sopt_iteration(repdat_path: str, out_dir: str, title: str, pot_tresh
                                                                               s_values=s_values[repOff:], replica_offset=repOff)
 
     reeds.function_libs.visualization.re_plots.plot_replica_transitions(transition_dict=trans_dict,
-                                                                        out_path=out_dir + "/" + title.replace(" ", "_") + "_transitions.png",
+                                                                        out_path=out_dir +   "/" + title.replace(" ", "_") + "_transitions.png",
                                                                         title_prefix=title,
                                                                         s_values=s_values, cut_1_replicas=True, equilibration_border=None)
     # calc roundtrips:
