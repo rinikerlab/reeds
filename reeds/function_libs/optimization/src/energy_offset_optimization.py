@@ -151,6 +151,11 @@ def optimize_energy_offsets(eir_old_init: List[float], vvr: List[List[float]], v
         List of new energy offsets for each s value.
     """
     num_states = len(vvy[0])
+
+    ##Make it more
+    if(isinstance(pot_tresh, float)):
+        pot_tresh = [pot_tresh for x in range(num_states)]
+
     num_s_values = len(vvr)
     time_steps = len(vvr[0])
     new_energies = []
