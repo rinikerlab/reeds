@@ -133,6 +133,17 @@ def undersampling_occurence_potential_threshold_distribution_based(ene_traj_csvs
     return pot_thresh_per_state
 
 
+def get_all_physical_occurence_potential_threshold_distribution_based(ene_trajs):
+    opt_pot_tresh = []
+    for key, traj in enumerate(ene_trajs):
+        print(key)
+        pot_tresh_state = physical_occurence_potential_threshold_distribution_based(traj)
+        print(pot_tresh_state)
+        if (np.isnan(pot_tresh_state[key])):
+            warnings.warn("A state potential threshold was NaN -> This hints on that you did not sample the state as a dominating one! Please check your simulatigons!")
+        opt_pot_tresh.append(pot_tresh_state[key])
+    return opt_pot_tresh
+
 def physical_occurence_potential_threshold_distribution_based(ene_traj_csv: pd.DataFrame, equilibrate_dominationState:float=0.01, verbose:bool=False)->List[float]:
     """physical_occurence_potential_threshold_distribution_based
     This function is estimating the pot_tresh for all states by testing if around the minimal energy 90% of the data is located in a threshold of  max_distance_kJ.

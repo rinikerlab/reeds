@@ -146,15 +146,8 @@ def do(in_simulation_dir: str, in_topology_path: str, in_imd_path: str,
 
     ## write pot_treshholds to next
     from reeds.function_libs.analysis.sampling import physical_occurence_potential_threshold_distribution_based
-    opt_pot_tresh = []
-    for key, traj in enumerate(ene_trajs):
-        print(key)
-        pot_tresh_state = physical_occurence_potential_threshold_distribution_based(traj)
-        print(pot_tresh_state)
-        if(np.isnan(pot_tresh_state[key])):
-            warnings.warn("A state potential threshold was NaN -> This hints on that you did not sample the state as a dominating one! Please check your simulatoins!")
 
-        opt_pot_tresh.append(pot_tresh_state[key])
+    opt_pot_tresh = get_all_physical_occurence_potential_threshold_distribution_based(ene_trajs)
 
     ##write_pot_tresh:
     out_file = open(next_dir + "/state_occurence_physical_pot_thresh.csv", "w")
@@ -174,6 +167,9 @@ def do(in_simulation_dir: str, in_topology_path: str, in_imd_path: str,
             bash.remove_file(in_simulation_dir, additional_options="-r")
 
     print ('\n\nAnalysis of the Optimized States completed successfully !')
+
+
+
 
 
 if __name__ == "__main__":
