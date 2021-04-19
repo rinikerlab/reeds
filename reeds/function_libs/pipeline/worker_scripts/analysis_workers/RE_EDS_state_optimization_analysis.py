@@ -10,6 +10,7 @@ from pygromos.utils import bash
 import reeds.function_libs.visualization.pot_energy_plots
 from reeds.data import ene_ana_libs
 from reeds.function_libs.file_management import file_management as fM
+from reeds.function_libs.analysis.sampling import get_all_physical_occurence_potential_threshold_distribution_based
 
 
 def do(in_simulation_dir: str, in_topology_path: str, in_imd_path: str,
@@ -107,7 +108,6 @@ def do(in_simulation_dir: str, in_topology_path: str, in_imd_path: str,
     #                      pot_tresh=pot_tresh)
 
     # Plot of all of the potential energy distributions in a single plot:
-
     reeds.function_libs.visualization.pot_energy_plots.plot_optimized_states_potential_energies(outfile=out_analysis_plot_dir + "/optimized_states_potential_energies.png",
                                                                                                 ene_trajs=ene_trajs)
 
@@ -145,13 +145,11 @@ def do(in_simulation_dir: str, in_topology_path: str, in_imd_path: str,
     bash.copy_file(coord_dir + "/*.cnf", next_dir)
 
     ## write pot_treshholds to next
-    from reeds.function_libs.analysis.sampling import physical_occurence_potential_threshold_distribution_based
-
-    opt_pot_tresh = get_all_physical_occurence_potential_threshold_distribution_based(ene_trajs)
+    physical_state_occurrence_treshold = get_all_physical_occurence_potential_threshold_distribution_based(ene_trajs)
 
     ##write_pot_tresh:
     out_file = open(next_dir + "/state_occurence_physical_pot_thresh.csv", "w")
-    out_file.write("\t".join(map(str, opt_pot_tresh)))
+    out_file.write("\t".join(map(str, physical_state_occurrence_treshold)))
     out_file.close()
 
 
