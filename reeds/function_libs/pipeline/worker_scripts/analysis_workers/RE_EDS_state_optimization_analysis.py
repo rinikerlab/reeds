@@ -134,6 +134,29 @@ def do(in_simulation_dir: str, in_topology_path: str, in_imd_path: str,
             title = 'Optimized State potential energy timeseries - System biased to state ' + str(i+1)
             reeds.function_libs.visualization.pot_energy_plots.plot_sampling_grid(traj_data = ene_traj, y_range = (-1000, 1000),
                                                                                   out_path = out_path, title = title)
+
+
+    # generate
+    next_dir = bash.make_folder(out_analysis_dir+"/next",)
+
+    ##move cnfs to next
+    bash.copy_file(coord_dir + "/*.cnf", next_dir)
+
+    ## write pot_treshholds to next
+    from reeds.function_libs.analysis.sampling import physical_occurence_potential_threshold_distribution_based
+    opt_pot_tresh = []
+    for key, traj in enumerate(ene_trajs):
+        print(key)
+        pot_tresh_state = physical_occurence_potential_threshold_distribution_based(traj)
+        print(pot_tresh_state)
+        opt_pot_tresh.append(pot_tresh_state[key])
+
+    ##write_pot_tresh:
+    out_file = open(next_dir + "/state_occurence_physical_pot_thresh.csv", "w")
+    out_file.write("\t".join(map(str, opt_pot_tresh)))
+    out_file.close()
+
+
     # compress out_trc/out_tre Files
     if (control_dict["compress"]):
         trx_files = glob.glob(coord_dir + "/*.tr?")

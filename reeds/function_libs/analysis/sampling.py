@@ -141,8 +141,8 @@ def physical_occurence_potential_threshold_distribution_based(ene_traj_csv: pd.D
 
     Parameters
     ----------
-    ene_traj_csv : List[pd.Dataframe]
-        a list of pandas dataframes containing the energy data of each state eX
+    ene_traj_csv : pd.Dataframe
+        a pandas dataframe containing the energy data of each state eX
     equilibrate_dominationState : int, optional
         equilibrate the domination state for this fraction
     verbose: bool, optional
@@ -152,6 +152,7 @@ def physical_occurence_potential_threshold_distribution_based(ene_traj_csv: pd.D
     List[float]
         list of individual identified potential thresholds
     """
+
     state_names = [i for i in ene_traj_csv.columns if (i.startswith("e") and not i == "eR")]
     total_step_num = ene_traj_csv.shape[0]
     data =ene_traj_csv
@@ -166,7 +167,7 @@ def physical_occurence_potential_threshold_distribution_based(ene_traj_csv: pd.D
 
         if(verbose):
             below_thresh_fraction = state_domination_sampling.shape[0] / total_step_num
-            print("percentage: ", below_thresh_fraction)
+            print("State "+str(state)+" - Domination state sampling fraction ", below_thresh_fraction)
 
         #calculate threshold
         threshold = np.min(state_domination_sampling[state]) + 6 * np.std(state_domination_sampling[state])
