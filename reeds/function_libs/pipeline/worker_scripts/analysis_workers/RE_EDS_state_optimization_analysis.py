@@ -1,6 +1,8 @@
 #!/usr/bin/python env
 import glob
 import os
+import numpy as np
+
 
 from pygromos.files import imd
 from pygromos.utils import bash
@@ -149,6 +151,9 @@ def do(in_simulation_dir: str, in_topology_path: str, in_imd_path: str,
         print(key)
         pot_tresh_state = physical_occurence_potential_threshold_distribution_based(traj)
         print(pot_tresh_state)
+        if(np.isnan(pot_tresh_state[key])):
+            warnings.warn("A state potential threshold was NaN -> This hints on that you did not sample the state as a dominating one! Please check your simulatoins!")
+
         opt_pot_tresh.append(pot_tresh_state[key])
 
     ##write_pot_tresh:
