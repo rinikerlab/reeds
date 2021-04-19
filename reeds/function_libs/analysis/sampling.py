@@ -14,7 +14,7 @@ def undersampling_occurence_potential_threshold_densityClustering(ene_traj_csvs:
     This function is estimating the pot_tresh for all states by using DBSCAN identifying the density region containing sampling_fraction_treshold of the data.
     The mean and std of the density region will result in pot_tresh = mean+3std
     This function is rather performance expensive.
-    ! WARNING REQUIRES SKLEARN
+    ! WARNING REQUIRES SKLEARN -Not Used by the pipeline. - Prototype!
 
     Parameters
     ----------
@@ -75,11 +75,11 @@ def undersampling_occurence_potential_threshold_densityClustering(ene_traj_csvs:
 
 def undersampling_occurence_potential_threshold_distribution_based(ene_traj_csvs: List[pd.DataFrame],
                                                                    sampling_fraction_treshold: float = 0.9,
-                                                                   verbose:bool = False)->List[float]:
+                                                                    verbose:bool = False)->List[float]:
     """undersampling_occurence_potential_threshold_distribution_based
     This function is estimating the pot_tresh for all states by testing if around the minimal energy 90% of the data is located in a threshold of  max_distance_kJ.
-    The mean and std of the density region will result in pot_tresh = mean+3*std
-    This function is cheap in performance.
+    The mean and std of the density region will result in pot_tresh = min(V)+6*std(V
+    This function has low demand in performance.
 
     Parameters
     ----------
@@ -130,7 +130,7 @@ def undersampling_occurence_potential_threshold_distribution_based(ene_traj_csvs
 
 
 def physical_occurence_potential_threshold_distribution_based(ene_traj_csv: pd.DataFrame, equilibrate_dominationState:float=0.01, verbose:bool=False)->List[float]:
-    """undersampling_occurence_potential_threshold_distribution_based
+    """physical_occurence_potential_threshold_distribution_based
     This function is estimating the pot_tresh for all states by testing if around the minimal energy 90% of the data is located in a threshold of  max_distance_kJ.
     The mean and std of the density region will result in pot_tresh = mean+3*std
     This function is cheap in performance.

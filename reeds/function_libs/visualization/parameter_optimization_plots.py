@@ -162,7 +162,6 @@ def visualization_s_optimization_summary(s_opt_data: dict,
         x_svalues.extend(opti["s_values"])
         y_svalues.extend([int(it.replace('sopt', "")) for x in range(len(opti["s_values"]))])
 
-        #bar_heights.append([opti["state_sampling"][state] for state in opti["state_sampling"]])
         bar_heights.append([opti["state_domination_sampling"][state] for state in opti["state_domination_sampling"]])
         bar_x.append(np.array(
             [int(state.replace("V", "").replace("r", "").replace("i", "")) for state in opti["state_domination_sampling"]]))
