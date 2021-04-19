@@ -124,8 +124,12 @@ def undersampling_occurence_potential_threshold_distribution_based(ene_traj_csvs
 
     # final averaging.
     pot_thresh_per_state_and_replica = np.array([t for t in pot_tresh_pre_rep if (len(t) == num_states)]).T
-    pot_thresh_per_state = np.min(pot_thresh_per_state_and_replica, axis=1) + np.std(pot_thresh_per_state_and_replica, axis=1)
-
+    
+    print(pot_thresh_per_state_and_replica)
+    if (len(pot_thresh_per_state_and_replica) > 0):
+        pot_thresh_per_state = np.min(pot_thresh_per_state_and_replica, axis=1) + np.std(pot_thresh_per_state_and_replica, axis=1)
+    else:
+        pot_thresh_per_state = [0 for x in range(num_states)]
     return pot_thresh_per_state
 
 
