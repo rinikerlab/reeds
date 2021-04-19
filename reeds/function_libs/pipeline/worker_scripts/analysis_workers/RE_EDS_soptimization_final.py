@@ -62,13 +62,15 @@ def analyse_sopt_iteration(repdat_path: str, out_dir: str, title: str, pot_tresh
 
     if (isinstance(pot_tresh, float)):
         pot_tresh = {x:pot_tresh for x in replica1.iloc[0].state_potentials}
+    elif(isinstance(pot_tresh, float)):
+        pot_tresh = {x:y for x,y in zip(sorted(replica1.iloc[0].state_potentials), pot_tresh)}
     print("potTresh", pot_tresh)
 
     for rowID, row in replica1.iterrows():
         state_pots = row.state_potentials
 
         for ind, state in enumerate(state_pots):
-            if (state_pots[state] < pot_tresh[ind]):
+            if (state_pots[state] < pot_tresh[state]):
                 occurrence_counts[state] += 1
 
         id_ene = {val: key for key, val in state_pots.items()}

@@ -201,6 +201,10 @@ int
     cur_svals = num_svals
 
     ## Prepare final analysis:
+    #### Temporary fix for automatic potential thresholds.
+    if(isinstance(pot_tresh, (float, int))):
+       pot_tresh = [pot_tresh for i in range(ligands.number)]
+
     ana_out_dir = out_root_dir + "/analysis"
     job_name = in_simSystem.name + "_final_sOptimization"
     analysis_vars = OrderedDict({
