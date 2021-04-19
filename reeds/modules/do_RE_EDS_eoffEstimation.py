@@ -28,7 +28,7 @@ from reeds.function_libs.utils.structures import spacer
 
 def do(out_root_dir: str, in_simSystem: fM.System, in_ene_ana_lib: str,
        in_template_imd_path: str = imd_templates.reeds_md_path,
-       ssm_approach: bool = True, optimized_states: str =os.path.abspath("a_optimizedState/analysis/data"),
+       ssm_approach: bool = True, optimized_states: str =os.path.abspath("a_optimizedState/analysis/next"),
        gromosXX_bin_dir: str = None, gromosPP_bin_dir: str = None,
        exclude_residues: list = [], nmpi_per_replica: int = 1, num_simulation_runs: int = 2,
        num_equilibration_runs: int = 1, equilibration_trial_num: int = None,
