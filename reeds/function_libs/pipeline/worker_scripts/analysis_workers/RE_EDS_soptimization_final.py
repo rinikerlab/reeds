@@ -4,6 +4,7 @@ import pickle
 
 import numpy as np
 import pandas as pd
+from typing import Union, List
 
 from pygromos.files import repdat
 from pygromos.utils import bash
@@ -20,7 +21,6 @@ def analyse_sopt_iteration(repdat_path: str, out_dir: str, title: str, pot_tresh
         analysis of a single optimization iteration.
         - analyse sampling, round trips, round trip time
         - generate replica transition plots, position histogram
-        -
 
     Parameters
     ----------
@@ -30,7 +30,7 @@ def analyse_sopt_iteration(repdat_path: str, out_dir: str, title: str, pot_tresh
         output dir for the analysis
     title: str
         title of the iteration
-    pot_tresh : float, optional
+    pot_tresh : Union[float, List[float]], optional
         potential threshold for observing
     Returns
     -------
@@ -59,11 +59,18 @@ def analyse_sopt_iteration(repdat_path: str, out_dir: str, title: str, pot_tresh
     print("extremePos: ", min_pos, max_pos)
     replica1 = repdat_file.DATA.loc[repdat_file.DATA.ID == 1]
 
+
+    if (isinstance(pot_tresh, float)):
+        pot_tresh = {x:pot_tresh for x in replica1.iloc[0].state_potentials}
+    elif(isinstance(pot_tresh, float)):
+        pot_tresh = {x:y for x,y in zip(sorted(replica1.iloc[0].state_potentials), pot_tresh)}
+    print("potTresh", pot_tresh)
+
     for rowID, row in replica1.iterrows():
         state_pots = row.state_potentials
 
-        for state in state_pots:
-            if (state_pots[state] < pot_tresh):
+        for ind, state in enumerate(state_pots):
+            if (state_pots[state] < pot_tresh[state]):
                 occurrence_counts[state] += 1
 
         id_ene = {val: key for key, val in state_pots.items()}
@@ -80,7 +87,7 @@ def analyse_sopt_iteration(repdat_path: str, out_dir: str, title: str, pot_tresh
                                                                               s_values=s_values[repOff:], replica_offset=repOff)
 
     reeds.function_libs.visualization.re_plots.plot_replica_transitions(transition_dict=trans_dict,
-                                                                        out_path=out_dir + "/" + title.replace(" ", "_") + "_transitions.png",
+                                                                        out_path=out_dir +   "/" + title.replace(" ", "_") + "_transitions.png",
                                                                         title_prefix=title,
                                                                         s_values=s_values, cut_1_replicas=True, equilibration_border=None)
     # calc roundtrips:
@@ -119,7 +126,7 @@ def analyse_sopt_iteration(repdat_path: str, out_dir: str, title: str, pot_tresh
     return sopt_it
 
 
-def do(sopt_root_dir: str, pot_tresh=0, title="", out_dir: str = None, rt_convergence=100):
+def do(sopt_root_dir: str, pot_tresh:Union[List, float]=0, title="", out_dir: str = None, rt_convergence=100):
     """
         This function does the final analysis of an s-optimization. It analyses the outcome of the full s-optimization iterations.
         Features:
@@ -133,7 +140,7 @@ def do(sopt_root_dir: str, pot_tresh=0, title="", out_dir: str = None, rt_conver
     ----------
     sopt_root_dir : str
         directory containing all s-optimization iterations
-    pot_tresh : int, optional
+    pot_tresh : Union[float, List[float]], optional
         potential energy threshold, determining undersampling (default: 0)
     title : str, optional
         title of run (default: "")
@@ -143,7 +150,7 @@ def do(sopt_root_dir: str, pot_tresh=0, title="", out_dir: str = None, rt_conver
         roundtrip time convergence criterium  in ps(default: 10ps)
 
     """
-    sopt_dirs = [x for x in os.listdir(sopt_root_dir) if ("sopt" in x and os.path.isdir(x))]
+    sopt_dirs = [x for x in os.listdir(sopt_root_dir) if ("sopt" in x and os.path.isdir(sopt_root_dir+"/"+x))]
 
     # sopt out_dir
     if (isinstance(out_dir, type(None))):
@@ -155,27 +162,28 @@ def do(sopt_root_dir: str, pot_tresh=0, title="", out_dir: str = None, rt_conver
     sopt_data = {}
     repdat_files = {}
     converged = False
-    print("\n\nLoading precomputed data for iteration: ", end="\t")
+    print(sopt_dirs)
     for iteration_folder in sorted(sopt_dirs):
         iteration = int(iteration_folder.replace("sopt", ""))
+        print( iteration, end="\t")
         repdat = glob.glob(sopt_root_dir + "/" + iteration_folder + "/analysis/data/*repdat*")
         out_iteration_file_path = out_dir + "/" + iteration_folder + "_ana_data.npy"
 
         if (os.path.exists(out_iteration_file_path)):
-            print( iteration, end="\t")
+            print("\n\nLoading precomputed data for iteration: ", end="\t")
             sopt_it_stats = pickle.load(open(out_iteration_file_path, "rb"))
             sopt_data.update({iteration_folder: sopt_it_stats})
 
         elif (len(repdat) == 1):
             print("\nCalculate statistics for iteration: ", iteration)
             repdat_files.update({iteration: repdat[0]})
-
             sopt_it_stats = analyse_sopt_iteration(repdat_path=repdat_files[iteration], out_dir=out_dir,
                                                    title="s-opt " + str(iteration), pot_tresh=pot_tresh)
 
             pickle.dump(obj=sopt_it_stats, file=open(out_iteration_file_path, "wb"))
             sopt_data.update({iteration_folder: sopt_it_stats})
-
+        else:
+            continue
         # round trip time efficiency
         if (iteration > 1):
             sopt_it_stats.update({"avg_rountrip_duration_optimization_efficiency": sopt_data["sopt"+str(iteration- 1)]["avg_rountrip_durations"] -sopt_it_stats["avg_rountrip_durations"]})
