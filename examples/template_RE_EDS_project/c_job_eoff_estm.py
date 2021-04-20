@@ -14,14 +14,14 @@ from global_definitions import in_top_file, in_pert_file, in_disres_file, in_tem
 
 #STEP specifics
 out_eoff_dir = root_dir + "/c_energy_offsets"
-sval_file = "/path/to/analysis/next/s_vals.csv"
+sval_file = root_dir + "/b_lowerBound/analysis/next/s_vals.csv"
 in_name = name + "_energy_offsets"
 
 ##make folder
 out_eoff_dir = bash.make_folder(out_eoff_dir)
 
-opt_states = "/path/to/a_optimizedState/analysis/data"
-template_imd = "/home/cchampion/tmp/test_area/CHK1_ring/input/template_reeds.imd"
+opt_states = root_dir + "/a_optimizedState/analysis/data"
+template_imd = root_dir + "/0_input/template_reeds.imd"
 
 #In- Files
 topology = fM.Topology(top_path=in_top_file, disres_path=in_disres_file, pertubation_path=in_pert_file)
