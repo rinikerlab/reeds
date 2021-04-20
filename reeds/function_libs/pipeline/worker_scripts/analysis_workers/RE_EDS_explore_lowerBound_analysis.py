@@ -10,10 +10,10 @@ from pygromos.utils import bash
 import reeds.function_libs.analysis.sampling
 import reeds.function_libs.visualization.pot_energy_plots
 from reeds.function_libs.file_management import file_management as fM
+import reeds.function_libs.utils.s_log_dist as s_log_dist
 
 np.set_printoptions(suppress=True)
 from reeds.data import ene_ana_libs
-
 
 def do(out_analysis_dir: str, system_name: str,
        in_simulation_dir: str, in_topology_path: str, in_imd_path: str,
@@ -62,9 +62,9 @@ def do(out_analysis_dir: str, system_name: str,
         "cat_tre": False,
         "ene_ana": True,
         "cat_repdat": False,
-        "pot_ene_by_replica":False,
-        "pot_ene_by_state":True,
-        "plot_pot_ene_timeseries":True,
+        "pot_ene_by_replica": True,
+        "pot_ene_by_state": True,
+        "plot_pot_ene_timeseries": True,
         "plot_ref_timeseries": True,
         "plot_ref_distrib": True
         }
@@ -83,7 +83,7 @@ def do(out_analysis_dir: str, system_name: str,
     imd_files = sorted(glob.glob(in_imd_path + "*.imd"), key=lambda x: int(x.split("_")[-1].replace(".imd", "")))
     s_values = [float((imd.Imd(f)).EDS.S) for f in imd_files]
 
-    # successful_sim_count sucessful Runs!:
+    # Count the number of simulations wich were succesful
     if (verbose): print("START file organization")
     if (os.path.exists(in_simulation_dir)):
         succsessful_sim_count = 0
@@ -92,9 +92,7 @@ def do(out_analysis_dir: str, system_name: str,
         for omd_file_path in sorted(glob.glob(in_simulation_dir + "/*.omd"),
                                     key=lambda x: int(x.split("_")[-1].replace(".omd", ""))):
             found_success = False
-            print(omd_file_path)
-
-            for line in open(omd_file_path, "r"):
+            for line in reversed(list(open(omd_file_path, "r"))):
                 if "successfully" in line:
                     succsessful_sim_count += 1
                     found_success = True
@@ -104,7 +102,7 @@ def do(out_analysis_dir: str, system_name: str,
                 print("Stop : ", succsessful_sim_count)
                 break
 
-        print("Successful Sims: " + str(succsessful_sim_count), " of ", len(s_values))
+        print("Successful sims: " + str(succsessful_sim_count), " out of ", len(s_values))
         print("Files: ", successfull_files)
         bash.make_folder(data_dir, additional_option="-p")
 
@@ -132,7 +130,6 @@ def do(out_analysis_dir: str, system_name: str,
                                                                                                        ene_traj_csvs = ene_trajs,
                                                                                                        s_values = s_values[:succsessful_sim_count],
                                                                                                        pot_tresh = undersampling_pot_tresh)
-
     # Plotting the different potential energy distributions
     if control_dict["pot_ene_by_state"]:
         for i in range(num_states):
@@ -160,38 +157,32 @@ def do(out_analysis_dir: str, system_name: str,
             reeds.function_libs.visualization.pot_energy_plots.plot_sampling_grid(traj_data = ene_traj, y_range = (-1000, 1000),
                                                                                   out_path = out_path, title = title)
 
-
-
-    # NExt Folder
-    if (verbose): print("START next folder")
+    # Preparing input for the energy offset run
+    if (verbose): print("Start next folder")
     out_analysis_next_dir = out_analysis_dir + "/next"
     bash.make_folder(out_analysis_next_dir, "-p")
 
-    ##Coord Files
-    cnfs = sorted(glob.glob(data_dir + "/*.cnf"), key=lambda x: int(x.split("_")[-1].replace(".cnf", "")))
-    successfull_cnf = []
-    for cnf in cnfs:
-        check_cnf = cnf.split("_")
-        if (int(check_cnf[len(check_cnf) - 1].replace(".cnf", "")) <= succsessful_sim_count):
-            successfull_cnf.append(cnf)
-    if (verbose): print("succesful_cnfs: \n" + "\n".join(successfull_cnf))
+    u_idx = sampling_analysis_results["undersamlingThreshold"]
+    
+    # Make the new s-distribution based on this 
+    print("undersampling found after replica: " + str(u_idx) + ' with s = ' + str(s_values[u_idx]))    
+    print('New s distribution will place ' + str(num_states) + ' replicas between '
+	  ' s = ' + str(s_values[u_idx]) + ' and s = ' +str(s_values[u_idx+3]))
+ 
+    new_sdist = s_values[:u_idx-1]
+    lower_sdist = s_log_dist.get_log_s_distribution_between(s_values[u_idx], s_values[u_idx+3], num_states)
+    new_sdist.extend(lower_sdist)  
 
-    undersampling_limit = sampling_analysis_results[
-                              "undersamlingThreshold"] + 2  # conservative lower limit for undersampling +2
-
-    print("successful sims found : ", len(successfull_cnf))
-    print("undersampling found after replica: ", undersampling_limit)
-    for cnf in successfull_cnf[:undersampling_limit + 1]:
-        bash.copy_file(cnf, out_analysis_next_dir + "/" + os.path.basename(cnf))
-
-    ##write_s
+    # Write the s-values to a csv file
     out_file = open(out_analysis_next_dir + "/s_vals.csv", "w")
-    out_file.write("\t".join(list(map(str, s_values))[:undersampling_limit + 1]))
+    out_file.write("\t".join(list(map(str, new_sdist))))
+    out_file.write("\n")
     out_file.close()
 
-    ##write_pot_tresh:
+    # Write the potential energy thresholds to a csv file
     out_file = open(out_analysis_next_dir + "/state_occurence_pot_thresh.csv", "w")
     out_file.write("\t".join(map(str, sampling_analysis_results["potentialThreshold"])))
+    out_file.write("\n")
     out_file.close()
 
     # compress out_trc/out_tre Files & simulation dir

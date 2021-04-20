@@ -221,7 +221,7 @@ def adapt_imd_template_lowerBound(in_template_imd_path: str, out_imd_dir: str, c
 
 
 def adapt_imd_template_eoff(system: fM.System, imd_out_path: str, imd_path: str,
-                            old_svals: List[float] = None, s_num: int = 21, s_range: Tuple[float, float] = None,
+                            old_svals: List[float] = None, s_num: int = None, s_range: Tuple[float, float] = None,
                             non_ligand_residues: list = [],
                             verbose: bool = False) -> imd.Imd:
     """
@@ -256,22 +256,19 @@ def adapt_imd_template_eoff(system: fM.System, imd_out_path: str, imd_path: str,
     """
 
     if (verbose): print(s_num)
-    if (not isinstance(old_svals, type(None))):  # pirority! are overwriting range!
-        if (not isinstance(s_range, type(None)) and (
-                isinstance(s_range[0], Number) and isinstance(s_range[1], Number)) and not isinstance(s_num,
-                                                                                                      type(None))):
+    if (old_svals is not None):  # pirority! are overwriting range!
+        if ((s_range is not None) and (s_num is not None) and (isinstance(s_range[0], Number) and isinstance(s_range[1], Number))):
             svals = s_log_dist.get_log_s_distribution_between(start=s_range[0], end=s_range[-1], num=s_num)
-
-        elif (not isinstance(s_num, type(None))):  # reduce svalues (with log dist)
+        elif (s_num is not None):  # reduce svalues (with log dist)
             svals = s_log_dist.get_log_s_distribution_between(start=old_svals[0], end=old_svals[-1], num=s_num)
         else:
             svals = old_svals
-    elif (not isinstance(s_num, type(None)) and isinstance(s_range[0], Number) and isinstance(s_range[1], Number)):
+    elif (s_num is not None) and (isinstance(s_range[0], Number) and isinstance(s_range[1], Number)):
         svals = s_log_dist.get_log_s_distribution_between(start=s_range[0], end=s_range[-1], num=s_num)
     else:
         raise IOError(
             "The imd file could not be adapted, as at least a s_vals_csv_path or s_num, s_range variable has to be given.")
-
+    
     if verbose: print(str(len(svals)) + " SVALUES: " + str(svals))
     # extract residue and atom information from cnf file
     cnf = cnf_cls.Cnf(system.coordinates[0], verbose=False)
