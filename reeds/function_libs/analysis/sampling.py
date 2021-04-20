@@ -9,7 +9,7 @@ import reeds.function_libs.visualization.sampling_plots
 
 def undersampling_occurence_potential_threshold_densityClustering(ene_traj_csvs: List[pd.DataFrame],
                                                                   max_distance_kJ: float = 300,
-                                                                  sampling_fraction_treshold: float = 0.9):
+                                                                  sampling_fraction_treshold: float = 0.9)->List[float]:
     """
     This function is estimating the pot_tresh for all states by using DBSCAN identifying the density region containing sampling_fraction_treshold of the data.
     The mean and std of the density region will result in pot_tresh = mean+3std
@@ -260,7 +260,7 @@ def sampling_analysis(ene_traj_csvs: List[pd.DataFrame],
                       out_path: str = None,
                       xmax: bool = False,
                       do_plot: bool = True,
-                      verbose: bool = False) -> str:
+                      verbose: bool = False) -> (dict, str):
     """sampling_analysis
     This function is analysing the samplings
 
@@ -285,6 +285,8 @@ def sampling_analysis(ene_traj_csvs: List[pd.DataFrame],
     -------
     str
         out_path
+    dict
+      returns a dictionary containing the information of undersampling start, undersampling_potential thresholds and the different sampling type fractions. (physical sampling occurence not included!)
     """
 
     # read all Vy_sx_files!
