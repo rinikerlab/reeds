@@ -10,7 +10,7 @@ from pygromos.utils import bash
 import reeds.function_libs.analysis.free_energy
 import reeds.function_libs.analysis.parameter_optimization
 import reeds.function_libs.analysis.sampling as sampling_ana
-import reeds.function_libs.optimization.eds_enegy_offsets as eds_enegy_offsets
+import reeds.function_libs.optimization.eds_enegy_offsets as eds_energy_offsets
 
 import reeds.function_libs.visualization.pot_energy_plots
 import reeds.function_libs.visualization.re_plots
@@ -488,8 +488,19 @@ def do_Reeds_analysis(in_folder: str, out_folder: str, gromos_path: str,
         print("svalues var", s_values)
         input_cnfs = os.path.dirname(in_imd) + "/coord"
         print("svals", svals)
+            
+        # Put the proper cnfs in place        
+ 
+        if (sub_control["eoff_to_sopt"]):
+            if (not os.path.isdir(optimized_eds_state_folder)):
+                raise IOError("Could not find optimized state output dir: " + optimized_eds_state_folder)
+            
+            opt_state_cnfs = sorted(glob.glob(optimized_eds_state_folder+'/*.cnf'), 
+                                    key=lambda x: int(x.split("_")[-1].replace(".cnf", "")))
+            for i in range(1, len(svals[1])+1):
+                bash.copy_file(opt_state_cnfs[(i-1)%num_states], next_dir + '/sopt_run_' + str(i) + '.cnf')
 
-        if (len(list(set(svals[0]))) > len(list(set(svals[1])))):
+        elif (len(list(set(svals[0]))) > len(list(set(svals[1])))):
             if verbose: print("reduce coordinate Files:")
             
             if (not os.path.isdir(optimized_eds_state_folder)):
