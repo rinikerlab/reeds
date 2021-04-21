@@ -40,6 +40,7 @@ def do(out_root_dir: str, in_simSystem: fM.System, pot_tresh: float = 0,
        ene_ana_lib: str = ene_ana_libs.ene_ana_lib_path,
        submit: bool = True, exclude_residues: list = [],
        simulation_steps: int = 100000, job_duration: str = "4:00", memory: int = None,
+       single_bath: bool = False,
        verbose: bool = True) -> int:
     """ Find lower S-bound for EDS System
          - Description:\n
@@ -79,6 +80,8 @@ exclude_residues : str, optional
     for cofactors, so that they are not considered as eds states
 simulation_steps : int, optional
     how many steps per simulations?
+single_bath : bool, optional
+    only use a single MULTIBATH (i.e. NBATHS = 1)
 job_duration : str, optional
     duration of one simulation step in the queue
 verbose : bool, optional
@@ -114,7 +117,8 @@ int
         imd_template_path, s_values, lig_num = adapt_imd_template_lowerBound(in_template_imd_path=template_imd,
                                                                              out_imd_dir=input_dir, cnf=cnf,
                                                                              non_ligand_residues=exclude_residues,
-                                                                             simulation_steps=simulation_steps)
+                                                                             simulation_steps=simulation_steps,
+                                                                             single_bath = single_bath)
 
         # copy cnfs:
         for ind, sval in enumerate(s_values):

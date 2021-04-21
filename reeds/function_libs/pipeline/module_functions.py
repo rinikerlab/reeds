@@ -21,7 +21,7 @@ from reeds.function_libs.utils.structures import sopt_job, spacer
 IMD template adaptations
 """
 def adapt_imd_template_optimizedState(in_template_imd_path: str, out_imd_dir: str, cnf: cnf_cls.Cnf, non_ligand_residues: list = [],
-                                      simulation_steps: int = 100000, solvent_keyword: str = "SOLV")->(str, list):
+                                      simulation_steps: int = 100000, solvent_keyword: str = "SOLV", single_bath: bool = False)->(str, list):
     """
       modify_imds - for generateOptimizedStates
         This function prepares the imd. protocol file for gromos simulation.
@@ -40,6 +40,8 @@ def adapt_imd_template_optimizedState(in_template_imd_path: str, out_imd_dir: st
         number of steps to simulate
     solvent_keyword : str, optional
         residue name for the solvent
+    single_bath : bool, optional
+        use single bath for all atoms (default False)
 
     Returns
     -------
@@ -78,8 +80,14 @@ def adapt_imd_template_optimizedState(in_template_imd_path: str, out_imd_dir: st
     imd_file.STEP.NSTLIM = simulation_steps
     imd_file.STEP.NSTLIM = simulation_steps
 
+    if(single_bath):
+        solvent_bath = (
+                lig_atoms + sum([sum(list(residues[x].values())) for x in non_ligand_residues]) +
+                residues[solvent_keyword])
+        temp_baths = {solvent_bath : 1}
+
     # hack for TIP3P explicit solvent
-    if (len(non_ligand_residues) > 0 and not ("prot" in residues or "protein" in residues)):
+    elif (len(non_ligand_residues) > 0 and not ("prot" in residues or "protein" in residues)):
         solvent_bath = (
                 lig_atoms + sum([sum(list(residues[x].values())) for x in non_ligand_residues]) +
                 residues[solvent_keyword])
@@ -119,7 +127,8 @@ def adapt_imd_template_optimizedState(in_template_imd_path: str, out_imd_dir: st
 
 def adapt_imd_template_lowerBound(in_template_imd_path: str, out_imd_dir: str, cnf: coord.Cnf,
                                   non_ligand_residues: list = [], s_values: t.List[float] = None,
-                                  simulation_steps: int = 1000000)->(str, list, int):
+                                  simulation_steps: int = 1000000,
+                                  single_bath: bool = False)->(str, list, int):
     """
         This function prepares the imd. protocol file for a gromos simulation.
 
@@ -130,6 +139,7 @@ def adapt_imd_template_lowerBound(in_template_imd_path: str, out_imd_dir: str, c
     cnf
     non_ligand_residues
     s_values
+    single_bath
     simulation_steps
 
     Returns
@@ -165,8 +175,13 @@ def adapt_imd_template_lowerBound(in_template_imd_path: str, out_imd_dir: str, c
     imd_file.STEP.step = simulation_steps
     imd_file.FORCE.adapt_energy_groups(residues)
 
+    if(single_bath):
+        solvent_bath = (ligands.number_of_atoms + protein.number_of_atoms + non_ligands.number_of_atoms + residues[
+                "SOLV"])
+        temp_baths = {solvent_bath : 1}
+
     # hack for TIP3P explicit solvent
-    if (len(non_ligand_residues) > 0 and not "prot" in residues):
+    elif (len(non_ligand_residues) > 0 and not "prot" in residues):
         solvent_bath = (
                 ligands.number_of_atoms + non_ligands.number_of_atoms)
         temp_baths = {ligands.number_of_atoms: 1, solvent_bath: 2}
@@ -223,6 +238,7 @@ def adapt_imd_template_lowerBound(in_template_imd_path: str, out_imd_dir: str, c
 def adapt_imd_template_eoff(system: fM.System, imd_out_path: str, imd_path: str,
                             old_svals: List[float] = None, s_num: int = None, s_range: Tuple[float, float] = None,
                             non_ligand_residues: list = [],
+                            single_bath: bool = False,
                             verbose: bool = False) -> imd.Imd:
     """
             This function is preparing the imd_template in gromos_files for the REEDS SYSTEM>
@@ -281,9 +297,12 @@ def adapt_imd_template_eoff(system: fM.System, imd_out_path: str, imd_path: str,
                         "\n\n ligands:\n ", ligands,
                         "\n\n protein:\n ", protein,
                         "\n\n non-ligands:\n ", non_ligands, "\n\n")
+    if(single_bath):
+        solvent_bath = (ligands.number_of_atoms + protein.number_of_atoms + residues["SOLV"])
+        temp_baths = {solvent_bath: 1}
 
     # hack for TIP3P explicit solvent
-    if (len(non_ligand_residues) > 0 and not "prot" in residues):
+    elif (len(non_ligand_residues) > 0 and not "prot" in residues):
         solvent_bath = (
                 ligands.number_of_atoms + non_ligands.number_of_atoms)
         temp_baths = {ligands.number_of_atoms: 1, solvent_bath: 2}

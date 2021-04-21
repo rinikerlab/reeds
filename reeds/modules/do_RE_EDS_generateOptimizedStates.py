@@ -51,6 +51,7 @@ def do(out_root_dir: str, in_simSystem: fM.System,
        simulation_steps: int = 1000000, exclude_residues: list = [],
        cpus_per_job: int = 4, submit: bool = True, verbose: bool = True,
        solvent_keyword: str = "SOLV",
+       single_bath: bool = False,
        memory: int = None, job_duration: str = "8:00") -> int:
     """      Generate Optimized structures with EDS
 
@@ -91,6 +92,8 @@ job_duration : str, optional
     Duration of each submitted job in the queue (depends on imd setting)
 cpus_per_job : int, optional
     how many mpi cores per job, shall be used?
+single_bath : bool, optional
+    use a single bath for all atoms? (i.e. NBATHS = 1) (default False)
 submit : bool, optional
     should the prepared scripts be executed? (or even queued)
 verbose : bool, optional
@@ -132,7 +135,8 @@ int
                                                                                  out_imd_dir=input_dir, cnf=cnf,
                                                                                  non_ligand_residues=exclude_residues,
                                                                                  simulation_steps=simulation_steps,
-                                                                                 solvent_keyword=solvent_keyword)
+                                                                                 solvent_keyword=solvent_keyword,
+                                                                                 single_bath = single_bath)
 
         # copy and prepare cnfs:
         for state in range(1, lig_num + 1):
