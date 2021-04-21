@@ -270,15 +270,18 @@ def sampling_analysis(ene_traj_csvs: List[pd.DataFrame],
 
     ##get undersampling id:
     found_undersampling = False
-    for undersampling_ind in replica_sampling_distributions:
-        if (replica_sampling_distributions[undersampling_ind]["undersampling"]):
+    undersampling_idx = None
+    for i in replica_sampling_distributions:
+        if (replica_sampling_distributions[i]["undersampling"]):
             found_undersampling = True
+            undersampling_idx = i
             break
 
     if (not found_undersampling):
         warnings.warn("Could not find undersampling!")
 
-    final_results = {"undersamlingThreshold": undersampling_ind,
+    final_results = {"undersamplingThreshold": undersampling_idx,
                      "potentialThreshold": potential_treshold,
-                     "samplingDistributions": replica_sampling_distributions}
+                     "samplingDistributions": replica_sampling_distributions, 
+                    }
     return final_results, out_path
