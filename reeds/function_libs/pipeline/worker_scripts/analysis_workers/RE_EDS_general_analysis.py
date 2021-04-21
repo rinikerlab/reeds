@@ -10,7 +10,7 @@ from pygromos.utils import bash
 import reeds.function_libs.analysis.free_energy
 import reeds.function_libs.analysis.parameter_optimization
 import reeds.function_libs.analysis.sampling as sampling_ana
-import reeds.function_libs.optimization.eds_enegy_offsets as eds_energy_offsets
+import reeds.function_libs.optimization.eds_energy_offsets as eds_energy_offsets
 
 import reeds.function_libs.visualization.pot_energy_plots
 import reeds.function_libs.visualization.re_plots
@@ -402,7 +402,7 @@ def do_Reeds_analysis(in_folder: str, out_folder: str, gromos_path: str,
             print("\tEoffs(" + str(len(Eoff[0])) + "): ", Eoff[0])
             print("\tS_values(" + str(len(s_values)) + "): ", s_values)
             print("\tsytsemTemp: ", temp)
-            new_eoffs = eds_enegy_offsets.estimate_energy_offsets(ene_trajs = energy_trajectories, initial_offsets = Eoff[0], s_values = s_values,
+            new_eoffs = eds_energy_offsets.estimate_energy_offsets(ene_trajs = energy_trajectories, initial_offsets = Eoff[0], s_values = s_values,
                                                                   out_path = out_dir, temp = temp, trim_beg = 0.1, 
                                                                   undersampling_idx = sampling_results['undersamplingThreshold'], 
                                                                   plot_results = True, calc_clara = False)
