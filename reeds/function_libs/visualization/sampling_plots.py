@@ -52,7 +52,7 @@ def plot_sampling_convergence(ene_trajs, opt_trajs, outfile, title = None, trim_
     n_steps = len(ene_trajs[0]['e1'])
     
     # Total simulation time in nanoseconds
-    tot_time = round(ene_trajs[0]['time'][n_steps-1] / 1000)
+    tot_time = round(ene_trajs[0]['time'][n_steps-1] / 1000, 2)
     
     # Make n-slices from these number of timesteps
     upper_idx = np.arange(5,101, 5) * n_steps / 100

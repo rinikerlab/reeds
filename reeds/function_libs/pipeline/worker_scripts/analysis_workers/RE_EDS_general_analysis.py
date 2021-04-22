@@ -9,9 +9,12 @@ from pygromos.utils import bash
 
 import reeds.function_libs.analysis.free_energy
 import reeds.function_libs.analysis.parameter_optimization
-import reeds.function_libs.analysis.sampling
+import reeds.function_libs.analysis.sampling as sampling_ana
+import reeds.function_libs.optimization.eds_energy_offsets as eds_energy_offsets
+
 import reeds.function_libs.visualization.pot_energy_plots
 import reeds.function_libs.visualization.re_plots
+
 from reeds.function_libs.file_management import file_management
 from reeds.function_libs.file_management.file_management import parse_csv_energy_trajectories
 from reeds.function_libs.utils import s_log_dist as sdist
@@ -398,6 +401,12 @@ def do_Reeds_analysis(in_folder: str, out_folder: str, gromos_path: str,
 
         if (not os.path.exists(concat_file_folder)):
             raise IOError("could not find needed energies (contains all ene ana .dats) folder in:\n " + out_folder)
+        
+        if (sub_control["sampling_plot"]):
+            # plot if states are sampled and minimal state
+            print("\tplot sampling: ")
+            (sampling_results, out_dir) = sampling_ana.sampling_analysis(out_path = out_dir, ene_traj_csvs = energy_trajectories, 
+                                                              s_values = s_values, pot_tresh = pot_tresh)
 
         if (sub_control["calc_eoff"]):
             print("calc Eoff: ")
@@ -405,18 +414,13 @@ def do_Reeds_analysis(in_folder: str, out_folder: str, gromos_path: str,
             print("\tEoffs(" + str(len(Eoff[0])) + "): ", Eoff[0])
             print("\tS_values(" + str(len(s_values)) + "): ", s_values)
             print("\tsytsemTemp: ", temp)
-            eoff_statistic = reeds.function_libs.analysis.parameter_optimization.estimate_Eoff(ene_ana_trajs=energy_trajectories, Eoff=Eoff[0], s_values=s_values,
-                                                                                               out_path=out_dir, temp=temp,
-                                                                                               pot_tresh=pot_tresh, frac_tresh=frac_tresh, take_last_n=take_last_n)
-
-        if (sub_control["sampling_plot"]):
-            # plot if states are sampled and minimal state
-            print("\tplot sampling: ")
-            reeds.function_libs.analysis.sampling.sampling_analysis(out_path=out_dir, ene_traj_csvs=energy_trajectories, s_values=s_values,
-                                                                    pot_tresh=pot_tresh)
-
+            # set trim_beg to 0.1 when analysing non equilibrated data
+            new_eoffs, all_eoffs = eds_energy_offsets.estimate_energy_offsets(ene_trajs = energy_trajectories, initial_offsets = Eoff[0], s_values = s_values,
+                                                                              out_path = out_dir, temp = temp, trim_beg = 0.,
+                                                                              undersampling_idx = sampling_results['undersamplingThreshold'], 
+                                                                              plot_results = True, calc_clara = False)
+        
         if (verbose): print("Done\n")
-        # del energy_trajectories -- remove if memory is ok
 
     if (control_dict["sopt"]["do"]):
         sub_control = control_dict["sopt"]["sub"]
@@ -497,8 +501,19 @@ def do_Reeds_analysis(in_folder: str, out_folder: str, gromos_path: str,
         print("svalues var", s_values)
         input_cnfs = os.path.dirname(in_imd) + "/coord"
         print("svals", svals)
+            
+        # Put the proper cnfs in place        
+ 
+        if (sub_control["eoff_to_sopt"]):
+            if (not os.path.isdir(optimized_eds_state_folder)):
+                raise IOError("Could not find optimized state output dir: " + optimized_eds_state_folder)
+            
+            opt_state_cnfs = sorted(glob.glob(optimized_eds_state_folder+'/*.cnf'), 
+                                    key=lambda x: int(x.split("_")[-1].replace(".cnf", "")))
+            for i in range(1, len(svals[1])+1):
+                bash.copy_file(opt_state_cnfs[(i-1)%num_states], next_dir + '/sopt_run_' + str(i) + '.cnf')
 
-        if (len(list(set(svals[0]))) > len(list(set(svals[1])))):
+        elif (len(list(set(svals[0]))) > len(list(set(svals[1])))):
             if verbose: print("reduce coordinate Files:")
             
             if (not os.path.isdir(optimized_eds_state_folder)):
@@ -525,38 +540,13 @@ def do_Reeds_analysis(in_folder: str, out_folder: str, gromos_path: str,
 
         ##New EnergyOffsets?
         if sub_control["write_eoff"] and control_dict["eoffset"]:
-            Eoff = []
-            for offset in eoff_statistic[0]:
-                offset = str(offset).split('=')[1]
-                offset = offset.split(',')[0]
-                Eoff.append(str(round(float(offset), 2)))
-            imd_file.edit_REEDS(EIR=Eoff)
+            imd_file.edit_REEDS(EIR=np.round(new_eoffs, 2))
         elif (sub_control["write_eoff"] and not control_dict["Eoff"]["sub"]["calc_eoff"]):
             warnings.warn("Could not set Eoffs to imd, as not calculated in this run!")
 
         ##New S-Values?=
         if (sub_control["write_s"] and control_dict["sopt"]["sub"]["run_RTO"]) or sub_control["eoff_to_sopt"]:
-
-            """
-            #Convert old to new block!
-            print(imd_file._blocksset)
-            del imd_file.old_replica_eds_block
-            [ imd_file._blocksset.remove("OLD_REPLICA_EDS") for x in range(imd_file._blocksset.count("OLD_REPLICA_EDS"))]
-            from gpygromos.files._basics._blocks import replica_eds_block
-            reeds_block =  replica_eds_block(REEDS=1, NRES=len(svals[1]), NUMSTATES=imd_file.replica_eds_block.NUMSTATES, RES=svals[1],
-                                            EIR=imd_file.replica_eds_block.EIR,
-                                            NRETRIAL=imd_file.replica_eds_block.NRETRIAL,
-                                            NREQUIL=0, CONT=1, EDS_STAT_OUT=1)
-            print(reeds_block)
-
-            imd_file._blocksset.append("REPLICA_EDS")
-            setattr(imd_file, "replica_eds_block", reeds_block)
-            print(imd_file._blocksset)
-
-            #/Convert old to new block!
-            """
             imd_file.edit_REEDS(SVALS=svals[1])
-
         elif (sub_control["write_s"] and not control_dict["sopt"]["sub"]["run_RTO"]):
             warnings.warn("Could not set s-values to imd, as not calculated in this run!")
 

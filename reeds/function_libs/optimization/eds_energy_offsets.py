@@ -1,245 +1,330 @@
-"""
-    eds_energy_offsets  - A program for optimization of energy offsets from eds simulations
-    @author: Simon Frasch, Benjamin Ries
+from reeds.function_libs.file_management import file_management as fM
+from reeds.function_libs.visualization.parameter_optimization_plots import plot_offsets_vs_s
+from reeds.function_libs.analysis.sampling import undersampling_occurence_potential_threshold_distribution_based as find_pot_tresh
 
-    You can use the program from your shell (not tested) or python environment.
-
-
-"""
-
-import argparse
+import copy
 import pandas as pd
+import numpy as np
+from scipy import stats
+from scipy import constants as const
+from scipy import special
+
+from mpmath import * # This is for floating point arithmetic ! 
+mp.dps = 15
 
 from typing import List
 
-from reeds.function_libs.optimization.src.energy_offset_optimization import optimize_energy_offsets
+#
+# Main call point
+#
 
+def estimate_energy_offsets(ene_trajs: List[pd.DataFrame], initial_offsets: List[float],
+                            s_values: List[float], out_path: str, temp: float = 298.0,
+                            trim_beg: float = 0.1, undersampling_idx: int = None,
+                            plot_results: bool = True, calc_clara: bool = False) -> (np.array, np.array):
 
-def parse_args(ene_ana_trajs: List[pd.DataFrame], Temp: float, s_values: List[float], Eoff: List[float],
-               frac_tresh: List[float] = [0.9],
-               pot_tresh=0.0, convergenceradius=0.0, kb=0.00831451, max_iter=20) -> dict:
     """
-    This wrapper converts the input into a format which is readable by the
-    eoff script.
+    This function will estimate the energy offsets one should use to    
+    obtain equal sampling of all end states in a RE-EDS simulation. 
+    This estimation is based on the potential energies of a prior 
+    RE-EDS simulation, in which energy offsets were all set to 0. 
+    
+    This function calculates the energy offsets of all replicas given, 
+    determines which of these replicas can be considered to be undersampling
+    replicas, and then returns the average value of the offsets from these 
+    undersampling replicas.     
+    
+    For more information: Sidler et al., J. Chem. Phys. 2016, 145, 154114
 
     Parameters
     ----------
-    ene_ana_trajs
-        concatenated energy trajs from ene ana step.
-    Temp
-        temp of simulation
-    s_values
-        list of svalues used
-    Eoff
-        list containing Eoff values (give 0.0 if non)
-    frac_tresh
-        Threshold on fraction of negative potentials energies for each state. Either one value or a value for each state.
-    pot_tresh
-        Potential threshold defines maximal energyvalue to be considered in Fraction building
-    convergenceradius : float
-        radius of convergence
-    kb : float
-        boltzmann constant
-    max_iter : int
-        maximal_iteration
-
+    ene_trajs: List [pd.DataFrame] 
+        contains all replicas potential energies 
+    initial_offsets: List[float]
+        the set of energy offsets used in the simulation which generated this data
+    s_values: List[float]
+        the set of s-values used in the simulation which generated this data    
+    out_path: str
+        path to the file in which the results will be printed out.    
+    temp: float
+        temperature of the simulation
+    trim_beg: float
+        fraction of the values to remove at the begining for "equilibration"
+    undersampling_idx: int
+        index of the first replica which can be considered to be undersampling
+    plot_results: bool
+        determines if we plot the data 
+    calc_clara: bool
+        determines if we also calculate using Clara's equation (default is no to have faster analysis)
     Returns
     -------
-
+        means: np.array
+            Array containing the energy offsets to use in the next simulations
+        all_eoffs: np.array
+            Array containing the energy offsets estiamted in all replicas
     """
 
-    # preparing in_arguments:
-    num_s_values = len(s_values)
-    num_states = len(Eoff)
-    time_steps = len(ene_ana_trajs[0]["time"])
-    rounding_values = 12
+    num_states = len(initial_offsets)
+    num_replicas = len(ene_trajs)
+    
+    if out_path is None: outfile = '/dev/null'
+    else: outfile = out_path + '/energy_offsets.out'
+    f = open(outfile, "w")
 
-    # sort energies for algorithm
-    vvr = []
-    vvy = []
-    reference_potential_key = "eR"
-    state_potential_keys = list(
-        sorted(["e" + str(state) for state in range(1, num_states + 1)], key=lambda x: int(x.replace("e", ""))))
+    all_eoffs = np.zeros(num_states*num_replicas).reshape(num_replicas, num_states)
+    all_eoffs_clara = np.zeros(num_states*num_replicas).reshape(num_replicas, num_states)    
+    
+    # Calculate the Energy Offsets for reach replica
+    for i in range(num_replicas):
+        all_eoffs[i] = calc_offsets(ene_trajs[i], temp, trim_beg, num_states)
+        if calc_clara:
+            (all_eoffs_clara[i], converged, steps) = calc_offsets_clara_eqn(ene_trajs[i], temp, num_states, initial_offsets, trim_beg)
 
-    for ene_traj in sorted(ene_ana_trajs, key=lambda x: int(x.replicaID)):
-        vvr.append(ene_traj[reference_potential_key].round(rounding_values).tolist())
-        vvy.append([ene_traj[key].round(rounding_values).tolist() for key in state_potential_keys])
+    f.writelines(format_as_jnb_table("Energy offsets predicted for each replica", s_values, all_eoffs, 2))
+    if calc_clara:
+        f.writelines(format_as_jnb_table("Energy offsets predicted for each replica - Clara's eqn", s_values, all_eoffs_clara, 2))
 
-    ##Eoff as eir
-    eir_old_init = Eoff
-    if len(eir_old_init) != num_states:
-        raise IOError("Number of EiR values does not match number of states.")
+    # Plot the data: 
+    if plot_results:
+        plot_offsets_vs_s(all_eoffs, s_values=s_values,out_path = out_path + "/eoffs_vs_s.png")
 
-    ## thresholds
-    ## fraction threshold how many values below the pottresh needed?
-    if len(frac_tresh) == 1:
-        frac_tresh = [frac_tresh[0] for i in range(num_states)]
-    elif len(frac_tresh) != num_states:
-        raise IOError("frac_tresh option requires one or n values, where n is the number of states.")
+    # Analyse the data in the replicas
+    tables = analyse_replicas(ene_trajs, num_states, s_values)
+    f.writelines(tables)
+    
+    # Take the average from the undersampling replicas    
+    means = None
+    stdevs = None 
+    
+    if undersampling_idx is None: 
+            f.writelines('\nDid not find any undersampling replicas.')
+            raise Exception("Could not determine new offsets, as no undersampling detected!")
+    else: 
+        undersampling_eoffs = all_eoffs[undersampling_idx:]
+        results = 'Undersampling found at replica ' + str(undersampling_idx+1) \
+                  + ' with s = ' + str(s_values[undersampling_idx]) + '\n\n' 
+        results += 'New energy offset for each state:\n'
+        means   = undersampling_eoffs.mean(axis=0)
+        stdevs  = undersampling_eoffs.std(axis=0)
+        for i in range(num_states):
+            results += 'state ' + str(i+1) + ' : ' + str(round(means[i], 2)) \
+                    + ' +-  ' + str(round(stdevs[i], 2)) + '\n'
+        f.writelines(results)
+    f.close()
+    return (means, all_eoffs)
 
-    ## potentials threshold: when is undersampling reached? (below pottresh)
-    pot_tresh = pot_tresh
 
-    ##Thermodynamic constants
-    beta = 1.0 / (Temp * kb)
+#
+# Functions calculating the energy offsets by aplying the equations
+#
 
-    rho = convergenceradius
-    in_dict = {"eir_old_init": eir_old_init, "vvr": vvr, "vvy": vvy, "s_values": s_values, "beta": beta,
-               "frac_tresh": frac_tresh, "max_iter": max_iter, "rho": rho, "pot_tresh": pot_tresh,
-               "time_steps": time_steps}
+def calc_offsets(energy_trajectory: pd.DataFrame, temp:float, trim_beg:float, num_states:int) -> np.array:
 
-    return in_dict
-
-
-def standard_out(s_values: List[float], statistic, time_steps, pot_tresh, frac_tresh):
     """
+    This function applies eqn. 6  of Sidler et al., J. Chem. Phys. 2016, 145, 154114 
+    to estimate the energy offsets for a specific replica.
+    Note that the original offset do not go into this equation!
+    Note: We use special.logsumexp, (logsum and not log average) as 
+          all states have the name number of data points, and log(1/N) cancels out.
 
     Parameters
     ----------
-    s_values
-    statistic
-    time_steps
-    pot_tresh
-    frac_tresh
-
+        energy_trajectory: pandas DataFrame 
+            contains the potential energies of the end state and the ref. state
+        temp: float
+            temperature in Kelvin
+        trim_beg: float
+            fraction of the values to remove at the begining for "equilibration"
+        num_states: int
+            number of end states in our RE-EDS simulation
+                
     Returns
     -------
-
+        new_eoffs: np.array
+            Energy offsets estimated for this replica scaled such that
+            ligand 1 has an offset of 0. 
     """
-    num_s_values = len(s_values)
-    num_states = len(statistic.minCount[0])
 
-    print_lines = ["\n\nREEDS - Eoff Estimation:\n========================\n\n", ]
+    beta =  1000 * 1 / (temp * const.k * const.Avogadro)
+    new_eoffs = np.zeros(num_states)
+    
+    initial_offsets = np.zeros(num_states)
+    
+    # note exp_term is a vector (each element is a timestep) 
+    # containing the term to be exponentiated
+    trim_beg = int(trim_beg*len(energy_trajectory['e1']))
 
-    print_lines.append("\n\n\tEnergy Offsets for each Replica\n\n")
-    print_lines.append("| S\t| " + " | ".join(["e" + str(i) for i in range(1, num_states + 1)]) + " | iterations |\n")
-    print_lines.append("|---\t|---" + " |--- ".join(["" for i in range(1, num_states + 1)]) + "|--- |\n")
-    eoff_per_rep = statistic[3]
-    for i in sorted(eoff_per_rep)[::-1]:
-        print_lines.append('|{:2.4f}\t|'.format(float(i)) + " |\t".join(
-            list(map(lambda x: str(round(x, 4)), eoff_per_rep[i]["eoff"]))) + " \t|\t" + str(
-            eoff_per_rep[i]["iterations"]) + "|\n")
+    for i in range(num_states):
+            v_i = np.array(energy_trajectory['e' + str(i+1)])[trim_beg:]
+            v_r = np.array(energy_trajectory['eR'])[trim_beg:]
+            exp_term = - beta * (v_i - v_r)
+            new_eoffs[i] =  -(1/beta) * special.logsumexp(exp_term)
 
-    print_lines.append("\n\n\tMinimum energy count per state\n")
-    print_lines.append("| S\t| " + " | ".join(["e" + str(i) for i in range(1, num_states + 1)]) + " |\n")
-    print_lines.append("|---\t|---" + " |--- ".join(["" for i in range(1, num_states + 1)]) + "|\n")
-    for i in range(num_s_values):
-        print_lines.append('| {:2.4f}\t|'.format(float(s_values[i])) + ' |\t'.join(
-            ' {:8d}'.format(val) for val in statistic.minCount[i]) + " |\n")
+    return (new_eoffs - new_eoffs[0])
 
-    print_lines.append("\n\tNegative energy count per state(pottresh=" + str(pot_tresh) + ")\n\n")
-    print_lines.append("| S\t| " + " | ".join(["e" + str(i) for i in range(1, num_states + 1)]) + "|\n")
-    print_lines.append("|---\t|---" + " |--- ".join(["" for i in range(1, num_states + 1)]) + "|\n")
-    for i in range(num_s_values):
-        print_lines.append('{:2.4f}\t|'.format(float(s_values[i])) + ' |\t'.join(
-            ' {:8d}'.format(val) for val in statistic.negCount[i]) + " |\n")
-
-    print_lines.append("\n\tFraction of undersampling energies per state (fractresh=" + str(frac_tresh) + ")\n\n")
-    print_lines.append("| S\t| " + " | ".join(["e" + str(i) for i in range(1, num_states + 1)]) + " |\n")
-    print_lines.append("|---	\t|---	" + " |--- ".join(["" for i in range(1, num_states + 1)]) + " |\n")
-    for i in range(num_s_values):
-        print_lines.append('| {:2.4f}\t|'.format(float(s_values[i])) + ' |\t'.join(
-            ' {:8.4f}'.format(float(val) / float(time_steps)) for val in statistic.negCount[i]) + "\n")
-
-    print_lines.append("\n\nNew energy offset for each state:\n\n")
-    for ind, offset in enumerate(statistic.offsets):
-        print_lines.append(
-            str(ind + 1) + '. {:10.4f}\t+-\t{:8.4f}'.format(float(offset.mean), float(offset.std)) + "\n")
-
-    print("".join(print_lines))
-    return print_lines
-    # give output
-
-
-def estEoff(ene_ana_trajs: List[pd.DataFrame],
-            Temp: float, s_values: List[float], Eoff: List[float], out_path: str,
-            frac_tresh=[0.9], pot_tresh=0.0, convergenceradius=0.0, kb=0.00831451, max_iter=20):
+def calc_offsets_clara_eqn(energy_trajectory, temp:float, num_states:int, initial_offsets:List[float], 
+                           trim_beg:float) -> (np.array, bool, int):
     """
-    This function should provide access via an python script to eds energy
-    estimations
+    This function applies eqn. 5 of Sidler et al., J. Chem. Phys. 2016, 145, 154114 
+    to estimate the energy offsets for a specific replica.
+    
+    Note: This function doesn't apply the reweighting mentionned in C. Christ's
+          original EDS publications.
+    
+    Note: The function is numerically stable.
 
     Parameters
     ----------
-    ene_ana_trajs
-    Temp
-    s_values
-    Eoff
-    out_path
-    frac_tresh
-    pot_tresh
-    convergenceradius
-    kb
-    max_iter
-
+        energy_trajectory: pandas DataFrame 
+            contains the potential energies of the end state and the ref. state
+        temp: float
+            temperature in Kelvin
+        trim_beg: float
+            fraction of the values to remove at the begining for "equilibration"
+        num_states: int
+            number of end states in our RE-EDS simulation
+        initial_offsets: List [float]        
+            energy offset values used in the simulation which generated this data.
+                
     Returns
     -------
-
+        new_eoffs: np.array
+            Energy offsets estimated for this replica scaled such that
+            ligand 1 has an offset of 0.
+        converged: bool
+            True if calculation converged
+        steps: int
+            Number of steps till convergence 
     """
 
-    # parsing input
-    in_dict = parse_args(ene_ana_trajs=ene_ana_trajs, Temp=Temp, s_values=s_values, Eoff=Eoff, kb=kb,
-                         frac_tresh=frac_tresh, max_iter=max_iter, convergenceradius=convergenceradius,
-                         pot_tresh=pot_tresh)
-    # print(in_dict)
-    # do calclulation
-    statistic = optimize_energy_offsets(eir_old_init=in_dict["eir_old_init"], vvr=in_dict["vvr"], vvy=in_dict["vvy"],
-                                        s_values=in_dict["s_values"], beta=in_dict["beta"],
-                                        frac_tresh=in_dict["frac_tresh"],
-                                        max_iter=in_dict["max_iter"], rho=in_dict["rho"],
-                                        pot_tresh=in_dict["pot_tresh"])  # calculate new energy offset
-    # output:
-    stdout = standard_out(s_values=in_dict["s_values"], statistic=statistic, time_steps=in_dict["time_steps"],
-                          pot_tresh=in_dict["pot_tresh"], frac_tresh=frac_tresh)
-    file = open(out_path, "w")
-    file.writelines(stdout)
-    file.close()
+    beta =  1000 * 1 / (temp * const.k * const.Avogadro)
+    new_eoffs = np.array(initial_offsets)
+    converged = False
+    steps = 0 
+    
+    trim_beg = int(trim_beg*len(energy_trajectory['e1']))
 
-    return statistic
+    while not converged: 
+        tmp_eoffs = copy.copy(new_eoffs)        
+        for i in range(num_states):
+            v_i = np.array(energy_trajectory['e' + str(i+1)])[trim_beg:]
+            e_i = tmp_eoffs[i]
+            deltaV = np.zeros(len(v_i))
+            for j in range(num_states):
+                if i == j: continue           
+                v_j = np.array(energy_trajectory['e' + str(j+1)])[trim_beg:]
+                e_j = tmp_eoffs[j]
+                    
+                deltaV += (v_j - v_i) - (e_j - e_i)
+        
+            # here we replace all very low values of deltaV by a minimum cap
+            # to avoid overflow. (Overflow as sign is reversed below)
+            deltaV[deltaV < -1000.0] = -1000.0
+        
+            # now we scale and average:
+            new_eoffs[i] = - (1/beta) * np.log(np.average(1/(1+(np.exp(-beta*deltaV)))))
+    
+        # Note: we need to add the initial offsets to this too !!
+        new_eoffs += tmp_eoffs
+        new_eoffs -= new_eoffs[0]
+            
+        if np.sum(np.abs(new_eoffs - tmp_eoffs)) < 0.1*num_states : converged = True
+        steps += 1
+        if converged or steps > 300: break
+    
+    # If the calculation did not converge, we just set them all to 0.
+    if not converged: new_eoffs = np.zeros(num_states)         
+    return (new_eoffs, converged, steps)
+ 
+#
+# Functions analysing the replicas
+#
+
+def analyse_replicas(ene_trajs: pd.DataFrame, num_states:int, s_values:List[float]) -> str:
+    """
+    This function determines which of the replicas can be considered to be undersampling
+    replicas, and a few other properties of the potential distributions.     
+    
+    Parameters
+    ----------
+    ene_trajs: List[pd.dataFrame]
+        contains all replicas potential energies 
+    num_states: int
+        number of end states
+    s_values: List[float]
+        the set of s-values used in the simulation which generated this data    
+    
+    Returns
+    -------
+    table: str
+        Data formatted as a table to be printed to a file
+    """
+
+    select_states = ['e' + str(i) for i in range(1, num_states+1)]
+    num_replicas = len(ene_trajs)
+    
+    pot_tresh = find_pot_tresh(ene_trajs)
+
+    # Calculate the minimum energy counts. 
+    min_counts = np.zeros([num_replicas, num_states])
+
+    for i, traj in enumerate(ene_trajs):
+        for lowest_state in traj[select_states].idxmin(axis=1).replace("e", "", regex=True):
+            min_counts[i][(int(lowest_state)-1)] += 1
+
+    title = "Minimum potential energy count per replica"
+    min_table = format_as_jnb_table(title, s_values, min_counts, 0)
+
+    # Find the counts of energies below the thresholds:
+    below_thresh_counts = np.zeros([num_replicas, num_states])
+
+    for i, traj in enumerate(ene_trajs):
+        for j, state in enumerate(select_states):
+            v = np.array(traj[state])
+            below_thresh_counts[i][j] = np.size(v[v < pot_tresh[j]])
+
+    title = "Count of potential energies below the threshold per replica\n"
+    title += "thresholds used: " + str(pot_tresh)
+    tresh_table = format_as_jnb_table(title, s_values, below_thresh_counts, 0)
+
+    return (min_table + '\n' + tresh_table + '\n')
 
 
-# MAIN
-if __name__ == "__main__":
+#
+# Formatting functions for the output 
+#
 
-    parser = argparse.ArgumentParser(description="Energy offseta optimization for RE-EDS")
-    parser.add_argument('-vr', type=str, nargs='+', required=True, help='vr Files', dest='vr_files')
-    parser.add_argument('-temp', type=float, required=True, help='temperature', dest='temp')
-    parser.add_argument('-s', type=float, nargs='+', required=True, help='s values', dest='s_values')
-    parser.add_argument('-rho', type=float, required=False, default=0.0, help='convergence radius', dest='rho')
-    parser.add_argument('-kb', type=float, required=False, default=0.00831451, help='boltzman constant', dest='kb')
-    parser.add_argument('-maxiter', type=int, required=False, default=20, help='maximum iterations', dest='maxiter')
-    parser.add_argument('-eir', type=float, nargs='+', required=True, help='EiR', dest='eir')
-    parser.add_argument('-fractresh', type=float, nargs='+', required=True,
-                        help='Threshold on fraction of negative potentials energies for each state. Either one value or a value for each state.',
-                        dest='frac_tresh')
-    parser.add_argument('-vy_s1', type=str, nargs='+', required=True,
-                        help='vy Files of all states per s value, e.g. -vy_s1, -vy_s2 ...', dest='vy_s1')
-    parser.add_argument('-pottresh', type=float, nargs='+', required=False,
-                        help='Potential threshold defines maximal energyvalue to be considered in Fraction building',
-                        dest='pottresh')
-    args, unkown_args = parser.parse_known_args()
+def format_as_jnb_table(title:str, s_values:List[float], data:np.array, num_decimal:int) -> str:
+    """
+    This function converts data from a np.array format into 
+    a jupyter notebook compatible format for a table.     
+    
+    Parameters
+    ----------
+    title: str
+        title to write above the table
+    s_values: List[float]
+        the set of s-values used in the simulation which generated this data    
+    data: np.array
+        2-D array containing the data to print out
+    num_decimal: int
+        number of decimals points to print the numbers as    
+    
+    Returns
+    -------
+    table: str
+        data formatted as a table to be printed to a file
+    """
+    table = '\n' + title + '\n'
+    sep ='\t|\t'
+    header = [ 'state ' + str(i+1) for i in range(len(data[0]))]
 
-    for i in range(1, len(args.s_values)):
-        parser.add_argument('-vy_s' + str(i + 1), type=str, nargs='+', required=True,
-                            help='vy Files for s' + str(i + 1), dest='vy_s' + str(i + 1))
-    args = parser.parse_args()
-    argsDic = vars(args)
-    vy_sx = []
-    for x in argsDic:
-        if ("vy_s" in x):
-            vy_sx += argsDic[x]
+    table += '| s\t' + sep + '\t|'.join(header) + '|\n'
+    table += '|---\t' * (len(header)+1)+ '|\n'
 
-    # prepare input
-    in_dict = parse_args(Vr_files=args.vr_files, Temp=args.temp, s_values=args.s_values, Eoff=args.eir, Vy_sx=vy_sx,
-                         frac_tresh=args.frac_tresh, pot_tresh=args.pottresh[0], convergenceradius=args.rho, kb=args.kb,
-                         max_iter=args.maxiter)
-
-    # Do calculation
-    statistic = optimize_energy_offsets(eir_old_init=in_dict["eir_old_init"], vvr=in_dict["vvr"], vvy=in_dict["vvy"],
-                                        s_values=in_dict["s_values"], beta=in_dict["beta"],
-                                        frac_tresh=in_dict["frac_tresh"],
-                                        max_iter=in_dict["max_iter"], rho=in_dict["rho"],
-                                        pot_tresh=in_dict["pot_tresh"])  # calculate new energy offset
-
-    # output:
-    standard_out(s_values=in_dict["s_values"], statistic=statistic, time_steps=in_dict["time_steps"],
-                 pot_tresh=in_dict["pot_tresh"], frac_tresh=in_dict["frac_tresh"])
+    for i, s_val in enumerate(s_values):
+        line = '| ' + '%.5f' % s_val + sep
+        for d in data[i]: line += ('%.' + str(num_decimal) + 'f') % d + '\t|'
+        line += '\n'
+        table += line
+    return table

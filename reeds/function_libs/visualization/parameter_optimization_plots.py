@@ -5,88 +5,80 @@ from matplotlib import pyplot as plt
 
 from reeds.function_libs.visualization import plots_style as ps
 
-
-def plot_peoe_eoff_vs_s(eoff: dict,
-                        energy_offsets: List,
-                        title: str,
-                        out_path: str):
-    """plot_peoe_eoff_vs_s
-    gives out a plot, showing the development of Eoffsets along :param eoff:
+def plot_offsets_vs_s(energy_offsets, s_values: List, out_path: str, title: str = None, s_increment:int = 2):
+    """
+    plot_offsets_vs_s creates a plot of the energy offsets predicted at each of the replicas.
+    The plot contains two sub-plots, one of which shows the data recentered to the average
+    value among all replicas, and the other simply showing the raw data.
 
     Parameters
     ----------
-    eoff : dict
-        dictionary with energy offsets for each s value
-    energy_offsets : List
-        list of energy offsets
-    title : str
-        title of the plot
+    energy_offsets : numpy 2-D array
+        matrix of energy offsets where each row corresponds to a replica
+        and each column to a specific end-state.
+    s_values: List
+        list of s-values
     out_path : str
         output file path
-
+    title : str
+        title of the plot
+    s_increment: int
+        determines how many s-values are displayed on the plot. default value of 
+        2 means we take every other s-value.
+    
     Returns
     -------
     None
     """
 
-    s_vals = sorted(list(eoff.keys()))
-    x = range(len(s_vals))
+    colors = ps.candide_colors
+    num_states = len(energy_offsets.T)
+    
+    fig, (ax1, ax2) = plt.subplots(nrows=2, figsize=(7,6))
+    
+    if title is None: title = 'Energy Offsets predicted at all s-values'
+    fig.suptitle(title)
 
-    eoffsets_per_s = []
-    for i in sorted(eoff):
-        eoffsets_per_s.append(eoff[i]["eoff"])
-    min_eoff, max_eoff = np.min(eoffsets_per_s[-1]), np.max(eoffsets_per_s[-1])
-
-    num_stats = len(eoffsets_per_s[0])
-    y = [list(map(lambda x: x[i], eoffsets_per_s)) for i in range(num_stats)]
-
-    # collect nice labels
-    s_vals = list(map(lambda x: float(x), s_vals))
-
-    number_of_labels = 5
-    step_size = len(s_vals) // number_of_labels
-    labels = s_vals[::step_size]  # list(map(lambda x: np.round(np.log(x),2), s_vals[::step_size]))
-
-    colors = ps.active_qualitative_list_small.colors
-    repnum = num_stats + 1
+    x = range(len(s_values))
 
     # plot
-    fig, (ax1, ax2) = plt.subplots(nrows=2, )
+    for i in range(num_states):
+        eoffs = energy_offsets.T[i]
+        eoffs_recentered = eoffs - np.average(eoffs)
 
-    ##plot1
-    for i in range(num_stats):
-        ax1.plot(x, y[i] - energy_offsets[i].mean, label=(i + 1),  # color=colors[i % repnum],
-                 lw=2)
+        ax1.plot(x, eoffs_recentered, lw = 1, ms = 3, marker = 'D', c = colors[i], 
+                 label = 'state ' + str(i+1))
+        ax2.plot(x, eoffs, lw = 1, ms = 3, marker = 'D', c = colors[i])
+    
+    # Change box format to match legend 
+    box1 = ax1.get_position()
+    ax1.set_position([box1.x0, box1.y0, box1.width * 0.8, box1.height])
+    
+    box2 = ax2.get_position()
+    ax2.set_position([box2.x0, box2.y0, box2.width * 0.8, box2.height])
+    
+    fig.legend(loc='upper center', bbox_to_anchor=(0.85, 0.65), fancybox=True,
+              shadow=True, ncol=1, fontsize = 12, edgecolor='black')
 
-    ax1.set_ylabel("$(E_i^R(s)-\overline{E}_i^R)$/(kJ/mol)")
-    ax1.set_xticks(x[::step_size])
-    ax1.set_xticklabels(labels)
+    # labels for the y-axis
+    ax1.set_ylabel("$(E_i^R(s)-\overline{E}_i^R)$ [kJ/mol]")
+    ax2.set_ylabel("$E^R_i(s)$ [kJ/mol]")
 
-    ##plot2
-    for i in range(num_stats):
-        ax2.plot(x, y[i], label=(i + 1),  # color=colors[i % repnum],
-                 lw=2)
-
-    # plt.title(title)
-    # ax2.set_ylim([-max_eoff - 10, max_eoff + 10])
-    ax2.set_xlabel("s")
-    ax2.set_ylabel("$E^R_i(s)$/(kJ/mol)")
-
-    # position legend
-    ax2.set_xticks(x[::step_size])
-    ax2.set_xticklabels(labels)
-
-    # legAX=fig.addsuplot(1,2, 1)
-    chartBox = ax1.get_position()
-    ax1.set_position([chartBox.x0, chartBox.y0, chartBox.width * 0.85, chartBox.height])
-
-    ncol = len(labels) // 10 if (len(labels) // 10 > 0) else 1
-    lgnd = ax1.legend(title="states:", loc=2, bbox_to_anchor=(1.05, 1), ncol=ncol, prop={"size": 15})
-
-    fig.tight_layout()
-    fig.suptitle(title + " $E^R_i$ per s-value", y=1.05)
-    fig.savefig(out_path, bbox_extra_artists=(lgnd,), bbox_inches='tight')
+    ax2.set_xlabel("s-value")
+ 
+    # labels for the x-axis
+    ax1.set_xticks(x[::s_increment])
+    ax1.set_xticklabels(labels=[])
+    
+    ax2.set_xticks(x[::s_increment])
+    
+    ax2.set_xticklabels(s_values[::s_increment], fontsize = 8)
+    plt.setp(ax2.get_xticklabels(), rotation=45, ha="right",
+         rotation_mode="anchor")
+    
+    fig.savefig(out_path, facecolor='white')
     plt.close()
+    return None
 
 
 def plot_peoe_eoff_time_convergence(state_time_dict: dict,
