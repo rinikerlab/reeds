@@ -276,6 +276,12 @@ def do_Reeds_analysis(in_folder: str, out_folder: str, gromos_path: str,
         if (isinstance(imd_file.MULTIBATH, type(None)) and not isinstance(imd_file.STOCHDYN, type(None))):
             additional_properties = ("solutemp2", "totdisres")
             boundary_conditions = "v cog"
+
+        # if there's only one bath, use solutemp2 for ene_ana instead of solvtemp2
+        elif (not isinstance(imd_file.MULTIBATH, type(None)) and imd_file.MULTIBATH.NBATHS == "1"):
+            additional_properties = ("solutemp2", "totdisres")
+            boundary_conditions = "r cog"
+
         else:
             additional_properties = ("solvtemp2", "totdisres")
             boundary_conditions = "r cog"
@@ -370,6 +376,12 @@ def do_Reeds_analysis(in_folder: str, out_folder: str, gromos_path: str,
                 reeds.function_libs.visualization.pot_energy_plots.plot_replicaEnsemble_property_2D(ene_trajs=energy_trajectories,
                                                                                                     out_path=plot_folder_path + "/temperature_heatMap.png",
                                                                                                     temperature_property="solutemp2")
+
+            elif (not isinstance(imd_file.MULTIBATH, type(None)) and imd_file.MULTIBATH.NBATHS == 1):
+                reeds.function_libs.visualization.pot_energy_plots.plot_replicaEnsemble_property_2D(ene_trajs=energy_trajectories,
+                                                                                                    out_path=plot_folder_path + "/temperature_heatMap.png",
+                                                                                                    temperature_property="solutemp2")
+                
             else:
                 reeds.function_libs.visualization.pot_energy_plots.plot_replicaEnsemble_property_2D(ene_trajs=energy_trajectories,
                                                                                                     out_path=plot_folder_path + "/temperature_heatMap.png",

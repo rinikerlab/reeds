@@ -28,15 +28,16 @@ from reeds.function_libs.utils.structures import spacer
 
 def do(out_root_dir: str, in_simSystem: fM.System, in_ene_ana_lib: str,
        in_template_imd_path: str = imd_templates.reeds_md_path,
-       ssm_approach: bool = True, optimized_states: str =os.path.abspath("a_optimizedState/analysis/data"),
+       optimized_states: str = os.path.abspath("a_optimizedState/analysis/next"),
+       sval_file: str = None,
        gromosXX_bin_dir: str = None, gromosPP_bin_dir: str = None,
        exclude_residues: list = [], nmpi_per_replica: int = 1, num_simulation_runs: int = 2,
        num_equilibration_runs: int = 1, equilibration_trial_num: int = None,
-       s_num: int = None, s_range: Tuple[float, float] = None, pot_tresh: float = 0.0,
-       queueing_sys: object = None, work_dir: str = None, previous_job_ID: int = None,
+       pot_tresh: float = 0.0, queueing_sys: object = None, work_dir: str = None,
        submit: bool = True, duration_per_job: str = "24:00", 
        initialize_first_run: bool = True, reinitialize: bool = False,
        do_not_doubly_submit_to_queue: bool = True,
+       single_bath: bool = False,
        verbose: bool = True):
     """do Energy Offsets estimation
 
@@ -83,8 +84,6 @@ submit
     should the folder and Files just be builded or also the sopt_job be submitted to the queue?
 work_dir
     define where the workdir is. Default is on the computing node.
-previous_job_ID
-    queue this job after job in  the queue
 duration_per_job
     duration of one simulation step in the queue
 initialize_first_run : bool, optional
@@ -93,6 +92,8 @@ reinitialize : bool, optional
     should the velocities be reinitialized for all runs?
 do_not_doubly_submit_to_queue : bool, optional
     Check if there is already a job with this name, do not submit if true.
+single_bath : bool, optional
+    only use a single MULTIBATH (i.e. NBATHS = 1)
 verbose
     I can be very talkative, you know...
 
@@ -123,70 +124,53 @@ int
         bash.make_folder(out_root_dir)
         bash.make_folder(input_dir)
         bash.make_folder(coord_dir)
+    
+        # Look at the coordinates from the optimized states
 
-        if (ssm_approach):
-            os.chdir(out_root_dir)
-            optimized_coordinates = glob.glob(optimized_states + "/*.cnf")
-            print("found coords: ", optimized_coordinates)
-            if (len(optimized_coordinates) == 0):
-                raise IOError("Could not find any optimized coordinates. Did the simulation finish?")
+        os.chdir(out_root_dir)
+        optimized_coordinates = glob.glob(optimized_states + "/*.cnf")
+        print("found coords: ", optimized_coordinates)
+        if (len(optimized_coordinates) == 0):
+            raise IOError("Could not find any optimized coordinates. Did the simulation finish?")
 
-            simSystem.coordinates = optimized_coordinates
-            os.chdir("..")
+        simSystem.coordinates = optimized_coordinates
+        os.chdir("..")
 
-        # IMD file
-        ##from lower_bound
-        s_vals_csv_path = old_result_folder + "/s_vals.csv"
-        if (not os.path.exists(s_vals_csv_path) and not isinstance(s_range, type(None))):
-            raise IOError("COULD NOT FIND S_VALS.CSV in : ", s_vals_csv_path, "\n TRY TO USE s_RANGE!")
+        # Modify the imd file to use the s-values generated previosuly
+        
+        if not os.path.exists(sval_file) :
+            raise IOError("COULD NOT FIND S_VALS.CSV in : ", sval_file, "\n")
 
-        svals_file = open(s_vals_csv_path, "r")
-        old_svals = list(map(float, " ".join(svals_file.readlines()).split()))
-        # from reeds.function_libs.utils import s_log_dist
-        # new_s_dist = s_log_dist.get_log_s_distribution_between(max_sval, min_sval, num_svals_desired)
+        tmp = open(sval_file, "r")
+        s_values = list(map(float, " ".join(tmp.readlines()).split()))
 
         print(simSystem)
 
         ##adapt imd_templates
         if (verbose): print("Writing imd_templates")
         imd_file = adapt_imd_template_eoff(system=simSystem, imd_out_path=in_imd_path, imd_path=in_template_imd_path,
-                                           old_svals=old_svals, s_num=s_num, s_range=s_range,
-                                           non_ligand_residues=exclude_residues)
+                                           old_svals=s_values, non_ligand_residues=exclude_residues,
+                                           single_bath = single_bath)
         in_imd_path = imd_file.path
         svals = imd_file.REPLICA_EDS.RES
         numstates = imd_file.REPLICA_EDS.NUMSTATES
 
-        # COORDINATES:
-        ## copy coordinates to input:
+        # Use coordinates from the optimized states as starting cnf
+        
         if (verbose): print("Copy the coordinates in place")
 
         cnf_prefix = "REEDS_eoff_run"
-        if (ssm_approach):
-            coordinate_files_initial = simSystem.coordinates
-            coordinate_dir = coord_dir
-            s_value_coord = {sval: coordinate_files_initial[i % numstates] for i, sval in enumerate(svals)}
+        coordinate_dir = coord_dir
+        
+        out_cnfs = []
 
-            print(s_value_coord)
-            print(coordinate_dir + "/" + cnf_prefix)
+        for i in range(len(svals)):
+            f = bash.copy_file(optimized_coordinates[i%numstates], coord_dir + "/" + cnf_prefix + "_ssm_" + str(i+1) + ".cnf")
+            out_cnfs.append(f)
+        
+        simSystem.coordinates = out_cnfs
 
-            out_cnfs = [
-                bash.copy_file(s_value_coord[s], coordinate_dir + "/" + cnf_prefix + "_ssm_s" + str(ind + 1) + ".cnf")
-                for ind, s in enumerate(s_value_coord)]
-            simSystem.coordinates = out_cnfs
-
-        else:
-            ## map coordinates
-            if (len(old_svals) > 0 and len(old_svals) != len(svals)):
-                if (verbose): print("Add replicas to match svalues")
-                out_cnfs = fileReeds.adapt_cnfs_to_new_sDistribution(in_old_svals=old_svals, in_new_svals=svals,
-                                                                     in_cnf_files=simSystem.coordinates,
-                                                                     out_cnf_dir=coord_dir,
-                                                                     cnf_prefix=cnf_prefix)
-                setattr(simSystem, "coordinates", out_cnfs)
-            else:
-                simSystem.move_input_coordinates(coord_dir)
-
-        # GENERATE array scripts
+        # Generate job array scripts
         
         # This dictionary only contains control specific        
         # to the energy offsets, the rest is written automatically        
@@ -235,6 +219,9 @@ int
         in_analysis_script_path = reeds.function_libs.pipeline.module_functions.write_job_script(out_script_path=out_root_dir + "/job_analysis.py",
                                                                                                  target_function=RE_EDS_general_analysis.do_Reeds_analysis,
                                                                                                  variable_dict=analysis_vars)
+        
+        # Its required to set this variable so the script points to the right coordinates
+        in_simSystem = simSystem
 
         ##Build Job Script
         if (verbose): print("Scheduling Script")

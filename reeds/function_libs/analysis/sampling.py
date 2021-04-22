@@ -9,12 +9,12 @@ import reeds.function_libs.visualization.sampling_plots
 
 def undersampling_occurence_potential_threshold_densityClustering(ene_traj_csvs: List[pd.DataFrame],
                                                                   max_distance_kJ: float = 300,
-                                                                  sampling_fraction_treshold: float = 0.9):
+                                                                  sampling_fraction_treshold: float = 0.9)->List[float]:
     """
     This function is estimating the pot_tresh for all states by using DBSCAN identifying the density region containing sampling_fraction_treshold of the data.
     The mean and std of the density region will result in pot_tresh = mean+3std
     This function is rather performance expensive.
-    ! WARNING REQUIRES SKLEARN
+    ! WARNING REQUIRES SKLEARN -Not Used by the pipeline. - Prototype!
 
     Parameters
     ----------
@@ -74,20 +74,17 @@ def undersampling_occurence_potential_threshold_densityClustering(ene_traj_csvs:
 
 
 def undersampling_occurence_potential_threshold_distribution_based(ene_traj_csvs: List[pd.DataFrame],
-                                                                   max_distance_kJ: float = 300,
-                                                                   sampling_fraction_treshold: float = 0.9):
+                                                                   sampling_fraction_treshold: float = 0.9,
+                                                                    verbose:bool = False)->List[float]:
     """undersampling_occurence_potential_threshold_distribution_based
     This function is estimating the pot_tresh for all states by testing if around the minimal energy 90% of the data is located in a threshold of  max_distance_kJ.
-    The mean and std of the density region will result in pot_tresh = mean+3*std
-    This function is cheap in performance.
-    ! WARNING REQUIRES SKLEARN
+    The mean and std of the density region will result in pot_tresh = min(V)+6*std(V
+    This function has low demand in performance.
 
     Parameters
     ----------
     ene_traj_csvs : List[pd.Dataframe]
         a list of pandas dataframes containing the energy data of each state eX
-    max_distance_kJ : float, optional
-        the maximum deviation around minimal energy (default:300kJ).
     sampling_fraction_treshold : float, optional
         the sampling threshold for detecting undersampling (default: 0.9).
 
@@ -101,18 +98,22 @@ def undersampling_occurence_potential_threshold_distribution_based(ene_traj_csvs
     num_states = len(state_names)
     total_step_num = ene_traj_csvs[0].shape[0]
 
+    std = [6*np.std(ene_traj_csvs[-1][state]) for state in state_names]
+    #mean_potential = [np.mean(ene_traj_csvs[-1][state]) for state in state_names]
     for i, replica_data in enumerate(ene_traj_csvs):
-        # print("")
-        # print("replica " + str(i + 1) + ":")
-
+        if(verbose): print("replica " + str(i + 1) + ":")
+        mean_potential = [np.min(replica_data[state]) for state in state_names]
+        thresholds = [m+s for m, s in zip(mean_potential, std)]
+        if(verbose): print("Checkout std: ", thresholds)
         # iterate over states, identify all undersampling replicas, calc fraction
         pot_tresh = []
         for k, state in enumerate(state_names):
             vec = np.array(replica_data[state]).reshape(-1, 1)
-            min_pot = np.min(vec)
-            below_thresh = vec[vec < min_pot + max_distance_kJ]
-            below_thresh_fraction = len(below_thresh) / total_step_num
+            treshold =  thresholds[k]
 
+            below_thresh = vec[vec < treshold]
+            below_thresh_fraction = len(below_thresh) / total_step_num
+            if(verbose): print("\t belowTresh: ", state, sampling_fraction_treshold < below_thresh_fraction)
             if (sampling_fraction_treshold < below_thresh_fraction):
                 threshold = np.mean(below_thresh) + 3 * np.std(below_thresh)
                 pot_tresh.append(threshold)
@@ -123,9 +124,80 @@ def undersampling_occurence_potential_threshold_distribution_based(ene_traj_csvs
 
     # final averaging.
     pot_thresh_per_state_and_replica = np.array([t for t in pot_tresh_pre_rep if (len(t) == num_states)]).T
-    pot_thresh_per_state = np.mean(pot_thresh_per_state_and_replica, axis=1) + np.std(pot_thresh_per_state_and_replica,
-                                                                                      axis=1)
+    
+    print(pot_thresh_per_state_and_replica)
+    if (len(pot_thresh_per_state_and_replica) > 0):
+        pot_thresh_per_state = np.min(pot_thresh_per_state_and_replica, axis=1) + np.std(pot_thresh_per_state_and_replica, axis=1)
+    else:
+        pot_thresh_per_state = [0 for x in range(num_states)]
     return pot_thresh_per_state
+
+def physical_occurence_potential_threshold_distribution_based(ene_traj_csv: pd.DataFrame, equilibrate_dominationState:float=0.01, verbose:bool=False)->List[float]:
+    """physical_occurence_potential_threshold_distribution_based
+    This function is estimating the pot_tresh for all states by testing if around the minimal energy 90% of the data is located in a threshold of  max_distance_kJ.
+    The mean and std of the density region will result in pot_tresh = mean+3*std
+    This function is cheap in performance.
+
+    Parameters
+    ----------
+    ene_traj_csv : pd.Dataframe
+        a pandas dataframe containing the energy data of each state eX
+    equilibrate_dominationState : int, optional
+        equilibrate the domination state for this fraction
+    verbose: bool, optional
+        print fun
+    Returns
+    -------
+    List[float]
+        list of individual identified potential thresholds
+    """
+
+    state_names = [i for i in ene_traj_csv.columns if (i.startswith("e") and not i == "eR")]
+    total_step_num = ene_traj_csv.shape[0]
+    data =ene_traj_csv
+
+    # iterate over states, identify all undersampling replicas, calc fraction
+    pot_tresh = []
+    for k, state in enumerate(state_names):
+        #get only the sampling, in which the target state is dominating: pre-filter noise!
+        state_domination_sampling = data.where(data[state_names].min(axis=1) == data[state]).dropna()
+        start_after_eq = int(np.round(equilibrate_dominationState*state_domination_sampling.shape[0]))
+        state_domination_sampling = state_domination_sampling.iloc[start_after_eq:]
+
+        if(verbose):
+            below_thresh_fraction = state_domination_sampling.shape[0] / total_step_num
+            print("State "+str(state)+" - Domination state sampling fraction ", below_thresh_fraction)
+
+        #calculate threshold
+        threshold = np.min(state_domination_sampling[state]) + 6 * np.std(state_domination_sampling[state])
+        pot_tresh.append(threshold)
+
+    return pot_tresh
+
+
+def get_all_physical_occurence_potential_threshold_distribution_based(ene_trajs: List[pd.DataFrame])->List[float]:
+    """
+        This function is used in the state optimization approach and gives the physical potential energy threshold for occurrence sampling back, that is estimated from the optimized EDS-System.
+
+    Parameters
+    ----------
+    ene_trajs: List[pd.DataFrame]
+        energy trajectories from all end state optimizations
+
+    Returns
+    -------
+    List[float]
+        list of potential energy thresholds.
+    """
+    opt_pot_tresh = []
+    for key, traj in enumerate(ene_trajs):
+        print(key)
+        pot_tresh_state = physical_occurence_potential_threshold_distribution_based(traj)
+        print(pot_tresh_state)
+        if (np.isnan(pot_tresh_state[key])):
+            warnings.warn("A state potential threshold was NaN -> This hints on that you did not sample the state as a dominating one! Please check your simulatigons!")
+        opt_pot_tresh.append(pot_tresh_state[key])
+    return opt_pot_tresh
 
 
 def calculate_sampling_distributions(ene_traj_csvs: List[pd.DataFrame],
@@ -188,7 +260,7 @@ def sampling_analysis(ene_traj_csvs: List[pd.DataFrame],
                       out_path: str = None,
                       xmax: bool = False,
                       do_plot: bool = True,
-                      verbose: bool = False) -> str:
+                      verbose: bool = False) -> (dict, str):
     """sampling_analysis
     This function is analysing the samplings
 
@@ -213,6 +285,8 @@ def sampling_analysis(ene_traj_csvs: List[pd.DataFrame],
     -------
     str
         out_path
+    dict
+      returns a dictionary containing the information of undersampling start, undersampling_potential thresholds and the different sampling type fractions. (physical sampling occurence not included!)
     """
 
     # read all Vy_sx_files!
