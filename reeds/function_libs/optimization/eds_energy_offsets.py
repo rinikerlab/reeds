@@ -20,8 +20,8 @@ from typing import List
 
 def estimate_energy_offsets(ene_trajs: List[pd.DataFrame], initial_offsets: List[float],
                             s_values: List[float], out_path: str, temp: float = 298.0,
-                            pot_tresh: List[float] = None, trim_beg: float = 0.1, undersampling_idx: int = None,
-                            plot_results: bool = True, calc_clara: bool = False) -> np.array:
+                            trim_beg: float = 0.1, undersampling_idx: int = None,
+                            plot_results: bool = True, calc_clara: bool = False) -> (np.array, np.array):
 
     """
     This function will estimate the energy offsets one should use to    
@@ -59,13 +59,17 @@ def estimate_energy_offsets(ene_trajs: List[pd.DataFrame], initial_offsets: List
     Returns
     -------
         means: np.array
-            Array containing the energy offsets to use in the next simulations        
+            Array containing the energy offsets to use in the next simulations
+        all_eoffs: np.array
+            Array containing the energy offsets estiamted in all replicas
     """
 
     num_states = len(initial_offsets)
     num_replicas = len(ene_trajs)
-
-    f = open(out_path + '/energy_offsets.out', "w")
+    
+    if out_path is None: outfile = '/dev/null'
+    else: outfile = out_path + '/energy_offsets.out'
+    f = open(outfile, "w")
 
     all_eoffs = np.zeros(num_states*num_replicas).reshape(num_replicas, num_states)
     all_eoffs_clara = np.zeros(num_states*num_replicas).reshape(num_replicas, num_states)    
@@ -107,7 +111,7 @@ def estimate_energy_offsets(ene_trajs: List[pd.DataFrame], initial_offsets: List
                     + ' +-  ' + str(round(stdevs[i], 2)) + '\n'
         f.writelines(results)
     f.close()
-    return (means)
+    return (means, ell_eoffs)
 
 
 #
