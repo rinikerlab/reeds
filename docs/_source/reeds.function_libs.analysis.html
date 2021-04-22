@@ -38,7 +38,7 @@
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="reeds.function_libs.file_management package" href="reeds.function_libs.file_management.html" />
+    <link rel="next" title="reeds.function_libs.optimization package" href="reeds.function_libs.optimization.html" />
     <link rel="prev" title="reeds.function_libs package" href="reeds.function_libs.html" /> 
 </head>
 
@@ -85,7 +85,7 @@
             
               <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="../introduction.html">RE-EDS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../introduction.html">REEDS</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../Examples/index.html">Examples</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="modules.html">Documentation</a><ul class="current">
 <li class="toctree-l2 current"><a class="reference internal" href="reeds.html">reeds package</a><ul class="current">
@@ -98,7 +98,6 @@
 </li>
 <li class="toctree-l3"><a class="reference internal" href="reeds.html#submodules">Submodules</a></li>
 <li class="toctree-l3"><a class="reference internal" href="reeds.html#module-reeds.reeds">reeds.reeds module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="reeds.html#module-reeds.tmp_file">reeds.tmp_file module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="reeds.html#module-reeds">Module contents</a></li>
 </ul>
 </li>
@@ -203,351 +202,14 @@
 <div class="section" id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
 </div>
-<div class="section" id="module-reeds.function_libs.analysis.free_energy">
-<span id="reeds-function-libs-analysis-free-energy-module"></span><h2>reeds.function_libs.analysis.free_energy module<a class="headerlink" href="#module-reeds.function_libs.analysis.free_energy" title="Permalink to this headline">¶</a></h2>
-<dl class="py function">
-<dt id="reeds.function_libs.analysis.free_energy.eds_dF_time_convergence_dfmult">
-<code class="sig-prename descclassname">reeds.function_libs.analysis.free_energy.</code><code class="sig-name descname">eds_dF_time_convergence_dfmult</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">eds_eneTraj</span><span class="p">:</span> <span class="n">pandas.core.frame.DataFrame</span></em>, <em class="sig-param"><span class="n">out_dir</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">time_blocks</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">10</span></em>, <em class="sig-param"><span class="n">gromos_bindir</span><span class="p">:</span> <span class="n">str</span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">verbose</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em><span class="sig-paren">)</span> &#x2192; Dict<a class="reference internal" href="../_modules/reeds/function_libs/analysis/free_energy.html#eds_dF_time_convergence_dfmult"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#reeds.function_libs.analysis.free_energy.eds_dF_time_convergence_dfmult" title="Permalink to this definition">¶</a></dt>
-<dd><p>This function generates a dictionary, which contains time-dependent dF values.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>eds_eneTraj</strong> (<em>pd.DataFrame</em>) – pandas dataframe containing energy trajectories</p></li>
-<li><p><strong>out_dir</strong> (<em>str</em>) – path for the output directory</p></li>
-<li><p><strong>time_blocks</strong> (<em>int, optional</em>) – number of time blocks for the free energy convergence calculation (default 10)</p></li>
-<li><p><strong>gromos_bindir</strong> (<em>str, optional</em>) – path to gromos binaries (default None)</p></li>
-<li><p><strong>verbose</strong> (<em>bool, optional</em>) – verbose output (default False)</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p><strong>dF_timewise</strong> – dict containing free energies after different time lengths</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>Dict</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt id="reeds.function_libs.analysis.free_energy.free_energy_convergence_analysis">
-<code class="sig-prename descclassname">reeds.function_libs.analysis.free_energy.</code><code class="sig-name descname">free_energy_convergence_analysis</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ene_ana_trajs</span><span class="p">:</span> <span class="n">List<span class="p">[</span>pandas.core.frame.DataFrame<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">out_dir</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">in_prefix</span><span class="p">:</span> <span class="n">str</span> <span class="o">=</span> <span class="default_value">''</span></em>, <em class="sig-param"><span class="n">out_prefix</span><span class="p">:</span> <span class="n">str</span> <span class="o">=</span> <span class="default_value">'energy_convergence'</span></em>, <em class="sig-param"><span class="n">dfmult_all_replicas</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">True</span></em>, <em class="sig-param"><span class="n">time_blocks</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">10</span></em>, <em class="sig-param"><span class="n">recalculate_all</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em>, <em class="sig-param"><span class="n">verbose</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/reeds/function_libs/analysis/free_energy.html#free_energy_convergence_analysis"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#reeds.function_libs.analysis.free_energy.free_energy_convergence_analysis" title="Permalink to this definition">¶</a></dt>
-<dd><p>free_energy_convergence
-This function calculates and visualizes the convergence of the free energy calculation</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>ene_ana_trajs</strong> (<em>List[pd.DataFrame]</em>) – a list of pandas dataframes containing the energy data of each state eX</p></li>
-<li><p><strong>out_dir</strong> (<em>str</em>) – path where the plots and data should be stored</p></li>
-<li><p><strong>in_prefix</strong> (<em>str, optional</em>) – prefix for the input files (default “”)</p></li>
-<li><p><strong>out_prefix</strong> (<em>str, optional</em>) – prefix for the output files (default “energy_convergence”)</p></li>
-<li><p><strong>dfmult_all_replicas</strong> (<em>bool, optional</em>) – calculate free energy differences for all replicas or only s = 1 (default False)</p></li>
-<li><p><strong>time_blocks</strong> (<em>int, optional</em>) – number of time blocks for the convergence visualization (default 10)</p></li>
-<li><p><strong>recalculate_all</strong> (<em>bool, optional</em>) – recalculate or use old summary file (default False)</p></li>
-<li><p><strong>verbose</strong> (<em>bool, optional</em>) – verbose output (default False)</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p></p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>None</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt id="reeds.function_libs.analysis.free_energy.gen_results_string">
-<code class="sig-prename descclassname">reeds.function_libs.analysis.free_energy.</code><code class="sig-name descname">gen_results_string</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">results_dict</span><span class="p">:</span> <span class="n">dict</span></em><span class="sig-paren">)</span> &#x2192; str<a class="reference internal" href="../_modules/reeds/function_libs/analysis/free_energy.html#gen_results_string"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#reeds.function_libs.analysis.free_energy.gen_results_string" title="Permalink to this definition">¶</a></dt>
-<dd><p>This function generates a string for the output of the free energy calculations</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>results_dict</strong> (<em>dict</em>) – dict containing the free energy calculations</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>nicely formated string for the output of the free energy calculations</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>str</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt id="reeds.function_libs.analysis.free_energy.multi_lig_dfmult">
-<code class="sig-prename descclassname">reeds.function_libs.analysis.free_energy.</code><code class="sig-name descname">multi_lig_dfmult</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">num_replicas</span><span class="p">:</span> <span class="n">int</span></em>, <em class="sig-param"><span class="n">num_states</span><span class="p">:</span> <span class="n">int</span></em>, <em class="sig-param"><span class="n">in_folder</span></em>, <em class="sig-param"><span class="n">out_file</span></em>, <em class="sig-param"><span class="n">eR_prefix</span><span class="p">:</span> <span class="n">str</span> <span class="o">=</span> <span class="default_value">'eR_s'</span></em>, <em class="sig-param"><span class="n">eX_prefix</span><span class="p">:</span> <span class="n">str</span> <span class="o">=</span> <span class="default_value">'eY_s'</span></em>, <em class="sig-param"><span class="n">temp</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">298</span></em>, <em class="sig-param"><span class="n">gromos_binary</span><span class="o">=</span><span class="default_value">'dfmult'</span></em>, <em class="sig-param"><span class="n">verbose</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span> &#x2192; dict<a class="reference internal" href="../_modules/reeds/function_libs/analysis/free_energy.html#multi_lig_dfmult"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#reeds.function_libs.analysis.free_energy.multi_lig_dfmult" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="simple">
-<dt>&#64; WARNING GOING TO BE REMOVED - OLD Function&#64;</dt><dd><p>This function is calculating dfmult with multiple ligands in a system</p>
-</dd>
-</dl>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>num_replicas</strong></p></li>
-<li><p><strong>num_states</strong></p></li>
-<li><p><strong>in_folder</strong></p></li>
-<li><p><strong>out_file</strong></p></li>
-<li><p><strong>eR_prefix</strong></p></li>
-<li><p><strong>eX_prefix</strong></p></li>
-<li><p><strong>temp</strong></p></li>
-<li><p><strong>gromos_binary</strong></p></li>
-<li><p><strong>verbose</strong></p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p></p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>None</p>
-</dd>
-</dl>
-</dd></dl>
-
+<div class="section" id="reeds-function-libs-analysis-analysis-module">
+<h2>reeds.function_libs.analysis.analysis module<a class="headerlink" href="#reeds-function-libs-analysis-analysis-module" title="Permalink to this headline">¶</a></h2>
 </div>
-<div class="section" id="module-reeds.function_libs.analysis.parameter_optimization">
-<span id="reeds-function-libs-analysis-parameter-optimization-module"></span><h2>reeds.function_libs.analysis.parameter_optimization module<a class="headerlink" href="#module-reeds.function_libs.analysis.parameter_optimization" title="Permalink to this headline">¶</a></h2>
-<dl class="py function">
-<dt id="reeds.function_libs.analysis.parameter_optimization.energyOffset_time_convergence">
-<code class="sig-prename descclassname">reeds.function_libs.analysis.parameter_optimization.</code><code class="sig-name descname">energyOffset_time_convergence</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ene_ana_trajs</span></em>, <em class="sig-param"><span class="n">out_dir</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">Eoff</span><span class="p">:</span> <span class="n">List<span class="p">[</span>float<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">s_values</span><span class="p">:</span> <span class="n">List<span class="p">[</span>float<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">steps</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">10</span></em>, <em class="sig-param"><span class="n">temp</span><span class="p">:</span> <span class="n">float</span> <span class="o">=</span> <span class="default_value">298</span></em>, <em class="sig-param"><span class="n">kb</span><span class="p">:</span> <span class="n">float</span> <span class="o">=</span> <span class="default_value">0.00831451</span></em>, <em class="sig-param"><span class="n">pot_tresh</span><span class="p">:</span> <span class="n">float</span> <span class="o">=</span> <span class="default_value">0.0</span></em>, <em class="sig-param"><span class="n">frac_tresh</span><span class="p">:</span> <span class="n">float</span> <span class="o">=</span> <span class="default_value">[0.9]</span></em>, <em class="sig-param"><span class="n">convergence_radius</span><span class="p">:</span> <span class="n">float</span> <span class="o">=</span> <span class="default_value">0.05</span></em>, <em class="sig-param"><span class="n">max_iter</span><span class="o">=</span><span class="default_value">12</span></em>, <em class="sig-param"><span class="n">plot_title_prefix</span><span class="p">:</span> <span class="n">str</span> <span class="o">=</span> <span class="default_value">'RE-EDS'</span></em>, <em class="sig-param"><span class="n">visualize</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/reeds/function_libs/analysis/parameter_optimization.html#energyOffset_time_convergence"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#reeds.function_libs.analysis.parameter_optimization.energyOffset_time_convergence" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
-<dt id="reeds.function_libs.analysis.parameter_optimization.get_s_optimization_roundtrip_averages">
-<code class="sig-prename descclassname">reeds.function_libs.analysis.parameter_optimization.</code><code class="sig-name descname">get_s_optimization_roundtrip_averages</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">stats</span><span class="p">:</span> <span class="n">dict</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/reeds/function_libs/analysis/parameter_optimization.html#get_s_optimization_roundtrip_averages"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#reeds.function_libs.analysis.parameter_optimization.get_s_optimization_roundtrip_averages" title="Permalink to this definition">¶</a></dt>
-<dd><p>This function calculates the roundtrip averages</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>stats</strong> (<em>dict</em>) – replica statistics</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p><ul class="simple">
-<li><p><strong>nReplicaRoundtrips</strong> (<em>List</em>) – list of replicas with at least one roundtrip</p></li>
-<li><p><strong>avg_numberOfRoundtrips</strong> (<em>List[float]</em>) – list of average number of roundtrips per replica</p></li>
-<li><p><strong>avg_roundtrips</strong> (<em>List[float]</em>) – list of average roundtrip duration per replica</p></li>
-</ul>
-</p>
-</dd>
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p></p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>None</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt id="reeds.function_libs.analysis.parameter_optimization.get_s_optimization_roundtrips_per_replica">
-<code class="sig-prename descclassname">reeds.function_libs.analysis.parameter_optimization.</code><code class="sig-name descname">get_s_optimization_roundtrips_per_replica</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span><span class="p">:</span> <span class="n">Dict<span class="p">[</span>int<span class="p">, </span>Dict<span class="p">[</span>str<span class="p">, </span>List<span class="p">[</span>float<span class="p">]</span><span class="p">]</span><span class="p">]</span></span></em>, <em class="sig-param"><span class="n">max_pos</span><span class="p">:</span> <span class="n">int</span></em>, <em class="sig-param"><span class="n">min_pos</span><span class="p">:</span> <span class="n">int</span></em>, <em class="sig-param"><span class="n">repOffsets</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">0</span></em><span class="sig-paren">)</span> &#x2192; dict<a class="reference internal" href="../_modules/reeds/function_libs/analysis/parameter_optimization.html#get_s_optimization_roundtrips_per_replica"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#reeds.function_libs.analysis.parameter_optimization.get_s_optimization_roundtrips_per_replica" title="Permalink to this definition">¶</a></dt>
-<dd><p>This function calculates the roundtrips of a replica</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>data</strong> (<em>Dict[int, Dict[str,List[float]]]</em>) – transition traces dictionary from Repdat class</p></li>
-<li><p><strong>max_pos</strong> (<em>int</em>) – maximum position of the replica</p></li>
-<li><p><strong>min_pos</strong> (<em>int</em>) – minimum position of the replica</p></li>
-<li><p><strong>repOffsets</strong> (<em>int, optional</em>) – skip multiple replicas with s = 1</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>replica statistics, with udated roundtrips information</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>Dict</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt id="reeds.function_libs.analysis.parameter_optimization.get_s_optimization_transitions">
-<code class="sig-prename descclassname">reeds.function_libs.analysis.parameter_optimization.</code><code class="sig-name descname">get_s_optimization_transitions</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">out_dir</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">rep_dat</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">title_prefix</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">verbose</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/reeds/function_libs/analysis/parameter_optimization.html#get_s_optimization_transitions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#reeds.function_libs.analysis.parameter_optimization.get_s_optimization_transitions" title="Permalink to this definition">¶</a></dt>
-<dd><p>This function visualized the replica transitions</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>out_dir</strong> (<em>str</em>) – path where the plots should be stored</p></li>
-<li><p><strong>rep_dat</strong> (<em>str</em>) – path to the repdat file containing the replica transition history</p></li>
-<li><p><strong>title_prefix</strong> (<em>str</em>) – title prefix for plots</p></li>
-<li><p><strong>verbose</strong> (<em>bool, optional</em>) – verbose output (default True)</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p></p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>None</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt id="reeds.function_libs.analysis.parameter_optimization.optimize_s">
-<code class="sig-prename descclassname">reeds.function_libs.analysis.parameter_optimization.</code><code class="sig-name descname">optimize_s</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">in_file</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">add_s_vals</span><span class="p">:</span> <span class="n">int</span></em>, <em class="sig-param"><span class="n">out_dir</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">title_prefix</span><span class="p">:</span> <span class="n">str</span> <span class="o">=</span> <span class="default_value">'sOpt'</span></em>, <em class="sig-param"><span class="n">state_weights</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">trial_range</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">with_skipped</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">True</span></em>, <em class="sig-param"><span class="n">verbose</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">True</span></em>, <em class="sig-param"><span class="n">run_NLRTO</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">True</span></em>, <em class="sig-param"><span class="n">run_NGRTO</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em>, <em class="sig-param"><span class="n">in_imd</span><span class="p">:</span> <span class="n">str</span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; Dict<a class="reference internal" href="../_modules/reeds/function_libs/analysis/parameter_optimization.html#optimize_s"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#reeds.function_libs.analysis.parameter_optimization.optimize_s" title="Permalink to this definition">¶</a></dt>
-<dd><p>This function is doing the S-optimization for a RE-EDS simulation.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>in_file</strong> (<em>str</em>) – input path to repdat-file</p></li>
-<li><p><strong>add_s_vals</strong> (<em>int</em>) – number of s_values to be added</p></li>
-<li><p><strong>out_dir</strong> (<em>str</em>) – output_directory path</p></li>
-<li><p><strong>title_prefix</strong> (<em>str, optional</em>) – title prefix for plots (default sOpt)</p></li>
-<li><p><strong>state_weights</strong> (<em>List[float], optional</em>) – weights for each individual endstate of eds potential (default None)</p></li>
-<li><p><strong>trial_range</strong> (<em>[int, tuple], optional</em>) – range of trials (time dimension) (default None)</p></li>
-<li><p><strong>with_skipped</strong> (<em>bool , optional</em>) – default True</p></li>
-<li><p><strong>verbose</strong> (<em>bool, optional</em>) – verbose output (default True)</p></li>
-<li><p><strong>run_NLRTO</strong> (<em>bool, optional</em>) – run N-Local Round Trip Optimizer (N-LRTO) (default True)</p></li>
-<li><p><strong>run_NGRTO</strong> (<em>bool, optional</em>) – run Multistate Global Round-Trip Time Optimization (N-GRTO) (default False)</p></li>
-<li><p><strong>in_imd</strong> (<em>str, optional</em>) – this path to an imd file is suggested to be used, as it increases the s_value accuracy (default None)</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>s-values (original, N-LRTO optimized, N-GRTO optimized)</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>Dict</p>
-</dd>
-</dl>
-</dd></dl>
-
+<div class="section" id="reeds-function-libs-analysis-file-management-module">
+<h2>reeds.function_libs.analysis.file_management module<a class="headerlink" href="#reeds-function-libs-analysis-file-management-module" title="Permalink to this headline">¶</a></h2>
 </div>
-<div class="section" id="module-reeds.function_libs.analysis.sampling">
-<span id="reeds-function-libs-analysis-sampling-module"></span><h2>reeds.function_libs.analysis.sampling module<a class="headerlink" href="#module-reeds.function_libs.analysis.sampling" title="Permalink to this headline">¶</a></h2>
-<dl class="py function">
-<dt id="reeds.function_libs.analysis.sampling.calculate_sampling_distributions">
-<code class="sig-prename descclassname">reeds.function_libs.analysis.sampling.</code><code class="sig-name descname">calculate_sampling_distributions</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ene_traj_csvs</span><span class="p">:</span> <span class="n">List<span class="p">[</span>pandas.core.frame.DataFrame<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">potential_treshold</span><span class="p">:</span> <span class="n">List<span class="p">[</span>float<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">undersampling_occurence_sampling_tresh</span><span class="p">:</span> <span class="n">float</span> <span class="o">=</span> <span class="default_value">0.75</span></em><span class="sig-paren">)</span> &#x2192; Dict<span class="p">[</span>int<span class="p">, </span>Dict<span class="p">[</span>str<span class="p">, </span>Dict<span class="p">[</span>int<span class="p">, </span>float<span class="p">]</span><span class="p">]</span><span class="p">]</span><a class="reference internal" href="../_modules/reeds/function_libs/analysis/sampling.html#calculate_sampling_distributions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#reeds.function_libs.analysis.sampling.calculate_sampling_distributions" title="Permalink to this definition">¶</a></dt>
-<dd><p>This function is using the dominating state sampling and occurrence state sampling definition, to calculate
-for both definitions the sampling distributions including each stat.
-Further each replica, having an occurrence sampling &gt;= undersampling_occurence_sampling_tresh for each state is categorized as undersampling.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>ene_traj_csvs</strong> (<em>List[pd.Dataframe]</em>) – a list of pandas dataframes containing the energy data of each state eX</p></li>
-<li><p><strong>potential_treshold</strong> (<em>List[float]</em>) – a list of potential thresholds for undersampling</p></li>
-<li><p><strong>undersampling_occurence_sampling_tresh</strong> (<em>float, optional</em>) – threshold for the fraction of the energies which has to be below the threshold (default 0.75)</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>the dictionary contains for all replicas, the occurrence/dominating sampling fractions of each state  and undersamplin classification</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>Dict[int, Dict[str, Dict[int, float]]]</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt id="reeds.function_libs.analysis.sampling.get_all_physical_occurence_potential_threshold_distribution_based">
-<code class="sig-prename descclassname">reeds.function_libs.analysis.sampling.</code><code class="sig-name descname">get_all_physical_occurence_potential_threshold_distribution_based</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ene_trajs</span><span class="p">:</span> <span class="n">List<span class="p">[</span>pandas.core.frame.DataFrame<span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; List<span class="p">[</span>float<span class="p">]</span><a class="reference internal" href="../_modules/reeds/function_libs/analysis/sampling.html#get_all_physical_occurence_potential_threshold_distribution_based"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#reeds.function_libs.analysis.sampling.get_all_physical_occurence_potential_threshold_distribution_based" title="Permalink to this definition">¶</a></dt>
-<dd><blockquote>
-<div><p>This function is used in the state optimization approach and gives the physical potential energy threshold for occurrence sampling back, that is estimated from the optimized EDS-System.</p>
-</div></blockquote>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>ene_trajs</strong> (<em>List[pd.DataFrame]</em>) – energy trajectories from all end state optimizations</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>list of potential energy thresholds.</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>List[float]</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt id="reeds.function_libs.analysis.sampling.physical_occurence_potential_threshold_distribution_based">
-<code class="sig-prename descclassname">reeds.function_libs.analysis.sampling.</code><code class="sig-name descname">physical_occurence_potential_threshold_distribution_based</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ene_traj_csv</span><span class="p">:</span> <span class="n">pandas.core.frame.DataFrame</span></em>, <em class="sig-param"><span class="n">equilibrate_dominationState</span><span class="p">:</span> <span class="n">float</span> <span class="o">=</span> <span class="default_value">0.01</span></em>, <em class="sig-param"><span class="n">verbose</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em><span class="sig-paren">)</span> &#x2192; List<span class="p">[</span>float<span class="p">]</span><a class="reference internal" href="../_modules/reeds/function_libs/analysis/sampling.html#physical_occurence_potential_threshold_distribution_based"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#reeds.function_libs.analysis.sampling.physical_occurence_potential_threshold_distribution_based" title="Permalink to this definition">¶</a></dt>
-<dd><p>This function is estimating the pot_tresh for all states by testing if around the minimal energy 90% of the data is located in a threshold of  max_distance_kJ.
-The mean and std of the density region will result in pot_tresh = mean+3*std
-This function is cheap in performance.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>ene_traj_csv</strong> (<em>pd.Dataframe</em>) – a pandas dataframe containing the energy data of each state eX</p></li>
-<li><p><strong>equilibrate_dominationState</strong> (<em>int, optional</em>) – equilibrate the domination state for this fraction</p></li>
-<li><p><strong>verbose</strong> (<em>bool, optional</em>) – print fun</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>list of individual identified potential thresholds</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>List[float]</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt id="reeds.function_libs.analysis.sampling.sampling_analysis">
-<code class="sig-prename descclassname">reeds.function_libs.analysis.sampling.</code><code class="sig-name descname">sampling_analysis</code><span class="sig-paren">(</span><em class="sig-param">ene_traj_csvs: List[pandas.core.frame.DataFrame], s_values: List[float], pot_tresh: List[float], out_path: str = None, xmax: bool = False, do_plot: bool = True, verbose: bool = False) -&gt; (&lt;class 'dict'&gt;, &lt;class 'str'&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/reeds/function_libs/analysis/sampling.html#sampling_analysis"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#reeds.function_libs.analysis.sampling.sampling_analysis" title="Permalink to this definition">¶</a></dt>
-<dd><p>This function is analysing the samplings</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>out_path</strong> (<em>str</em>) – path out for the plotfiles</p></li>
-<li><p><strong>ene_traj_csvs</strong> (<em>List[pd.DataFrame]</em>) – contains the energy data</p></li>
-<li><p><strong>s_values</strong> (<em>List[float]</em>) – list of s_values</p></li>
-<li><p><strong>pot_tresh</strong> (<em>List[float]</em>) – potential energy thresholds, for considering a state as sampled</p></li>
-<li><p><strong>xmax</strong> (<em>bool, optional</em>) – additionally output a plot only with a smaller x_range. (0-&gt;xmax) (default False)</p></li>
-<li><p><strong>do_plot</strong> (<em>bool, opptional</em>) – create additional plots (default True)</p></li>
-<li><p><strong>verbose</strong> (<em>bool, optional</em>) – story time :) (default False)</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p><ul class="simple">
-<li><p><em>str</em> – out_path</p></li>
-<li><p><em>dict</em> – returns a dictionary containing the information of undersampling start, undersampling_potential thresholds and the different sampling type fractions. (physical sampling occurence not included!)</p></li>
-</ul>
-</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt id="reeds.function_libs.analysis.sampling.undersampling_occurence_potential_threshold_densityClustering">
-<code class="sig-prename descclassname">reeds.function_libs.analysis.sampling.</code><code class="sig-name descname">undersampling_occurence_potential_threshold_densityClustering</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ene_traj_csvs</span><span class="p">:</span> <span class="n">List<span class="p">[</span>pandas.core.frame.DataFrame<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">max_distance_kJ</span><span class="p">:</span> <span class="n">float</span> <span class="o">=</span> <span class="default_value">300</span></em>, <em class="sig-param"><span class="n">sampling_fraction_treshold</span><span class="p">:</span> <span class="n">float</span> <span class="o">=</span> <span class="default_value">0.9</span></em><span class="sig-paren">)</span> &#x2192; List<span class="p">[</span>float<span class="p">]</span><a class="reference internal" href="../_modules/reeds/function_libs/analysis/sampling.html#undersampling_occurence_potential_threshold_densityClustering"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#reeds.function_libs.analysis.sampling.undersampling_occurence_potential_threshold_densityClustering" title="Permalink to this definition">¶</a></dt>
-<dd><p>This function is estimating the pot_tresh for all states by using DBSCAN identifying the density region containing sampling_fraction_treshold of the data.
-The mean and std of the density region will result in pot_tresh = mean+3std
-This function is rather performance expensive.
-! WARNING REQUIRES SKLEARN -Not Used by the pipeline. - Prototype!</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>ene_traj_csvs</strong> (<em>List[pd.Dataframe]</em>) – a list of pandas dataframes containing the energy data of each state eX</p></li>
-<li><p><strong>max_distance_kJ</strong> (<em>float, optional</em>) – the maximum distance between two points for dbscan clustering (eps) (default:300kJ).</p></li>
-<li><p><strong>sampling_fraction_treshold</strong> (<em>float, optional</em>) – the sampling threshold for detecting undersampling (default: 0.9).</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>list of individual identified potential thresholds</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>List[float]</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt id="reeds.function_libs.analysis.sampling.undersampling_occurence_potential_threshold_distribution_based">
-<code class="sig-prename descclassname">reeds.function_libs.analysis.sampling.</code><code class="sig-name descname">undersampling_occurence_potential_threshold_distribution_based</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ene_traj_csvs</span><span class="p">:</span> <span class="n">List<span class="p">[</span>pandas.core.frame.DataFrame<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">sampling_fraction_treshold</span><span class="p">:</span> <span class="n">float</span> <span class="o">=</span> <span class="default_value">0.9</span></em>, <em class="sig-param"><span class="n">verbose</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em><span class="sig-paren">)</span> &#x2192; List<span class="p">[</span>float<span class="p">]</span><a class="reference internal" href="../_modules/reeds/function_libs/analysis/sampling.html#undersampling_occurence_potential_threshold_distribution_based"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#reeds.function_libs.analysis.sampling.undersampling_occurence_potential_threshold_distribution_based" title="Permalink to this definition">¶</a></dt>
-<dd><p>This function is estimating the pot_tresh for all states by testing if around the minimal energy 90% of the data is located in a threshold of  max_distance_kJ.
-The mean and std of the density region will result in pot_tresh = min(V)+6*std(V
-This function has low demand in performance.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>ene_traj_csvs</strong> (<em>List[pd.Dataframe]</em>) – a list of pandas dataframes containing the energy data of each state eX</p></li>
-<li><p><strong>sampling_fraction_treshold</strong> (<em>float, optional</em>) – the sampling threshold for detecting undersampling (default: 0.9).</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>list of individual identified potential thresholds</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>List[float]</p>
-</dd>
-</dl>
-</dd></dl>
-
+<div class="section" id="reeds-function-libs-analysis-visualisation-module">
+<h2>reeds.function_libs.analysis.visualisation module<a class="headerlink" href="#reeds-function-libs-analysis-visualisation-module" title="Permalink to this headline">¶</a></h2>
 </div>
 <div class="section" id="module-reeds.function_libs.analysis">
 <span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-reeds.function_libs.analysis" title="Permalink to this headline">¶</a></h2>
@@ -573,7 +235,7 @@ This function has low demand in performance.</p>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="reeds.function_libs.file_management.html" class="btn btn-neutral float-right" title="reeds.function_libs.file_management package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="reeds.function_libs.optimization.html" class="btn btn-neutral float-right" title="reeds.function_libs.optimization package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="reeds.function_libs.html" class="btn btn-neutral float-left" title="reeds.function_libs package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>

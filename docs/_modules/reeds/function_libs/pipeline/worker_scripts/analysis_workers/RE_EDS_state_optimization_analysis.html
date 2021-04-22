@@ -83,7 +83,7 @@
             
               <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../../introduction.html">RE-EDS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../introduction.html">REEDS</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../../Examples/index.html">Examples</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../../_source/modules.html">Documentation</a></li>
 </ul>
@@ -152,8 +152,6 @@
 <span></span><span class="ch">#!/usr/bin/python env</span>
 <span class="kn">import</span> <span class="nn">glob</span>
 <span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">import</span> <span class="nn">warnings</span>
 
 <span class="kn">from</span> <span class="nn">pygromos.files</span> <span class="kn">import</span> <span class="n">imd</span>
 <span class="kn">from</span> <span class="nn">pygromos.utils</span> <span class="kn">import</span> <span class="n">bash</span>
@@ -161,7 +159,6 @@
 <span class="kn">import</span> <span class="nn">reeds.function_libs.visualization.pot_energy_plots</span>
 <span class="kn">from</span> <span class="nn">reeds.data</span> <span class="kn">import</span> <span class="n">ene_ana_libs</span>
 <span class="kn">from</span> <span class="nn">reeds.function_libs.file_management</span> <span class="kn">import</span> <span class="n">file_management</span> <span class="k">as</span> <span class="n">fM</span>
-<span class="kn">from</span> <span class="nn">reeds.function_libs.analysis.sampling</span> <span class="kn">import</span> <span class="n">get_all_physical_occurence_potential_threshold_distribution_based</span>
 
 
 <div class="viewcode-block" id="do"><a class="viewcode-back" href="../../../../../../_source/reeds.function_libs.pipeline.worker_scripts.analysis_workers.html#reeds.function_libs.pipeline.worker_scripts.analysis_workers.RE_EDS_state_optimization_analysis.do">[docs]</a><span class="k">def</span> <span class="nf">do</span><span class="p">(</span><span class="n">in_simulation_dir</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">in_topology_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">in_imd_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
@@ -259,6 +256,7 @@
     <span class="c1">#                      pot_tresh=pot_tresh)</span>
 
     <span class="c1"># Plot of all of the potential energy distributions in a single plot:</span>
+
     <span class="n">reeds</span><span class="o">.</span><span class="n">function_libs</span><span class="o">.</span><span class="n">visualization</span><span class="o">.</span><span class="n">pot_energy_plots</span><span class="o">.</span><span class="n">plot_optimized_states_potential_energies</span><span class="p">(</span><span class="n">outfile</span><span class="o">=</span><span class="n">out_analysis_plot_dir</span> <span class="o">+</span> <span class="s2">&quot;/optimized_states_potential_energies.png&quot;</span><span class="p">,</span>
                                                                                                 <span class="n">ene_trajs</span><span class="o">=</span><span class="n">ene_trajs</span><span class="p">)</span>
 
@@ -287,23 +285,6 @@
             <span class="n">title</span> <span class="o">=</span> <span class="s1">&#39;Optimized State potential energy timeseries - System biased to state &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
             <span class="n">reeds</span><span class="o">.</span><span class="n">function_libs</span><span class="o">.</span><span class="n">visualization</span><span class="o">.</span><span class="n">pot_energy_plots</span><span class="o">.</span><span class="n">plot_sampling_grid</span><span class="p">(</span><span class="n">traj_data</span> <span class="o">=</span> <span class="n">ene_traj</span><span class="p">,</span> <span class="n">y_range</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="mi">1000</span><span class="p">,</span> <span class="mi">1000</span><span class="p">),</span>
                                                                                   <span class="n">out_path</span> <span class="o">=</span> <span class="n">out_path</span><span class="p">,</span> <span class="n">title</span> <span class="o">=</span> <span class="n">title</span><span class="p">)</span>
-
-
-    <span class="c1"># generate</span>
-    <span class="n">next_dir</span> <span class="o">=</span> <span class="n">bash</span><span class="o">.</span><span class="n">make_folder</span><span class="p">(</span><span class="n">out_analysis_dir</span><span class="o">+</span><span class="s2">&quot;/next&quot;</span><span class="p">,)</span>
-
-    <span class="c1">##move cnfs to next</span>
-    <span class="n">bash</span><span class="o">.</span><span class="n">copy_file</span><span class="p">(</span><span class="n">coord_dir</span> <span class="o">+</span> <span class="s2">&quot;/*.cnf&quot;</span><span class="p">,</span> <span class="n">next_dir</span><span class="p">)</span>
-
-    <span class="c1">## write pot_treshholds to next</span>
-    <span class="n">physical_state_occurrence_treshold</span> <span class="o">=</span> <span class="n">get_all_physical_occurence_potential_threshold_distribution_based</span><span class="p">(</span><span class="n">ene_trajs</span><span class="p">)</span>
-
-    <span class="c1">##write_pot_tresh:</span>
-    <span class="n">out_file</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">next_dir</span> <span class="o">+</span> <span class="s2">&quot;/state_occurence_physical_pot_thresh.csv&quot;</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span>
-    <span class="n">out_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">physical_state_occurrence_treshold</span><span class="p">)))</span>
-    <span class="n">out_file</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-
-
     <span class="c1"># compress out_trc/out_tre Files</span>
     <span class="k">if</span> <span class="p">(</span><span class="n">control_dict</span><span class="p">[</span><span class="s2">&quot;compress&quot;</span><span class="p">]):</span>
         <span class="n">trx_files</span> <span class="o">=</span> <span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="n">coord_dir</span> <span class="o">+</span> <span class="s2">&quot;/*.tr?&quot;</span><span class="p">)</span>
@@ -316,9 +297,6 @@
             <span class="n">bash</span><span class="o">.</span><span class="n">remove_file</span><span class="p">(</span><span class="n">in_simulation_dir</span><span class="p">,</span> <span class="n">additional_options</span><span class="o">=</span><span class="s2">&quot;-r&quot;</span><span class="p">)</span>
 
     <span class="nb">print</span> <span class="p">(</span><span class="s1">&#39;</span><span class="se">\n\n</span><span class="s1">Analysis of the Optimized States completed successfully !&#39;</span><span class="p">)</span></div>
-
-
-
 
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>

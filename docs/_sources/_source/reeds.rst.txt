@@ -23,13 +23,6 @@ reeds.reeds module
    :undoc-members:
    :show-inheritance:
 
-reeds.tmp\_file module
-----------------------
-
-.. automodule:: reeds.tmp_file
-   :members:
-   :undoc-members:
-   :show-inheritance:
 
 Module contents
 ---------------

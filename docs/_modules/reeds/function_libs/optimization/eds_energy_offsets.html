@@ -1,0 +1,438 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>reeds.function_libs.optimization.eds_energy_offsets &mdash; REEDS  documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../../" src="../../../../_static/documentation_options.js"></script>
+        <script src="../../../../_static/jquery.js"></script>
+        <script src="../../../../_static/underscore.js"></script>
+        <script src="../../../../_static/doctools.js"></script>
+        <script src="../../../../_static/language_data.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
+    
+    <script type="text/javascript" src="../../../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../../index.html" class="icon icon-home"> REEDS
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../introduction.html">REEDS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../Examples/index.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_source/modules.html">Documentation</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">REEDS</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../../index.html">Module code</a> &raquo;</li>
+        
+      <li>reeds.function_libs.optimization.eds_energy_offsets</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for reeds.function_libs.optimization.eds_energy_offsets</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    eds_energy_offsets  - A program for optimization of energy offsets from eds simulations</span>
+<span class="sd">    @author: Simon Frasch, Benjamin Ries</span>
+
+<span class="sd">    You can use the program from your shell (not tested) or python environment.</span>
+
+
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">argparse</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span>
+
+<span class="kn">from</span> <span class="nn">reeds.function_libs.optimization.src.energy_offset_optimization</span> <span class="kn">import</span> <span class="n">optimize_energy_offsets</span>
+
+
+<div class="viewcode-block" id="parse_args"><a class="viewcode-back" href="../../../../_source/reeds.function_libs.optimization.html#reeds.function_libs.optimization.eds_energy_offsets.parse_args">[docs]</a><span class="k">def</span> <span class="nf">parse_args</span><span class="p">(</span><span class="n">ene_ana_trajs</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">],</span> <span class="n">Temp</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">s_values</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="n">Eoff</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span>
+               <span class="n">frac_tresh</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.9</span><span class="p">],</span>
+               <span class="n">pot_tresh</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">convergenceradius</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">kb</span><span class="o">=</span><span class="mf">0.00831451</span><span class="p">,</span> <span class="n">max_iter</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    This wrapper converts the input into a format which is readable by the</span>
+<span class="sd">    eoff script.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    ene_ana_trajs</span>
+<span class="sd">        concatenated energy trajs from ene ana step.</span>
+<span class="sd">    Temp</span>
+<span class="sd">        temp of simulation</span>
+<span class="sd">    s_values</span>
+<span class="sd">        list of svalues used</span>
+<span class="sd">    Eoff</span>
+<span class="sd">        list containing Eoff values (give 0.0 if non)</span>
+<span class="sd">    frac_tresh</span>
+<span class="sd">        Threshold on fraction of negative potentials energies for each state. Either one value or a value for each state.</span>
+<span class="sd">    pot_tresh</span>
+<span class="sd">        Potential threshold defines maximal energyvalue to be considered in Fraction building</span>
+<span class="sd">    convergenceradius : float</span>
+<span class="sd">        radius of convergence</span>
+<span class="sd">    kb : float</span>
+<span class="sd">        boltzmann constant</span>
+<span class="sd">    max_iter : int</span>
+<span class="sd">        maximal_iteration</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># preparing in_arguments:</span>
+    <span class="n">num_s_values</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">s_values</span><span class="p">)</span>
+    <span class="n">num_states</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">Eoff</span><span class="p">)</span>
+    <span class="n">time_steps</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">ene_ana_trajs</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s2">&quot;time&quot;</span><span class="p">])</span>
+    <span class="n">rounding_values</span> <span class="o">=</span> <span class="mi">12</span>
+
+    <span class="c1"># sort energies for algorithm</span>
+    <span class="n">vvr</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">vvy</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">reference_potential_key</span> <span class="o">=</span> <span class="s2">&quot;eR&quot;</span>
+    <span class="n">state_potential_keys</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span>
+        <span class="nb">sorted</span><span class="p">([</span><span class="s2">&quot;e&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">state</span><span class="p">)</span> <span class="k">for</span> <span class="n">state</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">num_states</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)],</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;e&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">))))</span>
+
+    <span class="k">for</span> <span class="n">ene_traj</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">ene_ana_trajs</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">replicaID</span><span class="p">)):</span>
+        <span class="n">vvr</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ene_traj</span><span class="p">[</span><span class="n">reference_potential_key</span><span class="p">]</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">rounding_values</span><span class="p">)</span><span class="o">.</span><span class="n">tolist</span><span class="p">())</span>
+        <span class="n">vvy</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">ene_traj</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">rounding_values</span><span class="p">)</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">state_potential_keys</span><span class="p">])</span>
+
+    <span class="c1">##Eoff as eir</span>
+    <span class="n">eir_old_init</span> <span class="o">=</span> <span class="n">Eoff</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">eir_old_init</span><span class="p">)</span> <span class="o">!=</span> <span class="n">num_states</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span><span class="s2">&quot;Number of EiR values does not match number of states.&quot;</span><span class="p">)</span>
+
+    <span class="c1">## thresholds</span>
+    <span class="c1">## fraction threshold how many values below the pottresh needed?</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">frac_tresh</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">frac_tresh</span> <span class="o">=</span> <span class="p">[</span><span class="n">frac_tresh</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_states</span><span class="p">)]</span>
+    <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">frac_tresh</span><span class="p">)</span> <span class="o">!=</span> <span class="n">num_states</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span><span class="s2">&quot;frac_tresh option requires one or n values, where n is the number of states.&quot;</span><span class="p">)</span>
+
+    <span class="c1">## potentials threshold: when is undersampling reached? (below pottresh)</span>
+    <span class="n">pot_tresh</span> <span class="o">=</span> <span class="n">pot_tresh</span>
+
+    <span class="c1">##Thermodynamic constants</span>
+    <span class="n">beta</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="p">(</span><span class="n">Temp</span> <span class="o">*</span> <span class="n">kb</span><span class="p">)</span>
+
+    <span class="n">rho</span> <span class="o">=</span> <span class="n">convergenceradius</span>
+    <span class="n">in_dict</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;eir_old_init&quot;</span><span class="p">:</span> <span class="n">eir_old_init</span><span class="p">,</span> <span class="s2">&quot;vvr&quot;</span><span class="p">:</span> <span class="n">vvr</span><span class="p">,</span> <span class="s2">&quot;vvy&quot;</span><span class="p">:</span> <span class="n">vvy</span><span class="p">,</span> <span class="s2">&quot;s_values&quot;</span><span class="p">:</span> <span class="n">s_values</span><span class="p">,</span> <span class="s2">&quot;beta&quot;</span><span class="p">:</span> <span class="n">beta</span><span class="p">,</span>
+               <span class="s2">&quot;frac_tresh&quot;</span><span class="p">:</span> <span class="n">frac_tresh</span><span class="p">,</span> <span class="s2">&quot;max_iter&quot;</span><span class="p">:</span> <span class="n">max_iter</span><span class="p">,</span> <span class="s2">&quot;rho&quot;</span><span class="p">:</span> <span class="n">rho</span><span class="p">,</span> <span class="s2">&quot;pot_tresh&quot;</span><span class="p">:</span> <span class="n">pot_tresh</span><span class="p">,</span>
+               <span class="s2">&quot;time_steps&quot;</span><span class="p">:</span> <span class="n">time_steps</span><span class="p">}</span>
+
+    <span class="k">return</span> <span class="n">in_dict</span></div>
+
+
+<div class="viewcode-block" id="standard_out"><a class="viewcode-back" href="../../../../_source/reeds.function_libs.optimization.html#reeds.function_libs.optimization.eds_energy_offsets.standard_out">[docs]</a><span class="k">def</span> <span class="nf">standard_out</span><span class="p">(</span><span class="n">s_values</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="n">statistic</span><span class="p">,</span> <span class="n">time_steps</span><span class="p">,</span> <span class="n">pot_tresh</span><span class="p">,</span> <span class="n">frac_tresh</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    s_values</span>
+<span class="sd">    statistic</span>
+<span class="sd">    time_steps</span>
+<span class="sd">    pot_tresh</span>
+<span class="sd">    frac_tresh</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">num_s_values</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">s_values</span><span class="p">)</span>
+    <span class="n">num_states</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">statistic</span><span class="o">.</span><span class="n">minCount</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+
+    <span class="n">print_lines</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;</span><span class="se">\n\n</span><span class="s2">REEDS - Eoff Estimation:</span><span class="se">\n</span><span class="s2">========================</span><span class="se">\n\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="p">]</span>
+
+    <span class="n">print_lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n\n\t</span><span class="s2">Energy Offsets for each Replica</span><span class="se">\n\n</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">print_lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;| S</span><span class="se">\t</span><span class="s2">| &quot;</span> <span class="o">+</span> <span class="s2">&quot; | &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s2">&quot;e&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">num_states</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)])</span> <span class="o">+</span> <span class="s2">&quot; | iterations |</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">print_lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;|---</span><span class="se">\t</span><span class="s2">|---&quot;</span> <span class="o">+</span> <span class="s2">&quot; |--- &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s2">&quot;&quot;</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">num_states</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)])</span> <span class="o">+</span> <span class="s2">&quot;|--- |</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">eoff_per_rep</span> <span class="o">=</span> <span class="n">statistic</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">eoff_per_rep</span><span class="p">)[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
+        <span class="n">print_lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;|</span><span class="si">{:2.4f}</span><span class="se">\t</span><span class="s1">|&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">i</span><span class="p">))</span> <span class="o">+</span> <span class="s2">&quot; |</span><span class="se">\t</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+            <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="mi">4</span><span class="p">)),</span> <span class="n">eoff_per_rep</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s2">&quot;eoff&quot;</span><span class="p">])))</span> <span class="o">+</span> <span class="s2">&quot; </span><span class="se">\t</span><span class="s2">|</span><span class="se">\t</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span>
+            <span class="n">eoff_per_rep</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s2">&quot;iterations&quot;</span><span class="p">])</span> <span class="o">+</span> <span class="s2">&quot;|</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="n">print_lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n\n\t</span><span class="s2">Minimum energy count per state</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">print_lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;| S</span><span class="se">\t</span><span class="s2">| &quot;</span> <span class="o">+</span> <span class="s2">&quot; | &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s2">&quot;e&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">num_states</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)])</span> <span class="o">+</span> <span class="s2">&quot; |</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">print_lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;|---</span><span class="se">\t</span><span class="s2">|---&quot;</span> <span class="o">+</span> <span class="s2">&quot; |--- &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s2">&quot;&quot;</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">num_states</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)])</span> <span class="o">+</span> <span class="s2">&quot;|</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_s_values</span><span class="p">):</span>
+        <span class="n">print_lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;| </span><span class="si">{:2.4f}</span><span class="se">\t</span><span class="s1">|&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">s_values</span><span class="p">[</span><span class="n">i</span><span class="p">]))</span> <span class="o">+</span> <span class="s1">&#39; |</span><span class="se">\t</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+            <span class="s1">&#39; </span><span class="si">{:8d}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">val</span><span class="p">)</span> <span class="k">for</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">statistic</span><span class="o">.</span><span class="n">minCount</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="o">+</span> <span class="s2">&quot; |</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="n">print_lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n\t</span><span class="s2">Negative energy count per state(pottresh=&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">pot_tresh</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;)</span><span class="se">\n\n</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">print_lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;| S</span><span class="se">\t</span><span class="s2">| &quot;</span> <span class="o">+</span> <span class="s2">&quot; | &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s2">&quot;e&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">num_states</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)])</span> <span class="o">+</span> <span class="s2">&quot;|</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">print_lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;|---</span><span class="se">\t</span><span class="s2">|---&quot;</span> <span class="o">+</span> <span class="s2">&quot; |--- &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s2">&quot;&quot;</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">num_states</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)])</span> <span class="o">+</span> <span class="s2">&quot;|</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_s_values</span><span class="p">):</span>
+        <span class="n">print_lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{:2.4f}</span><span class="se">\t</span><span class="s1">|&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">s_values</span><span class="p">[</span><span class="n">i</span><span class="p">]))</span> <span class="o">+</span> <span class="s1">&#39; |</span><span class="se">\t</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+            <span class="s1">&#39; </span><span class="si">{:8d}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">val</span><span class="p">)</span> <span class="k">for</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">statistic</span><span class="o">.</span><span class="n">negCount</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="o">+</span> <span class="s2">&quot; |</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="n">print_lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n\t</span><span class="s2">Fraction of undersampling energies per state (fractresh=&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">frac_tresh</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;)</span><span class="se">\n\n</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">print_lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;| S</span><span class="se">\t</span><span class="s2">| &quot;</span> <span class="o">+</span> <span class="s2">&quot; | &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s2">&quot;e&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">num_states</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)])</span> <span class="o">+</span> <span class="s2">&quot; |</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">print_lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;|---	</span><span class="se">\t</span><span class="s2">|---	&quot;</span> <span class="o">+</span> <span class="s2">&quot; |--- &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s2">&quot;&quot;</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">num_states</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)])</span> <span class="o">+</span> <span class="s2">&quot; |</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_s_values</span><span class="p">):</span>
+        <span class="n">print_lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;| </span><span class="si">{:2.4f}</span><span class="se">\t</span><span class="s1">|&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">s_values</span><span class="p">[</span><span class="n">i</span><span class="p">]))</span> <span class="o">+</span> <span class="s1">&#39; |</span><span class="se">\t</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+            <span class="s1">&#39; </span><span class="si">{:8.4f}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">val</span><span class="p">)</span> <span class="o">/</span> <span class="nb">float</span><span class="p">(</span><span class="n">time_steps</span><span class="p">))</span> <span class="k">for</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">statistic</span><span class="o">.</span><span class="n">negCount</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="n">print_lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n\n</span><span class="s2">New energy offset for each state:</span><span class="se">\n\n</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">ind</span><span class="p">,</span> <span class="n">offset</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">statistic</span><span class="o">.</span><span class="n">offsets</span><span class="p">):</span>
+        <span class="n">print_lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+            <span class="nb">str</span><span class="p">(</span><span class="n">ind</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;. </span><span class="si">{:10.4f}</span><span class="se">\t</span><span class="s1">+-</span><span class="se">\t</span><span class="si">{:8.4f}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">offset</span><span class="o">.</span><span class="n">mean</span><span class="p">),</span> <span class="nb">float</span><span class="p">(</span><span class="n">offset</span><span class="o">.</span><span class="n">std</span><span class="p">))</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">print_lines</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">print_lines</span></div>
+    <span class="c1"># give output</span>
+
+
+<div class="viewcode-block" id="estEoff"><a class="viewcode-back" href="../../../../_source/reeds.function_libs.optimization.html#reeds.function_libs.optimization.eds_energy_offsets.estEoff">[docs]</a><span class="k">def</span> <span class="nf">estEoff</span><span class="p">(</span><span class="n">ene_ana_trajs</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">],</span>
+            <span class="n">Temp</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">s_values</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="n">Eoff</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="n">out_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+            <span class="n">frac_tresh</span><span class="o">=</span><span class="p">[</span><span class="mf">0.9</span><span class="p">],</span> <span class="n">pot_tresh</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">convergenceradius</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">kb</span><span class="o">=</span><span class="mf">0.00831451</span><span class="p">,</span> <span class="n">max_iter</span><span class="o">=</span><span class="mi">20</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    This function should provide access via an python script to eds energy</span>
+<span class="sd">    estimations</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    ene_ana_trajs</span>
+<span class="sd">    Temp</span>
+<span class="sd">    s_values</span>
+<span class="sd">    Eoff</span>
+<span class="sd">    out_path</span>
+<span class="sd">    frac_tresh</span>
+<span class="sd">    pot_tresh</span>
+<span class="sd">    convergenceradius</span>
+<span class="sd">    kb</span>
+<span class="sd">    max_iter</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># parsing input</span>
+    <span class="n">in_dict</span> <span class="o">=</span> <span class="n">parse_args</span><span class="p">(</span><span class="n">ene_ana_trajs</span><span class="o">=</span><span class="n">ene_ana_trajs</span><span class="p">,</span> <span class="n">Temp</span><span class="o">=</span><span class="n">Temp</span><span class="p">,</span> <span class="n">s_values</span><span class="o">=</span><span class="n">s_values</span><span class="p">,</span> <span class="n">Eoff</span><span class="o">=</span><span class="n">Eoff</span><span class="p">,</span> <span class="n">kb</span><span class="o">=</span><span class="n">kb</span><span class="p">,</span>
+                         <span class="n">frac_tresh</span><span class="o">=</span><span class="n">frac_tresh</span><span class="p">,</span> <span class="n">max_iter</span><span class="o">=</span><span class="n">max_iter</span><span class="p">,</span> <span class="n">convergenceradius</span><span class="o">=</span><span class="n">convergenceradius</span><span class="p">,</span>
+                         <span class="n">pot_tresh</span><span class="o">=</span><span class="n">pot_tresh</span><span class="p">)</span>
+    <span class="c1"># print(in_dict)</span>
+    <span class="c1"># do calclulation</span>
+    <span class="n">statistic</span> <span class="o">=</span> <span class="n">optimize_energy_offsets</span><span class="p">(</span><span class="n">eir_old_init</span><span class="o">=</span><span class="n">in_dict</span><span class="p">[</span><span class="s2">&quot;eir_old_init&quot;</span><span class="p">],</span> <span class="n">vvr</span><span class="o">=</span><span class="n">in_dict</span><span class="p">[</span><span class="s2">&quot;vvr&quot;</span><span class="p">],</span> <span class="n">vvy</span><span class="o">=</span><span class="n">in_dict</span><span class="p">[</span><span class="s2">&quot;vvy&quot;</span><span class="p">],</span>
+                                        <span class="n">s_values</span><span class="o">=</span><span class="n">in_dict</span><span class="p">[</span><span class="s2">&quot;s_values&quot;</span><span class="p">],</span> <span class="n">beta</span><span class="o">=</span><span class="n">in_dict</span><span class="p">[</span><span class="s2">&quot;beta&quot;</span><span class="p">],</span>
+                                        <span class="n">frac_tresh</span><span class="o">=</span><span class="n">in_dict</span><span class="p">[</span><span class="s2">&quot;frac_tresh&quot;</span><span class="p">],</span>
+                                        <span class="n">max_iter</span><span class="o">=</span><span class="n">in_dict</span><span class="p">[</span><span class="s2">&quot;max_iter&quot;</span><span class="p">],</span> <span class="n">rho</span><span class="o">=</span><span class="n">in_dict</span><span class="p">[</span><span class="s2">&quot;rho&quot;</span><span class="p">],</span>
+                                        <span class="n">pot_tresh</span><span class="o">=</span><span class="n">in_dict</span><span class="p">[</span><span class="s2">&quot;pot_tresh&quot;</span><span class="p">])</span>  <span class="c1"># calculate new energy offset</span>
+    <span class="c1"># output:</span>
+    <span class="n">stdout</span> <span class="o">=</span> <span class="n">standard_out</span><span class="p">(</span><span class="n">s_values</span><span class="o">=</span><span class="n">in_dict</span><span class="p">[</span><span class="s2">&quot;s_values&quot;</span><span class="p">],</span> <span class="n">statistic</span><span class="o">=</span><span class="n">statistic</span><span class="p">,</span> <span class="n">time_steps</span><span class="o">=</span><span class="n">in_dict</span><span class="p">[</span><span class="s2">&quot;time_steps&quot;</span><span class="p">],</span>
+                          <span class="n">pot_tresh</span><span class="o">=</span><span class="n">in_dict</span><span class="p">[</span><span class="s2">&quot;pot_tresh&quot;</span><span class="p">],</span> <span class="n">frac_tresh</span><span class="o">=</span><span class="n">frac_tresh</span><span class="p">)</span>
+    <span class="n">file</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">out_path</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span>
+    <span class="n">file</span><span class="o">.</span><span class="n">writelines</span><span class="p">(</span><span class="n">stdout</span><span class="p">)</span>
+    <span class="n">file</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+    <span class="k">return</span> <span class="n">statistic</span></div>
+
+
+<span class="c1"># MAIN</span>
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+
+    <span class="n">parser</span> <span class="o">=</span> <span class="n">argparse</span><span class="o">.</span><span class="n">ArgumentParser</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">&quot;Energy offseta optimization for RE-EDS&quot;</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;-vr&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span> <span class="n">nargs</span><span class="o">=</span><span class="s1">&#39;+&#39;</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;vr Files&#39;</span><span class="p">,</span> <span class="n">dest</span><span class="o">=</span><span class="s1">&#39;vr_files&#39;</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;-temp&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;temperature&#39;</span><span class="p">,</span> <span class="n">dest</span><span class="o">=</span><span class="s1">&#39;temp&#39;</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;-s&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span> <span class="n">nargs</span><span class="o">=</span><span class="s1">&#39;+&#39;</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;s values&#39;</span><span class="p">,</span> <span class="n">dest</span><span class="o">=</span><span class="s1">&#39;s_values&#39;</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;-rho&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;convergence radius&#39;</span><span class="p">,</span> <span class="n">dest</span><span class="o">=</span><span class="s1">&#39;rho&#39;</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;-kb&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mf">0.00831451</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;boltzman constant&#39;</span><span class="p">,</span> <span class="n">dest</span><span class="o">=</span><span class="s1">&#39;kb&#39;</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;-maxiter&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;maximum iterations&#39;</span><span class="p">,</span> <span class="n">dest</span><span class="o">=</span><span class="s1">&#39;maxiter&#39;</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;-eir&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span> <span class="n">nargs</span><span class="o">=</span><span class="s1">&#39;+&#39;</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;EiR&#39;</span><span class="p">,</span> <span class="n">dest</span><span class="o">=</span><span class="s1">&#39;eir&#39;</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;-fractresh&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span> <span class="n">nargs</span><span class="o">=</span><span class="s1">&#39;+&#39;</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                        <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Threshold on fraction of negative potentials energies for each state. Either one value or a value for each state.&#39;</span><span class="p">,</span>
+                        <span class="n">dest</span><span class="o">=</span><span class="s1">&#39;frac_tresh&#39;</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;-vy_s1&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span> <span class="n">nargs</span><span class="o">=</span><span class="s1">&#39;+&#39;</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                        <span class="n">help</span><span class="o">=</span><span class="s1">&#39;vy Files of all states per s value, e.g. -vy_s1, -vy_s2 ...&#39;</span><span class="p">,</span> <span class="n">dest</span><span class="o">=</span><span class="s1">&#39;vy_s1&#39;</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;-pottresh&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span> <span class="n">nargs</span><span class="o">=</span><span class="s1">&#39;+&#39;</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                        <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Potential threshold defines maximal energyvalue to be considered in Fraction building&#39;</span><span class="p">,</span>
+                        <span class="n">dest</span><span class="o">=</span><span class="s1">&#39;pottresh&#39;</span><span class="p">)</span>
+    <span class="n">args</span><span class="p">,</span> <span class="n">unkown_args</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">parse_known_args</span><span class="p">()</span>
+
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">s_values</span><span class="p">)):</span>
+        <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;-vy_s&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">),</span> <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span> <span class="n">nargs</span><span class="o">=</span><span class="s1">&#39;+&#39;</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                            <span class="n">help</span><span class="o">=</span><span class="s1">&#39;vy Files for s&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">),</span> <span class="n">dest</span><span class="o">=</span><span class="s1">&#39;vy_s&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span>
+    <span class="n">args</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">parse_args</span><span class="p">()</span>
+    <span class="n">argsDic</span> <span class="o">=</span> <span class="nb">vars</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
+    <span class="n">vy_sx</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">argsDic</span><span class="p">:</span>
+        <span class="k">if</span> <span class="p">(</span><span class="s2">&quot;vy_s&quot;</span> <span class="ow">in</span> <span class="n">x</span><span class="p">):</span>
+            <span class="n">vy_sx</span> <span class="o">+=</span> <span class="n">argsDic</span><span class="p">[</span><span class="n">x</span><span class="p">]</span>
+
+    <span class="c1"># prepare input</span>
+    <span class="n">in_dict</span> <span class="o">=</span> <span class="n">parse_args</span><span class="p">(</span><span class="n">Vr_files</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">vr_files</span><span class="p">,</span> <span class="n">Temp</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">temp</span><span class="p">,</span> <span class="n">s_values</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">s_values</span><span class="p">,</span> <span class="n">Eoff</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">eir</span><span class="p">,</span> <span class="n">Vy_sx</span><span class="o">=</span><span class="n">vy_sx</span><span class="p">,</span>
+                         <span class="n">frac_tresh</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">frac_tresh</span><span class="p">,</span> <span class="n">pot_tresh</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">pottresh</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">convergenceradius</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">rho</span><span class="p">,</span> <span class="n">kb</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">kb</span><span class="p">,</span>
+                         <span class="n">max_iter</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">maxiter</span><span class="p">)</span>
+
+    <span class="c1"># Do calculation</span>
+    <span class="n">statistic</span> <span class="o">=</span> <span class="n">optimize_energy_offsets</span><span class="p">(</span><span class="n">eir_old_init</span><span class="o">=</span><span class="n">in_dict</span><span class="p">[</span><span class="s2">&quot;eir_old_init&quot;</span><span class="p">],</span> <span class="n">vvr</span><span class="o">=</span><span class="n">in_dict</span><span class="p">[</span><span class="s2">&quot;vvr&quot;</span><span class="p">],</span> <span class="n">vvy</span><span class="o">=</span><span class="n">in_dict</span><span class="p">[</span><span class="s2">&quot;vvy&quot;</span><span class="p">],</span>
+                                        <span class="n">s_values</span><span class="o">=</span><span class="n">in_dict</span><span class="p">[</span><span class="s2">&quot;s_values&quot;</span><span class="p">],</span> <span class="n">beta</span><span class="o">=</span><span class="n">in_dict</span><span class="p">[</span><span class="s2">&quot;beta&quot;</span><span class="p">],</span>
+                                        <span class="n">frac_tresh</span><span class="o">=</span><span class="n">in_dict</span><span class="p">[</span><span class="s2">&quot;frac_tresh&quot;</span><span class="p">],</span>
+                                        <span class="n">max_iter</span><span class="o">=</span><span class="n">in_dict</span><span class="p">[</span><span class="s2">&quot;max_iter&quot;</span><span class="p">],</span> <span class="n">rho</span><span class="o">=</span><span class="n">in_dict</span><span class="p">[</span><span class="s2">&quot;rho&quot;</span><span class="p">],</span>
+                                        <span class="n">pot_tresh</span><span class="o">=</span><span class="n">in_dict</span><span class="p">[</span><span class="s2">&quot;pot_tresh&quot;</span><span class="p">])</span>  <span class="c1"># calculate new energy offset</span>
+
+    <span class="c1"># output:</span>
+    <span class="n">standard_out</span><span class="p">(</span><span class="n">s_values</span><span class="o">=</span><span class="n">in_dict</span><span class="p">[</span><span class="s2">&quot;s_values&quot;</span><span class="p">],</span> <span class="n">statistic</span><span class="o">=</span><span class="n">statistic</span><span class="p">,</span> <span class="n">time_steps</span><span class="o">=</span><span class="n">in_dict</span><span class="p">[</span><span class="s2">&quot;time_steps&quot;</span><span class="p">],</span>
+                 <span class="n">pot_tresh</span><span class="o">=</span><span class="n">in_dict</span><span class="p">[</span><span class="s2">&quot;pot_tresh&quot;</span><span class="p">],</span> <span class="n">frac_tresh</span><span class="o">=</span><span class="n">in_dict</span><span class="p">[</span><span class="s2">&quot;frac_tresh&quot;</span><span class="p">])</span>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, Benjamin Ries, Salome Rieder, Candide Champion. Project structure based on the Computational Molecular Science Python Cookiecutter version 1.3
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
