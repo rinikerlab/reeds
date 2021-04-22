@@ -61,7 +61,7 @@ Please, if your writing code for this repository, first develop it on an own bra
 
      git branch mybranch    #generate your branch
      git checkout mybranch  #switch to your branch
-     git merge master   #for adding new features from master to your branch
+     git merge main   #for adding new features from main to your branch
 
 
 
