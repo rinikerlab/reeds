@@ -17,8 +17,11 @@ def energyOffset_time_convergence(ene_ana_trajs, out_dir: str, Eoff: List[float]
                                   plot_title_prefix: str = "RE-EDS", visualize: bool = True):
     """
 
-
+    THIS FUNCTION IS DEAPPRECIATED! IT REQUIRES A NEW IMPLEMENTATION
     """
+
+    raise Exception("THIS FUNCTION IS DEAPPRECIATED! IT REQUIRES A NEW IMPLEMENTATION")
+
     ene_traj = ene_ana_trajs[0]
 
     start_index, end_index = (min(ene_traj.index), max(ene_traj.index))
