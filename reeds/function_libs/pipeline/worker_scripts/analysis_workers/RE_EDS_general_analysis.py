@@ -405,8 +405,8 @@ def do_Reeds_analysis(in_folder: str, out_folder: str, gromos_path: str,
         if (sub_control["sampling_plot"]):
             # plot if states are sampled and minimal state
             print("\tplot sampling: ")
-            (sampling_results, out_dir) = sampling_ana.sampling_analysis(out_path = out_dir, ene_traj_csvs = energy_trajectories, 
-                                                              s_values = s_values, pot_tresh = pot_tresh)
+            (sampling_results, out_dir) = sampling_ana.sampling_analysis(ene_traj_csvs=energy_trajectories,
+                                                                         s_values=s_values, out_path=out_dir)
 
         if (sub_control["calc_eoff"]):
             print("calc Eoff: ")

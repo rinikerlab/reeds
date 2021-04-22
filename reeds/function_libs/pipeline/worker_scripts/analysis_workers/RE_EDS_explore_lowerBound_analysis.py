@@ -126,10 +126,8 @@ def do(out_analysis_dir: str, system_name: str,
     out_analysis_plot_dir = out_analysis_dir + "/plots"
     bash.make_folder(out_analysis_plot_dir, "-p")
     ene_trajs = fM.parse_csv_energy_trajectories(data_dir, out_prefix)  # gather potentials
-    sampling_analysis_results, out_plot_dirs = reeds.function_libs.analysis.sampling.sampling_analysis(out_path = out_analysis_plot_dir,
-                                                                                                       ene_traj_csvs = ene_trajs,
-                                                                                                       s_values = s_values[:succsessful_sim_count],
-                                                                                                       pot_tresh = undersampling_pot_tresh)
+    sampling_analysis_results, out_plot_dirs = reeds.function_libs.analysis.sampling.sampling_analysis(
+        ene_traj_csvs=ene_trajs, s_values=s_values[:succsessful_sim_count], out_path=out_analysis_plot_dir)
     # Plotting the different potential energy distributions
     if control_dict["pot_ene_by_state"]:
         for i in range(num_states):
