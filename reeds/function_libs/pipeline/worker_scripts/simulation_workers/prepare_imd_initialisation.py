@@ -65,6 +65,11 @@ def prepare_imd_initialisation(run: int, in_imd_path: str, tmp_in_imd: str, init
             if (is_stochastic_dynamics_sim):
                 imd_file.INITIALISE.NTISHI = 1
                 imd_file.INITIALISE.NTISTI = 1
+            elif (imd_file.MULTIBATH.ALGORITHM == "2"): #nosé-hoover chain
+                imd_file.INITIALISE.NTIVEL = 1
+                imd_file.INITIALISE.NTISHK = 3
+                imd_file.INITIALISE.NTISHI = 1
+                imd_file.INITIALISE.NTINHT = 1
             else:
                 imd_file.INITIALISE.NTIVEL = 1
                 imd_file.INITIALISE.NTISHK = 3
