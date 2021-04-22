@@ -111,7 +111,7 @@ def estimate_energy_offsets(ene_trajs: List[pd.DataFrame], initial_offsets: List
                     + ' +-  ' + str(round(stdevs[i], 2)) + '\n'
         f.writelines(results)
     f.close()
-    return (means, ell_eoffs)
+    return (means, all_eoffs)
 
 
 #
