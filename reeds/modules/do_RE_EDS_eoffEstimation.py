@@ -37,6 +37,7 @@ def do(out_root_dir: str, in_simSystem: fM.System, in_ene_ana_lib: str,
        submit: bool = True, duration_per_job: str = "24:00", 
        initialize_first_run: bool = True, reinitialize: bool = False,
        do_not_doubly_submit_to_queue: bool = True,
+       single_bath: bool = False,
        verbose: bool = True):
     """do Energy Offsets estimation
 
@@ -91,6 +92,8 @@ reinitialize : bool, optional
     should the velocities be reinitialized for all runs?
 do_not_doubly_submit_to_queue : bool, optional
     Check if there is already a job with this name, do not submit if true.
+single_bath : bool, optional
+    only use a single MULTIBATH (i.e. NBATHS = 1)
 verbose
     I can be very talkative, you know...
 
@@ -146,7 +149,8 @@ int
         ##adapt imd_templates
         if (verbose): print("Writing imd_templates")
         imd_file = adapt_imd_template_eoff(system=simSystem, imd_out_path=in_imd_path, imd_path=in_template_imd_path,
-                                           old_svals=s_values, non_ligand_residues=exclude_residues)
+                                           old_svals=s_values, non_ligand_residues=exclude_residues,
+                                           single_bath = single_bath)
         in_imd_path = imd_file.path
         svals = imd_file.REPLICA_EDS.RES
         numstates = imd_file.REPLICA_EDS.NUMSTATES
