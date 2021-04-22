@@ -85,7 +85,7 @@
             
               <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="../introduction.html">REEDS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../introduction.html">RE-EDS</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../Examples/index.html">Examples</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="modules.html">Documentation</a><ul class="current">
 <li class="toctree-l2 current"><a class="reference internal" href="reeds.html">reeds package</a><ul class="current">
@@ -98,6 +98,7 @@
 </li>
 <li class="toctree-l3"><a class="reference internal" href="reeds.html#submodules">Submodules</a></li>
 <li class="toctree-l3"><a class="reference internal" href="reeds.html#module-reeds.reeds">reeds.reeds module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="reeds.html#module-reeds.tmp_file">reeds.tmp_file module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="reeds.html#module-reeds">Module contents</a></li>
 </ul>
 </li>
@@ -242,7 +243,7 @@
 <span id="reeds-function-libs-pipeline-worker-scripts-analysis-workers-re-eds-explore-lowerbound-analysis-module"></span><h2>reeds.function_libs.pipeline.worker_scripts.analysis_workers.RE_EDS_explore_lowerBound_analysis module<a class="headerlink" href="#module-reeds.function_libs.pipeline.worker_scripts.analysis_workers.RE_EDS_explore_lowerBound_analysis" title="Permalink to this headline">¶</a></h2>
 <dl class="py function">
 <dt id="reeds.function_libs.pipeline.worker_scripts.analysis_workers.RE_EDS_explore_lowerBound_analysis.do">
-<code class="sig-prename descclassname">reeds.function_libs.pipeline.worker_scripts.analysis_workers.RE_EDS_explore_lowerBound_analysis.</code><code class="sig-name descname">do</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">out_analysis_dir</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">system_name</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">in_simulation_dir</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">in_topology_path</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">in_imd_path</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">undersampling_pot_tresh</span><span class="p">:</span> <span class="n">float</span> <span class="o">=</span> <span class="default_value">200</span></em>, <em class="sig-param"><span class="n">gromosPP_bin</span><span class="p">:</span> <span class="n">str</span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">in_ene_ana_lib</span><span class="p">:</span> <span class="n">str</span> <span class="o">=</span> <span class="default_value">'/home/bschroed/Documents/code/reeds_github/reeds/data/ene_ana_libs/new_ene_ana_REEDS_9state.md++.lib'</span></em>, <em class="sig-param"><span class="n">verbose</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/reeds/function_libs/pipeline/worker_scripts/analysis_workers/RE_EDS_explore_lowerBound_analysis.html#do"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#reeds.function_libs.pipeline.worker_scripts.analysis_workers.RE_EDS_explore_lowerBound_analysis.do" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">reeds.function_libs.pipeline.worker_scripts.analysis_workers.RE_EDS_explore_lowerBound_analysis.</code><code class="sig-name descname">do</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">out_analysis_dir</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">system_name</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">in_simulation_dir</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">in_topology_path</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">in_imd_path</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">undersampling_pot_tresh</span><span class="p">:</span> <span class="n">float</span> <span class="o">=</span> <span class="default_value">200</span></em>, <em class="sig-param"><span class="n">gromosPP_bin</span><span class="p">:</span> <span class="n">str</span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">in_ene_ana_lib</span><span class="p">:</span> <span class="n">str</span> <span class="o">=</span> <span class="default_value">'/home/bschroed/Documents/code/reeds/reeds/data/ene_ana_libs/new_ene_ana_REEDS_9state.md++.lib'</span></em>, <em class="sig-param"><span class="n">verbose</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/reeds/function_libs/pipeline/worker_scripts/analysis_workers/RE_EDS_explore_lowerBound_analysis.html#do"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#reeds.function_libs.pipeline.worker_scripts.analysis_workers.RE_EDS_explore_lowerBound_analysis.do" title="Permalink to this definition">¶</a></dt>
 <dd><blockquote>
 <div><p>This analysis worker is used to analyse the exploration of the b_step: high s-undersampling boundary.</p>
 <dl class="simple">
@@ -272,105 +273,8 @@
 </dd></dl>
 
 </div>
-<div class="section" id="module-reeds.function_libs.pipeline.worker_scripts.analysis_workers.RE_EDS_general_analysis">
-<span id="reeds-function-libs-pipeline-worker-scripts-analysis-workers-re-eds-general-analysis-module"></span><h2>reeds.function_libs.pipeline.worker_scripts.analysis_workers.RE_EDS_general_analysis module<a class="headerlink" href="#module-reeds.function_libs.pipeline.worker_scripts.analysis_workers.RE_EDS_general_analysis" title="Permalink to this headline">¶</a></h2>
-<dl class="py function">
-<dt id="reeds.function_libs.pipeline.worker_scripts.analysis_workers.RE_EDS_general_analysis._inline_dict">
-<code class="sig-prename descclassname">reeds.function_libs.pipeline.worker_scripts.analysis_workers.RE_EDS_general_analysis.</code><code class="sig-name descname">_inline_dict</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">in_dict</span><span class="p">:</span> <span class="n">Dict</span></em>, <em class="sig-param"><span class="n">prefix</span><span class="p">:</span> <span class="n">str</span> <span class="o">=</span> <span class="default_value">'\t'</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/reeds/function_libs/pipeline/worker_scripts/analysis_workers/RE_EDS_general_analysis.html#_inline_dict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#reeds.function_libs.pipeline.worker_scripts.analysis_workers.RE_EDS_general_analysis._inline_dict" title="Permalink to this definition">¶</a></dt>
-<dd><blockquote>
-<div><p>translate dictionary to one code line. can be used for meta-scripting</p>
-</div></blockquote>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>in_dict</strong> (<em>Dict</em>) – analysis control dict</p></li>
-<li><p><strong>prefix</strong> (<em>str, optional</em>) – prfix symbol to dict write out.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>code line.</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>str</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt id="reeds.function_libs.pipeline.worker_scripts.analysis_workers.RE_EDS_general_analysis.check_script_control">
-<code class="sig-prename descclassname">reeds.function_libs.pipeline.worker_scripts.analysis_workers.RE_EDS_general_analysis.</code><code class="sig-name descname">check_script_control</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">control_dict</span><span class="p">:</span> <span class="n">dict</span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; dict<a class="reference internal" href="../_modules/reeds/function_libs/pipeline/worker_scripts/analysis_workers/RE_EDS_general_analysis.html#check_script_control"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#reeds.function_libs.pipeline.worker_scripts.analysis_workers.RE_EDS_general_analysis.check_script_control" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
-<dt id="reeds.function_libs.pipeline.worker_scripts.analysis_workers.RE_EDS_general_analysis.dict_to_nice_string">
-<code class="sig-prename descclassname">reeds.function_libs.pipeline.worker_scripts.analysis_workers.RE_EDS_general_analysis.</code><code class="sig-name descname">dict_to_nice_string</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">control_dict</span><span class="p">:</span> <span class="n">Dict</span></em><span class="sig-paren">)</span> &#x2192; str<a class="reference internal" href="../_modules/reeds/function_libs/pipeline/worker_scripts/analysis_workers/RE_EDS_general_analysis.html#dict_to_nice_string"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#reeds.function_libs.pipeline.worker_scripts.analysis_workers.RE_EDS_general_analysis.dict_to_nice_string" title="Permalink to this definition">¶</a></dt>
-<dd><blockquote>
-<div><dl class="simple">
-<dt>Converts a dictionary of options (like template_control_dict)</dt><dd><p>to a more human readable format. Which can then be printed to a text file,
-which can be manually modified before submiting analysis jobs.</p>
-</dd>
-</dl>
-</div></blockquote>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>control_dict</strong> (<em>Dict</em>) – analysis control dictonary</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>nice formatting of the control dictionary for printing.</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>str</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt id="reeds.function_libs.pipeline.worker_scripts.analysis_workers.RE_EDS_general_analysis.do_Reeds_analysis">
-<code class="sig-prename descclassname">reeds.function_libs.pipeline.worker_scripts.analysis_workers.RE_EDS_general_analysis.</code><code class="sig-name descname">do_Reeds_analysis</code><span class="sig-paren">(</span><em class="sig-param">in_folder: str, out_folder: str, gromos_path: str, topology: str, in_ene_ana_lib: str, in_imd: str, optimized_eds_state_folder: str = '../a_optimizedState/analysis/data', pot_tresh: float = 0.0, frac_tresh: list = [0.6], take_last_n: int = None, add_s_vals: int = 0, state_weights: List[float] = None, s_opt_trial_range: int = None, adding_new_sReplicas_Scheme: reeds.function_libs.utils.structures.adding_Scheme_new_Replicas = &lt;adding_Scheme_new_Replicas.from_below: 2&gt;, grom_file_prefix: str = 'test', title_prefix: str = 'test', ene_ana_prefix='ey_sx.dat', repdat_prefix: str = 'run_repdat.dat', n_processors: int = 1, verbose=False, dfmult_all_replicas=False, control_dict: Dict[str, Union[bool, Dict[str, bool]]] = None) -&gt; (&lt;class 'dict'&gt;, &lt;class 'dict'&gt;, &lt;class 'dict'&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/reeds/function_libs/pipeline/worker_scripts/analysis_workers/RE_EDS_general_analysis.html#do_Reeds_analysis"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#reeds.function_libs.pipeline.worker_scripts.analysis_workers.RE_EDS_general_analysis.do_Reeds_analysis" title="Permalink to this definition">¶</a></dt>
-<dd><blockquote>
-<div><dl class="simple">
-<dt>Master calling point from which all jobs can call the analysis functions for a RE-EDS simulation.</dt><dd><p>This function generates: plots, compress files, and/or calculate values of interest.</p>
-</dd>
-</dl>
-</div></blockquote>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>in_folder</strong> (<em>str</em>) – input folder for the simulation.</p></li>
-<li><p><strong>out_folder</strong> (<em>str</em>) – output folder for the simulation</p></li>
-<li><p><strong>gromos_path</strong> (<em>str</em>) – gromosPP binary path</p></li>
-<li><p><strong>topology</strong> (<em>str</em>) – path to topology</p></li>
-<li><p><strong>in_ene_ana_lib</strong> (<em>str</em>) – in path for ene_ana lib</p></li>
-<li><p><strong>in_imd</strong> (<em>str</em>) – in path for imd_file</p></li>
-<li><p><strong>optimized_eds_state_folder</strong> (<em>str, optional</em>) – path to optimized eds_state folders (default: “../a_optimizedState/analysis/data”)</p></li>
-<li><p><strong>pot_tresh</strong> (<em>float, optional</em>) – potential energy treshold (default: 0)</p></li>
-<li><p><strong>frac_tresh</strong> (<em>int, optional</em>) – fraction threshold (default: 0.6)</p></li>
-<li><p><strong>take_last_n</strong> (<em>int, optional</em>) – this parameter can be used to force the energy offset estimation to use a certain amount of replicas.  (default: None)</p></li>
-<li><p><strong>add_s_vals</strong> (<em>int, optional</em>) – this parameter can be used to add a number of s-values  during the s-optimization (default: 0)</p></li>
-<li><p><strong>state_weights</strong> (<em>List[float], optional</em>) – allows to weight the different states in the s-optimization differently (default: None)</p></li>
-<li><p><strong>s_opt_trial_range</strong> (<em>int, optional</em>) – give a range of trials, that define the start and end of the s-optimization run (default: adding_Scheme_new_Replicas.from_below)</p></li>
-<li><p><strong>adding_new_sReplicas_Scheme</strong> (<em>int, optional</em>) – how shall the coordinates for new replicas be added to an exchange bottle-neck. (default: adding_Scheme_new_Replicas.from_below)</p></li>
-<li><p><strong>grom_file_prefix</strong> (<em>str, optional</em>) – provide here a gromos_file prefix of this run (default: test)</p></li>
-<li><p><strong>title_prefix</strong> (<em>str, optional</em>) – proivde here a output_prefx and plot prefix (default: test)</p></li>
-<li><p><strong>ene_ana_prefix</strong> (<em>str, optional</em>) – prefix for the ene ana analysis &#64;WARNING: NOT USED ANYMORE! - FUTURE REMOVE!.</p></li>
-<li><p><strong>repdat_prefix</strong> (<em>str, optional</em>) – prefix for the repdat files. required to read in the repdats. (default:run_repdat.dat )</p></li>
-<li><p><strong>n_processors</strong> (<em>int, optional</em>) – number of processors</p></li>
-<li><p><strong>verbose</strong> (<em>bool, optional</em>) – verbosity level</p></li>
-<li><p><strong>dfmult_all_replicas</strong> (<em>bool, optional</em>) – shall dfmult be calculated for all replicas</p></li>
-<li><p><strong>control_dict</strong> (<em>dict, optional</em>) – control dict for analysis</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>eoff_statistic, svals, dFs - the function returns the eoff_statistics,
-the s-values of the s-optimization-results and the free energy calculation results,
-if calculated.</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>(dict, dict, dict)</p>
-</dd>
-</dl>
-</dd></dl>
-
+<div class="section" id="reeds-function-libs-pipeline-worker-scripts-analysis-workers-re-eds-general-analysis-module">
+<h2>reeds.function_libs.pipeline.worker_scripts.analysis_workers.RE_EDS_general_analysis module<a class="headerlink" href="#reeds-function-libs-pipeline-worker-scripts-analysis-workers-re-eds-general-analysis-module" title="Permalink to this headline">¶</a></h2>
 </div>
 <div class="section" id="module-reeds.function_libs.pipeline.worker_scripts.analysis_workers.RE_EDS_soptimization_final">
 <span id="reeds-function-libs-pipeline-worker-scripts-analysis-workers-re-eds-soptimization-final-module"></span><h2>reeds.function_libs.pipeline.worker_scripts.analysis_workers.RE_EDS_soptimization_final module<a class="headerlink" href="#module-reeds.function_libs.pipeline.worker_scripts.analysis_workers.RE_EDS_soptimization_final" title="Permalink to this headline">¶</a></h2>
@@ -380,8 +284,7 @@ if calculated.</p>
 <dd><blockquote>
 <div><p>analysis of a single optimization iteration.
 - analyse sampling, round trips, round trip time
-- generate replica transition plots, position histogram
--</p>
+- generate replica transition plots, position histogram</p>
 </div></blockquote>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -389,7 +292,7 @@ if calculated.</p>
 <li><p><strong>repdat_path</strong> (<em>str</em>) – path to the repdat file - contains information about the replcia exchange</p></li>
 <li><p><strong>out_dir</strong> (<em>str</em>) – output dir for the analysis</p></li>
 <li><p><strong>title</strong> (<em>str</em>) – title of the iteration</p></li>
-<li><p><strong>pot_tresh</strong> (<em>float, optional</em>) – potential threshold for observing</p></li>
+<li><p><strong>pot_tresh</strong> (<em>Union[float, List[float]], optional</em>) – potential threshold for observing</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -403,7 +306,7 @@ if calculated.</p>
 
 <dl class="py function">
 <dt id="reeds.function_libs.pipeline.worker_scripts.analysis_workers.RE_EDS_soptimization_final.do">
-<code class="sig-prename descclassname">reeds.function_libs.pipeline.worker_scripts.analysis_workers.RE_EDS_soptimization_final.</code><code class="sig-name descname">do</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">sopt_root_dir</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">pot_tresh</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">title</span><span class="o">=</span><span class="default_value">''</span></em>, <em class="sig-param"><span class="n">out_dir</span><span class="p">:</span> <span class="n">str</span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">rt_convergence</span><span class="o">=</span><span class="default_value">100</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/reeds/function_libs/pipeline/worker_scripts/analysis_workers/RE_EDS_soptimization_final.html#do"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#reeds.function_libs.pipeline.worker_scripts.analysis_workers.RE_EDS_soptimization_final.do" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">reeds.function_libs.pipeline.worker_scripts.analysis_workers.RE_EDS_soptimization_final.</code><code class="sig-name descname">do</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">sopt_root_dir</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">pot_tresh</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>List<span class="p">, </span>float<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">0</span></em>, <em class="sig-param"><span class="n">title</span><span class="o">=</span><span class="default_value">''</span></em>, <em class="sig-param"><span class="n">out_dir</span><span class="p">:</span> <span class="n">str</span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">rt_convergence</span><span class="o">=</span><span class="default_value">100</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/reeds/function_libs/pipeline/worker_scripts/analysis_workers/RE_EDS_soptimization_final.html#do"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#reeds.function_libs.pipeline.worker_scripts.analysis_workers.RE_EDS_soptimization_final.do" title="Permalink to this definition">¶</a></dt>
 <dd><blockquote>
 <div><p>This function does the final analysis of an s-optimization. It analyses the outcome of the full s-optimization iterations.
 Features:</p>
@@ -420,7 +323,7 @@ Features:</p>
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>sopt_root_dir</strong> (<em>str</em>) – directory containing all s-optimization iterations</p></li>
-<li><p><strong>pot_tresh</strong> (<em>int, optional</em>) – potential energy threshold, determining undersampling (default: 0)</p></li>
+<li><p><strong>pot_tresh</strong> (<em>Union[float, List[float]], optional</em>) – potential energy threshold, determining undersampling (default: 0)</p></li>
 <li><p><strong>title</strong> (<em>str, optional</em>) – title of run (default: “”)</p></li>
 <li><p><strong>out_dir</strong> (<em>str, optional</em>) – ananlysis output dir, default uses the same dir like root_dir (default: None)</p></li>
 <li><p><strong>rt_convergence</strong> (<em>int, optional</em>) – roundtrip time convergence criterium  in ps(default: 10ps)</p></li>
@@ -434,7 +337,7 @@ Features:</p>
 <span id="reeds-function-libs-pipeline-worker-scripts-analysis-workers-re-eds-state-optimization-analysis-module"></span><h2>reeds.function_libs.pipeline.worker_scripts.analysis_workers.RE_EDS_state_optimization_analysis module<a class="headerlink" href="#module-reeds.function_libs.pipeline.worker_scripts.analysis_workers.RE_EDS_state_optimization_analysis" title="Permalink to this headline">¶</a></h2>
 <dl class="py function">
 <dt id="reeds.function_libs.pipeline.worker_scripts.analysis_workers.RE_EDS_state_optimization_analysis.do">
-<code class="sig-prename descclassname">reeds.function_libs.pipeline.worker_scripts.analysis_workers.RE_EDS_state_optimization_analysis.</code><code class="sig-name descname">do</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">in_simulation_dir</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">in_topology_path</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">in_imd_path</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">out_analysis_dir</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">pot_tresh</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">200</span></em>, <em class="sig-param"><span class="n">gromosPP_bin</span><span class="p">:</span> <span class="n">str</span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">in_ene_ana_lib</span><span class="p">:</span> <span class="n">str</span> <span class="o">=</span> <span class="default_value">'/home/bschroed/Documents/code/reeds_github/reeds/data/ene_ana_libs/new_ene_ana_REEDS_9state.md++.lib'</span></em>, <em class="sig-param"><span class="n">verbose</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/reeds/function_libs/pipeline/worker_scripts/analysis_workers/RE_EDS_state_optimization_analysis.html#do"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#reeds.function_libs.pipeline.worker_scripts.analysis_workers.RE_EDS_state_optimization_analysis.do" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">reeds.function_libs.pipeline.worker_scripts.analysis_workers.RE_EDS_state_optimization_analysis.</code><code class="sig-name descname">do</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">in_simulation_dir</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">in_topology_path</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">in_imd_path</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">out_analysis_dir</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">pot_tresh</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">200</span></em>, <em class="sig-param"><span class="n">gromosPP_bin</span><span class="p">:</span> <span class="n">str</span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">in_ene_ana_lib</span><span class="p">:</span> <span class="n">str</span> <span class="o">=</span> <span class="default_value">'/home/bschroed/Documents/code/reeds/reeds/data/ene_ana_libs/new_ene_ana_REEDS_9state.md++.lib'</span></em>, <em class="sig-param"><span class="n">verbose</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/reeds/function_libs/pipeline/worker_scripts/analysis_workers/RE_EDS_state_optimization_analysis.html#do"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#reeds.function_libs.pipeline.worker_scripts.analysis_workers.RE_EDS_state_optimization_analysis.do" title="Permalink to this definition">¶</a></dt>
 <dd><blockquote>
 <div><p>This analysis_worker is analyzing step a_state optimization.</p>
 <p>Features:

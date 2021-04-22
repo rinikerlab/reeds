@@ -39,7 +39,7 @@
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="reeds.function_libs.optimization.src package" href="reeds.function_libs.optimization.src.html" />
-    <link rel="prev" title="reeds.function_libs.analysis package" href="reeds.function_libs.analysis.html" /> 
+    <link rel="prev" title="reeds.function_libs.file_management package" href="reeds.function_libs.file_management.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -85,7 +85,7 @@
             
               <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="../introduction.html">REEDS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../introduction.html">RE-EDS</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../Examples/index.html">Examples</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="modules.html">Documentation</a><ul class="current">
 <li class="toctree-l2 current"><a class="reference internal" href="reeds.html">reeds package</a><ul class="current">
@@ -98,6 +98,7 @@
 </li>
 <li class="toctree-l3"><a class="reference internal" href="reeds.html#submodules">Submodules</a></li>
 <li class="toctree-l3"><a class="reference internal" href="reeds.html#module-reeds.reeds">reeds.reeds module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="reeds.html#module-reeds.tmp_file">reeds.tmp_file module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="reeds.html#module-reeds">Module contents</a></li>
 </ul>
 </li>
@@ -219,72 +220,8 @@
 <div class="section" id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
 </div>
-<div class="section" id="module-reeds.function_libs.optimization.eds_energy_offsets">
-<span id="reeds-function-libs-optimization-eds-energy-offsets-module"></span><h2>reeds.function_libs.optimization.eds_energy_offsets module<a class="headerlink" href="#module-reeds.function_libs.optimization.eds_energy_offsets" title="Permalink to this headline">¶</a></h2>
-<p>eds_energy_offsets  - A program for optimization of energy offsets from eds simulations
-&#64;author: Simon Frasch, Benjamin Ries</p>
-<p>You can use the program from your shell (not tested) or python environment.</p>
-<dl class="py function">
-<dt id="reeds.function_libs.optimization.eds_energy_offsets.estEoff">
-<code class="sig-prename descclassname">reeds.function_libs.optimization.eds_energy_offsets.</code><code class="sig-name descname">estEoff</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ene_ana_trajs</span><span class="p">:</span> <span class="n">List<span class="p">[</span>pandas.core.frame.DataFrame<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">Temp</span><span class="p">:</span> <span class="n">float</span></em>, <em class="sig-param"><span class="n">s_values</span><span class="p">:</span> <span class="n">List<span class="p">[</span>float<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">Eoff</span><span class="p">:</span> <span class="n">List<span class="p">[</span>float<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">out_path</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">frac_tresh</span><span class="o">=</span><span class="default_value">[0.9]</span></em>, <em class="sig-param"><span class="n">pot_tresh</span><span class="o">=</span><span class="default_value">0.0</span></em>, <em class="sig-param"><span class="n">convergenceradius</span><span class="o">=</span><span class="default_value">0.0</span></em>, <em class="sig-param"><span class="n">kb</span><span class="o">=</span><span class="default_value">0.00831451</span></em>, <em class="sig-param"><span class="n">max_iter</span><span class="o">=</span><span class="default_value">20</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/reeds/function_libs/optimization/eds_energy_offsets.html#estEoff"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#reeds.function_libs.optimization.eds_energy_offsets.estEoff" title="Permalink to this definition">¶</a></dt>
-<dd><p>This function should provide access via an python script to eds energy
-estimations</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>ene_ana_trajs</strong></p></li>
-<li><p><strong>Temp</strong></p></li>
-<li><p><strong>s_values</strong></p></li>
-<li><p><strong>Eoff</strong></p></li>
-<li><p><strong>out_path</strong></p></li>
-<li><p><strong>frac_tresh</strong></p></li>
-<li><p><strong>pot_tresh</strong></p></li>
-<li><p><strong>convergenceradius</strong></p></li>
-<li><p><strong>kb</strong></p></li>
-<li><p><strong>max_iter</strong></p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt id="reeds.function_libs.optimization.eds_energy_offsets.parse_args">
-<code class="sig-prename descclassname">reeds.function_libs.optimization.eds_energy_offsets.</code><code class="sig-name descname">parse_args</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ene_ana_trajs</span><span class="p">:</span> <span class="n">List<span class="p">[</span>pandas.core.frame.DataFrame<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">Temp</span><span class="p">:</span> <span class="n">float</span></em>, <em class="sig-param"><span class="n">s_values</span><span class="p">:</span> <span class="n">List<span class="p">[</span>float<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">Eoff</span><span class="p">:</span> <span class="n">List<span class="p">[</span>float<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">frac_tresh</span><span class="p">:</span> <span class="n">List<span class="p">[</span>float<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">[0.9]</span></em>, <em class="sig-param"><span class="n">pot_tresh</span><span class="o">=</span><span class="default_value">0.0</span></em>, <em class="sig-param"><span class="n">convergenceradius</span><span class="o">=</span><span class="default_value">0.0</span></em>, <em class="sig-param"><span class="n">kb</span><span class="o">=</span><span class="default_value">0.00831451</span></em>, <em class="sig-param"><span class="n">max_iter</span><span class="o">=</span><span class="default_value">20</span></em><span class="sig-paren">)</span> &#x2192; dict<a class="reference internal" href="../_modules/reeds/function_libs/optimization/eds_energy_offsets.html#parse_args"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#reeds.function_libs.optimization.eds_energy_offsets.parse_args" title="Permalink to this definition">¶</a></dt>
-<dd><p>This wrapper converts the input into a format which is readable by the
-eoff script.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>ene_ana_trajs</strong> – concatenated energy trajs from ene ana step.</p></li>
-<li><p><strong>Temp</strong> – temp of simulation</p></li>
-<li><p><strong>s_values</strong> – list of svalues used</p></li>
-<li><p><strong>Eoff</strong> – list containing Eoff values (give 0.0 if non)</p></li>
-<li><p><strong>frac_tresh</strong> – Threshold on fraction of negative potentials energies for each state. Either one value or a value for each state.</p></li>
-<li><p><strong>pot_tresh</strong> – Potential threshold defines maximal energyvalue to be considered in Fraction building</p></li>
-<li><p><strong>convergenceradius</strong> (<em>float</em>) – radius of convergence</p></li>
-<li><p><strong>kb</strong> (<em>float</em>) – boltzmann constant</p></li>
-<li><p><strong>max_iter</strong> (<em>int</em>) – maximal_iteration</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt id="reeds.function_libs.optimization.eds_energy_offsets.standard_out">
-<code class="sig-prename descclassname">reeds.function_libs.optimization.eds_energy_offsets.</code><code class="sig-name descname">standard_out</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">s_values</span><span class="p">:</span> <span class="n">List<span class="p">[</span>float<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">statistic</span></em>, <em class="sig-param"><span class="n">time_steps</span></em>, <em class="sig-param"><span class="n">pot_tresh</span></em>, <em class="sig-param"><span class="n">frac_tresh</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/reeds/function_libs/optimization/eds_energy_offsets.html#standard_out"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#reeds.function_libs.optimization.eds_energy_offsets.standard_out" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>s_values</strong></p></li>
-<li><p><strong>statistic</strong></p></li>
-<li><p><strong>time_steps</strong></p></li>
-<li><p><strong>pot_tresh</strong></p></li>
-<li><p><strong>frac_tresh</strong></p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
+<div class="section" id="reeds-function-libs-optimization-eds-energy-offsets-module">
+<h2>reeds.function_libs.optimization.eds_energy_offsets module<a class="headerlink" href="#reeds-function-libs-optimization-eds-energy-offsets-module" title="Permalink to this headline">¶</a></h2>
 </div>
 <div class="section" id="module-reeds.function_libs.optimization.eds_s_values">
 <span id="reeds-function-libs-optimization-eds-s-values-module"></span><h2>reeds.function_libs.optimization.eds_s_values module<a class="headerlink" href="#module-reeds.function_libs.optimization.eds_s_values" title="Permalink to this headline">¶</a></h2>
@@ -414,7 +351,7 @@ The algorithm will not change the already present replica positions, but only ad
         <a href="reeds.function_libs.optimization.src.html" class="btn btn-neutral float-right" title="reeds.function_libs.optimization.src package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="reeds.function_libs.analysis.html" class="btn btn-neutral float-left" title="reeds.function_libs.analysis package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="reeds.function_libs.file_management.html" class="btn btn-neutral float-left" title="reeds.function_libs.file_management package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

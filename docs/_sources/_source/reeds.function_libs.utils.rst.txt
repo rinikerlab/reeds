@@ -12,14 +12,6 @@ reeds.function\_libs.utils.argument\_parser module
    :undoc-members:
    :show-inheritance:
 
-reeds.function\_libs.utils.plots\_style module
-----------------------------------------------
-
-.. automodule:: reeds.function_libs.utils.plots_style
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
 reeds.function\_libs.utils.s\_log\_dist module
 ----------------------------------------------
 
@@ -35,7 +27,6 @@ reeds.function\_libs.utils.structures module
    :members:
    :undoc-members:
    :show-inheritance:
-
 
 Module contents
 ---------------

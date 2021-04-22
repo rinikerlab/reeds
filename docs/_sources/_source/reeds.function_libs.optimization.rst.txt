@@ -28,7 +28,6 @@ reeds.function\_libs.optimization.eds\_s\_values module
    :undoc-members:
    :show-inheritance:
 
-
 Module contents
 ---------------
 

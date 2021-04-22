@@ -83,7 +83,7 @@
             
               <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../introduction.html">REEDS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../introduction.html">RE-EDS</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../Examples/index.html">Examples</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../_source/modules.html">Documentation</a></li>
 </ul>
@@ -154,90 +154,82 @@
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">pyplot</span> <span class="k">as</span> <span class="n">plt</span>
 
-<span class="kn">from</span> <span class="nn">reeds.function_libs.utils</span> <span class="kn">import</span> <span class="n">plots_style</span> <span class="k">as</span> <span class="n">ps</span>
+<span class="kn">from</span> <span class="nn">reeds.function_libs.visualization</span> <span class="kn">import</span> <span class="n">plots_style</span> <span class="k">as</span> <span class="n">ps</span>
 
-
-<div class="viewcode-block" id="plot_peoe_eoff_vs_s"><a class="viewcode-back" href="../../../../_source/reeds.function_libs.visualization.html#reeds.function_libs.visualization.parameter_optimization_plots.plot_peoe_eoff_vs_s">[docs]</a><span class="k">def</span> <span class="nf">plot_peoe_eoff_vs_s</span><span class="p">(</span><span class="n">eoff</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span>
-                        <span class="n">energy_offsets</span><span class="p">:</span> <span class="n">List</span><span class="p">,</span>
-                        <span class="n">title</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-                        <span class="n">out_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;plot_peoe_eoff_vs_s</span>
-<span class="sd">    gives out a plot, showing the development of Eoffsets along :param eoff:</span>
+<div class="viewcode-block" id="plot_offsets_vs_s"><a class="viewcode-back" href="../../../../_source/reeds.function_libs.visualization.html#reeds.function_libs.visualization.parameter_optimization_plots.plot_offsets_vs_s">[docs]</a><span class="k">def</span> <span class="nf">plot_offsets_vs_s</span><span class="p">(</span><span class="n">energy_offsets</span><span class="p">,</span> <span class="n">s_values</span><span class="p">:</span> <span class="n">List</span><span class="p">,</span> <span class="n">out_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">title</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">s_increment</span><span class="p">:</span><span class="nb">int</span> <span class="o">=</span> <span class="mi">2</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    plot_offsets_vs_s creates a plot of the energy offsets predicted at each of the replicas.</span>
+<span class="sd">    The plot contains two sub-plots, one of which shows the data recentered to the average</span>
+<span class="sd">    value among all replicas, and the other simply showing the raw data.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    eoff : dict</span>
-<span class="sd">        dictionary with energy offsets for each s value</span>
-<span class="sd">    energy_offsets : List</span>
-<span class="sd">        list of energy offsets</span>
-<span class="sd">    title : str</span>
-<span class="sd">        title of the plot</span>
+<span class="sd">    energy_offsets : numpy 2-D array</span>
+<span class="sd">        matrix of energy offsets where each row corresponds to a replica</span>
+<span class="sd">        and each column to a specific end-state.</span>
+<span class="sd">    s_values: List</span>
+<span class="sd">        list of s-values</span>
 <span class="sd">    out_path : str</span>
 <span class="sd">        output file path</span>
-
+<span class="sd">    title : str</span>
+<span class="sd">        title of the plot</span>
+<span class="sd">    s_increment: int</span>
+<span class="sd">        determines how many s-values are displayed on the plot. default value of </span>
+<span class="sd">        2 means we take every other s-value.</span>
+<span class="sd">    </span>
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    None</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="n">s_vals</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">eoff</span><span class="o">.</span><span class="n">keys</span><span class="p">()))</span>
-    <span class="n">x</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">s_vals</span><span class="p">))</span>
+    <span class="n">colors</span> <span class="o">=</span> <span class="n">ps</span><span class="o">.</span><span class="n">candide_colors</span>
+    <span class="n">num_states</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">energy_offsets</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
+    
+    <span class="n">fig</span><span class="p">,</span> <span class="p">(</span><span class="n">ax1</span><span class="p">,</span> <span class="n">ax2</span><span class="p">)</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">nrows</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">7</span><span class="p">,</span><span class="mi">6</span><span class="p">))</span>
+    
+    <span class="k">if</span> <span class="n">title</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span> <span class="n">title</span> <span class="o">=</span> <span class="s1">&#39;Energy Offsets predicted at all s-values&#39;</span>
+    <span class="n">fig</span><span class="o">.</span><span class="n">suptitle</span><span class="p">(</span><span class="n">title</span><span class="p">)</span>
 
-    <span class="n">eoffsets_per_s</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">eoff</span><span class="p">):</span>
-        <span class="n">eoffsets_per_s</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">eoff</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s2">&quot;eoff&quot;</span><span class="p">])</span>
-    <span class="n">min_eoff</span><span class="p">,</span> <span class="n">max_eoff</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">eoffsets_per_s</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]),</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">eoffsets_per_s</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
-
-    <span class="n">num_stats</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">eoffsets_per_s</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-    <span class="n">y</span> <span class="o">=</span> <span class="p">[</span><span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">eoffsets_per_s</span><span class="p">))</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_stats</span><span class="p">)]</span>
-
-    <span class="c1"># collect nice labels</span>
-    <span class="n">s_vals</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="n">s_vals</span><span class="p">))</span>
-
-    <span class="n">number_of_labels</span> <span class="o">=</span> <span class="mi">5</span>
-    <span class="n">step_size</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">s_vals</span><span class="p">)</span> <span class="o">//</span> <span class="n">number_of_labels</span>
-    <span class="n">labels</span> <span class="o">=</span> <span class="n">s_vals</span><span class="p">[::</span><span class="n">step_size</span><span class="p">]</span>  <span class="c1"># list(map(lambda x: np.round(np.log(x),2), s_vals[::step_size]))</span>
-
-    <span class="n">colors</span> <span class="o">=</span> <span class="n">ps</span><span class="o">.</span><span class="n">active_qualitative_list_small</span><span class="o">.</span><span class="n">colors</span>
-    <span class="n">repnum</span> <span class="o">=</span> <span class="n">num_stats</span> <span class="o">+</span> <span class="mi">1</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">s_values</span><span class="p">))</span>
 
     <span class="c1"># plot</span>
-    <span class="n">fig</span><span class="p">,</span> <span class="p">(</span><span class="n">ax1</span><span class="p">,</span> <span class="n">ax2</span><span class="p">)</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">nrows</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_states</span><span class="p">):</span>
+        <span class="n">eoffs</span> <span class="o">=</span> <span class="n">energy_offsets</span><span class="o">.</span><span class="n">T</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+        <span class="n">eoffs_recentered</span> <span class="o">=</span> <span class="n">eoffs</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">average</span><span class="p">(</span><span class="n">eoffs</span><span class="p">)</span>
 
-    <span class="c1">##plot1</span>
-    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_stats</span><span class="p">):</span>
-        <span class="n">ax1</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="n">energy_offsets</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">),</span>  <span class="c1"># color=colors[i % repnum],</span>
-                 <span class="n">lw</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+        <span class="n">ax1</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">eoffs_recentered</span><span class="p">,</span> <span class="n">lw</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">ms</span> <span class="o">=</span> <span class="mi">3</span><span class="p">,</span> <span class="n">marker</span> <span class="o">=</span> <span class="s1">&#39;D&#39;</span><span class="p">,</span> <span class="n">c</span> <span class="o">=</span> <span class="n">colors</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> 
+                 <span class="n">label</span> <span class="o">=</span> <span class="s1">&#39;state &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">))</span>
+        <span class="n">ax2</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">eoffs</span><span class="p">,</span> <span class="n">lw</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">ms</span> <span class="o">=</span> <span class="mi">3</span><span class="p">,</span> <span class="n">marker</span> <span class="o">=</span> <span class="s1">&#39;D&#39;</span><span class="p">,</span> <span class="n">c</span> <span class="o">=</span> <span class="n">colors</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+    
+    <span class="c1"># Change box format to match legend </span>
+    <span class="n">box1</span> <span class="o">=</span> <span class="n">ax1</span><span class="o">.</span><span class="n">get_position</span><span class="p">()</span>
+    <span class="n">ax1</span><span class="o">.</span><span class="n">set_position</span><span class="p">([</span><span class="n">box1</span><span class="o">.</span><span class="n">x0</span><span class="p">,</span> <span class="n">box1</span><span class="o">.</span><span class="n">y0</span><span class="p">,</span> <span class="n">box1</span><span class="o">.</span><span class="n">width</span> <span class="o">*</span> <span class="mf">0.8</span><span class="p">,</span> <span class="n">box1</span><span class="o">.</span><span class="n">height</span><span class="p">])</span>
+    
+    <span class="n">box2</span> <span class="o">=</span> <span class="n">ax2</span><span class="o">.</span><span class="n">get_position</span><span class="p">()</span>
+    <span class="n">ax2</span><span class="o">.</span><span class="n">set_position</span><span class="p">([</span><span class="n">box2</span><span class="o">.</span><span class="n">x0</span><span class="p">,</span> <span class="n">box2</span><span class="o">.</span><span class="n">y0</span><span class="p">,</span> <span class="n">box2</span><span class="o">.</span><span class="n">width</span> <span class="o">*</span> <span class="mf">0.8</span><span class="p">,</span> <span class="n">box2</span><span class="o">.</span><span class="n">height</span><span class="p">])</span>
+    
+    <span class="n">fig</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="s1">&#39;upper center&#39;</span><span class="p">,</span> <span class="n">bbox_to_anchor</span><span class="o">=</span><span class="p">(</span><span class="mf">0.85</span><span class="p">,</span> <span class="mf">0.65</span><span class="p">),</span> <span class="n">fancybox</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+              <span class="n">shadow</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">ncol</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">fontsize</span> <span class="o">=</span> <span class="mi">12</span><span class="p">,</span> <span class="n">edgecolor</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">)</span>
 
-    <span class="n">ax1</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;$(E_i^R(s)-\overline</span><span class="si">{E}</span><span class="s2">_i^R)$/(kJ/mol)&quot;</span><span class="p">)</span>
-    <span class="n">ax1</span><span class="o">.</span><span class="n">set_xticks</span><span class="p">(</span><span class="n">x</span><span class="p">[::</span><span class="n">step_size</span><span class="p">])</span>
-    <span class="n">ax1</span><span class="o">.</span><span class="n">set_xticklabels</span><span class="p">(</span><span class="n">labels</span><span class="p">)</span>
+    <span class="c1"># labels for the y-axis</span>
+    <span class="n">ax1</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;$(E_i^R(s)-\overline</span><span class="si">{E}</span><span class="s2">_i^R)$ [kJ/mol]&quot;</span><span class="p">)</span>
+    <span class="n">ax2</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;$E^R_i(s)$ [kJ/mol]&quot;</span><span class="p">)</span>
 
-    <span class="c1">##plot2</span>
-    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_stats</span><span class="p">):</span>
-        <span class="n">ax2</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">),</span>  <span class="c1"># color=colors[i % repnum],</span>
-                 <span class="n">lw</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
-
-    <span class="c1"># plt.title(title)</span>
-    <span class="c1"># ax2.set_ylim([-max_eoff - 10, max_eoff + 10])</span>
-    <span class="n">ax2</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;s&quot;</span><span class="p">)</span>
-    <span class="n">ax2</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;$E^R_i(s)$/(kJ/mol)&quot;</span><span class="p">)</span>
-
-    <span class="c1"># position legend</span>
-    <span class="n">ax2</span><span class="o">.</span><span class="n">set_xticks</span><span class="p">(</span><span class="n">x</span><span class="p">[::</span><span class="n">step_size</span><span class="p">])</span>
-    <span class="n">ax2</span><span class="o">.</span><span class="n">set_xticklabels</span><span class="p">(</span><span class="n">labels</span><span class="p">)</span>
-
-    <span class="c1"># legAX=fig.addsuplot(1,2, 1)</span>
-    <span class="n">chartBox</span> <span class="o">=</span> <span class="n">ax1</span><span class="o">.</span><span class="n">get_position</span><span class="p">()</span>
-    <span class="n">ax1</span><span class="o">.</span><span class="n">set_position</span><span class="p">([</span><span class="n">chartBox</span><span class="o">.</span><span class="n">x0</span><span class="p">,</span> <span class="n">chartBox</span><span class="o">.</span><span class="n">y0</span><span class="p">,</span> <span class="n">chartBox</span><span class="o">.</span><span class="n">width</span> <span class="o">*</span> <span class="mf">0.85</span><span class="p">,</span> <span class="n">chartBox</span><span class="o">.</span><span class="n">height</span><span class="p">])</span>
-
-    <span class="n">ncol</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">labels</span><span class="p">)</span> <span class="o">//</span> <span class="mi">10</span> <span class="k">if</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">labels</span><span class="p">)</span> <span class="o">//</span> <span class="mi">10</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="k">else</span> <span class="mi">1</span>
-    <span class="n">lgnd</span> <span class="o">=</span> <span class="n">ax1</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s2">&quot;states:&quot;</span><span class="p">,</span> <span class="n">loc</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">bbox_to_anchor</span><span class="o">=</span><span class="p">(</span><span class="mf">1.05</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">ncol</span><span class="o">=</span><span class="n">ncol</span><span class="p">,</span> <span class="n">prop</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;size&quot;</span><span class="p">:</span> <span class="mi">15</span><span class="p">})</span>
-
-    <span class="n">fig</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
-    <span class="n">fig</span><span class="o">.</span><span class="n">suptitle</span><span class="p">(</span><span class="n">title</span> <span class="o">+</span> <span class="s2">&quot; $E^R_i$ per s-value&quot;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="mf">1.05</span><span class="p">)</span>
-    <span class="n">fig</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">out_path</span><span class="p">,</span> <span class="n">bbox_extra_artists</span><span class="o">=</span><span class="p">(</span><span class="n">lgnd</span><span class="p">,),</span> <span class="n">bbox_inches</span><span class="o">=</span><span class="s1">&#39;tight&#39;</span><span class="p">)</span>
-    <span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
+    <span class="n">ax2</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;s-value&quot;</span><span class="p">)</span>
+ 
+    <span class="c1"># labels for the x-axis</span>
+    <span class="n">ax1</span><span class="o">.</span><span class="n">set_xticks</span><span class="p">(</span><span class="n">x</span><span class="p">[::</span><span class="n">s_increment</span><span class="p">])</span>
+    <span class="n">ax1</span><span class="o">.</span><span class="n">set_xticklabels</span><span class="p">(</span><span class="n">labels</span><span class="o">=</span><span class="p">[])</span>
+    
+    <span class="n">ax2</span><span class="o">.</span><span class="n">set_xticks</span><span class="p">(</span><span class="n">x</span><span class="p">[::</span><span class="n">s_increment</span><span class="p">])</span>
+    
+    <span class="n">ax2</span><span class="o">.</span><span class="n">set_xticklabels</span><span class="p">(</span><span class="n">s_values</span><span class="p">[::</span><span class="n">s_increment</span><span class="p">],</span> <span class="n">fontsize</span> <span class="o">=</span> <span class="mi">8</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">setp</span><span class="p">(</span><span class="n">ax2</span><span class="o">.</span><span class="n">get_xticklabels</span><span class="p">(),</span> <span class="n">rotation</span><span class="o">=</span><span class="mi">45</span><span class="p">,</span> <span class="n">ha</span><span class="o">=</span><span class="s2">&quot;right&quot;</span><span class="p">,</span>
+         <span class="n">rotation_mode</span><span class="o">=</span><span class="s2">&quot;anchor&quot;</span><span class="p">)</span>
+    
+    <span class="n">fig</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">out_path</span><span class="p">,</span> <span class="n">facecolor</span><span class="o">=</span><span class="s1">&#39;white&#39;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="k">return</span> <span class="kc">None</span></div>
 
 
 <div class="viewcode-block" id="plot_peoe_eoff_time_convergence"><a class="viewcode-back" href="../../../../_source/reeds.function_libs.visualization.html#reeds.function_libs.visualization.parameter_optimization_plots.plot_peoe_eoff_time_convergence">[docs]</a><span class="k">def</span> <span class="nf">plot_peoe_eoff_time_convergence</span><span class="p">(</span><span class="n">state_time_dict</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span>
@@ -297,7 +289,7 @@
 
     <span class="n">x_svalues</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="n">y_svalues</span> <span class="o">=</span> <span class="p">[]</span>
-
+    <span class="nb">print</span><span class="p">(</span><span class="n">s_opt_data</span><span class="p">)</span>
     <span class="n">bar_heights</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="n">bar_x</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">for</span> <span class="n">it</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">s_opt_data</span><span class="p">):</span>
@@ -313,7 +305,7 @@
         <span class="n">x_svalues</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">opti</span><span class="p">[</span><span class="s2">&quot;s_values&quot;</span><span class="p">])</span>
         <span class="n">y_svalues</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="nb">int</span><span class="p">(</span><span class="n">it</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;sopt&#39;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">))</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">opti</span><span class="p">[</span><span class="s2">&quot;s_values&quot;</span><span class="p">]))])</span>
 
-        <span class="n">bar_heights</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">opti</span><span class="p">[</span><span class="s2">&quot;state_sampling&quot;</span><span class="p">][</span><span class="n">state</span><span class="p">]</span> <span class="k">for</span> <span class="n">state</span> <span class="ow">in</span> <span class="n">opti</span><span class="p">[</span><span class="s2">&quot;state_sampling&quot;</span><span class="p">]])</span>
+        <span class="n">bar_heights</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">opti</span><span class="p">[</span><span class="s2">&quot;state_domination_sampling&quot;</span><span class="p">][</span><span class="n">state</span><span class="p">]</span> <span class="k">for</span> <span class="n">state</span> <span class="ow">in</span> <span class="n">opti</span><span class="p">[</span><span class="s2">&quot;state_domination_sampling&quot;</span><span class="p">]])</span>
         <span class="n">bar_x</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
             <span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">state</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;V&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;r&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;i&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">))</span> <span class="k">for</span> <span class="n">state</span> <span class="ow">in</span> <span class="n">opti</span><span class="p">[</span><span class="s2">&quot;state_domination_sampling&quot;</span><span class="p">]]))</span>
 
@@ -336,7 +328,8 @@
     <span class="k">if</span> <span class="p">(</span><span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">avRT_range</span><span class="p">,</span> <span class="nb">type</span><span class="p">(</span><span class="kc">None</span><span class="p">))):</span>
         <span class="n">ax2</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">(</span><span class="n">avRT_range</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">ax2</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="nb">max</span><span class="p">(</span><span class="n">y_RTd</span><span class="p">)</span> <span class="o">*</span> <span class="mf">1.2</span><span class="p">])</span>
+        <span class="k">pass</span>
+        <span class="c1">#ax2.set_ylim([0, max(y_RTd) * 1.2])</span>
 
     <span class="n">x_svalues</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">x_svalues</span><span class="p">)))[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
     <span class="n">y_svalues</span> <span class="o">=</span> <span class="n">y_svalues</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
@@ -351,7 +344,6 @@
     <span class="n">ax3</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;-log(s)&quot;</span><span class="p">)</span>
 
     <span class="c1"># Making the bottom right corner plot</span>
-
     <span class="n">num_sopts</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">bar_heights</span><span class="p">)</span>
     <span class="n">num_states</span> <span class="o">=</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">bar_heights</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
 
@@ -470,8 +462,8 @@
     <span class="n">mae_mean</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="n">mae_std</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">for</span> <span class="n">iteration</span><span class="p">,</span> <span class="n">data</span> <span class="ow">in</span> <span class="n">s_opt_data</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-        <span class="n">mae_mean</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;MAE_optimal_sampling&#39;</span><span class="p">])</span>
-        <span class="n">mae_std</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;MAE_std_optimal_sampling&#39;</span><span class="p">])</span>
+        <span class="n">mae_mean</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;sampling_distribution_optimal_deviation_s1&#39;</span><span class="p">][</span><span class="s1">&#39;MAE&#39;</span><span class="p">])</span>
+        <span class="n">mae_std</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;sampling_distribution_optimal_deviation_s1&#39;</span><span class="p">][</span><span class="s1">&#39;MAE_std&#39;</span><span class="p">])</span>
 
     <span class="c1">#ax.errorbar(list(range(1,len(maes)+1)), maes, approach_MAE_optSamp_std[approach],</span>
     <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">mae_mean</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)),</span> <span class="n">mae_mean</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.75</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="s2">&quot;k&quot;</span><span class="p">)</span>
