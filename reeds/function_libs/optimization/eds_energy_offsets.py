@@ -68,17 +68,17 @@ def estimate_energy_offsets(ene_trajs: List[pd.DataFrame], initial_offsets: List
     f = open(out_path + '/energy_offsets.out', "w")
 
     all_eoffs = np.zeros(num_states*num_replicas).reshape(num_replicas, num_states)
-    all_eoffs_2 = np.zeros(num_states*num_replicas).reshape(num_replicas, num_states)    
+    all_eoffs_clara = np.zeros(num_states*num_replicas).reshape(num_replicas, num_states)    
     
     # Calculate the Energy Offsets for reach replica
     for i in range(num_replicas):
         all_eoffs[i] = calc_offsets(ene_trajs[i], temp, trim_beg, num_states)
         if calc_clara:
-            (all_eoffs_2[i], converged, steps) = calc_offsets_clara_eqn(ene_trajs[i], temp, num_states, initial_offsets, trim_beg)
+            (all_eoffs_clara[i], converged, steps) = calc_offsets_clara_eqn(ene_trajs[i], temp, num_states, initial_offsets, trim_beg)
 
     f.writelines(format_as_jnb_table("Energy offsets predicted for each replica", s_values, all_eoffs, 2))
     if calc_clara:
-        f.writelines(format_as_jnb_table("Energy offsets predicted for each replica - Clara's eqn", s_values, all_eoffs_2, 2))
+        f.writelines(format_as_jnb_table("Energy offsets predicted for each replica - Clara's eqn", s_values, all_eoffs_clara, 2))
 
     # Plot the data: 
     if plot_results:
