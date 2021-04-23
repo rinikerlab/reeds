@@ -28,7 +28,6 @@ reeds.function\_libs.analysis.sampling module
    :undoc-members:
    :show-inheritance:
 
-
 Module contents
 ---------------
 

@@ -60,7 +60,6 @@ reeds.function\_libs.visualization.utils module
    :undoc-members:
    :show-inheritance:
 
-
 Module contents
 ---------------
 

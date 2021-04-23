@@ -28,7 +28,6 @@ reeds.function\_libs.utils.structures module
    :undoc-members:
    :show-inheritance:
 
-
 Module contents
 ---------------
 

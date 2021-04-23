@@ -244,32 +244,17 @@ The required python packages are listed in devtools/conda-envs/full_env.yaml.</p
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">conda</span> <span class="n">env</span> <span class="n">create</span> <span class="o">-</span><span class="n">f</span> <span class="n">devtools</span><span class="o">/</span><span class="n">conda</span><span class="o">-</span><span class="n">envs</span><span class="o">/</span><span class="n">full_env</span><span class="o">.</span><span class="n">yaml</span>
 </pre></div>
 </div>
-<dl class="simple">
-<dt>If you want to update the code of the PyGromos submodule, you can do this:</dt><dd><p>git submodule init
-git submodule update</p>
-</dd>
-</dl>
+<p>If you want to update the code of the PyGromos submodule, you can do this:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">submodule</span> <span class="n">init</span>
+<span class="n">git</span> <span class="n">submodule</span> <span class="n">update</span>
+</pre></div>
+</div>
 <p>Please if your writing code for this repository, first develop it on an own branch.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">branch</span> <span class="n">mybranch</span>    <span class="c1">#generate your branch</span>
 <span class="n">git</span> <span class="n">checkout</span> <span class="n">mybranch</span>  <span class="c1">#switch to your branch</span>
 <span class="n">git</span> <span class="n">merge</span> <span class="n">main</span>   <span class="c1">#for adding new features from main to your branch</span>
 </pre></div>
 </div>
-<p>Try to write test cases for your implemented features in /scritps/test. (there are already examples)
-So it is easier to maintain the code and add additional features.</p>
-<p>If you find a bug or any thing else, please raise an Issue.</p>
-<p>required packages:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">-</span> <span class="n">numpydoc</span>
-<span class="o">-</span> <span class="n">mdtraj</span>
-<span class="o">-</span> <span class="n">matplotlib</span>
-<span class="o">-</span> <span class="n">numpy</span>
-<span class="o">-</span> <span class="n">pandas</span>
-<span class="o">-</span> <span class="n">scipy</span>
-<span class="o">-</span> <span class="n">rdkit</span>
-</pre></div>
-</div>
-<p>If you find a bug or have an idea for a cool new feature, you are welcom to raise an Issue at the git page. :)
-P.s.: I can recommend Pycharm from dstar, for exploring the repository.</p>
 </div>
 <div class="section" id="copyright">
 <h2>Copyright<a class="headerlink" href="#copyright" title="Permalink to this headline">¶</a></h2>

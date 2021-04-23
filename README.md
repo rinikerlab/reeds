@@ -5,26 +5,13 @@ REEDS
 [![Documentation](https://img.shields.io/badge/Documentation-here-white.svg)](https://rinikerlab.github.io/reeds/)
 
 
-Replica Exchange - Enveloping Distribution Sampling (RE-EDS) is a method to calculate the relative free energy of multiple states in a system.
-It can be applied to calculate relative solvation free energies or relative binding free energies of ligands to a protein. 
-One advantage of this method is, that the transition path of one state into another one is not pre-determined thanks to use of Enveloping Distribution Sampling (EDS) by Christ et al. .
+Replica Exchange - Enveloping Distribution Sampling (RE-EDS) is a method to calculate the relative free energy of multiple states in a system. It can be applied to calculate relative solvation free energies or relative binding free energies of ligands to a protein. One advantage of this method is, that the transition path of one state into another one is not pre-determined thanks to use of Enveloping Distribution Sampling (EDS) by Christ et al. .
 
-The aim of the module is to make the RE-EDS pipeline accesible to everyone! :)
+The enhanced sampling method Replica Exchange was added by Sidler et al. to speed up the sampling and ease the choice of parameters.
+Additionally multiple modules were described by Sidler to allow an automatization of the pipeline. In this repository we now combined these approaches to an automatic scheme for RE-EDS.
 
-This Project contains:
- * For python 3.6:
-    * Reeds parameter optimization and analysis Funcs ->funcLibs
-    * reeds simulation pipeline -> Scripts
-    * reeds theory scripts (generating the beautiful harmPot plots) ->Scripts
+![](.img/State_graph.png)
 
- * gromos Reeds Versions
- * gromos Files for REEDS
- * submodule: PyGromos is already included in the repo
-
-
-The project is structured into two folders: 
-    * The function_libs folder contains all the code you could use in one of your scripts.
-    * The scripts folder contains code bits, you could already use with slight adaptations for your own project.
 
 The repository aims to make the RE-EDS pipeline accessible to everyone!
 
@@ -37,8 +24,7 @@ Further reading on EDS:
  * [Multiple free energies from a single simulation: Extending enveloping distribution sampling to nonoverlapping phase-space distributions; Clara D. Christ and Wilfred F. van Gunsteren (2008)](https://aip.scitation.org/doi/10.1063/1.2913050)
 
 ## Structure
-This Project contains the code for the RE-EDS workflow of the rinikerlab. In the example folder, you can find the system input data for the pipeline, a template script folder, and several jupyter notebooks covering and explaining certain aspects of the pipeline.
-The reeds folder contains some template files, a function library, and ready-to-use scripts for the RE-EDS steps.
+This Project contains the code for the RE-EDS workflow of the rinikerlab. In the example folder, you can find the system input data for the pipeline, a template script folder, and several jupyter notebooks covering and explaining certain aspects of the pipeline. The reeds folder contains some template files, a function library, and ready-to-use scripts for the RE-EDS steps.
 
 
 ![](.img/pipeline.png)

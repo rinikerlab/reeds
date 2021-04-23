@@ -44,7 +44,6 @@ reeds.function\_libs.optimization.src.util module
    :undoc-members:
    :show-inheritance:
 
-
 Module contents
 ---------------
 

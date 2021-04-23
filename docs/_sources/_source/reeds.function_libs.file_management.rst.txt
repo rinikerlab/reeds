@@ -12,7 +12,6 @@ reeds.function\_libs.file\_management.file\_management module
    :undoc-members:
    :show-inheritance:
 
-
 Module contents
 ---------------
 
