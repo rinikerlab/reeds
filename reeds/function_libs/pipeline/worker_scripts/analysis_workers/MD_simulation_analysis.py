@@ -12,11 +12,11 @@ template_control_dict = {
     "concat": {"do": True,
                "sub": {
                    "cp_cnf": True,
-                   "cat_trc": True,
+                   "cat_trc": False,
                    "cat_tre": False,
                    "ene_ana": True,
                    "convert_trcs": False,
-                   "cat_repdat": True, }
+                   "cat_repdat": False, }
                }
 }
 
@@ -78,5 +78,5 @@ def do(in_simulation_name: str, in_simulation_dir: str, in_topology_path: str, i
                                           num_replicas=1, control_dict=control_dict["concat"]["sub"],
                                           out_folder=out_data_dir, out_file_prefix=in_simulation_name,
                                           in_ene_ana_lib_path=in_ene_ana_lib_path, n_processes=n_processes,
-                                          gromosPP_bin_dir=gromosPP_bin_dir, nofinal=verbose,
-                                          verbose=verbose, additional_properties=properties)
+                                          gromosPP_bin_dir=gromosPP_bin_dir,
+                                          nofinal=False, verbose=verbose, additional_properties=properties)

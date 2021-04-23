@@ -388,7 +388,6 @@ def thread_worker_isolate_energies(in_en_file_paths: str,
 
     start_dir = os.getcwd()
     os.chdir(temp)
-
     # get the potentials from each replica.tre*
     if (verbose): print("JOB" + str(job) + ": working with job: " + str(list(replicas)))
     for replicaID in replicas:
@@ -399,6 +398,7 @@ def thread_worker_isolate_energies(in_en_file_paths: str,
 
         if (verbose): print("CHECKING: " + out_path)
         if (not os.path.exists(out_path)):
+            verbose = True
             if verbose: print("JOB" + str(job) + ":\t" + str(replicaID))
             if (verbose): print("JOB" + str(job) + ":", in_en_file_path)
             tmp_out = gromos.ene_ana(in_ene_ana_library_path=in_ene_ana_lib, in_en_file_paths=in_en_file_path,
@@ -576,24 +576,42 @@ def gather_simulation_replica_file_paths(in_folder: str,
 
     if (verbose): print("SEARCH PATTERN: " + filePrefix + " + * +" + str(fileSuffixes))
 
-    for dirname, dirnames, filenames in os.walk(in_folder):
-        if (str(dirname[-1]).isdigit() and os.path.basename(dirname).startswith("eq")):
-            continue
-        # check actual in_dir for fle pattern
-        tmp_files = [file for file in filenames if
-                     (filePrefix in file and any([suffix in file for suffix in fileSuffixes]))]
+    if(not finalNumberingSort):
+        files[1]=[]
+        for dirname, dirnames, filenames in os.walk(in_folder):
+            if (str(dirname[-1]).isdigit() and os.path.basename(dirname).startswith("eq")):
+                continue
 
-        if len(tmp_files) != 0:
-            for x in range(1, replicas + 1):
-                grom_file_prefix = sorted([dirname + "/" + file for file in tmp_files if
-                                           (any(["_" + str(x) + suffix in file for suffix in fileSuffixes]))])
-                files[x] += grom_file_prefix
-        if verbose: print("walking to in_dir: ", os.path.basename(dirname), "found: ", len(tmp_files))
+            # check actual in_dir for fle pattern 
+            tmp_files = [file for file in filenames if (filePrefix in file and any([suffix in file for suffix in fileSuffixes]))]
+            if(len(tmp_files)>0):
+                print(tmp_files)
+                file_paths = sorted([dirname + "/" + filep for filep in tmp_files ])
+                files[1].extend(file_paths)
 
-    if (not finalNumberingSort):
         # final_cleanup
         for x in files:
-            files[x].sort(key=lambda x: int(x.split("_")[-2]))
+            files[x].sort(key=lambda x: int(x.split("_")[-1].split(".")[0]))
+
+
+    else:
+       for dirname, dirnames, filenames in os.walk(in_folder):
+            if (str(dirname[-1]).isdigit() and os.path.basename(dirname).startswith("eq")):
+               continue
+            # check actual in_dir for fle pattern
+            tmp_files = [file for file in filenames if
+                        (filePrefix in file and any([suffix in file for suffix in fileSuffixes]))]
+            
+            if len(tmp_files) != 0:
+                for x in range(1, replicas + 1):
+                    grom_file_prefix = sorted([dirname + "/" + file for file in tmp_files if
+                                           (any(["_" + str(x) + suffix in file for suffix in fileSuffixes]))])
+                    files[x] += grom_file_prefix
+            if verbose: print("walking to in_dir: ", os.path.basename(dirname), "found: ", len(tmp_files))
+
+        # final_cleanup
+       for x in files:
+           files[x].sort(key=lambda x: int(x.split("_")[-2]))
 
     if (verbose):
         print("\nfoundFiles:\n")
@@ -1280,7 +1298,8 @@ def reeds_project_concatenation(in_folder: str,
                                                        out_prefix=out_file_prefix,
                                                        in_ene_ana_lib=in_ene_ana_lib_path,
                                                        gromosPP_path=gromosPP_bin_dir, time=0, dt=dt_tre,
-                                                       replicas=list(tre_files.keys()), verbose=verbose)
+                                                       replicas=list(tre_files.keys()),
+                                                       verbose=verbose)
 
     if (control_dict["convert_trcs"]):
         print("\tStart Trc Conversion")
