@@ -255,6 +255,7 @@ def calculate_sampling_distributions(ene_traj_csvs: List[pd.DataFrame],
 
 
 def sampling_analysis(ene_traj_csvs: List[pd.DataFrame],
+                      state_potential_treshold: List[float],
                       s_values: List[float],
                       out_path: str = None,
                       xmax: bool = False,
@@ -271,7 +272,7 @@ def sampling_analysis(ene_traj_csvs: List[pd.DataFrame],
         contains the energy data
     s_values :  List[float]
         list of s_values
-    pot_tresh : List[float]
+    state_potential_treshold : List[float]
         potential energy thresholds, for considering a state as sampled
     xmax :  bool, optional
         additionally output a plot only with a smaller x_range. (0->xmax) (default False)
@@ -291,10 +292,9 @@ def sampling_analysis(ene_traj_csvs: List[pd.DataFrame],
     # read all Vy_sx_files!
     from reeds.function_libs.visualization.utils import nice_s_vals
     if (verbose): print("\n\n Potential Threshold\n\n")
-    potential_treshold = undersampling_occurence_potential_threshold_distribution_based(ene_traj_csvs=ene_traj_csvs)
 
     ##glob vars
-    num_states = len(potential_treshold)
+    num_states = len(state_potential_treshold)
     select_states = ["e" + str(x) for x in range(1, num_states + 1)]
     s_vals_nice = nice_s_vals(s_values)
 
@@ -307,7 +307,7 @@ def sampling_analysis(ene_traj_csvs: List[pd.DataFrame],
         occurrence_sampling_replica = []
         for state in select_states:
             occurrence_sampling_state_replica = replica.index[
-                replica[state] < potential_treshold[int(state.replace("e", "")) - 1]]
+                replica[state] < state_potential_treshold[int(state.replace("e", "")) - 1]]
             occurrence_sampling_replica.append(occurrence_sampling_state_replica)
 
         data = {"occurrence_t": occurrence_sampling_replica, "dominating_state": dominating_state_sampling}
@@ -327,7 +327,7 @@ def sampling_analysis(ene_traj_csvs: List[pd.DataFrame],
     # SamplingMatrix by kays
     if (verbose): print("\n\n Calculate Sampling Distributions\n\n")
     replica_sampling_distributions = calculate_sampling_distributions(ene_traj_csvs=ene_traj_csvs,
-                                                                      potential_treshold=potential_treshold,
+                                                                      potential_treshold=state_potential_treshold,
                                                                       undersampling_occurence_sampling_tresh=0.75)
     if (do_plot):
         if (verbose): print("\n\n Sampling Histograms\n\n")
@@ -341,6 +341,63 @@ def sampling_analysis(ene_traj_csvs: List[pd.DataFrame],
         reeds.function_libs.visualization.sampling_plots.plot_stateOccurence_matrix(data=replica_sampling_distributions, out_dir=out_path, s_values=s_vals_nice,
                                                                                     place_undersampling_threshold=True, title_suffix="")
 
+    final_results = {"potentialThreshold": state_potential_treshold,
+                     "samplingDistributions": replica_sampling_distributions,
+                    }
+
+    return final_results, out_path
+
+
+def detect_undersampling(ene_traj_csvs: List[pd.DataFrame],
+                      state_potential_treshold: List[float],
+                      s_values: List[float],
+                      out_path: str = None,
+                      xmax: bool = False,
+                      do_plot: bool = True,
+                      verbose: bool = False) -> (dict, str):
+    """sampling_analysis
+    This function is analysing the samplings
+
+    Parameters
+    ----------
+    out_path :  str
+        path out for the plotfiles
+    ene_traj_csvs : List[pd.DataFrame]
+        contains the energy data
+    s_values :  List[float]
+        list of s_values
+    state_potential_treshold : List[float]
+        potential energy thresholds, for considering a state as sampled
+    xmax :  bool, optional
+        additionally output a plot only with a smaller x_range. (0->xmax) (default False)
+    do_plot: bool, opptional
+        create additional plots (default True)
+    verbose: bool, optional
+        story time :) (default False)
+
+    Returns
+    -------
+    str
+        out_path
+    dict
+      returns a dictionary containing the information of undersampling start, undersampling_potential thresholds and the different sampling type fractions. (physical sampling occurence not included!)
+    """
+
+    # read all Vy_sx_files!
+    from reeds.function_libs.visualization.utils import nice_s_vals
+    if (verbose): print("\n\n Potential Threshold\n\n")
+
+    ##glob vars
+    num_states = len(state_potential_treshold)
+    sampling_stat, out_path = sampling_analysis(ene_traj_csvs=ene_traj_csvs,
+                      state_potential_treshold=state_potential_treshold,
+                      s_values=s_values,
+                      out_path=out_path,
+                      xmax= xmax,
+                      do_plot =do_plot,
+                      verbose = verbose)
+
+    replica_sampling_distributions = sampling_stat["samplingDistributions"]
     ##get undersampling id:
     found_undersampling = False
     undersampling_idx = None
@@ -353,9 +410,6 @@ def sampling_analysis(ene_traj_csvs: List[pd.DataFrame],
     if (not found_undersampling):
         warnings.warn("Could not find undersampling!")
 
-    final_results = {"undersamplingThreshold": undersampling_idx,
-                     "potentialThreshold": potential_treshold,
-                     "samplingDistributions": replica_sampling_distributions, 
-                    }
+    sampling_stat.update({"undersamplingThreshold": undersampling_idx}
 
-    return final_results, out_path
+    return sampling_stat, out_path

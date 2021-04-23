@@ -10,7 +10,6 @@ from pygromos.euler_submissions import FileManager as fM
 from pygromos.files import imd, coord
 from pygromos.files.coord import cnf as cnf_cls
 from pygromos.utils import amino_acids as aa, bash
-from reeds.function_libs.pipeline import generate_euler_job_files as gjs
 from reeds.function_libs.pipeline.jobScheduling_scripts import RE_EDS_simulation_scheduler
 from reeds.function_libs.pipeline.worker_scripts.analysis_workers import RE_EDS_general_analysis, \
     RE_EDS_general_analysis as reeds_analysis
