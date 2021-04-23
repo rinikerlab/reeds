@@ -143,8 +143,7 @@ def do(out_analysis_dir: str, system_name: str,
     ene_trajs = fM.parse_csv_energy_trajectories(data_dir, out_prefix)  # gather potentials
     sampling_analysis_results, out_plot_dirs = reeds.function_libs.analysis.sampling.sampling_analysis(out_path = out_analysis_plot_dir,
                                                                                                        ene_traj_csvs = ene_trajs,
-                                                                                                       s_values = s_values[:succsessful_sim_count],
-                                                                                                       pot_tresh = undersampling_pot_tresh)
+                                                                                                       s_values =                        s_values[:succsessful_sim_count])
     # Plotting the different potential energy distributions
     if control_dict["pot_ene_by_state"]:
         for i in range(num_states):
@@ -180,8 +179,7 @@ def do(out_analysis_dir: str, system_name: str,
     u_idx = sampling_analysis_results["undersamplingThreshold"]
     # Make the new s-distribution based on this 
     print("undersampling found after replica: " + str(u_idx) + ' with s = ' + str(s_values[u_idx]))    
-    print('New s distribution will place ' + str(num_states) + ' replicas between '
-	  ' s = ' + str(s_values[u_idx]) + ' and s = ' +str(s_values[u_idx+3]))
+    print('New s distribution will place ' + str(num_states) + ' replicas between  s = ' + str(s_values[u_idx]) + ' and s = ' +str(s_values[u_idx+3]))
  
     new_sdist = s_values[:u_idx-1]
     lower_sdist = s_log_dist.get_log_s_distribution_between(s_values[u_idx], s_values[u_idx+3], num_states)
@@ -201,7 +199,7 @@ def do(out_analysis_dir: str, system_name: str,
 
     # Coordinates:
     if(len(s_values) != len(cnfs)):
-        fM.adapt_cnfs_to_new_sDistribution(in_old_svals=s_values, in_new_svals=new_sdist, in_cnf_files=cnfs, out_cnf_dir=out_analysis_next_dir, cnf_prefix=system_name+"_lower_bound")
+        fM.adapt_cnfs_to_new_sDistribution(in_old_svals=s_values[:u_idx], in_new_svals=new_sdist, in_cnf_files=cnfs[:u_idx], out_cnf_dir=out_analysis_next_dir, cnf_prefix=system_name+"_lower_bound")
 
     # compress out_trc/out_tre Files & simulation dir
     trx_files = glob.glob(data_dir + "/*.tr?")
