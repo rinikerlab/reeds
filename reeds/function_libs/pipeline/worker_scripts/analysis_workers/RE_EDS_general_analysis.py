@@ -157,7 +157,9 @@ def check_script_control(control_dict: dict = None) -> dict:
 def do_Reeds_analysis(in_folder: str, out_folder: str, gromos_path: str,
                       topology: str, in_ene_ana_lib: str, in_imd: str,
                       optimized_eds_state_folder: str = "../a_optimizedState/analysis/data",
-                      pot_tresh: float = 0.0, frac_tresh: list = [0.6], take_last_n: int = None,
+                      state_undersampling_pot_tresh: List[float] = None,
+                      state_physcial_pot_tresh: List[float] = None,
+                      undersampling_frac_thresh: float = 0.9,
                       add_s_vals: int = 0, state_weights: List[float]=None, s_opt_trial_range:int=None,
                       adding_new_sReplicas_Scheme: adding_Scheme_new_Replicas = adding_Scheme_new_Replicas.from_below,
                       grom_file_prefix: str = "test", title_prefix: str = "test", ene_ana_prefix="ey_sx.dat",
@@ -188,7 +190,7 @@ def do_Reeds_analysis(in_folder: str, out_folder: str, gromos_path: str,
         path to optimized eds_state folders (default: "../a_optimizedState/analysis/data")
     pot_tresh : float, optional
         potential energy treshold (default: 0)
-    frac_tresh : int, optional
+    undersampling_frac_thresh : int, optional
         fraction threshold (default: 0.6)
     take_last_n : int, optional
         this parameter can be used to force the energy offset estimation to use a certain amount of replicas.  (default: None)
@@ -405,8 +407,8 @@ def do_Reeds_analysis(in_folder: str, out_folder: str, gromos_path: str,
         if (sub_control["sampling_plot"]):
             # plot if states are sampled and minimal state
             print("\tplot sampling: ")
-            (sampling_results, out_dir) = sampling_ana.sampling_analysis(out_path = out_dir, ene_traj_csvs = energy_trajectories,
-                                                                         s_values = s_values, state_potential_treshold= pot_tresh)
+            (sampling_results, out_dir) = sampling_ana.detect_undersampling(out_path = out_dir, ene_traj_csvs = energy_trajectories,
+                                                                            s_values = s_values, state_potential_treshold= state_undersampling_pot_tresh, undersampling_occurence_sampling_tresh=undersampling_frac_thresh)
 
         if (sub_control["calc_eoff"]):
             print("calc Eoff: ")
@@ -415,8 +417,8 @@ def do_Reeds_analysis(in_folder: str, out_folder: str, gromos_path: str,
             print("\tS_values(" + str(len(s_values)) + "): ", s_values)
             print("\tsytsemTemp: ", temp)
             # set trim_beg to 0.1 when analysing non equilibrated data
-            new_eoffs, all_eoffs = eds_energy_offsets.estimate_energy_offsets(ene_trajs = energy_trajectories, initial_offsets = Eoff[0], s_values = s_values,
-                                                                              out_path = out_dir, temp = temp, trim_beg = 0.,
+            new_eoffs, all_eoffs = eds_energy_offsets.estimate_energy_offsets(ene_trajs = energy_trajectories, initial_offsets = Eoff[0], sampling_stat=sampling_results, s_values = s_values,
+                                                                              out_path = out_dir, temp = temp, trim_beg = 0., state_undersampling_potential_threshold=state_undersampling_pot_tresh,
                                                                               undersampling_idx = sampling_results['undersamplingThreshold'], 
                                                                               plot_results = True, calc_clara = False)
         

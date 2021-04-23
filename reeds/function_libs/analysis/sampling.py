@@ -201,8 +201,7 @@ def get_all_physical_occurence_potential_threshold_distribution_based(ene_trajs:
 
 
 def calculate_sampling_distributions(ene_traj_csvs: List[pd.DataFrame],
-                                     potential_treshold: List[float],
-                                     undersampling_occurence_sampling_tresh: float = 0.75)-> Dict[int, Dict[str, Dict[int, float]]]:
+                                     potential_treshold: List[float])-> Dict[int, Dict[str, Dict[int, float]]]:
     """calculate_sampling_distributions
     This function is using the dominating state sampling and occurrence state sampling definition, to calculate
     for both definitions the sampling distributions including each stat.
@@ -241,15 +240,9 @@ def calculate_sampling_distributions(ene_traj_csvs: List[pd.DataFrame],
             occurrence_sampling_frac = replica[replica[state] < potential_treshold[ind]].shape[0] / total_number_steps
             occurrence_state_sampling.update({int(state.replace("e", "")): occurrence_sampling_frac})
 
-        # undersampling?
-        undersampling_criterium = True if (
-            all([occ >= undersampling_occurence_sampling_tresh for occ in
-                 occurrence_state_sampling.values()])) else False
-
         # update results
         replica_sampling_dist.update({int(replica.s.replace("s", "")): {"dominating_state": dominating_state_sampling,
-                                                                        "occurence_state": occurrence_state_sampling,
-                                                                        "undersampling": undersampling_criterium}})
+                                                                        "occurence_state": occurrence_state_sampling}})
 
     return replica_sampling_dist
 
@@ -327,8 +320,7 @@ def sampling_analysis(ene_traj_csvs: List[pd.DataFrame],
     # SamplingMatrix by kays
     if (verbose): print("\n\n Calculate Sampling Distributions\n\n")
     replica_sampling_distributions = calculate_sampling_distributions(ene_traj_csvs=ene_traj_csvs,
-                                                                      potential_treshold=state_potential_treshold,
-                                                                      undersampling_occurence_sampling_tresh=0.75)
+                                                                      potential_treshold=state_potential_treshold)
     if (do_plot):
         if (verbose): print("\n\n Sampling Histograms\n\n")
         for ind, x in enumerate(replica_sampling_distributions):
@@ -352,6 +344,7 @@ def detect_undersampling(ene_traj_csvs: List[pd.DataFrame],
                       state_potential_treshold: List[float],
                       s_values: List[float],
                       out_path: str = None,
+                      undersampling_occurence_sampling_tresh: float = 0.9,
                       xmax: bool = False,
                       do_plot: bool = True,
                       verbose: bool = False) -> (dict, str):
@@ -397,19 +390,24 @@ def detect_undersampling(ene_traj_csvs: List[pd.DataFrame],
                       do_plot =do_plot,
                       verbose = verbose)
 
-    replica_sampling_distributions = sampling_stat["samplingDistributions"]
     ##get undersampling id:
     found_undersampling = False
     undersampling_idx = None
+    replica_sampling_distributions = sampling_stat["samplingDistributions"]
     for i in replica_sampling_distributions:
-        if (replica_sampling_distributions[i]["undersampling"]):
-            found_undersampling = True
+        # undersampling?
+        undersampling_criterium = True if (all([occ >= undersampling_occurence_sampling_tresh for occ in replica_sampling_distributions[i]["occurence_state"].values()])) else False
+        sampling_stat["samplingDistributions"][i].update({"undersampling":undersampling_criterium})
+
+        if (undersampling_criterium):
             undersampling_idx = i
             break
 
     if (not found_undersampling):
         warnings.warn("Could not find undersampling!")
 
-    sampling_stat.update({"undersamplingThreshold": undersampling_idx}
+    sampling_stat.update({"undersamplingThreshold": undersampling_idx})
+    sampling_stat.update({"state_undersampling_potTresh": state_potential_treshold,
+                          "undersampling_occurence_sampling_tresh": undersampling_occurence_sampling_tresh})
 
     return sampling_stat, out_path
