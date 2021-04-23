@@ -29,11 +29,11 @@ from reeds.function_libs.utils.structures import spacer
 def do(out_root_dir: str, in_simSystem: fM.System, in_ene_ana_lib: str,
        in_template_imd_path: str = imd_templates.reeds_md_path,
        optimized_states: str = os.path.abspath("a_optimizedState/analysis/next"),
-       sval_file: str = None,
+       sval_file: str = None, ssm_approach:bool = True,
        gromosXX_bin_dir: str = None, gromosPP_bin_dir: str = None,
        exclude_residues: list = [], nmpi_per_replica: int = 1, num_simulation_runs: int = 2,
        num_equilibration_runs: int = 1, equilibration_trial_num: int = None,
-       pot_tresh: float = 0.0, queueing_sys: object = None, work_dir: str = None,
+       queueing_sys: object = None, work_dir: str = None,
        submit: bool = True, duration_per_job: str = "24:00", 
        initialize_first_run: bool = True, reinitialize: bool = False,
        do_not_doubly_submit_to_queue: bool = True,
@@ -116,7 +116,7 @@ int
         coord_dir = input_dir + "/coord"
         out_dir_path = out_root_dir + "/simulation"
         in_imd_path = input_dir + "/repex_eoff.imd"
-        old_result_folder = os.path.dirname(simSystem.coordinates[0])
+        lower_s_bound_dir = os.path.dirname(simSystem.coordinates[0])
         analysis_dir = out_root_dir + "/analysis"
         if (verbose): print("Generating Folders")
 
@@ -125,24 +125,17 @@ int
         bash.make_folder(input_dir)
         bash.make_folder(coord_dir)
     
-        # Look at the coordinates from the optimized states
-
-        os.chdir(out_root_dir)
-        optimized_coordinates = glob.glob(optimized_states + "/*.cnf")
-        print("found coords: ", optimized_coordinates)
-        if (len(optimized_coordinates) == 0):
-            raise IOError("Could not find any optimized coordinates. Did the simulation finish?")
-
-        simSystem.coordinates = optimized_coordinates
-        os.chdir("..")
-
         # Modify the imd file to use the s-values generated previosuly
-        
         if not os.path.exists(sval_file) :
             raise IOError("COULD NOT FIND S_VALS.CSV in : ", sval_file, "\n")
 
+
+        sval_file = lower_s_bound_dir+"/"
         tmp = open(sval_file, "r")
         s_values = list(map(float, " ".join(tmp.readlines()).split()))
+
+        tmp = open(sval_file, "r")
+        state_undersampling_pot_tresh =  list(map(float, " ".join(tmp.readlines()).split()))
 
         print(simSystem)
 
@@ -155,26 +148,39 @@ int
         svals = imd_file.REPLICA_EDS.RES
         numstates = imd_file.REPLICA_EDS.NUMSTATES
 
-        # Use coordinates from the optimized states as starting cnf
-        
-        if (verbose): print("Copy the coordinates in place")
+        # Coordinates
 
         cnf_prefix = "REEDS_eoff_run"
         coordinate_dir = coord_dir
-        
-        out_cnfs = []
+        if(ssm_approach):
+            # Use coordinates from the optimized states as starting cnf
+            os.chdir(out_root_dir)
+            optimized_coordinates = glob.glob(optimized_states + "/*.cnf")
+            print("found coords: ", optimized_coordinates)
+            if (len(optimized_coordinates) == 0):
+                raise IOError("Could not find any optimized coordinates. Did the simulation finish?")
 
-        for i in range(len(svals)):
-            f = bash.copy_file(optimized_coordinates[i%numstates], coord_dir + "/" + cnf_prefix + "_ssm_" + str(i+1) + ".cnf")
-            out_cnfs.append(f)
-        
-        simSystem.coordinates = out_cnfs
+            simSystem.coordinates = optimized_coordinates
+
+            os.chdir("..")
+            out_cnfs = []
+
+            for i in range(len(svals)):
+                f = bash.copy_file(optimized_coordinates[i % numstates],
+                                   coord_dir + "/" + cnf_prefix + "_ssm_" + str(i + 1) + ".cnf")
+                out_cnfs.append(f)
+
+            simSystem.coordinates = out_cnfs
+        else:
+            lower_s_bound_coordinates = glob.glob(lower_s_bound_dir + "/*.cnf")
+            simSystem.coordinates = lower_s_bound_coordinates
+            simSystem.move_input_coordinates(coordinate_dir)
+
+        if (verbose): print("Copy the coordinates in place")
 
         # Generate job array scripts
-        
         # This dictionary only contains control specific        
-        # to the energy offsets, the rest is written automatically        
-
+        # to the energy offsets, the rest is written automatically
         control_dict = {
             "eoffset": {"do": True,
                 "sub": {
@@ -191,7 +197,6 @@ int
         }
 
         nmpi = len(svals) * int(nmpi_per_replica)  # How many MPIcores needed?
-        workdir = None
         jobname = simSystem.name
 
         # Generate execution Scripts
@@ -209,7 +214,7 @@ int
             "gromos_path": gromosPP_bin_dir,
             "in_ene_ana_lib": in_ene_ana_lib,
             "n_processors": 5,
-            "pot_tresh": pot_tresh,
+            "pot_tresh": state_undersampling_pot_tresh,
             "frac_tresh": [0.1],
             "verbose": True,
             "grom_file_prefix": simSystem.name,
@@ -252,7 +257,7 @@ int
                                                                   out_dir_path=out_dir_path, jobname=jobname, nmpi=nmpi,
                                                                   duration_per_job=duration_per_job,
                                                                   num_simulation_runs=num_simulation_runs,
-                                                                  work_dir=workdir,
+                                                                  work_dir=work_dir,
                                                                   num_equilibration_runs=num_equilibration_runs,
                                                                   in_analysis_script_path=in_analysis_script_path,
                                                                   do_not_doubly_submit_to_queue=do_not_doubly_submit_to_queue,

@@ -576,7 +576,7 @@ def gather_simulation_replica_file_paths(in_folder: str,
 
     if (verbose): print("SEARCH PATTERN: " + filePrefix + " + * +" + str(fileSuffixes))
 
-    if(not finalNumberingSort):
+    if(finalNumberingSort):
         files[1]=[]
         for dirname, dirnames, filenames in os.walk(in_folder):
             if (str(dirname[-1]).isdigit() and os.path.basename(dirname).startswith("eq")):
