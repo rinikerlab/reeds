@@ -158,8 +158,8 @@ def check_script_control(control_dict: dict = None) -> dict:
 def do_Reeds_analysis(in_folder: str, out_folder: str, gromos_path: str,
                       topology: str, in_ene_ana_lib: str, in_imd: str,
                       optimized_eds_state_folder: str = "../a_optimizedState/analysis/data",
-                      state_undersampling_pot_tresh: List[float] = None,
-                      state_physcial_pot_tresh: List[float] = None,
+                      state_undersampling_occurrence_potential_threshold: List[float] = None,
+                      state_physical_occurrence_potential_threshold: List[float] = None,
                       undersampling_frac_thresh: float = 0.9,
                       add_s_vals: int = 0, state_weights: List[float]=None, s_opt_trial_range:int=None,
                       adding_new_sReplicas_Scheme: adding_Scheme_new_Replicas = adding_Scheme_new_Replicas.from_below,
@@ -409,7 +409,7 @@ def do_Reeds_analysis(in_folder: str, out_folder: str, gromos_path: str,
             # plot if states are sampled and minimal state
             print("\tplot sampling: ")
             (sampling_results, out_dir) = sampling_ana.detect_undersampling(out_path = out_dir, ene_traj_csvs = energy_trajectories,
-                                                                            s_values = s_values, state_potential_treshold= state_undersampling_pot_tresh, undersampling_occurence_sampling_tresh=undersampling_frac_thresh)
+                                                                            s_values = s_values, state_potential_treshold= state_undersampling_occurrence_potential_threshold, undersampling_occurence_sampling_tresh=undersampling_frac_thresh)
 
         if (sub_control["calc_eoff"]):
             print("calc Eoff: ")
@@ -468,9 +468,9 @@ def do_Reeds_analysis(in_folder: str, out_folder: str, gromos_path: str,
         out_dir = bash.make_folder(out_folder + "/state_sampling")
 
         (sampling_results, out_dir) = sampling_ana.sampling_analysis(out_path=out_dir,
-                                                                        ene_traj_csvs=energy_trajectories,
-                                                                        s_values=s_values,
-                                                                        state_potential_treshold=state_physcial_pot_tresh)
+                                                                     ene_traj_csvs=energy_trajectories,
+                                                                     s_values=s_values,
+                                                                     state_potential_treshold=state_physical_occurrence_potential_threshold)
 
     if (control_dict["dfmult"]["do"]):
         print("Start Dfmult")
