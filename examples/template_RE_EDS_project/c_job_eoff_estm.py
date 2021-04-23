@@ -11,6 +11,7 @@ from global_definitions import fM, bash
 from global_definitions import name, root_dir
 from global_definitions import gromosXX_bin, gromosPP_bin, ene_ana_lib
 from global_definitions import in_top_file, in_pert_file, in_disres_file, in_template_reeds_imd
+from global_definitions import undersampling_frac_thresh
 
 #STEP specifics
 out_eoff_dir = root_dir + "/c_energy_offsets"
@@ -21,7 +22,6 @@ in_name = name + "_energy_offsets"
 out_eoff_dir = bash.make_folder(out_eoff_dir)
 
 opt_states = root_dir + "/a_optimizedState/analysis/data"
-template_imd = root_dir + "/0_input/template_reeds.imd"
 
 #In- Files
 topology = fM.Topology(top_path=in_top_file, disres_path=in_disres_file, pertubation_path=in_pert_file)
@@ -30,11 +30,12 @@ system = fM.System(coordinates=coords, name=in_name, top=topology)
 print(system)
 
 last_jobID = eoffEstm.do(out_root_dir=out_eoff_dir, in_simSystem=system,
-                         gromosXX_bin_dir = gromosXX_bin, gromosPP_bin_dir = gromosPP_bin,
                          sval_file = sval_file,
-                         in_template_imd_path = template_imd,
-                         in_ene_ana_lib=ene_ana_lib, 
-                         submit=True, 
-                         optimized_states = opt_states,                                     
-                        )
+                         in_template_imd_path = in_template_reeds_imd,
+                         in_ene_ana_lib=ene_ana_lib,
+                         gromosXX_bin_dir=gromosXX_bin, gromosPP_bin_dir=gromosPP_bin,
+                         undersampling_frac_thresh=undersampling_frac_thresh,
+                         optimized_states = opt_states,
+                         submit=True,
+                         )
 

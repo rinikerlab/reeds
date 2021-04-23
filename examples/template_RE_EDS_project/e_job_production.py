@@ -7,7 +7,7 @@ sys.path.append(os.getcwd())
 from global_definitions import fM, bash
 from global_definitions import name, root_dir
 from global_definitions import gromosXX_bin, gromosPP_bin, ene_ana_lib
-from global_definitions import in_top_file, in_pert_file, in_disres_file, in_template_reeds_imd
+from global_definitions import in_top_file, in_pert_file, in_disres_file
 
         
 #STEP Specifics
