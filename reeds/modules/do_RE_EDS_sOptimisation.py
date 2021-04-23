@@ -42,6 +42,7 @@ def do(out_root_dir: str, in_simSystem: fM.System, in_template_imd: str = None,
        optimized_states_dir: str = os.path.abspath("a_optimizedState/analysis/next"),
        lower_bound_dir: str = os.path.abspath("b_lowerBound/analysis/next"),
        state_physical_occurrence_potential_threshold:List[float]=None,
+       state_undersampling_occurrence_potential_threshold: List[float]=None,
        undersampling_fraction_threshold:float=0.9,
        equil_runs: int = None, steps_between_trials: int = 20, trials_per_run: int = 12500,
        non_ligand_residues: list = [],
@@ -190,14 +191,14 @@ int
         elif(state_physical_occurrence_potential_threshold is None):
             state_physical_occurrence_potential_threshold = [0 for x in range(num_states)]
 
-        state_undersampling_pot_tresh_path = optimized_states_dir + "/state_occurence_pot_thresh.csv"
-        if(state_physical_occurrence_potential_threshold is None and os.path.exists(state_undersampling_pot_tresh_path)):
+        state_undersampling_pot_tresh_path = lower_bound_dir + "/state_occurence_pot_thresh.csv"
+        if(state_undersampling_occurrence_potential_threshold is None and os.path.exists(state_undersampling_pot_tresh_path)):
             if not os.path.exists(state_undersampling_pot_tresh_path) :
                 raise IOError("COULD NOT FIND state_occurence_pot_thresh.CSV in : ", state_undersampling_pot_tresh_path, "\n")
             else:
                 tmp = open(state_undersampling_pot_tresh_path, "r")
                 state_undersampling_occurrence_potential_threshold =  list(map(float, " ".join(tmp.readlines()).split()))
-        elif(state_physical_occurrence_potential_threshold is None):
+        elif(state_undersampling_occurrence_potential_threshold is None):
             state_undersampling_occurrence_potential_threshold = [0 for x in range(num_states)]
 
 

@@ -14,7 +14,7 @@ import sys
 import traceback
 import warnings
 from collections import OrderedDict
-from typing import Tuple
+from typing import Tuple, List
 
 import reeds.function_libs.pipeline.module_functions
 from pygromos.euler_submissions import FileManager as fM
@@ -32,6 +32,8 @@ def do(out_root_dir: str, in_simSystem: fM.System, in_ene_ana_lib: str,
        optimized_states: str = os.path.abspath("a_optimizedState/analysis/next"),
        sval_file: str = None, ssm_approach:bool = True,
        undersampling_frac_thresh:float = 0.9,
+       state_physical_occurrence_potential_threshold: List[float] = None,
+       state_undersampling_occurrence_potential_threshold: List[float] = None,
        gromosXX_bin_dir: str = None, gromosPP_bin_dir: str = None,
        exclude_residues: list = [], nmpi_per_replica: int = 1, num_simulation_runs: int = 2,
        num_equilibration_runs: int = 1, equilibration_trial_num: int = None,
@@ -136,19 +138,20 @@ int
             tmp = open(sval_file_path, "r")
             s_values = list(map(float, " ".join(tmp.readlines()).split()))
 
-        if not os.path.exists(state_undersampling_pot_tresh_path) :
-            raise IOError("COULD NOT FIND state_occurence_pot_thresh.CSV in : ", state_undersampling_pot_tresh_path, "\n")
-        else:
+        if (state_undersampling_occurrence_potential_threshold is None and os.path.exists(state_undersampling_pot_tresh_path)):
             tmp = open(state_undersampling_pot_tresh_path, "r")
-            state_undersampling_pot_tresh =  list(map(float, " ".join(tmp.readlines()).split()))
+            state_undersampling_occurrence_potential_threshold =  list(map(float, " ".join(tmp.readlines()).split()))
+        elif(state_undersampling_occurrence_potential_threshold is None):
+            raise IOError("COULD NOT FIND state_occurence_pot_thresh.CSV in : ", state_undersampling_pot_tresh_path, "\n")
 
         state_physical_pot_tresh_path = optimized_states+"/state_occurence_pot_thresh.csv"
-        if os.path.exists(state_physical_pot_tresh_path) :
+        if (state_physical_occurrence_potential_threshold is None and os.path.exists(state_physical_pot_tresh_path)):
             tmp = open(state_physical_pot_tresh_path, "r")
-            state_physical_pot_tresh = list(map(float, " ".join(tmp.readlines()).split()))
-        else:
+            state_physical_occurrence_potential_threshold = list(map(float, " ".join(tmp.readlines()).split()))
+        elif(state_physical_occurrence_potential_threshold is None):
             warnings.warn("setting physical state occurrence thresholds == undersampling state occurrence thresholds\n Because I could not find:   "+state_physical_pot_tresh_path)
-            state_physical_pot_tresh = state_undersampling_pot_tresh
+            state_physical_occurrence_potential_threshold = state_undersampling_occurrence_potential_threshold
+
         print(simSystem)
 
         ##adapt imd_templates
@@ -226,8 +229,8 @@ int
             "gromos_path": gromosPP_bin_dir,
             "in_ene_ana_lib": in_ene_ana_lib,
             "n_processors": 5,
-            "state_undersampling_pot_tresh": state_undersampling_pot_tresh,
-            "state_physcial_pot_tresh": state_physical_pot_tresh,
+            "state_undersampling_pot_tresh": state_undersampling_occurrence_potential_threshold,
+            "state_physcial_pot_tresh": state_physical_occurrence_potential_threshold,
             "undersampling_frac_thresh": undersampling_frac_thresh,
             "verbose": True,
             "grom_file_prefix": simSystem.name,
