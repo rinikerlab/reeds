@@ -60,12 +60,25 @@ def analyse_sopt_iteration(repdat_path: str, out_dir: str, title: str, pot_tresh
     replica1 = repdat_file.DATA.loc[repdat_file.DATA.ID == 1]
 
 
-    from reeds.function_libs.analysis.sampling import sampling_analysis
+    if (isinstance(pot_tresh, float)):
+        pot_tresh = {x:pot_tresh for x in replica1.iloc[0].state_potentials}
+    elif(isinstance(pot_tresh, float)):
+        pot_tresh = {x:y for x,y in zip(sorted(replica1.iloc[0].state_potentials), pot_tresh)}
+    print("potTresh", pot_tresh)
 
-    stat_out, _ = sampling_analysis(ene_traj_csvs=[replica1],state_potential_treshold=pot_tresh, s_values=[1.0], do_plot=False)
-    print("STAT OUT!: ", stat_out)
-    sopt_it.update({"state_occurence_sampling": stat_out['samplingDistributions'][1]['occurence_state']})
-    sopt_it.update({"state_domination_sampling": stat_out['samplingDistributions'][1]['dominating_state']})
+    for rowID, row in replica1.iterrows():
+        state_pots = row.state_potentials
+
+        for ind, state in enumerate(state_pots):
+            if (state_pots[state] < pot_tresh[state]):
+                occurrence_counts[state] += 1
+
+        id_ene = {val: key for key, val in state_pots.items()}
+        min_state = id_ene[min(id_ene)]
+        domination_counts[min_state] +=1
+
+    sopt_it.update({"state_occurence_sampling": occurrence_counts})
+    sopt_it.update({"state_domination_sampling": domination_counts})
 
     del repdat_file
 
@@ -113,7 +126,7 @@ def analyse_sopt_iteration(repdat_path: str, out_dir: str, title: str, pot_tresh
     return sopt_it
 
 
-def do(sopt_root_dir: str, state_physical_occurrence_potential_threshold:Union[List, float]=0, title="", out_dir: str = None, rt_convergence=100):
+def do(sopt_root_dir: str, pot_tresh:Union[List, float]=0, title="", out_dir: str = None, rt_convergence=100):
     """
         This function does the final analysis of an s-optimization. It analyses the outcome of the full s-optimization iterations.
         Features:
@@ -127,7 +140,7 @@ def do(sopt_root_dir: str, state_physical_occurrence_potential_threshold:Union[L
     ----------
     sopt_root_dir : str
         directory containing all s-optimization iterations
-    state_physical_occurrence_potential_threshold : Union[float, List[float]], optional
+    pot_tresh : Union[float, List[float]], optional
         potential energy threshold, determining undersampling (default: 0)
     title : str, optional
         title of run (default: "")
@@ -165,7 +178,7 @@ def do(sopt_root_dir: str, state_physical_occurrence_potential_threshold:Union[L
             print("\nCalculate statistics for iteration: ", iteration)
             repdat_files.update({iteration: repdat[0]})
             sopt_it_stats = analyse_sopt_iteration(repdat_path=repdat_files[iteration], out_dir=out_dir,
-                                                   title="s-opt " + str(iteration), pot_tresh=state_physical_occurrence_potential_threshold)
+                                                   title="s-opt " + str(iteration), pot_tresh=pot_tresh)
 
             pickle.dump(obj=sopt_it_stats, file=open(out_iteration_file_path, "wb"))
             sopt_data.update({iteration_folder: sopt_it_stats})
