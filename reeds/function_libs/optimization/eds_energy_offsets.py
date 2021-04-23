@@ -94,9 +94,7 @@ def estimate_energy_offsets(ene_trajs: List[pd.DataFrame], initial_offsets: List
     f.writelines(tables)
     
     # Take the average from the undersampling replicas    
-    means = None
-    stdevs = None
-    if undersampling_idx is None: 
+    if undersampling_idx is None:
             f.writelines('\nDid not find any undersampling replicas.')
             raise Exception("Could not determine new offsets, as no undersampling detected!")
     else: 

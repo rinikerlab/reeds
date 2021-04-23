@@ -117,7 +117,7 @@ int
         imd_file = imd.Imd(in_template_imd)
         s_1_ammount = list(map(float, imd_file.REPLICA_EDS.RES)).count(1.0)
         imd_file.edit_REEDS(SVALS=imd_file.REPLICA_EDS.RES[s_1_ammount-1:])
-        num_states = imd_file.REPLICA_EDS.NUMSTATES
+        num_states = int(imd_file.REPLICA_EDS.NUMSTATES)
         num_svals = int(imd_file.REPLICA_EDS.NRES)
         imd_file.write(in_imd_path)
 
