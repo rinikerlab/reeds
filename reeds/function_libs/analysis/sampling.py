@@ -380,7 +380,6 @@ def detect_undersampling(ene_traj_csvs: List[pd.DataFrame],
     if (verbose): print("\n\n Potential Threshold\n\n")
 
     ##glob vars
-    num_states = len(state_potential_treshold)
     sampling_stat, out_path = sampling_analysis(ene_traj_csvs=ene_traj_csvs,
                       state_potential_treshold=state_potential_treshold,
                       s_values=s_values,

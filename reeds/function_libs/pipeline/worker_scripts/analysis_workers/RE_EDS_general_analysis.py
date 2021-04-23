@@ -464,13 +464,15 @@ def do_Reeds_analysis(in_folder: str, out_folder: str, gromos_path: str,
 
         if (verbose): print("Done\n")
 
-    if (control_dict["phys_sampling"]["do"]):
+    if (control_dict["phys_sampling"]["do"] and not state_physical_occurrence_potential_threshold is None):
         out_dir = bash.make_folder(out_folder + "/state_sampling")
 
         (sampling_results, out_dir) = sampling_ana.sampling_analysis(out_path=out_dir,
                                                                      ene_traj_csvs=energy_trajectories,
                                                                      s_values=s_values,
                                                                      state_potential_treshold=state_physical_occurrence_potential_threshold)
+    elif(control_dict["phys_sampling"]["do"]):
+        warnings.warn("DID NOT do physical sampling analysis, as state_physical_occurrence_potential_threshold was None!")
 
     if (control_dict["dfmult"]["do"]):
         print("Start Dfmult")
