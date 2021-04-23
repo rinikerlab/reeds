@@ -112,7 +112,7 @@ def do(out_analysis_dir: str, system_name: str,
                                      additional_properties=["eR"] + ["e" + str(i) for i in range(1, num_states + 1)],
                                      in_imd=in_imd_path + "_1.imd", num_replicas=len(s_values[:succsessful_sim_count]),
                                      control_dict=control_dict, out_folder=data_dir, in_ene_ana_lib_path=in_ene_ana_lib,
-                                     out_file_prefix=out_prefix, nofinal=True, gromosPP_bin_dir=gromosPP_bin)
+                                     out_file_prefix=out_prefix, gromosPP_bin_dir=gromosPP_bin)
 
     elif (os.path.exists(data_dir) and os.path.exists(in_simulation_dir + ".tar.gz")):
         cnfs = glob.glob(data_dir + "/*.cnf")
@@ -162,8 +162,7 @@ def do(out_analysis_dir: str, system_name: str,
     out_analysis_next_dir = out_analysis_dir + "/next"
     bash.make_folder(out_analysis_next_dir, "-p")
 
-    u_idx = sampling_analysis_results["undersamlingThreshold"]
-    
+    u_idx = sampling_analysis_results["undersamplingThreshold"]
     # Make the new s-distribution based on this 
     print("undersampling found after replica: " + str(u_idx) + ' with s = ' + str(s_values[u_idx]))    
     print('New s distribution will place ' + str(num_states) + ' replicas between '
