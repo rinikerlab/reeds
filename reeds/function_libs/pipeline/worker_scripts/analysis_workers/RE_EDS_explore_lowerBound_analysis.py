@@ -201,7 +201,7 @@ def do(out_analysis_dir: str, system_name: str,
 
     # Coordinates:
     if(len(s_values) != len(cnfs)):
-        fM.adapt_cnfs_to_new_sDistribution(in_old_svals=s_values, in_new_svals=new_sdist, in_cnf_files=cnfs, out_cnf_dir=out_analysis_next_dir, cnf_prefix=system_name+"_lower_bound")
+        fM.adapt_cnfs_to_new_sDistribution(in_old_svals=s_values[:u_idx-1], in_new_svals=new_sdist, in_cnf_files=cnfs[:u_idx-1], out_cnf_dir=out_analysis_next_dir, cnf_prefix=system_name+"_lower_bound")
 
     # compress out_trc/out_tre Files & simulation dir
     trx_files = glob.glob(data_dir + "/*.tr?")
