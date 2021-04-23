@@ -12,7 +12,7 @@ import reeds.function_libs.visualization.pot_energy_plots
 from reeds.function_libs.file_management import file_management as fM
 import reeds.function_libs.utils.s_log_dist as s_log_dist
 
-np.set_printoptions(suppress=True)
+np.set_printoptions(suppress=True,formatter={'float_kind':'{:0.7f}'.format})
 from reeds.data import ene_ana_libs
 
 def do(out_analysis_dir: str, system_name: str,
