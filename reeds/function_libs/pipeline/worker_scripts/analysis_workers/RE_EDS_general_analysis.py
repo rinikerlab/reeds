@@ -57,6 +57,7 @@ template_control_dict = OrderedDict({  # this dictionary is controlling the post
                  "roundtrips": True,
                  "generate_replica trace": True}
              },
+    "phys_sampling": {"do": True},
     "dfmult": {"do": False},
     "compress_simulation_folder": {"do": True},
     "prepare_input_folder": {"do": True,
@@ -462,6 +463,14 @@ def do_Reeds_analysis(in_folder: str, out_folder: str, gromos_path: str,
                                                                                       s_values=s_values)
 
         if (verbose): print("Done\n")
+
+    if (control_dict["phys_sampling"]["do"]):
+        out_dir = bash.make_folder(out_folder + "/state_sampling")
+
+        (sampling_results, out_dir) = sampling_ana.sampling_analysis(out_path=out_dir,
+                                                                        ene_traj_csvs=energy_trajectories,
+                                                                        s_values=s_values,
+                                                                        state_potential_treshold=state_physcial_pot_tresh)
 
     if (control_dict["dfmult"]["do"]):
         print("Start Dfmult")
