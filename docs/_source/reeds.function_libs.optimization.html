@@ -87,7 +87,7 @@
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../introduction.html">RE-EDS</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../Examples/index.html">Examples</a></li>
-<li class="toctree-l1 current"><a class="reference internal" href="modules.html">Documentation</a><ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">reeds</a><ul class="current">
 <li class="toctree-l2 current"><a class="reference internal" href="reeds.html">reeds package</a><ul class="current">
 <li class="toctree-l3 current"><a class="reference internal" href="reeds.html#subpackages">Subpackages</a><ul class="current">
 <li class="toctree-l4"><a class="reference internal" href="reeds.data.html">reeds.data package</a></li>
@@ -98,7 +98,6 @@
 </li>
 <li class="toctree-l3"><a class="reference internal" href="reeds.html#submodules">Submodules</a></li>
 <li class="toctree-l3"><a class="reference internal" href="reeds.html#module-reeds.reeds">reeds.reeds module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="reeds.html#module-reeds.tmp_file">reeds.tmp_file module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="reeds.html#module-reeds">Module contents</a></li>
 </ul>
 </li>
@@ -149,7 +148,7 @@
     
       <li><a href="../index.html">Docs</a> &raquo;</li>
         
-          <li><a href="modules.html">Documentation</a> &raquo;</li>
+          <li><a href="modules.html">reeds</a> &raquo;</li>
         
           <li><a href="reeds.html">reeds package</a> &raquo;</li>
         
@@ -220,8 +219,150 @@
 <div class="section" id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
 </div>
-<div class="section" id="reeds-function-libs-optimization-eds-energy-offsets-module">
-<h2>reeds.function_libs.optimization.eds_energy_offsets module<a class="headerlink" href="#reeds-function-libs-optimization-eds-energy-offsets-module" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-reeds.function_libs.optimization.eds_energy_offsets">
+<span id="reeds-function-libs-optimization-eds-energy-offsets-module"></span><h2>reeds.function_libs.optimization.eds_energy_offsets module<a class="headerlink" href="#module-reeds.function_libs.optimization.eds_energy_offsets" title="Permalink to this headline">¶</a></h2>
+<dl class="py function">
+<dt id="reeds.function_libs.optimization.eds_energy_offsets.analyse_replicas">
+<code class="sig-prename descclassname">reeds.function_libs.optimization.eds_energy_offsets.</code><code class="sig-name descname">analyse_replicas</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ene_trajs</span><span class="p">:</span> <span class="n">pandas.core.frame.DataFrame</span></em>, <em class="sig-param"><span class="n">num_states</span><span class="p">:</span> <span class="n">int</span></em>, <em class="sig-param"><span class="n">s_values</span><span class="p">:</span> <span class="n">List<span class="p">[</span>float<span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; str<a class="reference internal" href="../_modules/reeds/function_libs/optimization/eds_energy_offsets.html#analyse_replicas"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#reeds.function_libs.optimization.eds_energy_offsets.analyse_replicas" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function determines which of the replicas can be considered to be undersampling
+replicas, and a few other properties of the potential distributions.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ene_trajs</strong> (<em>List[pd.dataFrame]</em>) – contains all replicas potential energies</p></li>
+<li><p><strong>num_states</strong> (<em>int</em>) – number of end states</p></li>
+<li><p><strong>s_values</strong> (<em>List[float]</em>) – the set of s-values used in the simulation which generated this data</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>table</strong> – Data formatted as a table to be printed to a file</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="reeds.function_libs.optimization.eds_energy_offsets.calc_offsets">
+<code class="sig-prename descclassname">reeds.function_libs.optimization.eds_energy_offsets.</code><code class="sig-name descname">calc_offsets</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">energy_trajectory</span><span class="p">:</span> <span class="n">pandas.core.frame.DataFrame</span></em>, <em class="sig-param"><span class="n">temp</span><span class="p">:</span> <span class="n">float</span></em>, <em class="sig-param"><span class="n">trim_beg</span><span class="p">:</span> <span class="n">float</span></em>, <em class="sig-param"><span class="n">num_states</span><span class="p">:</span> <span class="n">int</span></em><span class="sig-paren">)</span> &#x2192; numpy.array<a class="reference internal" href="../_modules/reeds/function_libs/optimization/eds_energy_offsets.html#calc_offsets"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#reeds.function_libs.optimization.eds_energy_offsets.calc_offsets" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function applies eqn. 6  of Sidler et al., J. Chem. Phys. 2016, 145, 154114
+to estimate the energy offsets for a specific replica.
+Note that the original offset do not go into this equation!
+Note: We use special.logsumexp, (logsum and not log average) as</p>
+<blockquote>
+<div><p>all states have the name number of data points, and log(1/N) cancels out.</p>
+</div></blockquote>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>energy_trajectory</strong> (<em>pandas DataFrame</em>) – contains the potential energies of the end state and the ref. state</p></li>
+<li><p><strong>temp</strong> (<em>float</em>) – temperature in Kelvin</p></li>
+<li><p><strong>trim_beg</strong> (<em>float</em>) – fraction of the values to remove at the begining for “equilibration”</p></li>
+<li><p><strong>num_states</strong> (<em>int</em>) – number of end states in our RE-EDS simulation</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>new_eoffs</strong> – Energy offsets estimated for this replica scaled such that
+ligand 1 has an offset of 0.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>np.array</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="reeds.function_libs.optimization.eds_energy_offsets.calc_offsets_clara_eqn">
+<code class="sig-prename descclassname">reeds.function_libs.optimization.eds_energy_offsets.</code><code class="sig-name descname">calc_offsets_clara_eqn</code><span class="sig-paren">(</span><em class="sig-param">energy_trajectory, temp: float, num_states: int, initial_offsets: List[float], trim_beg: float) -&gt; (&lt;built-in function array&gt;, &lt;class 'bool'&gt;, &lt;class 'int'&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/reeds/function_libs/optimization/eds_energy_offsets.html#calc_offsets_clara_eqn"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#reeds.function_libs.optimization.eds_energy_offsets.calc_offsets_clara_eqn" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function applies eqn. 5 of Sidler et al., J. Chem. Phys. 2016, 145, 154114
+to estimate the energy offsets for a specific replica.</p>
+<dl class="simple">
+<dt>Note: This function doesn’t apply the reweighting mentionned in C. Christ’s</dt><dd><p>original EDS publications.</p>
+</dd>
+</dl>
+<p>Note: The function is numerically stable.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>energy_trajectory</strong> (<em>pandas DataFrame</em>) – contains the potential energies of the end state and the ref. state</p></li>
+<li><p><strong>temp</strong> (<em>float</em>) – temperature in Kelvin</p></li>
+<li><p><strong>trim_beg</strong> (<em>float</em>) – fraction of the values to remove at the begining for “equilibration”</p></li>
+<li><p><strong>num_states</strong> (<em>int</em>) – number of end states in our RE-EDS simulation</p></li>
+<li><p><strong>initial_offsets</strong> (<em>List [float]</em>) – energy offset values used in the simulation which generated this data.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>new_eoffs</strong> (<em>np.array</em>) – Energy offsets estimated for this replica scaled such that
+ligand 1 has an offset of 0.</p></li>
+<li><p><strong>converged</strong> (<em>bool</em>) – True if calculation converged</p></li>
+<li><p><strong>steps</strong> (<em>int</em>) – Number of steps till convergence</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="reeds.function_libs.optimization.eds_energy_offsets.estimate_energy_offsets">
+<code class="sig-prename descclassname">reeds.function_libs.optimization.eds_energy_offsets.</code><code class="sig-name descname">estimate_energy_offsets</code><span class="sig-paren">(</span><em class="sig-param">ene_trajs: List[pandas.core.frame.DataFrame], initial_offsets: List[float], s_values: List[float], out_path: str, temp: float = 298.0, trim_beg: float = 0.1, undersampling_idx: int = None, plot_results: bool = True, calc_clara: bool = False) -&gt; (&lt;built-in function array&gt;, &lt;built-in function array&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/reeds/function_libs/optimization/eds_energy_offsets.html#estimate_energy_offsets"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#reeds.function_libs.optimization.eds_energy_offsets.estimate_energy_offsets" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function will estimate the energy offsets one should use to
+obtain equal sampling of all end states in a RE-EDS simulation.
+This estimation is based on the potential energies of a prior
+RE-EDS simulation, in which energy offsets were all set to 0.</p>
+<p>This function calculates the energy offsets of all replicas given,
+determines which of these replicas can be considered to be undersampling
+replicas, and then returns the average value of the offsets from these
+undersampling replicas.</p>
+<p>For more information: Sidler et al., J. Chem. Phys. 2016, 145, 154114</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ene_trajs</strong> (<em>List [pd.DataFrame]</em>) – contains all replicas potential energies</p></li>
+<li><p><strong>initial_offsets</strong> (<em>List[float]</em>) – the set of energy offsets used in the simulation which generated this data</p></li>
+<li><p><strong>s_values</strong> (<em>List[float]</em>) – the set of s-values used in the simulation which generated this data</p></li>
+<li><p><strong>out_path</strong> (<em>str</em>) – path to the file in which the results will be printed out.</p></li>
+<li><p><strong>temp</strong> (<em>float</em>) – temperature of the simulation</p></li>
+<li><p><strong>trim_beg</strong> (<em>float</em>) – fraction of the values to remove at the begining for “equilibration”</p></li>
+<li><p><strong>undersampling_idx</strong> (<em>int</em>) – index of the first replica which can be considered to be undersampling</p></li>
+<li><p><strong>plot_results</strong> (<em>bool</em>) – determines if we plot the data</p></li>
+<li><p><strong>calc_clara</strong> (<em>bool</em>) – determines if we also calculate using Clara’s equation (default is no to have faster analysis)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>means</strong> (<em>np.array</em>) – Array containing the energy offsets to use in the next simulations</p></li>
+<li><p><strong>all_eoffs</strong> (<em>np.array</em>) – Array containing the energy offsets estiamted in all replicas</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="reeds.function_libs.optimization.eds_energy_offsets.format_as_jnb_table">
+<code class="sig-prename descclassname">reeds.function_libs.optimization.eds_energy_offsets.</code><code class="sig-name descname">format_as_jnb_table</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">title</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">s_values</span><span class="p">:</span> <span class="n">List<span class="p">[</span>float<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">data</span><span class="p">:</span> <span class="n">numpy.array</span></em>, <em class="sig-param"><span class="n">num_decimal</span><span class="p">:</span> <span class="n">int</span></em><span class="sig-paren">)</span> &#x2192; str<a class="reference internal" href="../_modules/reeds/function_libs/optimization/eds_energy_offsets.html#format_as_jnb_table"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#reeds.function_libs.optimization.eds_energy_offsets.format_as_jnb_table" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function converts data from a np.array format into
+a jupyter notebook compatible format for a table.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>title</strong> (<em>str</em>) – title to write above the table</p></li>
+<li><p><strong>s_values</strong> (<em>List[float]</em>) – the set of s-values used in the simulation which generated this data</p></li>
+<li><p><strong>data</strong> (<em>np.array</em>) – 2-D array containing the data to print out</p></li>
+<li><p><strong>num_decimal</strong> (<em>int</em>) – number of decimals points to print the numbers as</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>table</strong> – data formatted as a table to be printed to a file</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
 </div>
 <div class="section" id="module-reeds.function_libs.optimization.eds_s_values">
 <span id="reeds-function-libs-optimization-eds-s-values-module"></span><h2>reeds.function_libs.optimization.eds_s_values module<a class="headerlink" href="#module-reeds.function_libs.optimization.eds_s_values" title="Permalink to this headline">¶</a></h2>

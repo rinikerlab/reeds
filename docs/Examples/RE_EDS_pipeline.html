@@ -37,7 +37,9 @@
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="../genindex.html" />
-    <link rel="search" title="Search" href="../search.html" /> 
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="RE-EDS Sampling Analysis" href="State_Sampling_Analysis.html" />
+    <link rel="prev" title="Examples" href="index.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -82,10 +84,62 @@
             
             
               <p class="caption"><span class="caption-text">Contents:</span></p>
-<ul>
+<ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../introduction.html">RE-EDS</a></li>
-<li class="toctree-l1"><a class="reference internal" href="index.html">Examples</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../_source/modules.html">Documentation</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Examples</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Replica Exchange - Enveloping Distribution Sampling</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#Global-Definition">Global Definition</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#Optimize-Single-EDS-End-states">Optimize Single EDS-End states</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#Job-Execution">Job Execution</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Analysis">Analysis</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#Check-optimized-states">Check optimized states</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#Find-lower-Bound">Find lower Bound</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id1">Job Execution</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id2">Analysis</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#Verify-undersampling">Verify undersampling</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#Energy-Offset-Estimation">Energy Offset Estimation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id3">Job Execution</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id4">Analysis</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#Potential-energies-of-the-states">Potential energies of the states</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Check-undersampling-of-the-replicas">Check undersampling of the replicas</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Energy-offset-Estimation">Energy offset Estimation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Bottle-neck">Bottle neck</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#s-Optimization">s-Optimization</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id6">Job Execution</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id7">Analysis</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#Increase-Replica-Exchanges-with-N-LRTO">Increase Replica Exchanges with N-LRTO</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Check-state-switches-in-the-replicas:">Check state switches in the replicas:</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#Production-Run">Production Run</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id8">Job Execution</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id9">Analysis</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#Check-State-Sampling">Check State Sampling</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Calculation-of-Free-Energies">Calculation of Free Energies</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="State_Sampling_Analysis.html">RE-EDS Sampling Analysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="energy_offset_estimation_PEOE.html">Energy Offset - Estimation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="round_trip_optimizations_RTO.html">Round Trip Optimization</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../_source/modules.html">reeds</a></li>
 </ul>
 
             
@@ -130,6 +184,8 @@
   <ul class="wy-breadcrumbs">
     
       <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="index.html">Examples</a> &raquo;</li>
         
       <li>Replica Exchange - Enveloping Distribution Sampling</li>
     
@@ -2582,6 +2638,15 @@ System
            
           </div>
           <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="State_Sampling_Analysis.html" class="btn btn-neutral float-right" title="RE-EDS Sampling Analysis" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="index.html" class="btn btn-neutral float-left" title="Examples" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
   
 
   <hr/>

@@ -37,7 +37,9 @@
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="../genindex.html" />
-    <link rel="search" title="Search" href="../search.html" /> 
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="reeds" href="../_source/modules.html" />
+    <link rel="prev" title="Energy Offset - Estimation" href="energy_offset_estimation_PEOE.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -82,10 +84,50 @@
             
             
               <p class="caption"><span class="caption-text">Contents:</span></p>
-<ul>
+<ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../introduction.html">RE-EDS</a></li>
-<li class="toctree-l1"><a class="reference internal" href="index.html">Examples</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../_source/modules.html">Documentation</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Examples</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="RE_EDS_pipeline.html">Replica Exchange - Enveloping Distribution Sampling</a></li>
+<li class="toctree-l2"><a class="reference internal" href="RE_EDS_pipeline.html#Global-Definition">Global Definition</a></li>
+<li class="toctree-l2"><a class="reference internal" href="RE_EDS_pipeline.html#Optimize-Single-EDS-End-states">Optimize Single EDS-End states</a></li>
+<li class="toctree-l2"><a class="reference internal" href="RE_EDS_pipeline.html#Find-lower-Bound">Find lower Bound</a></li>
+<li class="toctree-l2"><a class="reference internal" href="RE_EDS_pipeline.html#Energy-Offset-Estimation">Energy Offset Estimation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="RE_EDS_pipeline.html#s-Optimization">s-Optimization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="RE_EDS_pipeline.html#Production-Run">Production Run</a></li>
+<li class="toctree-l2"><a class="reference internal" href="State_Sampling_Analysis.html">RE-EDS Sampling Analysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="energy_offset_estimation_PEOE.html">Energy Offset - Estimation</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Round Trip Optimization</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#Data:">Data:</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#RE-Analysis---Exchange/Roundtrip-analysis">RE-Analysis - Exchange/Roundtrip analysis</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#replica-transitions">replica transitions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#transitions">transitions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Replica-traces">Replica traces</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#Optimize-S">Optimize S</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#Pre---analysis-step">Pre - analysis step</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#N-LRTO">N-LRTO</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#N-GRTO">N-GRTO</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Replica-Placement-from-example">Replica Placement from example</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#After-mutliple-optimizations:">After mutliple optimizations:</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#Transitions">Transitions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id2">Transitions</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#General-S-optimization-Convergence-analysis">General S-optimization Convergence analysis</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#Getting-the-data:">Getting the data:</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#S-optimization-overview">S-optimization overview</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#s-optimization-Round-Trip-Time-convergence">s-optimization Round Trip Time convergence</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#S-optimization---sampling-distribution-optimization">S-optimization - sampling distribution optimization</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../_source/modules.html">reeds</a></li>
 </ul>
 
             
@@ -130,6 +172,8 @@
   <ul class="wy-breadcrumbs">
     
       <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="index.html">Examples</a> &raquo;</li>
         
       <li>Round Trip Optimization</li>
     
@@ -1789,6 +1833,15 @@ Loading precomputed data for iteration:         1       2       3       4       
            
           </div>
           <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../_source/modules.html" class="btn btn-neutral float-right" title="reeds" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="energy_offset_estimation_PEOE.html" class="btn btn-neutral float-left" title="Energy Offset - Estimation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
   
 
   <hr/>

@@ -87,7 +87,7 @@
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../introduction.html">RE-EDS</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../Examples/index.html">Examples</a></li>
-<li class="toctree-l1 current"><a class="reference internal" href="modules.html">Documentation</a><ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">reeds</a><ul class="current">
 <li class="toctree-l2 current"><a class="reference internal" href="reeds.html">reeds package</a><ul class="current">
 <li class="toctree-l3 current"><a class="reference internal" href="reeds.html#subpackages">Subpackages</a><ul class="current">
 <li class="toctree-l4"><a class="reference internal" href="reeds.data.html">reeds.data package</a></li>
@@ -98,7 +98,6 @@
 </li>
 <li class="toctree-l3"><a class="reference internal" href="reeds.html#submodules">Submodules</a></li>
 <li class="toctree-l3"><a class="reference internal" href="reeds.html#module-reeds.reeds">reeds.reeds module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="reeds.html#module-reeds.tmp_file">reeds.tmp_file module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="reeds.html#module-reeds">Module contents</a></li>
 </ul>
 </li>
@@ -149,7 +148,7 @@
     
       <li><a href="../index.html">Docs</a> &raquo;</li>
         
-          <li><a href="modules.html">Documentation</a> &raquo;</li>
+          <li><a href="modules.html">reeds</a> &raquo;</li>
         
           <li><a href="reeds.html">reeds package</a> &raquo;</li>
         
@@ -218,7 +217,7 @@
 <li class="toctree-l4"><a class="reference internal" href="reeds.function_libs.pipeline.worker_scripts.analysis_workers.html#submodules">Submodules</a></li>
 <li class="toctree-l4"><a class="reference internal" href="reeds.function_libs.pipeline.worker_scripts.analysis_workers.html#module-reeds.function_libs.pipeline.worker_scripts.analysis_workers.MD_simulation_analysis">reeds.function_libs.pipeline.worker_scripts.analysis_workers.MD_simulation_analysis module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="reeds.function_libs.pipeline.worker_scripts.analysis_workers.html#module-reeds.function_libs.pipeline.worker_scripts.analysis_workers.RE_EDS_explore_lowerBound_analysis">reeds.function_libs.pipeline.worker_scripts.analysis_workers.RE_EDS_explore_lowerBound_analysis module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="reeds.function_libs.pipeline.worker_scripts.analysis_workers.html#reeds-function-libs-pipeline-worker-scripts-analysis-workers-re-eds-general-analysis-module">reeds.function_libs.pipeline.worker_scripts.analysis_workers.RE_EDS_general_analysis module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="reeds.function_libs.pipeline.worker_scripts.analysis_workers.html#module-reeds.function_libs.pipeline.worker_scripts.analysis_workers.RE_EDS_general_analysis">reeds.function_libs.pipeline.worker_scripts.analysis_workers.RE_EDS_general_analysis module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="reeds.function_libs.pipeline.worker_scripts.analysis_workers.html#module-reeds.function_libs.pipeline.worker_scripts.analysis_workers.RE_EDS_soptimization_final">reeds.function_libs.pipeline.worker_scripts.analysis_workers.RE_EDS_soptimization_final module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="reeds.function_libs.pipeline.worker_scripts.analysis_workers.html#module-reeds.function_libs.pipeline.worker_scripts.analysis_workers.RE_EDS_state_optimization_analysis">reeds.function_libs.pipeline.worker_scripts.analysis_workers.RE_EDS_state_optimization_analysis module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="reeds.function_libs.pipeline.worker_scripts.analysis_workers.html#module-reeds.function_libs.pipeline.worker_scripts.analysis_workers">Module contents</a></li>
@@ -632,8 +631,200 @@ ana_file.close()</p>
 <p>return out_script_path</p>
 </div></blockquote>
 </div>
-<div class="section" id="reeds-function-libs-pipeline-module-functions-module">
-<h2>reeds.function_libs.pipeline.module_functions module<a class="headerlink" href="#reeds-function-libs-pipeline-module-functions-module" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-reeds.function_libs.pipeline.module_functions">
+<span id="reeds-function-libs-pipeline-module-functions-module"></span><h2>reeds.function_libs.pipeline.module_functions module<a class="headerlink" href="#module-reeds.function_libs.pipeline.module_functions" title="Permalink to this headline">¶</a></h2>
+<dl class="py function">
+<dt id="reeds.function_libs.pipeline.module_functions.adapt_imd_template_eoff">
+<code class="sig-prename descclassname">reeds.function_libs.pipeline.module_functions.</code><code class="sig-name descname">adapt_imd_template_eoff</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">system</span><span class="p">:</span> <span class="n">pygromos.euler_submissions.FileManager.Simulation_System.System</span></em>, <em class="sig-param"><span class="n">imd_out_path</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">imd_path</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">old_svals</span><span class="p">:</span> <span class="n">List<span class="p">[</span>float<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">s_num</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">s_range</span><span class="p">:</span> <span class="n">Tuple<span class="p">[</span>float<span class="p">, </span>float<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">non_ligand_residues</span><span class="p">:</span> <span class="n">list</span> <span class="o">=</span> <span class="default_value">[]</span></em>, <em class="sig-param"><span class="n">single_bath</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em>, <em class="sig-param"><span class="n">verbose</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em><span class="sig-paren">)</span> &#x2192; pygromos.files.imd.Imd<a class="reference internal" href="../_modules/reeds/function_libs/pipeline/module_functions.html#adapt_imd_template_eoff"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#reeds.function_libs.pipeline.module_functions.adapt_imd_template_eoff" title="Permalink to this definition">¶</a></dt>
+<dd><blockquote>
+<div><p>This function is preparing the imd_template in gromos_files for the REEDS SYSTEM&gt;</p>
+</div></blockquote>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>system</strong> (<em>pygromos.PipelineManager.Simulation_System</em>) – this is the system obj. containing all paths to all system relevant Files.</p></li>
+<li><p><strong>imd_out_path</strong> (<em>str</em>) – path, where the new .imd should be written to.</p></li>
+<li><p><strong>imd_path</strong> (<em>str</em>) – imd template path that shall be modified</p></li>
+<li><p><strong>old_svals</strong> (<em>List[float], optional</em>) – list containing previous system files</p></li>
+<li><p><strong>s_num</strong> (<em>int, optional</em>) – number of max s_values(optional)</p></li>
+<li><p><strong>s_range</strong> (<em>Tuple[float, float], optional</em>) – max and min of log distributed s_vals (optional, not in combination with s_vals_csv_path)</p></li>
+<li><p><strong>non_ligand_residues</strong> (<em>List[str], optional</em>) – non ligand residues are not considered as possible states for the eds simulation, will not have their own force group</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="simple">
+<dt>verbose<span class="classifier">bool, optional</span></dt><dd><p>I wanna screaaaam</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>returns imd_class obj</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>imd.Imd</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="reeds.function_libs.pipeline.module_functions.adapt_imd_template_lowerBound">
+<code class="sig-prename descclassname">reeds.function_libs.pipeline.module_functions.</code><code class="sig-name descname">adapt_imd_template_lowerBound</code><span class="sig-paren">(</span><em class="sig-param">in_template_imd_path: str</em>, <em class="sig-param">out_imd_dir: str</em>, <em class="sig-param">cnf: pygromos.files.coord.cnf.Cnf</em>, <em class="sig-param">non_ligand_residues: list = []</em>, <em class="sig-param">s_values: List[float] = None</em>, <em class="sig-param">simulation_steps: int = 1000000</em>, <em class="sig-param">single_bath: bool = False) -&gt; (&lt;class 'str'&gt;</em>, <em class="sig-param">&lt;class 'list'&gt;</em>, <em class="sig-param">&lt;class 'int'&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/reeds/function_libs/pipeline/module_functions.html#adapt_imd_template_lowerBound"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#reeds.function_libs.pipeline.module_functions.adapt_imd_template_lowerBound" title="Permalink to this definition">¶</a></dt>
+<dd><blockquote>
+<div><p>This function prepares the imd. protocol file for a gromos simulation.</p>
+</div></blockquote>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>in_template_imd_path</strong></p></li>
+<li><p><strong>out_imd_dir</strong></p></li>
+<li><p><strong>cnf</strong></p></li>
+<li><p><strong>non_ligand_residues</strong></p></li>
+<li><p><strong>s_values</strong></p></li>
+<li><p><strong>single_bath</strong></p></li>
+<li><p><strong>simulation_steps</strong></p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>imd_template_path, s_values, num ligands</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>str, list, int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="reeds.function_libs.pipeline.module_functions.adapt_imd_template_optimizedState">
+<code class="sig-prename descclassname">reeds.function_libs.pipeline.module_functions.</code><code class="sig-name descname">adapt_imd_template_optimizedState</code><span class="sig-paren">(</span><em class="sig-param">in_template_imd_path: str</em>, <em class="sig-param">out_imd_dir: str</em>, <em class="sig-param">cnf: pygromos.files.coord.cnf.Cnf</em>, <em class="sig-param">non_ligand_residues: list = []</em>, <em class="sig-param">simulation_steps: int = 100000</em>, <em class="sig-param">solvent_keyword: str = 'SOLV'</em>, <em class="sig-param">single_bath: bool = False) -&gt; (&lt;class 'str'&gt;</em>, <em class="sig-param">&lt;class 'list'&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/reeds/function_libs/pipeline/module_functions.html#adapt_imd_template_optimizedState"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#reeds.function_libs.pipeline.module_functions.adapt_imd_template_optimizedState" title="Permalink to this definition">¶</a></dt>
+<dd><blockquote>
+<div><dl class="simple">
+<dt>modify_imds - for generateOptimizedStates</dt><dd><p>This function prepares the imd. protocol file for gromos simulation.</p>
+</dd>
+</dl>
+</div></blockquote>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>in_template_imd_path</strong> (<em>str</em>) – path to the template imd</p></li>
+<li><p><strong>out_imd_dir</strong> (<em>str</em>) – output path for the imds</p></li>
+<li><p><strong>cnf</strong> (<em>cnf_cls.Cnf</em>) – coordinate file obj, for retrieving the residues</p></li>
+<li><p><strong>non_ligand_residues</strong> (<em>list, optional</em>)</p></li>
+<li><p><strong>simulation_steps</strong> (<em>int, optional</em>) – number of steps to simulate</p></li>
+<li><p><strong>solvent_keyword</strong> (<em>str, optional</em>) – residue name for the solvent</p></li>
+<li><p><strong>single_bath</strong> (<em>bool, optional</em>) – use single bath for all atoms (default False)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>imd_template_path, lig_nums</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>(str, list)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="reeds.function_libs.pipeline.module_functions.build_sopt_step_dir">
+<code class="sig-prename descclassname">reeds.function_libs.pipeline.module_functions.</code><code class="sig-name descname">build_sopt_step_dir</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">iteration</span><span class="p">:</span> <span class="n">int</span></em>, <em class="sig-param"><span class="n">iteration_folder_prefix</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">soptimization_options</span></em>, <em class="sig-param"><span class="n">in_simSystem</span><span class="p">:</span> <span class="n">pygromos.euler_submissions.FileManager.Simulation_System.System</span></em>, <em class="sig-param"><span class="n">num_equilibration_runs</span><span class="p">:</span> <span class="n">int</span></em>, <em class="sig-param"><span class="n">imd_name_prefix</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">in_ene_ana_lib_path</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">in_gromosPP_bin_dir</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">in_gromosXX_bin_dir</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">ligands</span></em>, <em class="sig-param"><span class="n">last_data_folder</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">nmpi_per_replica</span><span class="p">:</span> <span class="n">int</span></em>, <em class="sig-param"><span class="n">duration_per_job</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">num_simulation_runs</span><span class="p">:</span> <span class="n">int</span></em>, <em class="sig-param"><span class="n">pot_tresh</span><span class="p">:</span> <span class="n">float</span> <span class="o">=</span> <span class="default_value">0.0</span></em>, <em class="sig-param"><span class="n">old_sopt_job</span><span class="p">:</span> <span class="n">reeds.function_libs.utils.structures.sopt_Job</span> <span class="o">=</span> <span class="default_value">False</span></em>, <em class="sig-param"><span class="n">verbose</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em><span class="sig-paren">)</span> &#x2192; reeds.function_libs.utils.structures.sopt_Job<a class="reference internal" href="../_modules/reeds/function_libs/pipeline/module_functions.html#build_sopt_step_dir"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#reeds.function_libs.pipeline.module_functions.build_sopt_step_dir" title="Permalink to this definition">¶</a></dt>
+<dd><blockquote>
+<div><p>This function is setting up the folder structure of an s-optimization iteration, copies some files and builds an settings object of the sopt-iteration.</p>
+</div></blockquote>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>iteration</strong> (<em>int</em>) – iteration of the s-optimization</p></li>
+<li><p><strong>iteration_folder_prefix</strong> (<em>str</em>) – prefix name of the folders</p></li>
+<li><p><strong>soptimization_options</strong> (<em>?</em>) – settings for the s-optimization</p></li>
+<li><p><strong>in_simSystem</strong> (<em>fM.System</em>) – system obj, containing all required paths</p></li>
+<li><p><strong>num_equilibration_runs</strong> (<em>int</em>) – number of equilibrations before the used s-optimizatoin simulation</p></li>
+<li><p><strong>imd_name_prefix</strong> (<em>str</em>) – prefix name for the imd file output, final name will have an additional iteration number.</p></li>
+<li><p><strong>in_ene_ana_lib_path</strong> (<em>str</em>) – path to an ene_ana lib</p></li>
+<li><p><strong>in_gromosPP_bin_dir</strong> (<em>str</em>) – path to gromosPP binary dir</p></li>
+<li><p><strong>in_gromosXX_bin_dir</strong> (<em>str</em>) – path to gromosXX binary dir</p></li>
+<li><p><strong>ligands</strong> (<em>?</em>)</p></li>
+<li><p><strong>last_data_folder</strong> (<em>str</em>) – data folder from previous rund</p></li>
+<li><p><strong>nmpi_per_replica</strong> (<em>int</em>) – mpi cores per simulatoin</p></li>
+<li><p><strong>duration_per_job</strong> (<em>str</em>) – queue job duration (format “HHH:MM”)</p></li>
+<li><p><strong>num_simulation_runs</strong> (<em>int</em>) – number of simulation runs</p></li>
+<li><p><strong>pot_tresh</strong> (<em>float, optional</em>) – potential threshold for occurrence sampling</p></li>
+<li><p><strong>old_sopt_job</strong> (<em>sopt_job, optional</em>) – last soptimization job namedtuple, contains all settings of previous run</p></li>
+<li><p><strong>verbose</strong> (<em>bool, optional</em>) – TADAAAAAAAAAAa Here you go!</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>returns the sopt settings of this runs</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>sopt_job</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="reeds.function_libs.pipeline.module_functions.submit_job_sopt">
+<code class="sig-prename descclassname">reeds.function_libs.pipeline.module_functions.</code><code class="sig-name descname">submit_job_sopt</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">sopt_iteration_job</span><span class="p">:</span> <span class="n">reeds.function_libs.utils.structures.sopt_Job</span></em>, <em class="sig-param"><span class="n">duration_per_job</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">submit</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">True</span></em>, <em class="sig-param"><span class="n">stdout_prefix</span><span class="p">:</span> <span class="n">str</span> <span class="o">=</span> <span class="default_value">'\n\t\t'</span></em>, <em class="sig-param"><span class="n">gromosXX_bin_dir</span><span class="p">:</span> <span class="n">str</span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">do_not_doubly_submit_to_queue</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">True</span></em>, <em class="sig-param"><span class="n">previous_job_id</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">initialize_first_run</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">True</span></em>, <em class="sig-param"><span class="n">reinitialize</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em>, <em class="sig-param"><span class="n">verbose</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em><span class="sig-paren">)</span> &#x2192; Optional<span class="p">[</span>int<span class="p">]</span><a class="reference internal" href="../_modules/reeds/function_libs/pipeline/module_functions.html#submit_job_sopt"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#reeds.function_libs.pipeline.module_functions.submit_job_sopt" title="Permalink to this definition">¶</a></dt>
+<dd><blockquote>
+<div><p>This function is doing the little bit more sophisticated part of submitting safely the sopt scripts.</p>
+</div></blockquote>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>sopt_iteration_job</strong> (<em>sopt_job - NamedTuple(“sopt_Job”, [(“iteration”, int),(“job_file_path”, str), (“job_analysis_path”,str), (“check_simulation_files”,str), (“check_analysis_files”,str)])</em>) – this namedtuple contains both executable script paths and the regular expressions for their checkFiles.</p></li>
+<li><p><strong>duration_per_job</strong> (<em>str</em>) – job duration for a single simulation step in format “HHH:MM”</p></li>
+<li><p><strong>submit</strong> (<em>bool, optional</em>) – shall this simulation be submitted to LSF?</p></li>
+<li><p><strong>stdout_prefix</strong> (<em>str, optional</em>) – std-out log file prefix</p></li>
+<li><p><strong>gromosXX_bin_dir</strong> (<em>str, optional</em>) – path to the gromos binary dir.</p></li>
+<li><p><strong>do_not_doubly_submit_to_queue</strong> (<em>bool , optional</em>) – check if there is a queued job with the same job-name</p></li>
+<li><p><strong>previous_job_id</strong> (<em>int , optional</em>) – id from the previous job onto which the job is queued to.</p></li>
+<li><p><strong>initialize_first_run</strong> (<em>bool, optional</em>) – initialize the velocities of the first run?</p></li>
+<li><p><strong>reinitialize</strong> (<em>bool, optional</em>) – reinitialize velocities in all runs?</p></li>
+<li><p><strong>verbose</strong> (<em>bool, optional</em>) – let me tell you a looong story</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>the jobID or 0 is returned.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>ValueError</strong> – if system call fails</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="reeds.function_libs.pipeline.module_functions.write_job_script">
+<code class="sig-prename descclassname">reeds.function_libs.pipeline.module_functions.</code><code class="sig-name descname">write_job_script</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">out_script_path</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">target_function</span><span class="p">:</span> <span class="n">callable</span></em>, <em class="sig-param"><span class="n">variable_dict</span><span class="p">:</span> <span class="n">dict</span></em>, <em class="sig-param"><span class="n">python_cmd</span><span class="p">:</span> <span class="n">str</span> <span class="o">=</span> <span class="default_value">'python3'</span></em>, <em class="sig-param"><span class="n">no_reeds_control_dict</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em>, <em class="sig-param"><span class="n">verbose</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em><span class="sig-paren">)</span> &#x2192; str<a class="reference internal" href="../_modules/reeds/function_libs/pipeline/module_functions.html#write_job_script"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#reeds.function_libs.pipeline.module_functions.write_job_script" title="Permalink to this definition">¶</a></dt>
+<dd><blockquote>
+<div><p>this function writes submission commands into a file. The command will be started from a bash env into python.</p>
+</div></blockquote>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>out_script_path</strong> (<em>str</em>) – path of the output script.</p></li>
+<li><p><strong>target_function</strong> (<em>callable</em>) – the function, that shall be submitted</p></li>
+<li><p><strong>variable_dict</strong> (<em>dict</em>) – variables for this function</p></li>
+<li><p><strong>python_cmd</strong> (<em>str, optional</em>) – which python command shall be supplied</p></li>
+<li><p><strong>no_reeds_control_dict</strong> (<em>bool, optional</em>) – there is no controldict in the vars.</p></li>
+<li><p><strong>verbose</strong> (<em>bool, optional</em>) – c’est la vie</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>returns an out script path.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>IOERROR</strong> – if outpath is not possible</p></li>
+<li><p><strong>ValueError</strong> – if required variable from the var-dict for the function is missing</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
 </div>
 <div class="section" id="module-reeds.function_libs.pipeline">
 <span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-reeds.function_libs.pipeline" title="Permalink to this headline">¶</a></h2>
