@@ -101,7 +101,7 @@ def estimate_energy_offsets(ene_trajs: List[pd.DataFrame], initial_offsets: List
         undersampling_eoffs = all_eoffs[undersampling_idx:]
         results = 'Undersampling found at replica ' + str(undersampling_idx+1) \
                   + ' with s = ' + str(s_values[undersampling_idx]) + '\n\n' 
-        results += 'New energy offset for each state:\n'
+        results += 'New energy offset for each state:\n\n'
         means   = undersampling_eoffs.mean(axis=0)
         stdevs  = undersampling_eoffs.std(axis=0)
         for i in range(num_states):
