@@ -81,9 +81,9 @@ def estimate_energy_offsets(ene_trajs: List[pd.DataFrame], initial_offsets: List
         if calc_clara:
             (all_eoffs_clara[i], converged, steps) = calc_offsets_clara_eqn(ene_trajs[i], temp, num_states, initial_offsets, trim_beg)
 
-    f.writelines(format_as_jnb_table("Energy offsets predicted for each replica", s_values, all_eoffs, 2))
+    f.writelines(format_as_jnb_table("Energy offsets predicted for each replica\n", s_values, all_eoffs, 2))
     if calc_clara:
-        f.writelines(format_as_jnb_table("Energy offsets predicted for each replica - Clara's eqn", s_values, all_eoffs_clara, 2))
+        f.writelines(format_as_jnb_table("Energy offsets predicted for each replica - Clara's eqn\n", s_values, all_eoffs_clara, 2))
 
     # Plot the data: 
     if plot_results:
@@ -106,7 +106,7 @@ def estimate_energy_offsets(ene_trajs: List[pd.DataFrame], initial_offsets: List
         stdevs  = undersampling_eoffs.std(axis=0)
         for i in range(num_states):
             results += 'state ' + str(i+1) + ' : ' + str(round(means[i], 2)) \
-                    + ' +-  ' + str(round(stdevs[i], 2)) + '\n'
+                    + ' +-  ' + str(round(stdevs[i], 2)) + '\n\n'
         f.writelines(results)
     f.close()
     return (means, all_eoffs)

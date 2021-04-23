@@ -172,7 +172,7 @@
 <span class="kn">import</span> <span class="nn">sys</span>
 <span class="kn">import</span> <span class="nn">traceback</span>
 <span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">OrderedDict</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Iterable</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">List</span>
 
 <span class="kn">import</span> <span class="nn">reeds</span>
 <span class="kn">import</span> <span class="nn">reeds.function_libs.pipeline.module_functions</span>
@@ -195,12 +195,17 @@
        <span class="n">soptIterations</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">4</span><span class="p">,</span> <span class="n">add_replicas</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">4</span><span class="p">,</span>
        <span class="n">adding_new_sReplicas_Scheme</span><span class="p">:</span> <span class="n">adding_Scheme_new_Replicas</span> <span class="o">=</span> <span class="n">adding_Scheme_new_Replicas</span><span class="o">.</span><span class="n">from_below</span><span class="p">,</span>
        <span class="n">noncontinous</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+       <span class="n">optimized_states_dir</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="s2">&quot;a_optimizedState/analysis/next&quot;</span><span class="p">),</span>
+       <span class="n">lower_bound_dir</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="s2">&quot;b_lowerBound/analysis/next&quot;</span><span class="p">),</span>
+       <span class="n">state_physical_occurrence_potential_threshold</span><span class="p">:</span><span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+       <span class="n">state_undersampling_occurrence_potential_threshold</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+       <span class="n">undersampling_fraction_threshold</span><span class="p">:</span><span class="nb">float</span><span class="o">=</span><span class="mf">0.9</span><span class="p">,</span>
        <span class="n">equil_runs</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">steps_between_trials</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">20</span><span class="p">,</span> <span class="n">trials_per_run</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">12500</span><span class="p">,</span>
        <span class="n">non_ligand_residues</span><span class="p">:</span> <span class="nb">list</span> <span class="o">=</span> <span class="p">[],</span>
        <span class="n">in_gromosXX_bin_dir</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">in_gromosPP_bin_dir</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
        <span class="n">in_ene_ana_lib_path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">ene_ana_libs</span><span class="o">.</span><span class="n">ene_ana_lib_path</span><span class="p">,</span>
        <span class="n">nmpi_per_replica</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">submit</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">duration_per_job</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;24:00&quot;</span><span class="p">,</span>
-       <span class="n">pot_tresh</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span> <span class="n">queueing_system</span><span class="p">:</span> <span class="n">_SubmissionSystem</span> <span class="o">=</span> <span class="n">LSF</span><span class="p">,</span>
+       <span class="n">queueing_system</span><span class="p">:</span> <span class="n">_SubmissionSystem</span> <span class="o">=</span> <span class="n">LSF</span><span class="p">,</span>
        <span class="n">do_not_doubly_submit_to_queue</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
        <span class="n">initialize_first_run</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">reinitialize</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
        <span class="n">verbose</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
@@ -320,7 +325,7 @@
         <span class="n">imd_file</span> <span class="o">=</span> <span class="n">imd</span><span class="o">.</span><span class="n">Imd</span><span class="p">(</span><span class="n">imd_path_last</span><span class="p">)</span>
         <span class="c1"># get number of s-vals from imd:</span>
         <span class="n">num_svals</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">imd_file</span><span class="o">.</span><span class="n">REPLICA_EDS</span><span class="o">.</span><span class="n">NRES</span><span class="p">)</span>
-
+        <span class="n">num_states</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">imd_file</span><span class="o">.</span><span class="n">REPLICA_EDS</span><span class="o">.</span><span class="n">NUMSTATES</span><span class="p">)</span>
         <span class="c1"># set new step number between trials and new number of trials if necessary</span>
         <span class="n">imd_file</span><span class="o">.</span><span class="n">STEP</span><span class="o">.</span><span class="n">NSTLIM</span> <span class="o">=</span> <span class="n">steps_between_trials</span>
         <span class="n">imd_file</span><span class="o">.</span><span class="n">edit_REEDS</span><span class="p">(</span><span class="n">NRETRIAL</span><span class="o">=</span><span class="n">trials_per_run</span><span class="p">)</span>
@@ -332,7 +337,25 @@
         <span class="n">iteration_folder_prefix</span> <span class="o">=</span> <span class="n">out_root_dir</span> <span class="o">+</span> <span class="s2">&quot;/sopt&quot;</span>
         <span class="n">bash</span><span class="o">.</span><span class="n">make_folder</span><span class="p">(</span><span class="n">out_root_dir</span><span class="p">)</span>
 
+        <span class="n">state_undersampling_pot_tresh_path</span> <span class="o">=</span> <span class="n">optimized_states_dir</span> <span class="o">+</span> <span class="s2">&quot;/state_occurence_pot_thresh.csv&quot;</span>
+        <span class="k">if</span><span class="p">(</span><span class="n">state_physical_occurrence_potential_threshold</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">state_undersampling_pot_tresh_path</span><span class="p">)):</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">state_undersampling_pot_tresh_path</span><span class="p">)</span> <span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span><span class="s2">&quot;COULD NOT FIND state_occurence_pot_thresh.CSV in : &quot;</span><span class="p">,</span> <span class="n">state_undersampling_pot_tresh_path</span><span class="p">,</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">tmp</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">state_undersampling_pot_tresh_path</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span>
+                <span class="n">state_physical_occurrence_potential_threshold</span> <span class="o">=</span>  <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">float</span><span class="p">,</span> <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">tmp</span><span class="o">.</span><span class="n">readlines</span><span class="p">())</span><span class="o">.</span><span class="n">split</span><span class="p">()))</span>
+        <span class="k">elif</span><span class="p">(</span><span class="n">state_physical_occurrence_potential_threshold</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">):</span>
+            <span class="n">state_physical_occurrence_potential_threshold</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_states</span><span class="p">)]</span>
 
+        <span class="n">state_undersampling_pot_tresh_path</span> <span class="o">=</span> <span class="n">lower_bound_dir</span> <span class="o">+</span> <span class="s2">&quot;/state_occurence_pot_thresh.csv&quot;</span>
+        <span class="k">if</span><span class="p">(</span><span class="n">state_undersampling_occurrence_potential_threshold</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">state_undersampling_pot_tresh_path</span><span class="p">)):</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">state_undersampling_pot_tresh_path</span><span class="p">)</span> <span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span><span class="s2">&quot;COULD NOT FIND state_occurence_pot_thresh.CSV in : &quot;</span><span class="p">,</span> <span class="n">state_undersampling_pot_tresh_path</span><span class="p">,</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">tmp</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">state_undersampling_pot_tresh_path</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span>
+                <span class="n">state_undersampling_occurrence_potential_threshold</span> <span class="o">=</span>  <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">float</span><span class="p">,</span> <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">tmp</span><span class="o">.</span><span class="n">readlines</span><span class="p">())</span><span class="o">.</span><span class="n">split</span><span class="p">()))</span>
+        <span class="k">elif</span><span class="p">(</span><span class="n">state_undersampling_occurrence_potential_threshold</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">):</span>
+            <span class="n">state_undersampling_occurrence_potential_threshold</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_states</span><span class="p">)]</span>
 
 
     <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
@@ -357,16 +380,13 @@
     <span class="n">cur_svals</span> <span class="o">=</span> <span class="n">num_svals</span>
 
     <span class="c1">## Prepare final analysis:</span>
-    <span class="c1">#### Temporary fix for automatic potential thresholds.</span>
-    <span class="k">if</span><span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">pot_tresh</span><span class="p">,</span> <span class="p">(</span><span class="nb">float</span><span class="p">,</span> <span class="nb">int</span><span class="p">))):</span>
-       <span class="n">pot_tresh</span> <span class="o">=</span> <span class="p">[</span><span class="n">pot_tresh</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">ligands</span><span class="o">.</span><span class="n">number</span><span class="p">)]</span>
 
     <span class="n">ana_out_dir</span> <span class="o">=</span> <span class="n">out_root_dir</span> <span class="o">+</span> <span class="s2">&quot;/analysis&quot;</span>
     <span class="n">job_name</span> <span class="o">=</span> <span class="n">in_simSystem</span><span class="o">.</span><span class="n">name</span> <span class="o">+</span> <span class="s2">&quot;_final_sOptimization&quot;</span>
     <span class="n">analysis_vars</span> <span class="o">=</span> <span class="n">OrderedDict</span><span class="p">({</span>
         <span class="s2">&quot;sopt_root_dir&quot;</span><span class="p">:</span> <span class="n">out_root_dir</span><span class="p">,</span>
         <span class="s2">&quot;title&quot;</span><span class="p">:</span> <span class="n">in_simSystem</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
-        <span class="s2">&quot;pot_tresh&quot;</span><span class="p">:</span> <span class="n">pot_tresh</span><span class="p">,</span>
+        <span class="s2">&quot;pot_tresh&quot;</span><span class="p">:</span> <span class="n">state_physical_occurrence_potential_threshold</span><span class="p">,</span>
         <span class="s2">&quot;out_dir&quot;</span><span class="p">:</span> <span class="n">ana_out_dir</span>
     <span class="p">})</span>
 
@@ -403,12 +423,15 @@
                                                      <span class="n">num_equilibration_runs</span><span class="o">=</span><span class="n">equil_runs</span><span class="p">,</span>
                                                      <span class="n">imd_name_prefix</span><span class="o">=</span><span class="n">imd_name_prefix</span><span class="p">,</span> <span class="n">in_simSystem</span><span class="o">=</span><span class="n">simSystem</span><span class="p">,</span>
                                                      <span class="n">in_ene_ana_lib_path</span><span class="o">=</span><span class="n">in_ene_ana_lib_path</span><span class="p">,</span>
+                                                     <span class="n">state_undersampling_pot_tresh</span><span class="o">=</span><span class="n">state_undersampling_occurrence_potential_threshold</span><span class="p">,</span>
+                                                     <span class="n">state_physical_pot_tresh</span><span class="o">=</span><span class="n">state_physical_occurrence_potential_threshold</span><span class="p">,</span>
+                                                     <span class="n">undersampling_frac_thresh</span><span class="o">=</span><span class="n">undersampling_fraction_threshold</span><span class="p">,</span>
                                                      <span class="n">in_gromosPP_bin_dir</span><span class="o">=</span><span class="n">in_gromosPP_bin_dir</span><span class="p">,</span>
                                                      <span class="n">in_gromosXX_bin_dir</span><span class="o">=</span><span class="n">in_gromosXX_bin_dir</span><span class="p">,</span>
                                                      <span class="n">ligands</span><span class="o">=</span><span class="n">ligands</span><span class="p">,</span> <span class="n">old_sopt_job</span><span class="o">=</span><span class="n">iteration_sopt_job</span><span class="p">,</span>
                                                      <span class="n">last_data_folder</span><span class="o">=</span><span class="n">last_data_folder</span><span class="p">,</span>
                                                      <span class="n">nmpi_per_replica</span><span class="o">=</span><span class="n">nmpi_per_replica</span><span class="p">,</span>
-                                                     <span class="n">pot_tresh</span><span class="o">=</span><span class="n">pot_tresh</span><span class="p">,</span> <span class="n">duration_per_job</span><span class="o">=</span><span class="n">duration_per_job</span><span class="p">,</span>
+                                                     <span class="n">pot_tresh</span><span class="o">=</span><span class="n">state_physical_occurrence_potential_threshold</span><span class="p">,</span> <span class="n">duration_per_job</span><span class="o">=</span><span class="n">duration_per_job</span><span class="p">,</span>
                                                      <span class="n">num_simulation_runs</span><span class="o">=</span><span class="n">repetitions</span><span class="p">)</span>
 
         <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>

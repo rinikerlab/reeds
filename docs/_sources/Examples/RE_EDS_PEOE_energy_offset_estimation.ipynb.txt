@@ -4,7 +4,7 @@
    "cell_type": "markdown",
    "metadata": {},
    "source": [
-    "# Energy Offset - Estimation\n"
+    "# RE-EDS - PEOE - Energy Offset Estimation\n"
    ]
   },
   {
@@ -35,7 +35,7 @@
     "from pygromos.files import repdat, imd\n",
     "from pygromos.utils import bash\n",
     "from reeds.function_libs.file_management import file_management\n",
-    "from IPython.display import HTML, Image,Markdown\n"
+    "from IPython.display import HTML, Image,Markdown"
    ]
   },
   {
@@ -56,7 +56,7 @@
     "\n",
     "data_dir = \"/cluster/work/igc/bschroed/REEDS/CHK1/water_d5/c_eoff_shuffle/analysis_800ps/data\"\n",
     "out_prefix = \"CHK1_disres5_water_eoff_shuffle_energies_\"\n",
-    "out_dir = bash.make_folder(os.getcwd()+\"/eoff\")\n"
+    "out_dir = bash.make_folder(os.getcwd()+\"/eoff\")"
    ]
   },
   {
@@ -68,6 +68,13 @@
     "#parse\n",
     "energy_trajectories = file_management.parse_csv_energy_trajectories(data_dir, out_prefix)\n",
     "imd_file = imd.Imd(in_imd_path)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Detect Undersampling"
    ]
   },
   {
@@ -89,6 +96,8 @@
     }
    ],
    "source": [
+    "\n",
+    "\n",
     "import reeds.function_libs.analysis.sampling as sampling_ana\n",
     "\n",
     "undersampling_frac_thresh = 0.9\n",
@@ -99,22 +108,14 @@
     "                                                                ene_traj_csvs = energy_trajectories,\n",
     "                                                                s_values = s_values, \n",
     "                                                                state_potential_treshold= state_undersampling_occurrence_potential_threshold, \n",
-    "                                                                undersampling_occurence_sampling_tresh=undersampling_frac_thresh)"
-   ]
-  },
-  {
-   "cell_type": "markdown",
-   "metadata": {},
-   "source": [
-    "here you can see, where undersampling occurrence was detected. beyond the red line the replicas were classified as undersampling."
+    "                                                                undersampling_occurence_sampling_tresh=undersampling_frac_thresh)\n",
+    "\n"
    ]
   },
   {
    "cell_type": "code",
-   "execution_count": 14,
-   "metadata": {
-    "scrolled": false
-   },
+   "execution_count": 5,
+   "metadata": {},
    "outputs": [
     {
      "data": {
@@ -123,7 +124,7 @@
        "<IPython.core.display.Image object>"
       ]
      },
-     "execution_count": 14,
+     "execution_count": 5,
      "metadata": {},
      "output_type": "execute_result"
     }
@@ -145,8 +146,7 @@
    "metadata": {},
    "outputs": [],
    "source": [
-    "from reeds.function_libs.optimization import eds_energy_offsets as peoe\n",
-    "\n"
+    "from reeds.function_libs.optimization import eds_energy_offsets as peoe"
    ]
   },
   {
@@ -172,21 +172,12 @@
     "                                                sampling_stat=sampling_results, s_values = s_values,\n",
     "                                                out_path = out_dir, temp = temp, trim_beg = 0., \n",
     "                                                undersampling_idx = sampling_results['undersamplingThreshold'],\n",
-    "                                                plot_results = True, calc_clara = False)\n",
-    "\n",
-    "\n"
-   ]
-  },
-  {
-   "cell_type": "markdown",
-   "metadata": {},
-   "source": [
-    "and here are the results:"
+    "                                                plot_results = True, calc_clara = False)\n"
    ]
   },
   {
    "cell_type": "code",
-   "execution_count": 9,
+   "execution_count": 8,
    "metadata": {},
    "outputs": [
     {
@@ -196,7 +187,7 @@
        "<IPython.core.display.Image object>"
       ]
      },
-     "execution_count": 9,
+     "execution_count": 8,
      "metadata": {},
      "output_type": "execute_result"
     }
@@ -207,10 +198,8 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 13,
-   "metadata": {
-    "scrolled": false
-   },
+   "execution_count": 10,
+   "metadata": {},
    "outputs": [
     {
      "data": {
@@ -327,6 +316,7 @@
        "Undersampling found at replica 16 with s = 0.0135\n",
        "\n",
        "New energy offset for each state:\n",
+       "\n",
        "state 1 : 0.0 +-  0.0\n",
        "state 2 : 12.5 +-  2.15\n",
        "state 3 : -7.23 +-  1.26\n",
@@ -337,7 +327,7 @@
        "<IPython.core.display.Markdown object>"
       ]
      },
-     "execution_count": 13,
+     "execution_count": 10,
      "metadata": {},
      "output_type": "execute_result"
     }
@@ -345,6 +335,13 @@
    "source": [
     "Markdown(out_dir+\"/energy_offsets.out\")"
    ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": []
   }
  ],
  "metadata": {

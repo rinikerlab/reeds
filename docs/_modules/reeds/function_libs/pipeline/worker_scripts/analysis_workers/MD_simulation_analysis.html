@@ -168,11 +168,11 @@
     <span class="s2">&quot;concat&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;do&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
                <span class="s2">&quot;sub&quot;</span><span class="p">:</span> <span class="p">{</span>
                    <span class="s2">&quot;cp_cnf&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
-                   <span class="s2">&quot;cat_trc&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+                   <span class="s2">&quot;cat_trc&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
                    <span class="s2">&quot;cat_tre&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
                    <span class="s2">&quot;ene_ana&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
                    <span class="s2">&quot;convert_trcs&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
-                   <span class="s2">&quot;cat_repdat&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span> <span class="p">}</span>
+                   <span class="s2">&quot;cat_repdat&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span> <span class="p">}</span>
                <span class="p">}</span>
 <span class="p">}</span>
 
@@ -234,8 +234,8 @@
                                           <span class="n">num_replicas</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">control_dict</span><span class="o">=</span><span class="n">control_dict</span><span class="p">[</span><span class="s2">&quot;concat&quot;</span><span class="p">][</span><span class="s2">&quot;sub&quot;</span><span class="p">],</span>
                                           <span class="n">out_folder</span><span class="o">=</span><span class="n">out_data_dir</span><span class="p">,</span> <span class="n">out_file_prefix</span><span class="o">=</span><span class="n">in_simulation_name</span><span class="p">,</span>
                                           <span class="n">in_ene_ana_lib_path</span><span class="o">=</span><span class="n">in_ene_ana_lib_path</span><span class="p">,</span> <span class="n">n_processes</span><span class="o">=</span><span class="n">n_processes</span><span class="p">,</span>
-                                          <span class="n">gromosPP_bin_dir</span><span class="o">=</span><span class="n">gromosPP_bin_dir</span><span class="p">,</span> <span class="n">nofinal</span><span class="o">=</span><span class="n">verbose</span><span class="p">,</span>
-                                          <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">,</span> <span class="n">additional_properties</span><span class="o">=</span><span class="n">properties</span><span class="p">)</span></div>
+                                          <span class="n">gromosPP_bin_dir</span><span class="o">=</span><span class="n">gromosPP_bin_dir</span><span class="p">,</span>
+                                          <span class="n">nofinal</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">,</span> <span class="n">additional_properties</span><span class="o">=</span><span class="n">properties</span><span class="p">)</span></div>
 </pre></div>
 
            </div>
