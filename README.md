@@ -18,7 +18,6 @@ In this repository we now combined these approaches to an automatic scheme for R
 
 
 
-
 The repository aims to make the RE-EDS pipeline accessible to everyone!
 
 For more on RE-EDS checkout:
@@ -50,7 +49,9 @@ Using this repository, clone it (like the command below) into a directory on you
 
     git clone --recurse-submodules <repo url>
 
-Make sure you have the required python packages from devtools/conda-envs/full_env.yaml.
+Make sure you have the required python packages from devtools/conda-envs/full_env.yaml. You can install the provided env with Anacodna like:
+
+    conda env create -f devtools/conda-envs/full_env.yaml
 
 If you want to update the code of the PyGromos submodule, you can do this:
 
@@ -66,7 +67,7 @@ Please, if your writing code for this repository, first develop it on an own bra
 
 
 
-### Copyright
+## Copyright
 
 Copyright (c) 2020, Benjamin Ries, Salomé Rieder, Candide Champion
 

@@ -11,6 +11,6 @@ python conf.py
 
 ##execute making docu
 make html
-make latex
+#make latex
 
 cp -r _build/html/*  ../

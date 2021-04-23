@@ -77,7 +77,12 @@ Using this repository, clone it (like the command below) into a directory on you
    git clone --recurse-submodules <repo url>
 
 
-Make sure you have the required python packages from devtools/conda-envs/full_env.yaml.
+Make sure you have the required python packages from devtools/conda-envs/full_env.yaml. You can install the provided env with Anacodna like:
+
+.. code-block::
+
+   conda env create -f devtools/conda-envs/full_env.yaml
+
 
 If you want to update the code of the PyGromos submodule, you can do this:
 
@@ -100,7 +105,7 @@ Please, if your writing code for this repository, first develop it on an own bra
 
 
 Copyright
-^^^^^^^^^
+---------
 
 Copyright (c) 2020, Benjamin Ries, Salomé Rieder, Candide Champion
 

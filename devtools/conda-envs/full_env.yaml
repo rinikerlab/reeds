@@ -5,6 +5,7 @@ dependencies:
     # Base depends
   - python
   - pip
+  - jupyter
 
     # Testing
   - pytest
@@ -24,3 +25,4 @@ dependencies:
   - sphinx
   - nbsphinx
   - m2r
+  - sphinx_rtd_theme
