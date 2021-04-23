@@ -1,4 +1,4 @@
-RE-EDS
+REEDS
 ==============================
 [//]: # (Badges)
 [![CI](https://github.com/rinikerlab/reeds/actions/workflows/CI.yaml/badge.svg)](https://github.com/rinikerlab/reeds/actions/workflows/CI.yaml)
@@ -9,14 +9,22 @@ Replica Exchange - Enveloping Distribution Sampling (RE-EDS) is a method to calc
 It can be applied to calculate relative solvation free energies or relative binding free energies of ligands to a protein. 
 One advantage of this method is, that the transition path of one state into another one is not pre-determined thanks to use of Enveloping Distribution Sampling (EDS) by Christ et al. .
 
-The enhanced sampling method Replica Exchange was added by Sidler et al. to speed up the sampling and ease the choice of parameters.  
-Additionally multiple modules were described by Sidler to allow an automatization of the pipeline. 
-In this repository we now combined these approaches to an automatic scheme for RE-EDS.
+The aim of the module is to make the RE-EDS pipeline accesible to everyone! :)
+
+This Project contains:
+ * For python 3.6:
+    * Reeds parameter optimization and analysis Funcs ->funcLibs
+    * reeds simulation pipeline -> Scripts
+    * reeds theory scripts (generating the beautiful harmPot plots) ->Scripts
+
+ * gromos Reeds Versions
+ * gromos Files for REEDS
+ * submodule: PyGromos is already included in the repo
 
 
-![](.img/State_graph.png)
-
-
+The project is structured into two folders: 
+    * The function_libs folder contains all the code you could use in one of your scripts.
+    * The scripts folder contains code bits, you could already use with slight adaptations for your own project.
 
 The repository aims to make the RE-EDS pipeline accessible to everyone!
 
@@ -54,18 +62,32 @@ Make sure you have the required python packages from devtools/conda-envs/full_en
     conda env create -f devtools/conda-envs/full_env.yaml
 
 If you want to update the code of the PyGromos submodule, you can do this:
-
     git submodule init
     git submodule update
 
-Please, if your writing code for this repository, first develop it on an own branch.
+Please if your writing code for this repository, first develop it on an own branch.
 
      git branch mybranch    #generate your branch
      git checkout mybranch  #switch to your branch
      git merge main   #for adding new features from main to your branch
 
+Try to write test cases for your implemented features in /scritps/test. (there are already examples)
+So it is easier to maintain the code and add additional features.
 
+If you find a bug or any thing else, please raise an Issue.
 
+required packages:
+    - numpydoc
+    - mdtraj
+    - matplotlib
+    - numpy
+    - pandas
+    - scipy
+    - rdkit
+    
+
+If you find a bug or have an idea for a cool new feature, you are welcom to raise an Issue at the git page. :)
+P.s.: I can recommend Pycharm from dstar, for exploring the repository.
 
 ## Copyright
 
@@ -73,5 +95,6 @@ Copyright (c) 2020, Benjamin Ries, Salomé Rieder, Candide Champion
 
 
 #### Acknowledgements
- Project-based on the 
+ 
+Project based on the 
 [Computational Molecular Science Python Cookiecutter](https://github.com/molssi/cookiecutter-cms) version 1.3.

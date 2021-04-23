@@ -1,0 +1,911 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>reeds.function_libs.pipeline.module_functions &mdash; REEDS  documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../../" src="../../../../_static/documentation_options.js"></script>
+        <script src="../../../../_static/jquery.js"></script>
+        <script src="../../../../_static/underscore.js"></script>
+        <script src="../../../../_static/doctools.js"></script>
+        <script src="../../../../_static/language_data.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
+    
+    <script type="text/javascript" src="../../../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../../index.html" class="icon icon-home"> REEDS
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../introduction.html">REEDS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../Examples/index.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_source/modules.html">Documentation</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">REEDS</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../../index.html">Module code</a> &raquo;</li>
+        
+      <li>reeds.function_libs.pipeline.module_functions</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for reeds.function_libs.pipeline.module_functions</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">copy</span>
+<span class="kn">import</span> <span class="nn">glob</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">typing</span> <span class="k">as</span> <span class="nn">t</span>
+<span class="kn">from</span> <span class="nn">inspect</span> <span class="kn">import</span> <span class="n">signature</span><span class="p">,</span> <span class="n">_empty</span>
+<span class="kn">from</span> <span class="nn">numbers</span> <span class="kn">import</span> <span class="n">Number</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Dict</span>
+
+<span class="kn">from</span> <span class="nn">pygromos.euler_submissions</span> <span class="kn">import</span> <span class="n">FileManager</span> <span class="k">as</span> <span class="n">fM</span>
+<span class="kn">from</span> <span class="nn">pygromos.files</span> <span class="kn">import</span> <span class="n">imd</span><span class="p">,</span> <span class="n">coord</span>
+<span class="kn">from</span> <span class="nn">pygromos.files.coord</span> <span class="kn">import</span> <span class="n">cnf</span> <span class="k">as</span> <span class="n">cnf_cls</span>
+<span class="kn">from</span> <span class="nn">pygromos.utils</span> <span class="kn">import</span> <span class="n">amino_acids</span> <span class="k">as</span> <span class="n">aa</span><span class="p">,</span> <span class="n">bash</span>
+<span class="kn">from</span> <span class="nn">reeds.function_libs.pipeline</span> <span class="kn">import</span> <span class="n">generate_euler_job_files</span> <span class="k">as</span> <span class="n">gjs</span>
+<span class="kn">from</span> <span class="nn">reeds.function_libs.pipeline.jobScheduling_scripts</span> <span class="kn">import</span> <span class="n">RE_EDS_simulation_scheduler</span>
+<span class="kn">from</span> <span class="nn">reeds.function_libs.pipeline.worker_scripts.analysis_workers</span> <span class="kn">import</span> <span class="n">RE_EDS_general_analysis</span><span class="p">,</span> \
+    <span class="n">RE_EDS_general_analysis</span> <span class="k">as</span> <span class="n">reeds_analysis</span>
+<span class="kn">from</span> <span class="nn">reeds.function_libs.utils</span> <span class="kn">import</span> <span class="n">s_log_dist</span>
+<span class="kn">from</span> <span class="nn">reeds.function_libs.utils.structures</span> <span class="kn">import</span> <span class="n">sopt_job</span><span class="p">,</span> <span class="n">spacer</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">IMD template adaptations</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="adapt_imd_template_optimizedState"><a class="viewcode-back" href="../../../../_source/reeds.function_libs.pipeline.html#reeds.function_libs.pipeline.module_functions.adapt_imd_template_optimizedState">[docs]</a><span class="k">def</span> <span class="nf">adapt_imd_template_optimizedState</span><span class="p">(</span><span class="n">in_template_imd_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">out_imd_dir</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">cnf</span><span class="p">:</span> <span class="n">cnf_cls</span><span class="o">.</span><span class="n">Cnf</span><span class="p">,</span> <span class="n">non_ligand_residues</span><span class="p">:</span> <span class="nb">list</span> <span class="o">=</span> <span class="p">[],</span>
+                                      <span class="n">simulation_steps</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">100000</span><span class="p">,</span> <span class="n">solvent_keyword</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;SOLV&quot;</span><span class="p">)</span><span class="o">-&gt;</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">      modify_imds - for generateOptimizedStates</span>
+<span class="sd">        This function prepares the imd. protocol file for gromos simulation.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    in_template_imd_path : str</span>
+<span class="sd">        path to the template imd</span>
+<span class="sd">    out_imd_dir : str</span>
+<span class="sd">        output path for the imds</span>
+<span class="sd">    cnf : cnf_cls.Cnf</span>
+<span class="sd">        coordinate file obj, for retrieving the residues</span>
+<span class="sd">    non_ligand_residues : list, optional</span>
+
+<span class="sd">    simulation_steps : int, optional</span>
+<span class="sd">        number of steps to simulate</span>
+<span class="sd">    solvent_keyword : str, optional</span>
+<span class="sd">        residue name for the solvent</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    (str, list)</span>
+<span class="sd">        imd_template_path, lig_nums</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">orig_residues</span> <span class="o">=</span> <span class="n">cnf</span><span class="o">.</span><span class="n">get_residues</span><span class="p">()</span>
+
+    <span class="n">ignore_residues</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">res</span><span class="p">:</span> <span class="n">res</span> <span class="o">!=</span> <span class="n">solvent_keyword</span> <span class="ow">and</span> <span class="n">res</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">aa</span><span class="o">.</span><span class="n">three_letter_aa_lib</span> <span class="ow">and</span> <span class="n">res</span> <span class="o">!=</span> <span class="s2">&quot;prot&quot;</span> <span class="ow">and</span> <span class="p">(</span>
+        <span class="ow">not</span> <span class="n">res</span> <span class="ow">in</span> <span class="n">non_ligand_residues</span><span class="p">)</span>
+    <span class="n">protein_residues</span> <span class="o">=</span> <span class="p">{</span><span class="n">res</span><span class="p">:</span> <span class="n">val</span> <span class="k">for</span> <span class="n">res</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">orig_residues</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="p">(</span><span class="n">res</span> <span class="ow">in</span> <span class="n">aa</span><span class="o">.</span><span class="n">three_letter_aa_lib</span><span class="p">)}</span>
+    <span class="n">n_atoms_prot</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">([</span><span class="nb">sum</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">orig_residues</span><span class="p">[</span><span class="n">res</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">()))</span> <span class="k">for</span> <span class="n">res</span> <span class="ow">in</span> <span class="n">orig_residues</span> <span class="k">if</span>
+                        <span class="n">res</span> <span class="ow">in</span> <span class="n">aa</span><span class="o">.</span><span class="n">three_letter_aa_lib</span><span class="p">])</span>  <span class="c1"># if protein is present!</span>
+    <span class="n">prot_position</span> <span class="o">=</span> <span class="nb">min</span><span class="p">([</span><span class="nb">min</span><span class="p">(</span><span class="n">val</span><span class="p">)</span> <span class="k">for</span> <span class="n">res</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">protein_residues</span><span class="o">.</span><span class="n">items</span><span class="p">()])</span> <span class="k">if</span> <span class="p">(</span><span class="n">n_atoms_prot</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="k">else</span> <span class="mi">0</span>
+
+    <span class="c1"># adapt resis</span>
+    <span class="n">residues</span> <span class="o">=</span> <span class="p">{</span><span class="n">res</span><span class="p">:</span> <span class="n">val</span> <span class="k">for</span> <span class="n">res</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">orig_residues</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="p">(</span><span class="n">res</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">aa</span><span class="o">.</span><span class="n">three_letter_aa_lib</span><span class="p">)}</span>
+
+    <span class="c1"># get ligand parameters</span>
+    <span class="n">lig_atoms</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">([</span><span class="nb">sum</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">residues</span><span class="p">[</span><span class="n">res</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">()))</span> <span class="k">for</span> <span class="n">res</span> <span class="ow">in</span> <span class="n">residues</span> <span class="k">if</span> <span class="n">ignore_residues</span><span class="p">(</span><span class="n">res</span><span class="p">)])</span>
+    <span class="n">lig_num</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">([</span><span class="mi">1</span> <span class="k">for</span> <span class="n">res</span> <span class="ow">in</span> <span class="n">residues</span> <span class="k">if</span> <span class="n">ignore_residues</span><span class="p">(</span><span class="n">res</span><span class="p">)])</span>
+    <span class="n">lig_names</span> <span class="o">=</span> <span class="p">[</span><span class="n">res</span> <span class="k">for</span> <span class="n">res</span> <span class="ow">in</span> <span class="n">residues</span> <span class="k">if</span> <span class="n">ignore_residues</span><span class="p">(</span><span class="n">res</span><span class="p">)]</span>
+    <span class="n">lig_position</span> <span class="o">=</span> <span class="nb">min</span><span class="p">([</span><span class="nb">min</span><span class="p">(</span><span class="n">residues</span><span class="p">[</span><span class="n">res</span><span class="p">])</span> <span class="k">for</span> <span class="n">res</span> <span class="ow">in</span> <span class="n">residues</span> <span class="k">if</span> <span class="n">ignore_residues</span><span class="p">(</span><span class="n">res</span><span class="p">)])</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="n">n_atoms_prot</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;protein_position:&quot;</span><span class="p">,</span> <span class="n">prot_position</span><span class="p">)</span>
+        <span class="n">residues</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s2">&quot;prot&quot;</span><span class="p">:</span> <span class="p">{</span><span class="n">prot_position</span><span class="p">:</span> <span class="n">n_atoms_prot</span><span class="p">}})</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="ow">not</span> <span class="n">solvent_keyword</span> <span class="ow">in</span> <span class="n">residues</span><span class="p">):</span>
+        <span class="n">residues</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="n">solvent_keyword</span><span class="p">:</span> <span class="mi">0</span><span class="p">})</span>
+
+    <span class="n">imd_file</span> <span class="o">=</span> <span class="n">imd</span><span class="o">.</span><span class="n">Imd</span><span class="p">(</span><span class="n">in_template_imd_path</span><span class="p">)</span>
+    <span class="n">imd_file</span><span class="o">.</span><span class="n">SYSTEM</span><span class="o">.</span><span class="n">NSM</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">residues</span><span class="p">[</span><span class="s2">&quot;SOLV&quot;</span><span class="p">]</span> <span class="o">/</span> <span class="mi">3</span><span class="p">))</span> <span class="k">if</span> <span class="p">(</span><span class="s2">&quot;SOLV&quot;</span> <span class="ow">in</span> <span class="n">residues</span><span class="p">)</span> <span class="k">else</span> <span class="mi">0</span>
+    <span class="n">imd_file</span><span class="o">.</span><span class="n">FORCE</span><span class="o">.</span><span class="n">adapt_energy_groups</span><span class="p">(</span><span class="n">residues</span><span class="p">)</span>
+    <span class="n">imd_file</span><span class="o">.</span><span class="n">STEP</span><span class="o">.</span><span class="n">NSTLIM</span> <span class="o">=</span> <span class="n">simulation_steps</span>
+    <span class="n">imd_file</span><span class="o">.</span><span class="n">STEP</span><span class="o">.</span><span class="n">NSTLIM</span> <span class="o">=</span> <span class="n">simulation_steps</span>
+
+    <span class="c1"># hack for TIP3P explicit solvent</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">non_ligand_residues</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="ow">not</span> <span class="p">(</span><span class="s2">&quot;prot&quot;</span> <span class="ow">in</span> <span class="n">residues</span> <span class="ow">or</span> <span class="s2">&quot;protein&quot;</span> <span class="ow">in</span> <span class="n">residues</span><span class="p">)):</span>
+        <span class="n">solvent_bath</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="n">lig_atoms</span> <span class="o">+</span> <span class="nb">sum</span><span class="p">([</span><span class="nb">sum</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">residues</span><span class="p">[</span><span class="n">x</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">()))</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">non_ligand_residues</span><span class="p">])</span> <span class="o">+</span>
+                <span class="n">residues</span><span class="p">[</span><span class="n">solvent_keyword</span><span class="p">])</span>
+        <span class="n">temp_baths</span> <span class="o">=</span> <span class="p">{</span><span class="n">lig_atoms</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="n">solvent_bath</span><span class="p">:</span> <span class="mi">2</span><span class="p">}</span>
+
+    <span class="c1"># Temperature baths</span>
+    <span class="k">elif</span> <span class="p">(</span><span class="s2">&quot;prot&quot;</span> <span class="ow">in</span> <span class="n">residues</span> <span class="ow">or</span> <span class="s2">&quot;protein&quot;</span> <span class="ow">in</span> <span class="n">residues</span><span class="p">):</span>
+        <span class="n">temp_baths</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">non_ligand_residues</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">):</span>  <span class="c1"># TODO: DIRTY HACK: in PNMT is Cofactor at end of the file.</span>
+            <span class="n">solvent_bath</span> <span class="o">=</span> <span class="p">(</span><span class="n">lig_atoms</span> <span class="o">+</span> <span class="n">n_atoms_prot</span> <span class="o">+</span> <span class="n">residues</span><span class="p">[</span><span class="n">solvent_keyword</span><span class="p">])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">solvent_bath</span> <span class="o">=</span> <span class="p">(</span>
+                    <span class="n">lig_atoms</span> <span class="o">+</span> <span class="n">n_atoms_prot</span> <span class="o">+</span> <span class="nb">sum</span><span class="p">([</span><span class="nb">sum</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">residues</span><span class="p">[</span><span class="n">x</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">()))</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">non_ligand_residues</span><span class="p">])</span> <span class="o">+</span>
+                    <span class="n">residues</span><span class="p">[</span><span class="n">solvent_keyword</span><span class="p">])</span>
+
+        <span class="k">if</span> <span class="p">(</span><span class="n">lig_position</span> <span class="o">&lt;</span> <span class="n">prot_position</span><span class="p">):</span>
+            <span class="n">temp_baths</span> <span class="o">=</span> <span class="p">{</span><span class="n">lig_atoms</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="p">(</span><span class="n">lig_atoms</span> <span class="o">+</span> <span class="n">n_atoms_prot</span><span class="p">):</span> <span class="mi">2</span><span class="p">,</span> <span class="n">solvent_bath</span><span class="p">:</span> <span class="mi">3</span><span class="p">}</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">temp_baths</span> <span class="o">=</span> <span class="p">{</span><span class="n">n_atoms_prot</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="p">(</span><span class="n">lig_atoms</span> <span class="o">+</span> <span class="n">n_atoms_prot</span><span class="p">):</span> <span class="mi">2</span><span class="p">,</span> <span class="n">solvent_bath</span><span class="p">:</span> <span class="mi">3</span><span class="p">}</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">temp_baths</span> <span class="o">=</span> <span class="p">{</span><span class="n">lig_atoms</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="p">(</span><span class="n">lig_atoms</span> <span class="o">+</span> <span class="n">residues</span><span class="p">[</span><span class="n">solvent_keyword</span><span class="p">]):</span> <span class="mi">2</span><span class="p">}</span> <span class="k">if</span> <span class="p">(</span><span class="n">solvent_keyword</span> <span class="ow">in</span> <span class="n">residues</span><span class="p">)</span> <span class="k">else</span> <span class="p">{</span>
+            <span class="n">lig_atoms</span><span class="p">:</span> <span class="mi">1</span><span class="p">}</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">imd_file</span><span class="o">.</span><span class="n">MULTIBATH</span><span class="p">,</span> <span class="nb">type</span><span class="p">(</span><span class="kc">None</span><span class="p">))):</span>
+        <span class="n">imd_file</span><span class="o">.</span><span class="n">MULTIBATH</span><span class="o">.</span><span class="n">adapt_multibath</span><span class="p">(</span><span class="n">last_atoms_bath</span><span class="o">=</span><span class="n">temp_baths</span><span class="p">)</span>
+
+    <span class="c1"># edit EDS part</span>
+    <span class="n">imd_template_path</span> <span class="o">=</span> <span class="n">out_imd_dir</span> <span class="o">+</span> <span class="s2">&quot;/opt_structs_&quot;</span> <span class="o">+</span> <span class="s2">&quot;_&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">lig_names</span><span class="p">)</span>
+    <span class="n">s_values</span> <span class="o">=</span> <span class="p">[</span><span class="mf">1.0</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">lig_num</span><span class="p">)]</span>
+    <span class="k">for</span> <span class="n">state</span><span class="p">,</span> <span class="n">s_values</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">lig_num</span> <span class="o">+</span> <span class="mi">1</span><span class="p">),</span> <span class="n">s_values</span><span class="p">):</span>
+        <span class="n">imd_file</span><span class="o">.</span><span class="n">edit_EDS</span><span class="p">(</span><span class="n">NUMSTATES</span><span class="o">=</span><span class="n">lig_num</span><span class="p">,</span> <span class="n">S</span><span class="o">=</span><span class="n">s_values</span><span class="p">,</span>
+                          <span class="n">EIR</span><span class="o">=</span><span class="p">[</span><span class="mi">500</span> <span class="k">if</span> <span class="p">(</span><span class="n">x</span> <span class="o">==</span> <span class="n">state</span><span class="p">)</span> <span class="k">else</span> <span class="o">-</span><span class="mi">500</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">lig_num</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)])</span>
+        <span class="n">imd_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">imd_template_path</span> <span class="o">+</span> <span class="s2">&quot;_&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">state</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;.imd&quot;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">imd_template_path</span><span class="p">,</span> <span class="n">s_values</span><span class="p">,</span> <span class="n">lig_num</span></div>
+
+
+<div class="viewcode-block" id="adapt_imd_template_lowerBound"><a class="viewcode-back" href="../../../../_source/reeds.function_libs.pipeline.html#reeds.function_libs.pipeline.module_functions.adapt_imd_template_lowerBound">[docs]</a><span class="k">def</span> <span class="nf">adapt_imd_template_lowerBound</span><span class="p">(</span><span class="n">in_template_imd_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">out_imd_dir</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">cnf</span><span class="p">:</span> <span class="n">coord</span><span class="o">.</span><span class="n">Cnf</span><span class="p">,</span>
+                                  <span class="n">non_ligand_residues</span><span class="p">:</span> <span class="nb">list</span> <span class="o">=</span> <span class="p">[],</span> <span class="n">s_values</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                                  <span class="n">simulation_steps</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1000000</span><span class="p">)</span><span class="o">-&gt;</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="nb">list</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        This function prepares the imd. protocol file for a gromos simulation.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    in_template_imd_path</span>
+<span class="sd">    out_imd_dir</span>
+<span class="sd">    cnf</span>
+<span class="sd">    non_ligand_residues</span>
+<span class="sd">    s_values</span>
+<span class="sd">    simulation_steps</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    str, list, int</span>
+<span class="sd">        imd_template_path, s_values, num ligands</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">orig_residues</span> <span class="o">=</span> <span class="n">cnf</span><span class="o">.</span><span class="n">get_residues</span><span class="p">()</span>
+
+    <span class="n">residues</span><span class="p">,</span> <span class="n">ligands</span><span class="p">,</span> <span class="n">protein</span><span class="p">,</span> <span class="n">non_ligands</span> <span class="o">=</span> <span class="n">imd</span><span class="o">.</span><span class="n">Imd</span><span class="o">.</span><span class="n">clean_residue_list_for_imd</span><span class="p">(</span><span class="n">orig_residues</span><span class="p">,</span>
+                                                                                 <span class="n">not_ligand_residues</span><span class="o">=</span><span class="n">non_ligand_residues</span><span class="p">)</span>
+
+    <span class="c1">#print(&quot;res&quot;)</span>
+    <span class="c1">#print(residues)</span>
+    <span class="c1"># print(&quot;lig&quot;)</span>
+    <span class="c1"># print(ligands)</span>
+    <span class="c1"># print(&quot;prot&quot;)</span>
+    <span class="c1"># print(protein)</span>
+    <span class="c1">#print(&quot;non_ligands&quot;)</span>
+    <span class="c1">#print(non_ligands)</span>
+
+    <span class="n">ignore_residues</span> <span class="o">=</span> <span class="k">lambda</span> \
+            <span class="n">res</span><span class="p">:</span> <span class="n">res</span> <span class="o">!=</span> <span class="s2">&quot;SOLV&quot;</span> <span class="ow">and</span> <span class="n">res</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">aa</span><span class="o">.</span><span class="n">three_letter_aa_lib</span> <span class="ow">and</span> <span class="n">res</span> <span class="o">!=</span> <span class="s2">&quot;prot&quot;</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">res</span> <span class="ow">in</span> <span class="n">non_ligand_residues</span>
+
+    <span class="c1"># Modify IMD</span>
+    <span class="n">imd_file</span> <span class="o">=</span> <span class="n">imd</span><span class="o">.</span><span class="n">Imd</span><span class="p">(</span><span class="n">in_template_imd_path</span><span class="p">)</span>
+
+    <span class="n">atoms_per_solv</span> <span class="o">=</span> <span class="mi">3</span>
+    <span class="n">imd_file</span><span class="o">.</span><span class="n">SYSTEM</span><span class="o">.</span><span class="n">NSM</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">residues</span><span class="p">[</span><span class="s2">&quot;SOLV&quot;</span><span class="p">]</span> <span class="o">/</span> <span class="n">atoms_per_solv</span><span class="p">))</span> <span class="k">if</span> <span class="p">(</span><span class="s2">&quot;SOLV&quot;</span> <span class="ow">in</span> <span class="n">residues</span><span class="p">)</span> <span class="k">else</span> <span class="mi">0</span>
+
+    <span class="n">imd_file</span><span class="o">.</span><span class="n">STEP</span><span class="o">.</span><span class="n">step</span> <span class="o">=</span> <span class="n">simulation_steps</span>
+    <span class="n">imd_file</span><span class="o">.</span><span class="n">FORCE</span><span class="o">.</span><span class="n">adapt_energy_groups</span><span class="p">(</span><span class="n">residues</span><span class="p">)</span>
+
+    <span class="c1"># hack for TIP3P explicit solvent</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">non_ligand_residues</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="ow">not</span> <span class="s2">&quot;prot&quot;</span> <span class="ow">in</span> <span class="n">residues</span><span class="p">):</span>
+        <span class="n">solvent_bath</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="n">ligands</span><span class="o">.</span><span class="n">number_of_atoms</span> <span class="o">+</span> <span class="n">non_ligands</span><span class="o">.</span><span class="n">number_of_atoms</span><span class="p">)</span>
+        <span class="n">temp_baths</span> <span class="o">=</span> <span class="p">{</span><span class="n">ligands</span><span class="o">.</span><span class="n">number_of_atoms</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="n">solvent_bath</span><span class="p">:</span> <span class="mi">2</span><span class="p">}</span>
+
+    <span class="c1">##Define temperature baths</span>
+    <span class="k">elif</span> <span class="p">(</span><span class="n">protein</span><span class="o">.</span><span class="n">number_of_atoms</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">):</span>
+        <span class="n">temp_baths</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">non_ligands</span><span class="p">,</span> <span class="nb">type</span><span class="p">(</span><span class="kc">None</span><span class="p">))):</span>  <span class="c1"># TODO: DIRTY HACK: in PNMT is Cofactor at end of the file.</span>
+            <span class="n">solvent_bath</span> <span class="o">=</span> <span class="p">(</span><span class="n">ligands</span><span class="o">.</span><span class="n">number_of_atoms</span> <span class="o">+</span> <span class="n">protein</span><span class="o">.</span><span class="n">number_of_atoms</span> <span class="o">+</span> <span class="n">residues</span><span class="p">[</span><span class="s2">&quot;SOLV&quot;</span><span class="p">])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">solvent_bath</span> <span class="o">=</span> <span class="p">(</span><span class="n">ligands</span><span class="o">.</span><span class="n">number_of_atoms</span> <span class="o">+</span> <span class="n">protein</span><span class="o">.</span><span class="n">number_of_atoms</span> <span class="o">+</span> <span class="n">non_ligands</span><span class="o">.</span><span class="n">number_of_atoms</span> <span class="o">+</span> <span class="n">residues</span><span class="p">[</span>
+                <span class="s2">&quot;SOLV&quot;</span><span class="p">])</span>
+
+        <span class="k">if</span> <span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="n">ligands</span><span class="o">.</span><span class="n">positions</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">protein</span><span class="o">.</span><span class="n">position</span><span class="p">):</span>
+            <span class="n">temp_baths</span> <span class="o">=</span> <span class="p">{</span><span class="n">ligands</span><span class="o">.</span><span class="n">number_of_atoms</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="p">(</span><span class="n">ligands</span><span class="o">.</span><span class="n">number_of_atoms</span> <span class="o">+</span> <span class="n">protein</span><span class="o">.</span><span class="n">number_of_atoms</span><span class="p">):</span> <span class="mi">2</span><span class="p">,</span>
+                          <span class="n">solvent_bath</span><span class="p">:</span> <span class="mi">3</span><span class="p">}</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">temp_baths</span> <span class="o">=</span> <span class="p">{</span><span class="n">protein</span><span class="o">.</span><span class="n">number_of_atoms</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="p">(</span><span class="n">ligands</span><span class="o">.</span><span class="n">number_of_atoms</span> <span class="o">+</span> <span class="n">protein</span><span class="o">.</span><span class="n">number_of_atoms</span><span class="p">):</span> <span class="mi">2</span><span class="p">,</span>
+                          <span class="n">solvent_bath</span><span class="p">:</span> <span class="mi">3</span><span class="p">}</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">temp_baths</span> <span class="o">=</span> <span class="p">{</span><span class="n">ligands</span><span class="o">.</span><span class="n">number_of_atoms</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="p">(</span><span class="n">ligands</span><span class="o">.</span><span class="n">number_of_atoms</span> <span class="o">+</span> <span class="n">residues</span><span class="p">[</span><span class="s2">&quot;SOLV&quot;</span><span class="p">]):</span> <span class="mi">2</span><span class="p">}</span> <span class="k">if</span> <span class="p">(</span>
+                    <span class="s2">&quot;SOLV&quot;</span> <span class="ow">in</span> <span class="n">residues</span><span class="p">)</span> <span class="k">else</span> <span class="p">{</span><span class="n">ligands</span><span class="o">.</span><span class="n">number_of_atoms</span><span class="p">:</span> <span class="mi">1</span><span class="p">}</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="n">non_ligands</span><span class="p">):</span>
+        <span class="n">non_lig_atoms</span> <span class="o">=</span> <span class="n">non_ligands</span><span class="o">.</span><span class="n">number_of_atoms</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">non_lig_atoms</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="n">protein</span><span class="p">):</span>
+        <span class="n">protein_number_of_atoms</span> <span class="o">=</span> <span class="n">protein</span><span class="o">.</span><span class="n">number_of_atoms</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">protein_number_of_atoms</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="n">all_atoms</span> <span class="o">=</span> <span class="n">ligands</span><span class="o">.</span><span class="n">number_of_atoms</span> <span class="o">+</span> <span class="n">protein_number_of_atoms</span> <span class="o">+</span> <span class="n">non_lig_atoms</span>
+    <span class="k">if</span> <span class="s2">&quot;SOLV&quot;</span> <span class="ow">in</span> <span class="n">residues</span><span class="p">:</span>
+        <span class="n">all_atoms</span> <span class="o">+=</span> <span class="n">residues</span><span class="p">[</span><span class="s2">&quot;SOLV&quot;</span><span class="p">]</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">imd_file</span><span class="o">.</span><span class="n">MULTIBATH</span><span class="p">,</span> <span class="nb">type</span><span class="p">(</span><span class="kc">None</span><span class="p">))):</span>
+        <span class="n">imd_file</span><span class="o">.</span><span class="n">MULTIBATH</span><span class="o">.</span><span class="n">adapt_multibath</span><span class="p">(</span><span class="n">last_atoms_bath</span><span class="o">=</span><span class="n">temp_baths</span><span class="p">)</span>
+    <span class="n">imd_file</span><span class="o">.</span><span class="n">STEP</span><span class="o">.</span><span class="n">NSTLIM</span> <span class="o">=</span> <span class="n">simulation_steps</span>
+
+    <span class="n">imd_template_path</span> <span class="o">=</span> <span class="n">out_imd_dir</span> <span class="o">+</span> <span class="s2">&quot;/opt_structs_&quot;</span> <span class="o">+</span> <span class="s2">&quot;_&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">ligands</span><span class="o">.</span><span class="n">names</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">s_values</span><span class="p">)</span> <span class="o">==</span> <span class="nb">type</span><span class="p">(</span><span class="kc">None</span><span class="p">)):</span>
+        <span class="n">s_values</span> <span class="o">=</span> <span class="n">s_log_dist</span><span class="o">.</span><span class="n">get_log_s_distribution_between</span><span class="p">(</span><span class="n">start</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="mf">0.00001</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">ind</span><span class="p">,</span> <span class="n">sval</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">s_values</span><span class="p">):</span>
+        <span class="n">imd_file</span><span class="o">.</span><span class="n">edit_EDS</span><span class="p">(</span><span class="n">NUMSTATES</span><span class="o">=</span><span class="n">ligands</span><span class="o">.</span><span class="n">number</span><span class="p">,</span> <span class="n">S</span><span class="o">=</span><span class="n">sval</span><span class="p">,</span> <span class="n">EIR</span><span class="o">=</span><span class="p">[</span><span class="mf">0.0</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">ligands</span><span class="o">.</span><span class="n">number</span><span class="p">)])</span>
+        <span class="n">imd_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">imd_template_path</span> <span class="o">+</span> <span class="s2">&quot;_&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">ind</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;.imd&quot;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">imd_template_path</span><span class="p">,</span> <span class="n">s_values</span><span class="p">,</span> <span class="n">ligands</span><span class="o">.</span><span class="n">number</span></div>
+
+
+<div class="viewcode-block" id="adapt_imd_template_eoff"><a class="viewcode-back" href="../../../../_source/reeds.function_libs.pipeline.html#reeds.function_libs.pipeline.module_functions.adapt_imd_template_eoff">[docs]</a><span class="k">def</span> <span class="nf">adapt_imd_template_eoff</span><span class="p">(</span><span class="n">system</span><span class="p">:</span> <span class="n">fM</span><span class="o">.</span><span class="n">System</span><span class="p">,</span> <span class="n">imd_out_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">imd_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+                            <span class="n">old_svals</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">s_num</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">21</span><span class="p">,</span> <span class="n">s_range</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                            <span class="n">non_ligand_residues</span><span class="p">:</span> <span class="nb">list</span> <span class="o">=</span> <span class="p">[],</span>
+                            <span class="n">verbose</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">imd</span><span class="o">.</span><span class="n">Imd</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            This function is preparing the imd_template in gromos_files for the REEDS SYSTEM&gt;</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    system : pygromos.PipelineManager.Simulation_System</span>
+<span class="sd">        this is the system obj. containing all paths to all system relevant Files.</span>
+<span class="sd">    imd_out_path : str</span>
+<span class="sd">        path, where the new .imd should be written to.</span>
+<span class="sd">    imd_path : str</span>
+<span class="sd">        imd template path that shall be modified</span>
+<span class="sd">    old_svals: List[float], optional</span>
+<span class="sd">        list containing previous system files</span>
+<span class="sd">    s_num : int, optional</span>
+<span class="sd">        number of max s_values(optional)</span>
+<span class="sd">    s_range : Tuple[float, float], optional</span>
+<span class="sd">        max and min of log distributed s_vals (optional, not in combination with s_vals_csv_path)</span>
+<span class="sd">    non_ligand_residues: List[str], optional</span>
+<span class="sd">        non ligand residues are not considered as possible states for the eds simulation, will not have their own force group</span>
+
+
+<span class="sd">    verbose : bool, optional</span>
+<span class="sd">        I wanna screaaaam</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    imd.Imd</span>
+<span class="sd">        returns imd_class obj</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="n">verbose</span><span class="p">):</span> <span class="nb">print</span><span class="p">(</span><span class="n">s_num</span><span class="p">)</span>
+    <span class="k">if</span> <span class="p">(</span><span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">old_svals</span><span class="p">,</span> <span class="nb">type</span><span class="p">(</span><span class="kc">None</span><span class="p">))):</span>  <span class="c1"># pirority! are overwriting range!</span>
+        <span class="k">if</span> <span class="p">(</span><span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">s_range</span><span class="p">,</span> <span class="nb">type</span><span class="p">(</span><span class="kc">None</span><span class="p">))</span> <span class="ow">and</span> <span class="p">(</span>
+                <span class="nb">isinstance</span><span class="p">(</span><span class="n">s_range</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">Number</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">s_range</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">Number</span><span class="p">))</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">s_num</span><span class="p">,</span>
+                                                                                                      <span class="nb">type</span><span class="p">(</span><span class="kc">None</span><span class="p">))):</span>
+            <span class="n">svals</span> <span class="o">=</span> <span class="n">s_log_dist</span><span class="o">.</span><span class="n">get_log_s_distribution_between</span><span class="p">(</span><span class="n">start</span><span class="o">=</span><span class="n">s_range</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">end</span><span class="o">=</span><span class="n">s_range</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">num</span><span class="o">=</span><span class="n">s_num</span><span class="p">)</span>
+
+        <span class="k">elif</span> <span class="p">(</span><span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">s_num</span><span class="p">,</span> <span class="nb">type</span><span class="p">(</span><span class="kc">None</span><span class="p">))):</span>  <span class="c1"># reduce svalues (with log dist)</span>
+            <span class="n">svals</span> <span class="o">=</span> <span class="n">s_log_dist</span><span class="o">.</span><span class="n">get_log_s_distribution_between</span><span class="p">(</span><span class="n">start</span><span class="o">=</span><span class="n">old_svals</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">end</span><span class="o">=</span><span class="n">old_svals</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">num</span><span class="o">=</span><span class="n">s_num</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">svals</span> <span class="o">=</span> <span class="n">old_svals</span>
+    <span class="k">elif</span> <span class="p">(</span><span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">s_num</span><span class="p">,</span> <span class="nb">type</span><span class="p">(</span><span class="kc">None</span><span class="p">))</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">s_range</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">Number</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">s_range</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">Number</span><span class="p">)):</span>
+        <span class="n">svals</span> <span class="o">=</span> <span class="n">s_log_dist</span><span class="o">.</span><span class="n">get_log_s_distribution_between</span><span class="p">(</span><span class="n">start</span><span class="o">=</span><span class="n">s_range</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">end</span><span class="o">=</span><span class="n">s_range</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">num</span><span class="o">=</span><span class="n">s_num</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span>
+            <span class="s2">&quot;The imd file could not be adapted, as at least a s_vals_csv_path or s_num, s_range variable has to be given.&quot;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span> <span class="nb">print</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">svals</span><span class="p">))</span> <span class="o">+</span> <span class="s2">&quot; SVALUES: &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">svals</span><span class="p">))</span>
+    <span class="c1"># extract residue and atom information from cnf file</span>
+    <span class="n">cnf</span> <span class="o">=</span> <span class="n">cnf_cls</span><span class="o">.</span><span class="n">Cnf</span><span class="p">(</span><span class="n">system</span><span class="o">.</span><span class="n">coordinates</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">raw_residues</span> <span class="o">=</span> <span class="n">cnf</span><span class="o">.</span><span class="n">get_residues</span><span class="p">()</span>
+
+    <span class="n">residues</span><span class="p">,</span> <span class="n">ligands</span><span class="p">,</span> <span class="n">protein</span><span class="p">,</span> <span class="n">non_ligands</span> <span class="o">=</span> <span class="n">imd</span><span class="o">.</span><span class="n">Imd</span><span class="o">.</span><span class="n">clean_residue_list_for_imd</span><span class="p">(</span><span class="n">raw_residues</span><span class="p">,</span> <span class="n">non_ligand_residues</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="n">verbose</span><span class="p">):</span> <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;counted residues, ligands, proteins etc.&quot;</span><span class="p">,</span> <span class="p">)</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">verbose</span><span class="p">):</span> <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2"> all_resis:</span><span class="se">\n</span><span class="s2"> &quot;</span><span class="p">,</span> <span class="n">residues</span><span class="p">,</span>
+                        <span class="s2">&quot;</span><span class="se">\n\n</span><span class="s2"> ligands:</span><span class="se">\n</span><span class="s2"> &quot;</span><span class="p">,</span> <span class="n">ligands</span><span class="p">,</span>
+                        <span class="s2">&quot;</span><span class="se">\n\n</span><span class="s2"> protein:</span><span class="se">\n</span><span class="s2"> &quot;</span><span class="p">,</span> <span class="n">protein</span><span class="p">,</span>
+                        <span class="s2">&quot;</span><span class="se">\n\n</span><span class="s2"> non-ligands:</span><span class="se">\n</span><span class="s2"> &quot;</span><span class="p">,</span> <span class="n">non_ligands</span><span class="p">,</span> <span class="s2">&quot;</span><span class="se">\n\n</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="c1"># hack for TIP3P explicit solvent</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">non_ligand_residues</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="ow">not</span> <span class="s2">&quot;prot&quot;</span> <span class="ow">in</span> <span class="n">residues</span><span class="p">):</span>
+        <span class="n">solvent_bath</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="n">ligands</span><span class="o">.</span><span class="n">number_of_atoms</span> <span class="o">+</span> <span class="n">non_ligands</span><span class="o">.</span><span class="n">number_of_atoms</span><span class="p">)</span>
+        <span class="n">temp_baths</span> <span class="o">=</span> <span class="p">{</span><span class="n">ligands</span><span class="o">.</span><span class="n">number_of_atoms</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="n">solvent_bath</span><span class="p">:</span> <span class="mi">2</span><span class="p">}</span>
+
+    <span class="c1">##Define temperature baths</span>
+    <span class="k">elif</span> <span class="p">(</span><span class="n">protein</span><span class="o">.</span><span class="n">number_of_atoms</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">):</span>
+        <span class="n">temp_baths</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">non_ligands</span><span class="p">,</span> <span class="nb">type</span><span class="p">(</span><span class="kc">None</span><span class="p">))):</span>  <span class="c1"># TODO: DIRTY HACK: in PNMT is Cofactor at end of the file.</span>
+            <span class="n">solvent_bath</span> <span class="o">=</span> <span class="p">(</span><span class="n">ligands</span><span class="o">.</span><span class="n">number_of_atoms</span> <span class="o">+</span> <span class="n">protein</span><span class="o">.</span><span class="n">number_of_atoms</span> <span class="o">+</span> <span class="n">residues</span><span class="p">[</span><span class="s2">&quot;SOLV&quot;</span><span class="p">])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">solvent_bath</span> <span class="o">=</span> <span class="p">(</span><span class="n">ligands</span><span class="o">.</span><span class="n">number_of_atoms</span> <span class="o">+</span> <span class="n">protein</span><span class="o">.</span><span class="n">number_of_atoms</span> <span class="o">+</span> <span class="n">non_ligands</span><span class="o">.</span><span class="n">number_of_atoms</span> <span class="o">+</span> <span class="n">residues</span><span class="p">[</span>
+                <span class="s2">&quot;SOLV&quot;</span><span class="p">])</span>
+
+        <span class="k">if</span> <span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="n">ligands</span><span class="o">.</span><span class="n">positions</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">protein</span><span class="o">.</span><span class="n">position</span><span class="p">):</span>
+            <span class="n">temp_baths</span> <span class="o">=</span> <span class="p">{</span><span class="n">ligands</span><span class="o">.</span><span class="n">number_of_atoms</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="p">(</span><span class="n">ligands</span><span class="o">.</span><span class="n">number_of_atoms</span> <span class="o">+</span> <span class="n">protein</span><span class="o">.</span><span class="n">number_of_atoms</span><span class="p">):</span> <span class="mi">2</span><span class="p">,</span>
+                          <span class="n">solvent_bath</span><span class="p">:</span> <span class="mi">3</span><span class="p">}</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">temp_baths</span> <span class="o">=</span> <span class="p">{</span><span class="n">protein</span><span class="o">.</span><span class="n">number_of_atoms</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="p">(</span><span class="n">ligands</span><span class="o">.</span><span class="n">number_of_atoms</span> <span class="o">+</span> <span class="n">protein</span><span class="o">.</span><span class="n">number_of_atoms</span><span class="p">):</span> <span class="mi">2</span><span class="p">,</span>
+                          <span class="n">solvent_bath</span><span class="p">:</span> <span class="mi">3</span><span class="p">}</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">temp_baths</span> <span class="o">=</span> <span class="p">{</span><span class="n">ligands</span><span class="o">.</span><span class="n">number_of_atoms</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="p">(</span><span class="n">ligands</span><span class="o">.</span><span class="n">number_of_atoms</span> <span class="o">+</span> <span class="n">residues</span><span class="p">[</span><span class="s2">&quot;SOLV&quot;</span><span class="p">]):</span> <span class="mi">2</span><span class="p">}</span> <span class="k">if</span> <span class="p">(</span>
+                    <span class="s2">&quot;SOLV&quot;</span> <span class="ow">in</span> <span class="n">residues</span><span class="p">)</span> <span class="k">else</span> <span class="p">{</span><span class="n">ligands</span><span class="o">.</span><span class="n">number_of_atoms</span><span class="p">:</span> <span class="mi">1</span><span class="p">}</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="n">non_ligands</span><span class="p">):</span>
+        <span class="n">non_lig_atoms</span> <span class="o">=</span> <span class="n">non_ligands</span><span class="o">.</span><span class="n">number_of_atoms</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">non_lig_atoms</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="n">protein</span><span class="p">):</span>
+        <span class="n">protein_number_of_atoms</span> <span class="o">=</span> <span class="n">protein</span><span class="o">.</span><span class="n">number_of_atoms</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">protein_number_of_atoms</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="n">all_atoms</span> <span class="o">=</span> <span class="n">ligands</span><span class="o">.</span><span class="n">number_of_atoms</span> <span class="o">+</span> <span class="n">protein_number_of_atoms</span> <span class="o">+</span> <span class="n">non_lig_atoms</span>
+    <span class="k">if</span> <span class="p">(</span><span class="s2">&quot;SOLV&quot;</span> <span class="ow">in</span> <span class="n">residues</span><span class="p">):</span>
+        <span class="n">all_atoms</span> <span class="o">+=</span> <span class="n">residues</span><span class="p">[</span><span class="s2">&quot;SOLV&quot;</span><span class="p">]</span>
+
+    <span class="c1"># BUILD IMD</span>
+    <span class="n">imd_file</span> <span class="o">=</span> <span class="n">imd</span><span class="o">.</span><span class="n">Imd</span><span class="p">(</span><span class="n">imd_path</span><span class="p">)</span>  <span class="c1"># reads IMD</span>
+
+    <span class="n">atoms_per_solv</span> <span class="o">=</span> <span class="mi">3</span>
+    <span class="n">imd_file</span><span class="o">.</span><span class="n">SYSTEM</span><span class="o">.</span><span class="n">NSM</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">residues</span><span class="p">[</span><span class="s2">&quot;SOLV&quot;</span><span class="p">]</span> <span class="o">/</span> <span class="n">atoms_per_solv</span><span class="p">))</span> <span class="k">if</span> <span class="p">(</span><span class="s2">&quot;SOLV&quot;</span> <span class="ow">in</span> <span class="n">residues</span><span class="p">)</span> <span class="k">else</span> <span class="mi">0</span>
+
+    <span class="c1"># imd_file.SYSTEM.NSM = int(round(residues[&quot;SOLV&quot;] / 3))  # only for water solvent valid!@ needs res num</span>
+    <span class="n">imd_file</span><span class="o">.</span><span class="n">FORCE</span><span class="o">.</span><span class="n">adapt_energy_groups</span><span class="p">(</span><span class="n">residues</span><span class="p">)</span>  <span class="c1"># adapt force groups</span>
+    <span class="k">if</span> <span class="p">(</span><span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">imd_file</span><span class="o">.</span><span class="n">MULTIBATH</span><span class="p">,</span> <span class="nb">type</span><span class="p">(</span><span class="kc">None</span><span class="p">))):</span>
+        <span class="n">imd_file</span><span class="o">.</span><span class="n">MULTIBATH</span><span class="o">.</span><span class="n">adapt_multibath</span><span class="p">(</span><span class="n">last_atoms_bath</span><span class="o">=</span><span class="n">temp_baths</span><span class="p">)</span>  <span class="c1"># adapt bath last atom nums</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">verbose</span><span class="p">):</span> <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;svals &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">svals</span><span class="p">))</span> <span class="o">+</span> <span class="s2">&quot;: &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">svals</span><span class="p">))</span>
+    <span class="n">imd_file</span><span class="o">.</span><span class="n">edit_REEDS</span><span class="p">(</span><span class="n">NATOM</span><span class="o">=</span><span class="n">all_atoms</span><span class="p">,</span> <span class="n">NUMSTATES</span><span class="o">=</span><span class="n">ligands</span><span class="o">.</span><span class="n">number</span><span class="p">,</span> <span class="n">SVALS</span><span class="o">=</span><span class="n">svals</span><span class="p">,</span> <span class="n">EIR</span><span class="o">=</span><span class="mf">0.0</span><span class="p">)</span>  <span class="c1"># build REEDS Block</span>
+    <span class="n">imd_out_path</span> <span class="o">=</span> <span class="n">imd_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">imd_out_path</span><span class="p">)</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">verbose</span><span class="p">):</span> <span class="nb">print</span><span class="p">(</span><span class="n">imd_file</span><span class="o">.</span><span class="n">REPLICA_EDS</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span> <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Wrote out new imd to -&gt; &quot;</span> <span class="o">+</span> <span class="n">imd_out_path</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">imd_file</span></div>
+
+
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    SOPTIMIZATION - Scheduling</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="build_sopt_step_dir"><a class="viewcode-back" href="../../../../_source/reeds.function_libs.pipeline.html#reeds.function_libs.pipeline.module_functions.build_sopt_step_dir">[docs]</a><span class="k">def</span> <span class="nf">build_sopt_step_dir</span><span class="p">(</span><span class="n">iteration</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">iteration_folder_prefix</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+                        <span class="n">soptimization_options</span><span class="p">,</span> <span class="n">in_simSystem</span><span class="p">:</span> <span class="n">fM</span><span class="o">.</span><span class="n">System</span><span class="p">,</span>
+                        <span class="n">num_equilibration_runs</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">imd_name_prefix</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+                        <span class="n">in_ene_ana_lib_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">in_gromosPP_bin_dir</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+                        <span class="n">in_gromosXX_bin_dir</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">ligands</span><span class="p">,</span> <span class="n">last_data_folder</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">nmpi_per_replica</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+                        <span class="n">duration_per_job</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">num_simulation_runs</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+                        <span class="n">pot_tresh</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span> <span class="n">old_sopt_job</span><span class="p">:</span> <span class="n">sopt_job</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">verbose</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">sopt_job</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        This function is setting up the folder structure of an s-optimization iteration, copies some files and builds an settings object of the sopt-iteration.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    iteration : int</span>
+<span class="sd">        iteration of the s-optimization</span>
+<span class="sd">    iteration_folder_prefix : str</span>
+<span class="sd">        prefix name of the folders</span>
+<span class="sd">    soptimization_options : ?</span>
+<span class="sd">        settings for the s-optimization</span>
+<span class="sd">    in_simSystem : fM.System</span>
+<span class="sd">        system obj, containing all required paths</span>
+<span class="sd">    num_equilibration_runs : int</span>
+<span class="sd">        number of equilibrations before the used s-optimizatoin simulation</span>
+<span class="sd">    imd_name_prefix : str</span>
+<span class="sd">        prefix name for the imd file output, final name will have an additional iteration number.</span>
+<span class="sd">    in_ene_ana_lib_path : str</span>
+<span class="sd">        path to an ene_ana lib</span>
+<span class="sd">    in_gromosPP_bin_dir : str</span>
+<span class="sd">        path to gromosPP binary dir</span>
+<span class="sd">    in_gromosXX_bin_dir : str</span>
+<span class="sd">        path to gromosXX binary dir</span>
+<span class="sd">    ligands : ?</span>
+
+<span class="sd">    last_data_folder : str</span>
+<span class="sd">        data folder from previous rund</span>
+<span class="sd">    nmpi_per_replica : int</span>
+<span class="sd">        mpi cores per simulatoin</span>
+<span class="sd">    duration_per_job : str</span>
+<span class="sd">        queue job duration (format &quot;HHH:MM&quot;)</span>
+<span class="sd">    num_simulation_runs : int</span>
+<span class="sd">        number of simulation runs</span>
+<span class="sd">    pot_tresh : float, optional</span>
+<span class="sd">        potential threshold for occurrence sampling</span>
+<span class="sd">    old_sopt_job : sopt_job, optional</span>
+<span class="sd">        last soptimization job namedtuple, contains all settings of previous run</span>
+<span class="sd">    verbose : bool, optional</span>
+<span class="sd">        TADAAAAAAAAAAa Here you go!</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    sopt_job</span>
+<span class="sd">        returns the sopt settings of this runs</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># PATHS</span>
+    <span class="n">iteration_folder</span> <span class="o">=</span> <span class="n">iteration_folder_prefix</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">iteration</span><span class="p">)</span>
+
+    <span class="n">input_dir</span> <span class="o">=</span> <span class="n">iteration_folder</span> <span class="o">+</span> <span class="s2">&quot;/input&quot;</span>
+    <span class="n">coord_dir</span> <span class="o">=</span> <span class="n">input_dir</span> <span class="o">+</span> <span class="s2">&quot;/coord&quot;</span>
+    <span class="n">sim_dir</span> <span class="o">=</span> <span class="n">iteration_folder</span> <span class="o">+</span> <span class="s2">&quot;/simulation&quot;</span>
+    <span class="n">analysis_dir</span> <span class="o">=</span> <span class="n">iteration_folder</span> <span class="o">+</span> <span class="s2">&quot;/analysis&quot;</span>
+    <span class="n">pre_in_imd_path</span> <span class="o">=</span> <span class="n">input_dir</span> <span class="o">+</span> <span class="s2">&quot;/&quot;</span> <span class="o">+</span> <span class="n">imd_name_prefix</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">iteration</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;.imd&quot;</span>
+    <span class="n">final_in_imd_path</span> <span class="o">=</span> <span class="n">input_dir</span> <span class="o">+</span> <span class="s2">&quot;/&quot;</span> <span class="o">+</span> <span class="n">imd_name_prefix</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">iteration</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;.imd&quot;</span>
+
+    <span class="c1">##make folders:</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">verbose</span><span class="p">):</span> <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">Generating Folders&quot;</span><span class="p">)</span>
+    <span class="n">bash</span><span class="o">.</span><span class="n">make_folder</span><span class="p">(</span><span class="n">iteration_folder</span><span class="p">)</span>
+    <span class="n">bash</span><span class="o">.</span><span class="n">make_folder</span><span class="p">(</span><span class="n">input_dir</span><span class="p">)</span>
+    <span class="n">bash</span><span class="o">.</span><span class="n">make_folder</span><span class="p">(</span><span class="n">coord_dir</span><span class="p">)</span>
+
+    <span class="c1">##copy coordinates &amp; imd:</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">verbose</span><span class="p">):</span> <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;preparing files: imd &amp; cnf</span><span class="se">\t</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">iteration</span><span class="p">)</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">iteration</span> <span class="o">==</span> <span class="mi">1</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;FIRST ITERATION: &quot;</span><span class="p">)</span>
+        <span class="n">need_to_be_created</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="n">pre_in_imd_path</span> <span class="o">=</span> <span class="n">bash</span><span class="o">.</span><span class="n">copy_file</span><span class="p">(</span><span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="n">last_data_folder</span> <span class="o">+</span> <span class="s2">&quot;/*imd&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">],</span>
+                                         <span class="n">input_dir</span> <span class="o">+</span> <span class="s2">&quot;/&quot;</span> <span class="o">+</span> <span class="n">in_simSystem</span><span class="o">.</span><span class="n">name</span> <span class="o">+</span> <span class="s2">&quot;.imd&quot;</span><span class="p">)</span>
+        <span class="n">in_simSystem</span><span class="o">.</span><span class="n">move_input_coordinates</span><span class="p">(</span><span class="n">coord_dir</span><span class="p">)</span>
+        <span class="n">last_coord_in</span> <span class="o">=</span> <span class="n">in_simSystem</span><span class="o">.</span><span class="n">coordinates</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="c1"># the * helps for later, so no error is thrown</span>
+        <span class="n">need_to_be_created</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="n">pre_in_imd_path</span> <span class="o">=</span> <span class="n">last_data_folder</span> <span class="o">+</span> <span class="s2">&quot;/next*.imd&quot;</span>
+        <span class="n">last_coord_in</span> <span class="o">=</span> <span class="n">old_sopt_job</span><span class="o">.</span><span class="n">check_analysis_files</span>
+        <span class="n">last_coord_file_path</span> <span class="o">=</span> <span class="n">input_dir</span> <span class="o">+</span> <span class="s2">&quot;/coord/&quot;</span> <span class="o">+</span> <span class="n">old_sopt_job</span><span class="o">.</span><span class="n">sim_system</span><span class="o">.</span><span class="n">name</span> <span class="o">+</span> <span class="s2">&quot;*.cnf&quot;</span>  <span class="c1"># &quot;_&quot;+str(old_sopt_job.num_simulation_runs+old_sopt_job.num_equilibration_runs)+</span>
+        <span class="nb">setattr</span><span class="p">(</span><span class="n">in_simSystem</span><span class="p">,</span> <span class="s2">&quot;coordinates&quot;</span><span class="p">,</span> <span class="n">last_coord_file_path</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">last_coord_in</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="n">verbose</span><span class="p">):</span> <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;COORD: &quot;</span><span class="p">,</span> <span class="n">in_simSystem</span><span class="o">.</span><span class="n">coordinates</span><span class="p">)</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">verbose</span><span class="p">):</span> <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;IMD: &quot;</span><span class="p">,</span> <span class="n">pre_in_imd_path</span><span class="p">)</span>
+
+    <span class="c1"># PARAMS:</span>
+    <span class="c1">## fix for euler! - write out to workdir not on node. - so no data is lost in transfer</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">soptimization_options</span><span class="o">.</span><span class="n">current_num_svals</span> <span class="o">&gt;</span> <span class="mi">30</span><span class="p">):</span>
+        <span class="n">workdir</span> <span class="o">=</span> <span class="n">iteration_folder</span> <span class="o">+</span> <span class="s2">&quot;/scratch&quot;</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">workdir</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="n">nmpi</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">soptimization_options</span><span class="o">.</span><span class="n">current_num_svals</span><span class="p">)</span> <span class="o">*</span> <span class="nb">int</span><span class="p">(</span><span class="n">nmpi_per_replica</span><span class="p">)</span>  <span class="c1"># How many MPIcores needed?s</span>
+
+    <span class="c1">##which analysis functions to execute</span>
+    <span class="n">control_dict</span> <span class="o">=</span> <span class="p">{</span>  <span class="c1"># this dictionary is controlling the post  Simulation analysis procedure!</span>
+        <span class="s2">&quot;sopt&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;do&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+                 <span class="s2">&quot;sub&quot;</span><span class="p">:</span> <span class="p">{</span>
+                     <span class="s2">&quot;run_RTO&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+                     <span class="s2">&quot;run_NLRTO&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+                     <span class="s2">&quot;run_NGRTO&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+                     <span class="s2">&quot;visualize_transitions&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+                     <span class="s2">&quot;roundtrips&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+                     <span class="s2">&quot;generate_replica trace&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">}</span>
+                 <span class="p">},</span>
+        <span class="s2">&quot;prepare_input_folder&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;do&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+                                 <span class="s2">&quot;sub&quot;</span><span class="p">:</span> <span class="p">{</span>
+                                     <span class="s2">&quot;eoff_to_sopt&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+                                     <span class="s2">&quot;write_eoff&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+                                     <span class="s2">&quot;write_s&quot;</span><span class="p">:</span> <span class="kc">True</span>
+                                 <span class="p">},</span>
+                                 <span class="p">}</span>
+    <span class="p">}</span>
+
+    <span class="c1"># BUILD FILES</span>
+    <span class="c1">##Build analysis_script</span>
+    <span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">OrderedDict</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">verbose</span><span class="p">):</span> <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Analysis Script&quot;</span><span class="p">)</span>
+    <span class="n">analysis_vars</span> <span class="o">=</span> <span class="n">OrderedDict</span><span class="p">({</span>
+        <span class="s2">&quot;in_folder&quot;</span><span class="p">:</span> <span class="n">sim_dir</span><span class="p">,</span>
+        <span class="s2">&quot;in_imd&quot;</span><span class="p">:</span> <span class="n">final_in_imd_path</span><span class="p">,</span>
+        <span class="s2">&quot;topology&quot;</span><span class="p">:</span> <span class="n">in_simSystem</span><span class="o">.</span><span class="n">top</span><span class="o">.</span><span class="n">top_path</span><span class="p">,</span>
+        <span class="s2">&quot;optimized_eds_state_folder&quot;</span><span class="p">:</span> <span class="s2">&quot;../1_opt_struct/analysis/sim_data&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;out_folder&quot;</span><span class="p">:</span> <span class="n">analysis_dir</span><span class="p">,</span>
+        <span class="s2">&quot;gromos_path&quot;</span><span class="p">:</span> <span class="n">in_gromosPP_bin_dir</span><span class="p">,</span>
+        <span class="s2">&quot;in_ene_ana_lib&quot;</span><span class="p">:</span> <span class="n">in_ene_ana_lib_path</span><span class="p">,</span>
+        <span class="s2">&quot;n_processors&quot;</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span>
+        <span class="s2">&quot;pot_tresh&quot;</span><span class="p">:</span> <span class="n">pot_tresh</span><span class="p">,</span>
+        <span class="s2">&quot;frac_tresh&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.1</span><span class="p">],</span>
+        <span class="s2">&quot;verbose&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="s2">&quot;add_s_vals&quot;</span><span class="p">:</span> <span class="n">soptimization_options</span><span class="o">.</span><span class="n">add_replicas</span><span class="p">,</span>
+        <span class="s2">&quot;control_dict&quot;</span><span class="p">:</span> <span class="n">control_dict</span><span class="p">,</span>
+        <span class="s2">&quot;title_prefix&quot;</span><span class="p">:</span> <span class="n">in_simSystem</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+        <span class="s2">&quot;grom_file_prefix&quot;</span><span class="p">:</span> <span class="n">in_simSystem</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+    <span class="p">})</span>
+    <span class="n">in_analysis_script_path</span> <span class="o">=</span> <span class="n">write_job_script</span><span class="p">(</span><span class="n">out_script_path</span><span class="o">=</span><span class="n">iteration_folder</span> <span class="o">+</span> <span class="s2">&quot;/job_analysis.py&quot;</span><span class="p">,</span>
+                                               <span class="n">target_function</span><span class="o">=</span><span class="n">RE_EDS_general_analysis</span><span class="o">.</span><span class="n">do_Reeds_analysis</span><span class="p">,</span>
+                                               <span class="n">variable_dict</span><span class="o">=</span><span class="n">analysis_vars</span><span class="p">)</span>
+
+    <span class="c1">##Build Job Script</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">verbose</span><span class="p">):</span> <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Scheduling Script&quot;</span><span class="p">)</span>
+    <span class="c1"># for job_scheduling needed in local variables</span>
+    <span class="n">out_dir_path</span> <span class="o">=</span> <span class="n">iteration_folder</span>
+    <span class="n">gromosXX_bin_dir</span> <span class="o">=</span> <span class="n">in_gromosXX_bin_dir</span>
+    <span class="n">jobname</span> <span class="o">=</span> <span class="n">in_simSystem</span><span class="o">.</span><span class="n">name</span>
+    <span class="n">in_imd_path</span> <span class="o">=</span> <span class="n">pre_in_imd_path</span>
+    <span class="n">nmpi</span> <span class="o">=</span> <span class="n">nmpi</span>
+    <span class="n">out_dir_path</span> <span class="o">=</span> <span class="n">sim_dir</span>
+
+    <span class="n">schedule_jobs_script_path</span> <span class="o">=</span> <span class="n">write_job_script</span><span class="p">(</span><span class="n">out_script_path</span><span class="o">=</span><span class="n">iteration_folder</span> <span class="o">+</span> <span class="s2">&quot;/schedule_sopt_jobs.py&quot;</span><span class="p">,</span>
+                                                 <span class="n">target_function</span><span class="o">=</span><span class="n">RE_EDS_simulation_scheduler</span><span class="o">.</span><span class="n">do</span><span class="p">,</span>
+                                                 <span class="n">variable_dict</span><span class="o">=</span><span class="nb">locals</span><span class="p">())</span>
+
+    <span class="c1">##output folders</span>
+    <span class="n">check_simulation_files</span> <span class="o">=</span> <span class="n">sim_dir</span> <span class="o">+</span> <span class="s2">&quot;/*&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">num_simulation_runs</span> <span class="o">+</span> <span class="n">num_equilibration_runs</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;/*cnf&quot;</span>
+    <span class="n">check_analysis_files</span> <span class="o">=</span> <span class="n">analysis_dir</span> <span class="o">+</span> <span class="s2">&quot;/next/*.cnf&quot;</span>
+
+    <span class="n">iteration_sopt_job</span> <span class="o">=</span> <span class="n">sopt_job</span><span class="p">(</span><span class="n">iteration</span><span class="o">=</span><span class="n">iteration</span><span class="p">,</span> <span class="n">job_file_path</span><span class="o">=</span><span class="n">schedule_jobs_script_path</span><span class="p">,</span>
+                                  <span class="n">job_analysis_path</span><span class="o">=</span><span class="n">in_analysis_script_path</span><span class="p">,</span>
+                                  <span class="n">check_simulation_files</span><span class="o">=</span><span class="n">check_simulation_files</span><span class="p">,</span>
+                                  <span class="n">check_analysis_files</span><span class="o">=</span><span class="n">check_analysis_files</span><span class="p">,</span>
+                                  <span class="n">sim_system</span><span class="o">=</span><span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">in_simSystem</span><span class="p">),</span> <span class="n">nmpi</span><span class="o">=</span><span class="n">nmpi</span><span class="p">,</span>
+                                  <span class="n">num_simulation_runs</span><span class="o">=</span><span class="n">num_simulation_runs</span><span class="p">,</span>
+                                  <span class="n">num_equilibration_runs</span><span class="o">=</span><span class="n">num_equilibration_runs</span><span class="p">,</span>
+                                  <span class="n">workdir</span><span class="o">=</span><span class="n">workdir</span><span class="p">,</span> <span class="n">in_imd_path</span><span class="o">=</span><span class="n">pre_in_imd_path</span><span class="p">,</span> <span class="n">out_folder</span><span class="o">=</span><span class="n">sim_dir</span><span class="p">,</span>
+                                  <span class="n">last_coord_in</span><span class="o">=</span><span class="n">last_coord_in</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">iteration_sopt_job</span></div>
+
+
+<div class="viewcode-block" id="submit_job_sopt"><a class="viewcode-back" href="../../../../_source/reeds.function_libs.pipeline.html#reeds.function_libs.pipeline.module_functions.submit_job_sopt">[docs]</a><span class="k">def</span> <span class="nf">submit_job_sopt</span><span class="p">(</span><span class="n">sopt_iteration_job</span><span class="p">:</span> <span class="n">sopt_job</span><span class="p">,</span> <span class="n">duration_per_job</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">submit</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+                    <span class="n">stdout_prefix</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\n\t\t</span><span class="s2">&quot;</span><span class="p">,</span>
+                    <span class="n">gromosXX_bin_dir</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">do_not_doubly_submit_to_queue</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+                    <span class="n">previous_job_id</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">initialize_first_run</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+                    <span class="n">reinitialize</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">verbose</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        This function is doing the little bit more sophisticated part of submitting safely the sopt scripts.</span>
+
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    sopt_iteration_job : sopt_job - NamedTuple(&quot;sopt_Job&quot;, [(&quot;iteration&quot;, int),(&quot;job_file_path&quot;, str), (&quot;job_analysis_path&quot;,str), (&quot;check_simulation_files&quot;,str), (&quot;check_analysis_files&quot;,str)])</span>
+<span class="sd">        this namedtuple contains both executable script paths and the regular expressions for their checkFiles.</span>
+<span class="sd">    duration_per_job : str</span>
+<span class="sd">        job duration for a single simulation step in format &quot;HHH:MM&quot;</span>
+<span class="sd">    submit : bool, optional</span>
+<span class="sd">        shall this simulation be submitted to LSF?</span>
+<span class="sd">    stdout_prefix: str, optional</span>
+<span class="sd">        std-out log file prefix</span>
+<span class="sd">    gromosXX_bin_dir: str, optional</span>
+<span class="sd">        path to the gromos binary dir.</span>
+<span class="sd">    do_not_doubly_submit_to_queue : bool , optional</span>
+<span class="sd">        check if there is a queued job with the same job-name</span>
+<span class="sd">    previous_job_id : int , optional</span>
+<span class="sd">        id from the previous job onto which the job is queued to.</span>
+<span class="sd">    initialize_first_run : bool, optional</span>
+<span class="sd">        initialize the velocities of the first run?</span>
+<span class="sd">    reinitialize : bool, optional</span>
+<span class="sd">        reinitialize velocities in all runs?</span>
+<span class="sd">    verbose : bool, optional</span>
+<span class="sd">        let me tell you a looong story</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    int</span>
+<span class="sd">        the jobID or 0 is returned.</span>
+
+<span class="sd">    Raises</span>
+<span class="sd">    ------</span>
+<span class="sd">    ValueError</span>
+<span class="sd">        if system call fails</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># job_file_path Submission:</span>
+    <span class="n">check_simulation_files</span> <span class="o">=</span> <span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="n">sopt_iteration_job</span><span class="o">.</span><span class="n">check_simulation_files</span><span class="p">)</span>
+    <span class="n">check_analysis_files</span> <span class="o">=</span> <span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="n">sopt_iteration_job</span><span class="o">.</span><span class="n">check_analysis_files</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">check_simulation_files</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span>
+            <span class="n">check_analysis_files</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">):</span>  <span class="c1"># check if control Files are present(sim already done?)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">check_analysis_files</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="ow">and</span> <span class="n">submit</span><span class="p">:</span>  <span class="c1"># if analysis is meassing do&gt;:</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">verbose</span><span class="p">):</span> <span class="nb">print</span><span class="p">(</span><span class="n">stdout_prefix</span> <span class="o">+</span> <span class="s2">&quot;SKIP JOB (inModule), as I found: </span><span class="se">\n\t</span><span class="s2">&quot;</span><span class="p">,</span>
+                                <span class="n">sopt_iteration_job</span><span class="o">.</span><span class="n">check_simulation_files</span><span class="p">)</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">verbose</span><span class="p">):</span> <span class="nb">print</span><span class="p">(</span><span class="n">stdout_prefix</span> <span class="o">+</span> <span class="s2">&quot;RUNNING MISSING ANALYSIS NOW:&quot;</span><span class="p">)</span>
+            <span class="n">bash</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">sopt_iteration_job</span><span class="o">.</span><span class="n">job_analysis_path</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">verbose</span><span class="p">):</span> <span class="nb">print</span><span class="p">(</span><span class="n">stdout_prefix</span> <span class="o">+</span> <span class="s2">&quot;SKIP SUBMITTING JOB AND ANALYSIS!(inModule) Found Check Files!</span><span class="se">\n\t</span><span class="s2">&quot;</span><span class="p">,</span>
+                                <span class="n">sopt_iteration_job</span><span class="o">.</span><span class="n">check_simulation_files</span><span class="p">,</span>
+                                <span class="s2">&quot;</span><span class="se">\n\t</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">sopt_iteration_job</span><span class="o">.</span><span class="n">check_analysis_files</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">None</span>
+
+    <span class="k">elif</span> <span class="n">submit</span><span class="p">:</span>  <span class="c1"># if no checkfiles present, submit job to the queue</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">spacer</span> <span class="o">+</span> <span class="n">stdout_prefix</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n\t</span><span class="s2">SUBMITTING:  SOPT &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">sopt_iteration_job</span><span class="o">.</span><span class="n">iteration</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="n">spacer</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span> <span class="nb">print</span><span class="p">(</span><span class="n">stdout_prefix</span> <span class="o">+</span> <span class="s2">&quot;JOB:&quot;</span><span class="p">)</span>
+
+        <span class="n">orig_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">()</span>
+        <span class="n">job_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">sopt_iteration_job</span><span class="o">.</span><span class="n">job_file_path</span><span class="p">)</span>
+        <span class="n">sim_system</span> <span class="o">=</span> <span class="n">sopt_iteration_job</span><span class="o">.</span><span class="n">sim_system</span>
+
+        <span class="k">if</span> <span class="p">(</span><span class="n">verbose</span><span class="p">):</span> <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;EQ: &quot;</span><span class="p">,</span> <span class="n">sopt_iteration_job</span><span class="o">.</span><span class="n">num_equilibration_runs</span><span class="p">)</span>
+
+        <span class="c1"># INITIAL COMMAND</span>
+        <span class="n">cmd</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;SETTING INITIAL CMD&quot;</span><span class="p">)</span>
+        <span class="n">in_imd_path</span> <span class="o">=</span> <span class="n">job_dir</span> <span class="o">+</span> <span class="s2">&quot;/input/&quot;</span> <span class="o">+</span> <span class="n">sim_system</span><span class="o">.</span><span class="n">name</span> <span class="o">+</span> <span class="s2">&quot;*.imd&quot;</span>
+        <span class="k">if</span> <span class="p">(</span><span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">in_imd_path</span><span class="p">)</span> <span class="ow">and</span> <span class="n">sopt_iteration_job</span><span class="o">.</span><span class="n">in_imd_path</span> <span class="o">!=</span> <span class="n">in_imd_path</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;*&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)):</span>
+            <span class="n">cmd</span> <span class="o">=</span> <span class="s2">&quot;cp &quot;</span> <span class="o">+</span> <span class="n">sopt_iteration_job</span><span class="o">.</span><span class="n">in_imd_path</span> <span class="o">+</span> <span class="s2">&quot; &quot;</span> <span class="o">+</span> <span class="n">in_imd_path</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;*&quot;</span><span class="p">,</span>
+                                                                                     <span class="s2">&quot;&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot; &amp;&amp; cp &quot;</span> <span class="o">+</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span>
+                <span class="n">sopt_iteration_job</span><span class="o">.</span><span class="n">in_imd_path</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;/*cnf &quot;</span> <span class="o">+</span> <span class="n">job_dir</span> <span class="o">+</span> <span class="s2">&quot;/input/coord&quot;</span>
+
+        <span class="n">os</span><span class="o">.</span><span class="n">chdir</span><span class="p">(</span><span class="n">job_dir</span><span class="p">)</span>
+        <span class="n">job_id</span> <span class="o">=</span> <span class="n">RE_EDS_simulation_scheduler</span><span class="o">.</span><span class="n">do</span><span class="p">(</span><span class="n">in_simSystem</span><span class="o">=</span><span class="n">sim_system</span><span class="p">,</span> <span class="n">in_imd_path</span><span class="o">=</span><span class="n">in_imd_path</span><span class="p">,</span>
+                                                <span class="n">previous_job_ID</span><span class="o">=</span><span class="n">previous_job_id</span><span class="p">,</span>
+                                                <span class="n">gromosXX_bin_dir</span><span class="o">=</span><span class="n">gromosXX_bin_dir</span><span class="p">,</span>
+                                                <span class="n">out_dir_path</span><span class="o">=</span><span class="n">sopt_iteration_job</span><span class="o">.</span><span class="n">out_folder</span><span class="p">,</span> <span class="n">jobname</span><span class="o">=</span><span class="n">sim_system</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+                                                <span class="n">nmpi</span><span class="o">=</span><span class="n">sopt_iteration_job</span><span class="o">.</span><span class="n">nmpi</span><span class="p">,</span>
+                                                <span class="n">duration_per_job</span><span class="o">=</span><span class="n">duration_per_job</span><span class="p">,</span> <span class="n">initial_command</span><span class="o">=</span><span class="n">cmd</span><span class="p">,</span>
+                                                <span class="n">num_simulation_runs</span><span class="o">=</span><span class="n">sopt_iteration_job</span><span class="o">.</span><span class="n">num_simulation_runs</span><span class="p">,</span>
+                                                <span class="n">work_dir</span><span class="o">=</span><span class="n">sopt_iteration_job</span><span class="o">.</span><span class="n">workdir</span><span class="p">,</span>
+                                                <span class="n">num_equilibration_runs</span><span class="o">=</span><span class="n">sopt_iteration_job</span><span class="o">.</span><span class="n">num_equilibration_runs</span><span class="p">,</span>
+                                                <span class="n">in_analysis_script_path</span><span class="o">=</span><span class="n">sopt_iteration_job</span><span class="o">.</span><span class="n">job_analysis_path</span><span class="p">,</span>
+                                                <span class="n">do_not_doubly_submit_to_queue</span><span class="o">=</span><span class="n">do_not_doubly_submit_to_queue</span><span class="p">,</span>
+                                                <span class="n">initialize_first_run</span><span class="o">=</span><span class="n">initialize_first_run</span><span class="p">,</span>
+                                                <span class="n">reinitialize</span><span class="o">=</span><span class="n">reinitialize</span><span class="p">,</span>
+                                                <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span> <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;process returned id: &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">job_id</span><span class="p">))</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">job_id</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ChildProcessError</span><span class="p">(</span><span class="s2">&quot;Got an error from scheduler function!&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="p">(</span><span class="n">job_id</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span> <span class="ow">and</span> <span class="n">job_id</span><span class="o">.</span><span class="n">isalnum</span><span class="p">()):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Did not get at job ID!&quot;</span><span class="p">)</span>
+
+        <span class="n">os</span><span class="o">.</span><span class="n">chdir</span><span class="p">(</span><span class="n">orig_path</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">job_id</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">stdout_prefix</span> <span class="o">+</span> <span class="s2">&quot;SKIP SUBMITTING! </span><span class="se">\n\t</span><span class="s2">DUE to --noSubmit option&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="mi">0</span></div>
+
+
+<div class="viewcode-block" id="write_job_script"><a class="viewcode-back" href="../../../../_source/reeds.function_libs.pipeline.html#reeds.function_libs.pipeline.module_functions.write_job_script">[docs]</a><span class="k">def</span> <span class="nf">write_job_script</span><span class="p">(</span><span class="n">out_script_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">target_function</span><span class="p">:</span> <span class="n">callable</span><span class="p">,</span> <span class="n">variable_dict</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">python_cmd</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;python3&quot;</span><span class="p">,</span>
+                      <span class="n">no_reeds_control_dict</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">verbose</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        this function writes submission commands into a file. The command will be started from a bash env into python.</span>
+
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    out_script_path: str</span>
+<span class="sd">        path of the output script.</span>
+<span class="sd">    target_function : callable</span>
+<span class="sd">        the function, that shall be submitted</span>
+<span class="sd">    variable_dict : dict</span>
+<span class="sd">        variables for this function</span>
+<span class="sd">    python_cmd : str, optional</span>
+<span class="sd">        which python command shall be supplied</span>
+<span class="sd">    no_reeds_control_dict : bool, optional</span>
+<span class="sd">        there is no controldict in the vars.</span>
+<span class="sd">    verbose : bool, optional</span>
+<span class="sd">        c&#39;est la vie</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    str</span>
+<span class="sd">        returns an out script path.</span>
+
+<span class="sd">    Raises</span>
+<span class="sd">    ------</span>
+<span class="sd">    IOERROR</span>
+<span class="sd">        if outpath is not possible</span>
+<span class="sd">    ValueError</span>
+<span class="sd">        if required variable from the var-dict for the function is missing</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">out_script_path</span><span class="p">))):</span>
+        <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span>
+            <span class="s2">&quot;Could not find path of dir, that should contain the schedule script!</span><span class="se">\n\t</span><span class="s2"> Got Path: &quot;</span> <span class="o">+</span> <span class="n">out_script_path</span><span class="p">)</span>
+
+    <span class="c1"># Build str:</span>
+    <span class="n">s</span> <span class="o">=</span> <span class="n">signature</span><span class="p">(</span><span class="n">target_function</span><span class="p">)</span>
+    <span class="n">import_string</span> <span class="o">=</span> <span class="s2">&quot;#IMPORTS</span><span class="se">\n</span><span class="s2">&quot;</span>
+    <span class="n">import_string</span> <span class="o">+=</span> <span class="s2">&quot;from &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">target_function</span><span class="o">.</span><span class="vm">__module__</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot; import &quot;</span> <span class="o">+</span> <span class="n">target_function</span><span class="o">.</span><span class="vm">__name__</span>
+    <span class="n">vars_string</span> <span class="o">=</span> <span class="s2">&quot;#VARIABLES: </span><span class="se">\n</span><span class="s2">&quot;</span>
+    <span class="n">cmd_options</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+
+    <span class="n">missed_keys</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">s</span><span class="o">.</span><span class="n">parameters</span><span class="p">:</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">key</span> <span class="ow">in</span> <span class="n">variable_dict</span><span class="p">):</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="n">variable_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">key</span> <span class="o">==</span> <span class="s2">&quot;in_simSystem&quot;</span><span class="p">):</span>  <span class="c1"># this is a nasty way! ... tends to fail!</span>
+                <span class="n">sys</span> <span class="o">=</span> <span class="n">value</span>
+                <span class="n">vars_string</span> <span class="o">+=</span> <span class="n">sys</span><span class="o">.</span><span class="n">get_script_generation_command</span><span class="p">(</span><span class="n">var_name</span><span class="o">=</span><span class="n">key</span><span class="p">,</span> <span class="n">var_prefixes</span><span class="o">=</span><span class="s2">&quot;system&quot;</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">Dict</span><span class="p">)):</span>
+                <span class="k">if</span> <span class="p">(</span><span class="n">key</span> <span class="o">==</span> <span class="s2">&quot;control_dict&quot;</span><span class="p">):</span>
+                    <span class="k">if</span> <span class="p">(</span><span class="n">no_reeds_control_dict</span><span class="p">):</span>
+                        <span class="n">vars_string</span> <span class="o">+=</span> <span class="n">reeds_analysis</span><span class="o">.</span><span class="n">dict_to_nice_string</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">vars_string</span> <span class="o">+=</span> <span class="n">reeds_analysis</span><span class="o">.</span><span class="n">dict_to_nice_string</span><span class="p">(</span><span class="n">reeds_analysis</span><span class="o">.</span><span class="n">check_script_control</span><span class="p">(</span><span class="n">value</span><span class="p">))</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">vars_string</span> <span class="o">+=</span> <span class="n">reeds_analysis</span><span class="o">.</span><span class="n">dict_to_nice_string</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">List</span><span class="p">)):</span>
+                <span class="n">vars_string</span> <span class="o">+=</span> <span class="n">key</span> <span class="o">+</span> <span class="s2">&quot;= [ &quot;</span> <span class="o">+</span> <span class="s2">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">value</span><span class="p">))</span> <span class="o">+</span> <span class="s2">&quot;]</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="k">elif</span> <span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">str</span><span class="p">)):</span>
+                <span class="n">vars_string</span> <span class="o">+=</span> <span class="n">key</span> <span class="o">+</span> <span class="s2">&quot; = </span><span class="se">\&quot;</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\&quot;\n</span><span class="s2">&quot;</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">vars_string</span> <span class="o">+=</span> <span class="n">key</span> <span class="o">+</span> <span class="s2">&quot; = &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="n">cmd_options</span> <span class="o">+=</span> <span class="n">key</span> <span class="o">+</span> <span class="s2">&quot;=&quot;</span> <span class="o">+</span> <span class="n">key</span> <span class="o">+</span> <span class="s2">&quot;, &quot;</span>
+        <span class="k">elif</span> <span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">parameters</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">default</span> <span class="o">==</span> <span class="n">_empty</span><span class="p">):</span>
+            <span class="n">missed_keys</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">missed_keys</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="s2">&quot;Found some variables missing in variable dict,that are required!</span><span class="se">\n\t</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n\t</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">missed_keys</span><span class="p">))</span>
+
+    <span class="n">cmd_string</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">#DO</span><span class="se">\n</span><span class="s2">&quot;</span>
+    <span class="n">cmd_string</span> <span class="o">+=</span> <span class="n">target_function</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">+</span> <span class="s2">&quot;(&quot;</span> <span class="o">+</span> <span class="n">cmd_options</span> <span class="o">+</span> <span class="s2">&quot;)&quot;</span>
+
+    <span class="n">script_text</span> <span class="o">=</span> <span class="s2">&quot;#!/usr/bin/env &quot;</span> <span class="o">+</span> <span class="n">python_cmd</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n\n</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="n">import_string</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n\n</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="n">vars_string</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n\n</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="n">cmd_string</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">verbose</span><span class="p">):</span> <span class="nb">print</span><span class="p">(</span><span class="n">script_text</span><span class="p">)</span>
+
+    <span class="c1"># write out file</span>
+    <span class="n">out_script_file</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">out_script_path</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span>
+    <span class="n">out_script_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">script_text</span><span class="p">)</span>
+    <span class="n">out_script_file</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+    <span class="k">return</span> <span class="n">out_script_path</span></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, Benjamin Ries, Salome Rieder, Candide Champion. Project structure based on the Computational Molecular Science Python Cookiecutter version 1.3
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
