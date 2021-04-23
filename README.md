@@ -7,7 +7,7 @@ RE-EDS
 
 Replica Exchange - Enveloping Distribution Sampling (RE-EDS) is a method to calculate the relative free energy of multiple states in a system.
 It can be applied to calculate relative solvation free energies or relative binding free energies of ligands to a protein. 
-One advantage of this method is, that the transition path of one state into another one is not pre-determined thanks to use of Enveloping Distribution Sampling (EDS) by Chist et al. .
+One advantage of this method is, that the transition path of one state into another one is not pre-determined thanks to use of Enveloping Distribution Sampling (EDS) by Christ et al. .
 
 The enhanced sampling method Replica Exchange was added by Sidler et al. to speed up the sampling and ease the choice of parameters.  
 Additionally multiple modules were described by Sidler to allow an automatization of the pipeline. 
