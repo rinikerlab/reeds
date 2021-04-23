@@ -270,7 +270,7 @@ def analyse_replicas(ene_trajs: pd.DataFrame, sampling_stat:dict, num_states:int
         for lowest_state in traj[select_states].idxmin(axis=1).replace("e", "", regex=True):
             min_counts[i][(int(lowest_state)-1)] += 1
 
-    title = "Minimum potential energy count per replica"
+    title = "Minimum potential energy count per replica"+"\n"
     min_table = format_as_jnb_table(title, s_values, min_counts, 0)
 
     # Find the counts of energies below the thresholds:
@@ -283,7 +283,7 @@ def analyse_replicas(ene_trajs: pd.DataFrame, sampling_stat:dict, num_states:int
             below_thresh_counts[i][j] = np.size(v[v < state_undersampling_potential_threshold[j]])
 
     title = "Count of potential energies below the threshold per replica\n"
-    title += "potential thresholds used: " + str(state_undersampling_potential_threshold)
+    title += "potential thresholds used: " + str(state_undersampling_potential_threshold)+"\n"
     tresh_table = format_as_jnb_table(title, s_values, below_thresh_counts, 0)
 
     state_undersampling_potential_threshold = sampling_stat["undersampling_occurence_sampling_tresh"]
@@ -293,7 +293,7 @@ def analyse_replicas(ene_trajs: pd.DataFrame, sampling_stat:dict, num_states:int
             occ_sampling[i][j] = np.round(below_thresh_counts[i][j]//tot_len,2)
 
     title = "Fractions of undersampling occurrence sampling\n"
-    title += "fraction treshold: " + str(state_undersampling_potential_threshold)
+    title += "fraction treshold: " + str(state_undersampling_potential_threshold)+"\n"
     frac_table = format_as_jnb_table(title, s_values, occ_sampling, 0)
 
     return (min_table + '\n' + tresh_table + '\n'+frac_table+"\n")
