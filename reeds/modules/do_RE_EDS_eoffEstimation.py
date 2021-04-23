@@ -117,7 +117,7 @@ int
 
         # PATH DEFINITIONS
         input_dir = out_root_dir + "/input"
-        coord_dir = input_dir + "/coord"
+        coordinate_dir = input_dir + "/coord"
         out_dir_path = out_root_dir + "/simulation"
         in_imd_path = input_dir + "/repex_eoff.imd"
         lower_s_bound_dir = os.path.dirname(simSystem.coordinates[0])
@@ -127,7 +127,7 @@ int
         # make folders:
         bash.make_folder(out_root_dir)
         bash.make_folder(input_dir)
-        bash.make_folder(coord_dir)
+        bash.make_folder(coordinate_dir)
     
         # Modify the imd file to use the s-values generated previosuly
         sval_file_path = lower_s_bound_dir+"/s_vals.csv"
@@ -166,7 +166,6 @@ int
         # Coordinates
 
         cnf_prefix = "REEDS_eoff_run"
-        coordinate_dir = coord_dir
         if(ssm_approach):
             # Use coordinates from the optimized states as starting cnf
             os.chdir(out_root_dir)
@@ -179,11 +178,10 @@ int
 
             os.chdir("..")
             out_cnfs = []
-
             for i in range(len(svals)):
-                f = bash.copy_file(optimized_coordinates[i % numstates],
-                                   coord_dir + "/" + cnf_prefix + "_ssm_" + str(i + 1) + ".cnf")
-                out_cnfs.append(f)
+                file_path = bash.copy_file(optimized_coordinates[i % numstates],
+                                   coordinate_dir + "/" + cnf_prefix + "_ssm_" + str(i + 1) + ".cnf")
+                out_cnfs.append(file_path)
             simSystem.coordinates = out_cnfs
         else:
             lower_s_bound_coordinates = glob.glob(lower_s_bound_dir + "/*.cnf")
