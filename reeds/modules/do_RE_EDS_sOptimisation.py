@@ -230,7 +230,7 @@ int
     analysis_vars = OrderedDict({
         "sopt_root_dir": out_root_dir,
         "title": in_simSystem.name,
-        "pot_tresh": state_physical_occurrence_potential_threshold,
+        "state_physical_occurrence_potential_threshold": state_physical_occurrence_potential_threshold,
         "out_dir": ana_out_dir
     })
 
@@ -238,8 +238,6 @@ int
                                                                                                    target_function=RE_EDS_soptimization_final.do,
                                                                                                    variable_dict=analysis_vars)
     bash.execute("chmod +x " + in_final_analysis_script_path)  # make executables
-
-
     # generate each iteration folder && submission
     for iteration in range(1, soptIterations + 1):
         print("\n\nITERATION: " + str(iteration))
