@@ -253,7 +253,7 @@ def sampling_analysis(ene_traj_csvs: List[pd.DataFrame],
                       out_path: str = None,
                       xmax: bool = False,
                       do_plot: bool = True,
-                      verbose: bool = False) -> (dict, str):
+                      verbose: bool = False, _usample_run:bool=False) -> (dict, str):
     """sampling_analysis
     This function is analysing the samplings
 
@@ -327,6 +327,11 @@ def sampling_analysis(ene_traj_csvs: List[pd.DataFrame],
             reeds.function_libs.visualization.sampling_plots.plot_stateOccurence_hist(data=replica_sampling_distributions[x],
                                                                                       title="s=" + str(s_vals_nice[ind]) + ", V_{tresh}=",
                                                                                       out_path=out_path + "/sampling_hist_" + str(x) + ".png")
+    if (do_plot and not _usample_run):
+        if (verbose): print("\n\n Sampling Matrix\n\n")
+        reeds.function_libs.visualization.sampling_plots.plot_stateOccurence_matrix(data=replica_sampling_distributions, out_dir=out_path, s_values=s_vals_nice,
+                                                                                    place_undersampling_threshold=False, title_suffix="")
+
     final_results = {"potentialThreshold": state_potential_treshold,
                      "samplingDistributions": replica_sampling_distributions,
                     }
@@ -382,7 +387,7 @@ def detect_undersampling(ene_traj_csvs: List[pd.DataFrame],
                       out_path=out_path,
                       xmax= xmax,
                       do_plot =do_plot,
-                      verbose = verbose)
+                      verbose = verbose,_usample_run=True)
 
     ##get undersampling id:
     found_undersampling = False

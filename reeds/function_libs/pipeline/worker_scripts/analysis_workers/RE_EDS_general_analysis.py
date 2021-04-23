@@ -418,8 +418,7 @@ def do_Reeds_analysis(in_folder: str, out_folder: str, gromos_path: str,
             print("\tsytsemTemp: ", temp)
             # set trim_beg to 0.1 when analysing non equilibrated data
             new_eoffs, all_eoffs = eds_energy_offsets.estimate_energy_offsets(ene_trajs = energy_trajectories, initial_offsets = Eoff[0], sampling_stat=sampling_results, s_values = s_values,
-                                                                              out_path = out_dir, temp = temp, trim_beg = 0., state_undersampling_potential_threshold=state_undersampling_pot_tresh,
-                                                                              undersampling_idx = sampling_results['undersamplingThreshold'], 
+                                                                              out_path = out_dir, temp = temp, trim_beg = 0., undersampling_idx = sampling_results['undersamplingThreshold'],
                                                                               plot_results = True, calc_clara = False)
         
         if (verbose): print("Done\n")
