@@ -22,7 +22,6 @@ reeds.tests.test\_reeds module
    :undoc-members:
    :show-inheritance:
 
-
 Module contents
 ---------------
 

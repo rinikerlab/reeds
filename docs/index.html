@@ -1,41 +1,42 @@
 
 
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8">
+  <meta charset="utf-8" />
   
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>REEDS &mdash; REEDS  documentation</title>
   
 
   
-  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+
   
   
 
   
-  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
-        <script src="_static/language_data.js"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
-        <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
     
-
-  
-  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="REEDS" href="introduction.html" /> 
@@ -75,6 +76,7 @@
           
         </div>
 
+        
         <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
           
             
@@ -86,12 +88,13 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="introduction.html">REEDS</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Examples/index.html">Examples</a></li>
-<li class="toctree-l1"><a class="reference internal" href="_source/modules.html">Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="_source/modules.html">reeds</a></li>
 </ul>
 
             
           
         </div>
+        
       </div>
     </nav>
 
@@ -126,18 +129,20 @@
 
 
 
+
+
 <div role="navigation" aria-label="breadcrumbs navigation">
 
   <ul class="wy-breadcrumbs">
     
-      <li><a href="#">Docs</a> &raquo;</li>
+      <li><a href="#" class="icon icon-home"></a> &raquo;</li>
         
       <li>REEDS</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
-            
+          
             <a href="_sources/index.rst.txt" rel="nofollow"> View page source</a>
           
         
@@ -177,81 +182,88 @@
 </style>
 <div class="section" id="reeds">
 <h1>REEDS<a class="headerlink" href="#reeds" title="Permalink to this headline">¶</a></h1>
-<a class="reference external image-reference" href="https://github.com/SchroederB/REEDS_Pipeline/actions/workflows/CI.yaml"><img alt="CI" src="https://github.com/SchroederB/REEDS_Pipeline/actions/workflows/CI.yaml/badge.svg" /></a>
-<a class="reference external image-reference" href="https://schroederb.github.io/REEDS_Pipeline/"><img alt="Documentation" src="https://img.shields.io/badge/Documentation-here-white.svg" /></a>
-<p>The aim of the module is to make the RE-EDS pipeline accesible to everyone! :)</p>
-<p>This Project contains:</p>
+<a class="reference external image-reference" href="https://github.com/rinikerlab/reeds/actions/workflows/CI.yaml"><img alt="CI" src="https://github.com/rinikerlab/reeds/actions/workflows/CI.yaml/badge.svg" /></a>
+<a class="reference external image-reference" href="https://rinikerlab.github.io/reeds/"><img alt="Documentation" src="https://img.shields.io/badge/Documentation-here-white.svg" /></a>
+<p>Replica Exchange - Enveloping Distribution Sampling (RE-EDS) is a method to calculate the relative free energy of multiple states in a system. It can be applied to calculate relative solvation free energies or relative binding free energies of ligands to a protein.
+One advantage of this method is, that the transition path of one state into another one is not pre-determined thanks to use of Enveloping Distribution Sampling (EDS) by Christ et al. .</p>
+<p>The enhanced sampling method Replica Exchange was added by Sidler et al. to speed up the sampling and ease the choice of parameters.
+Additionally multiple modules were described by Sidler to allow an automatization of the pipeline. In this repository we now combined these approaches to an automatic scheme for RE-EDS.</p>
+<a class="reference external image-reference" href=".img/State_graph.png"><img alt="" src=".img/State_graph.png" /></a>
+<p>The repository aims to make the RE-EDS pipeline accessible to everyone!</p>
+<p>For more on RE-EDS checkout:</p>
 <ul class="simple">
-<li><p>For python 3.6:</p>
-<ul>
-<li><p>Reeds parameter optimization and analysis Funcs -&gt;funcLibs</p></li>
-<li><p>reeds simulation pipeline -&gt; Scripts</p></li>
-<li><p>reeds theory scripts (generating the beautiful harmPot plots) -&gt;Scripts</p></li>
+<li><p><a class="reference external" href="https://pubs.acs.org/doi/abs/10.1021/acs.jctc.7b00286">Efficient Round-Trip Time Optimization for Replica-Exchange Enveloping Distribution Sampling (RE-EDS); Dominik Sidler, Michael Cristòfol-Clough, and Sereina Riniker (2017)</a></p></li>
+<li><p><a class="reference external" href="https://aip.scitation.org/doi/abs/10.1063/1.4964781">Replica exchange enveloping distribution sampling (RE-EDS): A robust method to estimate multiple free-energy differences from a single simulation;  Dominik Sidler, Arthur Schwaninger, and Sereina Riniker (2016)</a></p></li>
 </ul>
-</li>
-<li><p>gromos Reeds Versions</p></li>
-<li><p>gromos Files for REEDS</p></li>
-<li><p>submodule: PyGromos is already included in the repo</p></li>
+<p>Further reading on EDS:</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://pubs.acs.org/doi/abs/10.1021/acs.jcim.0c00520">An Alternative to Conventional λ-Intermediate States in Alchemical Free Energy Calculations: λ-Enveloping Distribution Sampling; Gerhard König, Nina Glaser, Benjamin Schroeder, Alžbeta Kubincová, Philippe H. Hünenberger, and Sereina Rinikerb (2020)</a></p></li>
+<li><p><a class="reference external" href="https://aip.scitation.org/doi/10.1063/1.2913050">Multiple free energies from a single simulation: Extending enveloping distribution sampling to nonoverlapping phase-space distributions; Clara D. Christ and Wilfred F. van Gunsteren (2008)</a></p></li>
 </ul>
-<p>The project is structured into two folders:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">*</span> <span class="n">The</span> <span class="n">function_libs</span> <span class="n">folder</span> <span class="n">contains</span> <span class="nb">all</span> <span class="n">the</span> <span class="n">code</span> <span class="n">you</span> <span class="n">could</span> <span class="n">use</span> <span class="ow">in</span> <span class="n">one</span> <span class="n">of</span> <span class="n">your</span> <span class="n">scripts</span><span class="o">.</span>
-<span class="o">*</span> <span class="n">The</span> <span class="n">scripts</span> <span class="n">folder</span> <span class="n">contains</span> <span class="n">code</span> <span class="n">bits</span><span class="p">,</span> <span class="n">you</span> <span class="n">could</span> <span class="n">already</span> <span class="n">use</span> <span class="k">with</span> <span class="n">slight</span> <span class="n">adaptations</span> <span class="k">for</span> <span class="n">your</span> <span class="n">own</span> <span class="n">project</span><span class="o">.</span>
-</pre></div>
-</div>
-<p>For using this repository, clone it (like the command below) into a directory on your machine and add the path to the repo to your python path.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>git clone --recurse-submodules &lt;repo url&gt;
-PYTHONPATH=${PYTHONPATH}:/path/to/reeds_Repo/reeds
-</pre></div>
-</div>
+<div class="section" id="structure">
+<h2>Structure<a class="headerlink" href="#structure" title="Permalink to this headline">¶</a></h2>
+<p>This Project contains the code for the RE-EDS workflow of the rinikerlab. In the example folder, you can find the system input data for the pipeline, a template script folder, and several jupyter notebooks covering and explaining certain aspects of the pipeline. The reeds folder contains some template files, a function library, and ready-to-use scripts for the RE-EDS steps.</p>
+<a class="reference external image-reference" href=".img/pipeline.png"><img alt="" src=".img/pipeline.png" /></a>
 <dl class="simple">
-<dt>If you want to update the code of the PyGromos submodule, you can do this:</dt><dd><p>git submodule init
-git submodule update</p>
+<dt>Additional:</dt><dd><p>The submodule folder contains <a class="reference external" href="https://github.com/rinikerlab/PyGromosTools">PyGromosTools</a>, which is used extensively in the RE-EDS code.
+The subfolder tests are used for the automatic code testing mainly applied to the energy offset estimation and the roundtrip optimizers.</p>
 </dd>
 </dl>
+<div class="section" id="code">
+<h3>Code<a class="headerlink" href="#code" title="Permalink to this headline">¶</a></h3>
+<p>The code is written in python3 and requires a compiled version of <a class="reference external" href="http://gromos.net/">Gromos</a>.
+At the current stage, an LSF queue is required to submit the simulation jobs.
+The required python packages are listed in devtools/conda-envs/full_env.yaml.</p>
+</div>
+</div>
+<div class="section" id="install">
+<h2>Install<a class="headerlink" href="#install" title="Permalink to this headline">¶</a></h2>
+<p>Using this repository, clone it (like the command below) into a directory on your machine and add the path to the repo to your python path.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">clone</span> <span class="o">--</span><span class="n">recurse</span><span class="o">-</span><span class="n">submodules</span> <span class="o">&lt;</span><span class="n">repo</span> <span class="n">url</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+<p>Make sure you have the required python packages from devtools/conda-envs/full_env.yaml. You can install the provided env with Anacodna like:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">conda</span> <span class="n">env</span> <span class="n">create</span> <span class="o">-</span><span class="n">f</span> <span class="n">devtools</span><span class="o">/</span><span class="n">conda</span><span class="o">-</span><span class="n">envs</span><span class="o">/</span><span class="n">full_env</span><span class="o">.</span><span class="n">yaml</span>
+</pre></div>
+</div>
+<p>If you want to update the code of the PyGromos submodule, you can do this:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">submodule</span> <span class="n">init</span>
+<span class="n">git</span> <span class="n">submodule</span> <span class="n">update</span>
+</pre></div>
+</div>
 <p>Please if your writing code for this repository, first develop it on an own branch.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">branch</span> <span class="n">MyBranch</span>    <span class="c1">#generate your branch</span>
-<span class="n">git</span> <span class="n">checkout</span> <span class="n">MyBranch</span>  <span class="c1">#switch to your branch</span>
-<span class="n">git</span> <span class="n">merge</span> <span class="n">master</span>   <span class="c1">#for adding new features from master to your branch</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">branch</span> <span class="n">mybranch</span>    <span class="c1">#generate your branch</span>
+<span class="n">git</span> <span class="n">checkout</span> <span class="n">mybranch</span>  <span class="c1">#switch to your branch</span>
+<span class="n">git</span> <span class="n">merge</span> <span class="n">main</span>   <span class="c1">#for adding new features from main to your branch</span>
 </pre></div>
 </div>
-<p>Try to write test cases for your implemented features in /scritps/test. (there are already examples)
-So it is easier to maintain the code and add additional features.</p>
-<p>If you find a bug or any thing else, please raise an Issue.</p>
-<p>required packages:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">-</span> <span class="n">numpydoc</span>
-<span class="o">-</span> <span class="n">mdtraj</span>
-<span class="o">-</span> <span class="n">matplotlib</span>
-<span class="o">-</span> <span class="n">numpy</span>
-<span class="o">-</span> <span class="n">pandas</span>
-<span class="o">-</span> <span class="n">scipy</span>
-<span class="o">-</span> <span class="n">rdkit</span>
-</pre></div>
 </div>
-<p>If you find a bug or have an idea for a cool new feature, you are welcom to raise an Issue at the git page. :)
-P.s.: I can recommend Pycharm from dstar, for exploring the repository.</p>
 <div class="section" id="copyright">
 <h2>Copyright<a class="headerlink" href="#copyright" title="Permalink to this headline">¶</a></h2>
-<p>Copyright (c) 2020, Benjamin Ries, Salome Rieder, Candide Champion</p>
-<div class="section" id="acknowledgements">
-<h3>Acknowledgements<a class="headerlink" href="#acknowledgements" title="Permalink to this headline">¶</a></h3>
+<p>Copyright (c) 2020, Benjamin Ries, Salomé Rieder, Candide Champion</p>
 <p>Project based on the
 <a class="reference external" href="https://github.com/molssi/cookiecutter-cms">Computational Molecular Science Python Cookiecutter</a> version 1.3.</p>
 <div class="toctree-wrapper compound">
 <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="introduction.html">REEDS</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="introduction.html#structure">Structure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="introduction.html#install">Install</a></li>
 <li class="toctree-l2"><a class="reference internal" href="introduction.html#copyright">Copyright</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="Examples/index.html">Examples</a><ul class="simple">
+<li class="toctree-l1"><a class="reference internal" href="Examples/index.html">Examples</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="Examples/RE_EDS_PEOE_energy_offset_estimation.html">RE-EDS - PEOE - Energy Offset Estimation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Examples/RE_EDS_State_Sampling_Analysis.html">RE-EDS - State Sampling Analysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Examples/RE_EDS_pipeline.html">Replica Exchange - Enveloping Distribution Sampling - automatic Workflow</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Examples/RE_EDS_s_optimization_RTO.html">RE-EDS - S-Optimization (RTO-Algorithms)</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="_source/modules.html">Documentation</a><ul>
+<li class="toctree-l1"><a class="reference internal" href="_source/modules.html">reeds</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="_source/reeds.html">reeds package</a></li>
 </ul>
 </li>
 </ul>
-</div>
 </div>
 </div>
 </div>
@@ -269,27 +281,28 @@ P.s.: I can recommend Pycharm from dstar, for exploring the repository.</p>
            
           </div>
           <footer>
-  
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-      
-        <a href="introduction.html" class="btn btn-neutral float-right" title="REEDS" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
-      
-      
+        <a href="introduction.html" class="btn btn-neutral float-right" title="REEDS" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
-  
 
   <hr/>
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2020, Benjamin Ries, Salome Rieder, Candide Champion. Project structure based on the Computational Molecular Science Python Cookiecutter version 1.3
+        &#169; Copyright 2020, Benjamin Ries, Salome Rieder, Candide Champion. Project structure based on the Computational Molecular Science Python Cookiecutter version 1.3.
 
     </p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
-
         </div>
       </div>
 
@@ -297,7 +310,6 @@ P.s.: I can recommend Pycharm from dstar, for exploring the repository.</p>
 
   </div>
   
-
 
   <script type="text/javascript">
       jQuery(function () {

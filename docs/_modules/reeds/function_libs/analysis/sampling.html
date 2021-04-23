@@ -1,0 +1,563 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>reeds.function_libs.analysis.sampling &mdash; REEDS  documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../../" src="../../../../_static/documentation_options.js"></script>
+        <script src="../../../../_static/jquery.js"></script>
+        <script src="../../../../_static/underscore.js"></script>
+        <script src="../../../../_static/doctools.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    
+    <script type="text/javascript" src="../../../../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../../index.html" class="icon icon-home"> REEDS
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../introduction.html">REEDS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../Examples/index.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_source/modules.html">reeds</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">REEDS</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../../../index.html">Module code</a> &raquo;</li>
+        
+      <li>reeds.function_libs.analysis.sampling</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for reeds.function_libs.analysis.sampling</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">warnings</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Dict</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+
+<span class="kn">import</span> <span class="nn">reeds.function_libs.visualization.sampling_plots</span>
+
+
+<div class="viewcode-block" id="undersampling_occurence_potential_threshold_densityClustering"><a class="viewcode-back" href="../../../../_source/reeds.function_libs.analysis.html#reeds.function_libs.analysis.sampling.undersampling_occurence_potential_threshold_densityClustering">[docs]</a><span class="k">def</span> <span class="nf">undersampling_occurence_potential_threshold_densityClustering</span><span class="p">(</span><span class="n">ene_traj_csvs</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">],</span>
+                                                                  <span class="n">max_distance_kJ</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">300</span><span class="p">,</span>
+                                                                  <span class="n">sampling_fraction_treshold</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.9</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">]:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    This function is estimating the pot_tresh for all states by using DBSCAN identifying the density region containing sampling_fraction_treshold of the data.</span>
+<span class="sd">    The mean and std of the density region will result in pot_tresh = mean+3std</span>
+<span class="sd">    This function is rather performance expensive.</span>
+<span class="sd">    ! WARNING REQUIRES SKLEARN -Not Used by the pipeline. - Prototype!</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    ene_traj_csvs : List[pd.Dataframe]</span>
+<span class="sd">        a list of pandas dataframes containing the energy data of each state eX</span>
+<span class="sd">    max_distance_kJ : float, optional</span>
+<span class="sd">        the maximum distance between two points for dbscan clustering (eps) (default:300kJ).</span>
+<span class="sd">    sampling_fraction_treshold : float, optional</span>
+<span class="sd">        the sampling threshold for detecting undersampling (default: 0.9).</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    List[float]</span>
+<span class="sd">        list of individual identified potential thresholds</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="kn">from</span> <span class="nn">sklearn.cluster</span> <span class="kn">import</span> <span class="n">DBSCAN</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;Please provide package sklearn!&quot;</span><span class="p">)</span>
+
+    <span class="n">pot_tresh_pre_rep</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="n">state_names</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">ene_traj_csvs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">columns</span> <span class="k">if</span> <span class="p">(</span><span class="n">i</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;e&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">i</span> <span class="o">==</span> <span class="s2">&quot;eR&quot;</span><span class="p">)]</span>
+    <span class="n">num_s_values</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">ene_traj_csvs</span><span class="p">)</span>
+    <span class="n">num_states</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">state_names</span><span class="p">)</span>
+
+    <span class="n">total_step_num</span> <span class="o">=</span> <span class="n">ene_traj_csvs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">threshold_fulfilled</span> <span class="o">=</span> <span class="p">[</span><span class="kc">True</span> <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_s_values</span><span class="p">)]</span>
+
+    <span class="n">v_pot_sampling</span> <span class="o">=</span> <span class="p">[[</span><span class="mi">0</span> <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="n">state_names</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_s_values</span><span class="p">)]</span>
+
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">replica_data</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">ene_traj_csvs</span><span class="p">):</span>
+        <span class="c1"># print(&quot;&quot;)</span>
+        <span class="c1"># print(&quot;replica &quot; + str(i + 1) + &quot;:&quot;)</span>
+        <span class="n">pot_tresh</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="c1"># calculate for each state the pot thresh, depending on clustering.</span>
+        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">state</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">state_names</span><span class="p">):</span>
+            <span class="n">vec</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">replica_data</span><span class="p">[</span><span class="n">state</span><span class="p">])</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="n">db</span> <span class="o">=</span> <span class="n">DBSCAN</span><span class="p">(</span><span class="n">eps</span><span class="o">=</span><span class="n">max_distance_kJ</span><span class="p">,</span> <span class="n">min_samples</span><span class="o">=</span><span class="n">total_step_num</span> <span class="o">*</span> <span class="n">sampling_fraction_treshold</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">vec</span><span class="p">)</span>
+            <span class="n">v_pot_sampling</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">components_</span><span class="p">)</span> <span class="o">/</span> <span class="n">total_step_num</span>
+
+            <span class="k">if</span> <span class="p">(</span><span class="ow">not</span> <span class="nb">len</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">components_</span><span class="p">)):</span>
+                <span class="n">threshold_fulfilled</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># print(k)</span>
+                <span class="n">threshold</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">components_</span><span class="p">)</span> <span class="o">+</span> <span class="mi">3</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">components_</span><span class="p">)</span>
+                <span class="n">pot_tresh</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">threshold</span><span class="p">)</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">pot_tresh</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">state_names</span><span class="p">)):</span>
+            <span class="n">pot_tresh_pre_rep</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pot_tresh</span><span class="p">)</span>
+
+    <span class="c1"># final averaging</span>
+    <span class="n">pot_thresh_per_state_and_replica</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">t</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">pot_tresh_pre_rep</span> <span class="k">if</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">t</span><span class="p">)</span> <span class="o">==</span> <span class="n">num_states</span><span class="p">)])</span><span class="o">.</span><span class="n">T</span>
+    <span class="n">pot_thresh_per_state</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">pot_thresh_per_state_and_replica</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">pot_thresh_per_state_and_replica</span><span class="p">,</span>
+                                                                                      <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">pot_thresh_per_state</span></div>
+
+
+<div class="viewcode-block" id="undersampling_occurence_potential_threshold_distribution_based"><a class="viewcode-back" href="../../../../_source/reeds.function_libs.analysis.html#reeds.function_libs.analysis.sampling.undersampling_occurence_potential_threshold_distribution_based">[docs]</a><span class="k">def</span> <span class="nf">undersampling_occurence_potential_threshold_distribution_based</span><span class="p">(</span><span class="n">ene_traj_csvs</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">],</span>
+                                                                   <span class="n">sampling_fraction_treshold</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.9</span><span class="p">,</span>
+                                                                    <span class="n">verbose</span><span class="p">:</span><span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">]:</span>
+    <span class="sd">&quot;&quot;&quot;undersampling_occurence_potential_threshold_distribution_based</span>
+<span class="sd">    This function is estimating the pot_tresh for all states by testing if around the minimal energy 90% of the data is located in a threshold of  max_distance_kJ.</span>
+<span class="sd">    The mean and std of the density region will result in pot_tresh = min(V)+6*std(V</span>
+<span class="sd">    This function has low demand in performance.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    ene_traj_csvs : List[pd.Dataframe]</span>
+<span class="sd">        a list of pandas dataframes containing the energy data of each state eX</span>
+<span class="sd">    sampling_fraction_treshold : float, optional</span>
+<span class="sd">        the sampling threshold for detecting undersampling (default: 0.9).</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    List[float]</span>
+<span class="sd">        list of individual identified potential thresholds</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">pot_tresh_pre_rep</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">state_names</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">ene_traj_csvs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">columns</span> <span class="k">if</span> <span class="p">(</span><span class="n">i</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;e&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">i</span> <span class="o">==</span> <span class="s2">&quot;eR&quot;</span><span class="p">)]</span>
+    <span class="n">num_states</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">state_names</span><span class="p">)</span>
+    <span class="n">total_step_num</span> <span class="o">=</span> <span class="n">ene_traj_csvs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="n">std</span> <span class="o">=</span> <span class="p">[</span><span class="mi">6</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">ene_traj_csvs</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="n">state</span><span class="p">])</span> <span class="k">for</span> <span class="n">state</span> <span class="ow">in</span> <span class="n">state_names</span><span class="p">]</span>
+    <span class="c1">#mean_potential = [np.mean(ene_traj_csvs[-1][state]) for state in state_names]</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">replica_data</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">ene_traj_csvs</span><span class="p">):</span>
+        <span class="k">if</span><span class="p">(</span><span class="n">verbose</span><span class="p">):</span> <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;replica &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;:&quot;</span><span class="p">)</span>
+        <span class="n">mean_potential</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">replica_data</span><span class="p">[</span><span class="n">state</span><span class="p">])</span> <span class="k">for</span> <span class="n">state</span> <span class="ow">in</span> <span class="n">state_names</span><span class="p">]</span>
+        <span class="n">thresholds</span> <span class="o">=</span> <span class="p">[</span><span class="n">m</span><span class="o">+</span><span class="n">s</span> <span class="k">for</span> <span class="n">m</span><span class="p">,</span> <span class="n">s</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">mean_potential</span><span class="p">,</span> <span class="n">std</span><span class="p">)]</span>
+        <span class="k">if</span><span class="p">(</span><span class="n">verbose</span><span class="p">):</span> <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Checkout std: &quot;</span><span class="p">,</span> <span class="n">thresholds</span><span class="p">)</span>
+        <span class="c1"># iterate over states, identify all undersampling replicas, calc fraction</span>
+        <span class="n">pot_tresh</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">state</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">state_names</span><span class="p">):</span>
+            <span class="n">vec</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">replica_data</span><span class="p">[</span><span class="n">state</span><span class="p">])</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="n">treshold</span> <span class="o">=</span>  <span class="n">thresholds</span><span class="p">[</span><span class="n">k</span><span class="p">]</span>
+
+            <span class="n">below_thresh</span> <span class="o">=</span> <span class="n">vec</span><span class="p">[</span><span class="n">vec</span> <span class="o">&lt;</span> <span class="n">treshold</span><span class="p">]</span>
+            <span class="n">below_thresh_fraction</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">below_thresh</span><span class="p">)</span> <span class="o">/</span> <span class="n">total_step_num</span>
+            <span class="k">if</span><span class="p">(</span><span class="n">verbose</span><span class="p">):</span> <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2"> belowTresh: &quot;</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">sampling_fraction_treshold</span> <span class="o">&lt;</span> <span class="n">below_thresh_fraction</span><span class="p">)</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">sampling_fraction_treshold</span> <span class="o">&lt;</span> <span class="n">below_thresh_fraction</span><span class="p">):</span>
+                <span class="n">threshold</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">below_thresh</span><span class="p">)</span> <span class="o">+</span> <span class="mi">3</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">below_thresh</span><span class="p">)</span>
+                <span class="n">pot_tresh</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">threshold</span><span class="p">)</span>
+
+        <span class="c1"># only save undersampling pot_threshes</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">pot_tresh</span><span class="p">)</span> <span class="o">==</span> <span class="n">num_states</span><span class="p">):</span>
+            <span class="n">pot_tresh_pre_rep</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pot_tresh</span><span class="p">)</span>
+
+    <span class="c1"># final averaging.</span>
+    <span class="n">pot_thresh_per_state_and_replica</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">t</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">pot_tresh_pre_rep</span> <span class="k">if</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">t</span><span class="p">)</span> <span class="o">==</span> <span class="n">num_states</span><span class="p">)])</span><span class="o">.</span><span class="n">T</span>
+    
+    <span class="nb">print</span><span class="p">(</span><span class="n">pot_thresh_per_state_and_replica</span><span class="p">)</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">pot_thresh_per_state_and_replica</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">):</span>
+        <span class="n">pot_thresh_per_state</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">pot_thresh_per_state_and_replica</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">pot_thresh_per_state_and_replica</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">pot_thresh_per_state</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_states</span><span class="p">)]</span>
+    <span class="k">return</span> <span class="n">pot_thresh_per_state</span></div>
+
+<div class="viewcode-block" id="physical_occurence_potential_threshold_distribution_based"><a class="viewcode-back" href="../../../../_source/reeds.function_libs.analysis.html#reeds.function_libs.analysis.sampling.physical_occurence_potential_threshold_distribution_based">[docs]</a><span class="k">def</span> <span class="nf">physical_occurence_potential_threshold_distribution_based</span><span class="p">(</span><span class="n">ene_traj_csv</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">equilibrate_dominationState</span><span class="p">:</span><span class="nb">float</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span> <span class="n">verbose</span><span class="p">:</span><span class="nb">bool</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">]:</span>
+    <span class="sd">&quot;&quot;&quot;physical_occurence_potential_threshold_distribution_based</span>
+<span class="sd">    This function is estimating the pot_tresh for all states by testing if around the minimal energy 90% of the data is located in a threshold of  max_distance_kJ.</span>
+<span class="sd">    The mean and std of the density region will result in pot_tresh = mean+3*std</span>
+<span class="sd">    This function is cheap in performance.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    ene_traj_csv : pd.Dataframe</span>
+<span class="sd">        a pandas dataframe containing the energy data of each state eX</span>
+<span class="sd">    equilibrate_dominationState : int, optional</span>
+<span class="sd">        equilibrate the domination state for this fraction</span>
+<span class="sd">    verbose: bool, optional</span>
+<span class="sd">        print fun</span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    List[float]</span>
+<span class="sd">        list of individual identified potential thresholds</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">state_names</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">ene_traj_csv</span><span class="o">.</span><span class="n">columns</span> <span class="k">if</span> <span class="p">(</span><span class="n">i</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;e&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">i</span> <span class="o">==</span> <span class="s2">&quot;eR&quot;</span><span class="p">)]</span>
+    <span class="n">total_step_num</span> <span class="o">=</span> <span class="n">ene_traj_csv</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">data</span> <span class="o">=</span><span class="n">ene_traj_csv</span>
+
+    <span class="c1"># iterate over states, identify all undersampling replicas, calc fraction</span>
+    <span class="n">pot_tresh</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">state</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">state_names</span><span class="p">):</span>
+        <span class="c1">#get only the sampling, in which the target state is dominating: pre-filter noise!</span>
+        <span class="n">state_domination_sampling</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="n">state_names</span><span class="p">]</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="o">==</span> <span class="n">data</span><span class="p">[</span><span class="n">state</span><span class="p">])</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span>
+        <span class="n">start_after_eq</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">equilibrate_dominationState</span><span class="o">*</span><span class="n">state_domination_sampling</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
+        <span class="n">state_domination_sampling</span> <span class="o">=</span> <span class="n">state_domination_sampling</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">start_after_eq</span><span class="p">:]</span>
+
+        <span class="k">if</span><span class="p">(</span><span class="n">verbose</span><span class="p">):</span>
+            <span class="n">below_thresh_fraction</span> <span class="o">=</span> <span class="n">state_domination_sampling</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">/</span> <span class="n">total_step_num</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;State &quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">state</span><span class="p">)</span><span class="o">+</span><span class="s2">&quot; - Domination state sampling fraction &quot;</span><span class="p">,</span> <span class="n">below_thresh_fraction</span><span class="p">)</span>
+
+        <span class="c1">#calculate threshold</span>
+        <span class="n">threshold</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">state_domination_sampling</span><span class="p">[</span><span class="n">state</span><span class="p">])</span> <span class="o">+</span> <span class="mi">6</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">state_domination_sampling</span><span class="p">[</span><span class="n">state</span><span class="p">])</span>
+        <span class="n">pot_tresh</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">threshold</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">pot_tresh</span></div>
+
+
+<div class="viewcode-block" id="get_all_physical_occurence_potential_threshold_distribution_based"><a class="viewcode-back" href="../../../../_source/reeds.function_libs.analysis.html#reeds.function_libs.analysis.sampling.get_all_physical_occurence_potential_threshold_distribution_based">[docs]</a><span class="k">def</span> <span class="nf">get_all_physical_occurence_potential_threshold_distribution_based</span><span class="p">(</span><span class="n">ene_trajs</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">])</span><span class="o">-&gt;</span><span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">]:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        This function is used in the state optimization approach and gives the physical potential energy threshold for occurrence sampling back, that is estimated from the optimized EDS-System.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    ene_trajs: List[pd.DataFrame]</span>
+<span class="sd">        energy trajectories from all end state optimizations</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    List[float]</span>
+<span class="sd">        list of potential energy thresholds.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">opt_pot_tresh</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">traj</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">ene_trajs</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+        <span class="n">pot_tresh_state</span> <span class="o">=</span> <span class="n">physical_occurence_potential_threshold_distribution_based</span><span class="p">(</span><span class="n">traj</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">pot_tresh_state</span><span class="p">)</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">pot_tresh_state</span><span class="p">[</span><span class="n">key</span><span class="p">])):</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;A state potential threshold was NaN -&gt; This hints on that you did not sample the state as a dominating one! Please check your simulatigons!&quot;</span><span class="p">)</span>
+        <span class="n">opt_pot_tresh</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pot_tresh_state</span><span class="p">[</span><span class="n">key</span><span class="p">])</span>
+    <span class="k">return</span> <span class="n">opt_pot_tresh</span></div>
+
+
+<div class="viewcode-block" id="calculate_sampling_distributions"><a class="viewcode-back" href="../../../../_source/reeds.function_libs.analysis.html#reeds.function_libs.analysis.sampling.calculate_sampling_distributions">[docs]</a><span class="k">def</span> <span class="nf">calculate_sampling_distributions</span><span class="p">(</span><span class="n">ene_traj_csvs</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">],</span>
+                                     <span class="n">potential_treshold</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span>
+                                     <span class="n">undersampling_occurence_sampling_tresh</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.75</span><span class="p">)</span><span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">]]]:</span>
+    <span class="sd">&quot;&quot;&quot;calculate_sampling_distributions</span>
+<span class="sd">    This function is using the dominating state sampling and occurrence state sampling definition, to calculate</span>
+<span class="sd">    for both definitions the sampling distributions including each stat.</span>
+<span class="sd">    Further each replica, having an occurrence sampling &gt;= undersampling_occurence_sampling_tresh for each state is categorized as undersampling.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    ene_traj_csvs: List[pd.Dataframe]</span>
+<span class="sd">        a list of pandas dataframes containing the energy data of each state eX</span>
+<span class="sd">    potential_treshold: List[float]</span>
+<span class="sd">        a list of potential thresholds for undersampling</span>
+<span class="sd">    undersampling_occurence_sampling_tresh: float, optional</span>
+<span class="sd">        threshold for the fraction of the energies which has to be below the threshold (default 0.75)</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    Dict[int, Dict[str, Dict[int, float]]]</span>
+<span class="sd">        the dictionary contains for all replicas, the occurrence/dominating sampling fractions of each state  and undersamplin classification</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">replica_sampling_dist</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">num_states</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">([</span><span class="mi">1</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">ene_traj_csvs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">columns</span> <span class="k">if</span> <span class="p">(</span><span class="n">i</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;e&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">i</span> <span class="o">==</span> <span class="s2">&quot;eR&quot;</span><span class="p">)])</span>
+    <span class="n">states</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;e&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span> <span class="o">+</span> <span class="n">num_states</span><span class="p">)]</span>
+    <span class="k">for</span> <span class="n">replica</span> <span class="ow">in</span> <span class="n">ene_traj_csvs</span><span class="p">:</span>
+        <span class="n">total_number_steps</span> <span class="o">=</span> <span class="n">replica</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="c1"># Domination sampling</span>
+        <span class="n">dominating_state_sampling</span> <span class="o">=</span> <span class="p">{</span><span class="n">x</span><span class="p">:</span> <span class="mi">0</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span> <span class="o">+</span> <span class="n">num_states</span><span class="p">)}</span>
+        <span class="n">min_state</span><span class="p">,</span> <span class="n">counts</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">replica</span><span class="p">[</span><span class="n">states</span><span class="p">]</span><span class="o">.</span><span class="n">idxmin</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span> <span class="n">return_counts</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">dominating_state_sampling</span><span class="o">.</span><span class="n">update</span><span class="p">(</span>
+            <span class="p">{</span><span class="nb">int</span><span class="p">(</span><span class="n">key</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;e&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)):</span> <span class="n">val</span> <span class="o">/</span> <span class="n">total_number_steps</span> <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">min_state</span><span class="p">,</span> <span class="n">counts</span><span class="p">)})</span>
+
+        <span class="c1"># occurence samplng</span>
+        <span class="n">occurrence_state_sampling</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">ind</span><span class="p">,</span> <span class="n">state</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">states</span><span class="p">):</span>
+            <span class="n">occurrence_sampling_frac</span> <span class="o">=</span> <span class="n">replica</span><span class="p">[</span><span class="n">replica</span><span class="p">[</span><span class="n">state</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">potential_treshold</span><span class="p">[</span><span class="n">ind</span><span class="p">]]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">/</span> <span class="n">total_number_steps</span>
+            <span class="n">occurrence_state_sampling</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="nb">int</span><span class="p">(</span><span class="n">state</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;e&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)):</span> <span class="n">occurrence_sampling_frac</span><span class="p">})</span>
+
+        <span class="c1"># undersampling?</span>
+        <span class="n">undersampling_criterium</span> <span class="o">=</span> <span class="kc">True</span> <span class="k">if</span> <span class="p">(</span>
+            <span class="nb">all</span><span class="p">([</span><span class="n">occ</span> <span class="o">&gt;=</span> <span class="n">undersampling_occurence_sampling_tresh</span> <span class="k">for</span> <span class="n">occ</span> <span class="ow">in</span>
+                 <span class="n">occurrence_state_sampling</span><span class="o">.</span><span class="n">values</span><span class="p">()]))</span> <span class="k">else</span> <span class="kc">False</span>
+
+        <span class="c1"># update results</span>
+        <span class="n">replica_sampling_dist</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="nb">int</span><span class="p">(</span><span class="n">replica</span><span class="o">.</span><span class="n">s</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;s&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)):</span> <span class="p">{</span><span class="s2">&quot;dominating_state&quot;</span><span class="p">:</span> <span class="n">dominating_state_sampling</span><span class="p">,</span>
+                                                                        <span class="s2">&quot;occurence_state&quot;</span><span class="p">:</span> <span class="n">occurrence_state_sampling</span><span class="p">,</span>
+                                                                        <span class="s2">&quot;undersampling&quot;</span><span class="p">:</span> <span class="n">undersampling_criterium</span><span class="p">}})</span>
+
+    <span class="k">return</span> <span class="n">replica_sampling_dist</span></div>
+
+
+<div class="viewcode-block" id="sampling_analysis"><a class="viewcode-back" href="../../../../_source/reeds.function_libs.analysis.html#reeds.function_libs.analysis.sampling.sampling_analysis">[docs]</a><span class="k">def</span> <span class="nf">sampling_analysis</span><span class="p">(</span><span class="n">ene_traj_csvs</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">],</span>
+                      <span class="n">s_values</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span>
+                      <span class="n">pot_tresh</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span>
+                      <span class="n">out_path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                      <span class="n">xmax</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+                      <span class="n">do_plot</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+                      <span class="n">verbose</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="p">(</span><span class="nb">dict</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;sampling_analysis</span>
+<span class="sd">    This function is analysing the samplings</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    out_path :  str</span>
+<span class="sd">        path out for the plotfiles</span>
+<span class="sd">    ene_traj_csvs : List[pd.DataFrame]</span>
+<span class="sd">        contains the energy data</span>
+<span class="sd">    s_values :  List[float]</span>
+<span class="sd">        list of s_values</span>
+<span class="sd">    pot_tresh : List[float]</span>
+<span class="sd">        potential energy thresholds, for considering a state as sampled</span>
+<span class="sd">    xmax :  bool, optional</span>
+<span class="sd">        additionally output a plot only with a smaller x_range. (0-&gt;xmax) (default False)</span>
+<span class="sd">    do_plot: bool, opptional</span>
+<span class="sd">        create additional plots (default True)</span>
+<span class="sd">    verbose: bool, optional</span>
+<span class="sd">        story time :) (default False)</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    str</span>
+<span class="sd">        out_path</span>
+<span class="sd">    dict</span>
+<span class="sd">      returns a dictionary containing the information of undersampling start, undersampling_potential thresholds and the different sampling type fractions. (physical sampling occurence not included!)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># read all Vy_sx_files!</span>
+    <span class="kn">from</span> <span class="nn">reeds.function_libs.visualization.utils</span> <span class="kn">import</span> <span class="n">nice_s_vals</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">verbose</span><span class="p">):</span> <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n\n</span><span class="s2"> Potential Threshold</span><span class="se">\n\n</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">potential_treshold</span> <span class="o">=</span> <span class="n">undersampling_occurence_potential_threshold_distribution_based</span><span class="p">(</span><span class="n">ene_traj_csvs</span><span class="o">=</span><span class="n">ene_traj_csvs</span><span class="p">)</span>
+
+    <span class="c1">##glob vars</span>
+    <span class="n">num_states</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">potential_treshold</span><span class="p">)</span>
+    <span class="n">select_states</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;e&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">num_states</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)]</span>
+    <span class="n">s_vals_nice</span> <span class="o">=</span> <span class="n">nice_s_vals</span><span class="p">(</span><span class="n">s_values</span><span class="p">)</span>
+
+    <span class="c1"># show_presence of undersampling</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">verbose</span><span class="p">):</span> <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n\n</span><span class="s2"> Sampling Timeseries</span><span class="se">\n\n</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">ind</span><span class="p">,</span> <span class="n">replica</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">ene_traj_csvs</span><span class="p">):</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">verbose</span><span class="p">):</span> <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2"> replica &quot;</span> <span class="o">+</span> <span class="n">replica</span><span class="o">.</span><span class="n">s</span><span class="p">)</span>
+        <span class="n">dominating_state_sampling</span> <span class="o">=</span> <span class="n">replica</span><span class="p">[</span><span class="n">select_states</span><span class="p">]</span><span class="o">.</span><span class="n">idxmin</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;e&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">regex</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="n">occurrence_sampling_replica</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">state</span> <span class="ow">in</span> <span class="n">select_states</span><span class="p">:</span>
+            <span class="n">occurrence_sampling_state_replica</span> <span class="o">=</span> <span class="n">replica</span><span class="o">.</span><span class="n">index</span><span class="p">[</span>
+                <span class="n">replica</span><span class="p">[</span><span class="n">state</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">potential_treshold</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">state</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;e&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">))</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]]</span>
+            <span class="n">occurrence_sampling_replica</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">occurrence_sampling_state_replica</span><span class="p">)</span>
+
+        <span class="n">data</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;occurrence_t&quot;</span><span class="p">:</span> <span class="n">occurrence_sampling_replica</span><span class="p">,</span> <span class="s2">&quot;dominating_state&quot;</span><span class="p">:</span> <span class="n">dominating_state_sampling</span><span class="p">}</span>
+
+        <span class="k">if</span> <span class="p">(</span><span class="n">do_plot</span><span class="p">):</span>
+            <span class="n">reeds</span><span class="o">.</span><span class="n">function_libs</span><span class="o">.</span><span class="n">visualization</span><span class="o">.</span><span class="n">sampling_plots</span><span class="o">.</span><span class="n">plot_t_statepres</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span>
+                                                                              <span class="n">title</span><span class="o">=</span><span class="s2">&quot;s=&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">s_vals_nice</span><span class="p">[</span><span class="n">ind</span><span class="p">])</span> <span class="o">+</span> <span class="s2">&quot;, with V_</span><span class="si">{tresh}</span><span class="s2">=&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">pot_tresh</span><span class="p">),</span>
+                                                                              <span class="n">out_path</span><span class="o">=</span><span class="n">out_path</span> <span class="o">+</span> <span class="s2">&quot;/sampling_timeseries_s&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">ind</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;.png&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="p">(</span><span class="n">xmax</span><span class="p">):</span>
+            <span class="n">reeds</span><span class="o">.</span><span class="n">function_libs</span><span class="o">.</span><span class="n">visualization</span><span class="o">.</span><span class="n">sampling_plots</span><span class="o">.</span><span class="n">plot_t_statepres</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span>
+                                                                              <span class="n">title</span><span class="o">=</span><span class="s2">&quot;s=&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">s_vals_nice</span><span class="p">[</span><span class="n">ind</span><span class="p">])</span> <span class="o">+</span> <span class="s2">&quot;, with V_</span><span class="si">{tresh}</span><span class="s2">=&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">pot_tresh</span><span class="p">),</span>
+                                                                              <span class="n">out_path</span><span class="o">=</span><span class="n">out_path</span> <span class="o">+</span> <span class="s2">&quot;/sampling_timeseries_s&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">ind</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;_upto_&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span>
+                                     <span class="n">xmax</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;.png&quot;</span><span class="p">,</span>
+                                                                              <span class="n">xlim</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="n">xmax</span><span class="p">])</span>
+
+    <span class="c1"># SamplingMatrix by kays</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">verbose</span><span class="p">):</span> <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n\n</span><span class="s2"> Calculate Sampling Distributions</span><span class="se">\n\n</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">replica_sampling_distributions</span> <span class="o">=</span> <span class="n">calculate_sampling_distributions</span><span class="p">(</span><span class="n">ene_traj_csvs</span><span class="o">=</span><span class="n">ene_traj_csvs</span><span class="p">,</span>
+                                                                      <span class="n">potential_treshold</span><span class="o">=</span><span class="n">potential_treshold</span><span class="p">,</span>
+                                                                      <span class="n">undersampling_occurence_sampling_tresh</span><span class="o">=</span><span class="mf">0.75</span><span class="p">)</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">do_plot</span><span class="p">):</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">verbose</span><span class="p">):</span> <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n\n</span><span class="s2"> Sampling Histograms</span><span class="se">\n\n</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">ind</span><span class="p">,</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">replica_sampling_distributions</span><span class="p">):</span>
+            <span class="n">reeds</span><span class="o">.</span><span class="n">function_libs</span><span class="o">.</span><span class="n">visualization</span><span class="o">.</span><span class="n">sampling_plots</span><span class="o">.</span><span class="n">plot_stateOccurence_hist</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">replica_sampling_distributions</span><span class="p">[</span><span class="n">x</span><span class="p">],</span>
+                                                                                      <span class="n">title</span><span class="o">=</span><span class="s2">&quot;s=&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">s_vals_nice</span><span class="p">[</span><span class="n">ind</span><span class="p">])</span> <span class="o">+</span> <span class="s2">&quot;, V_</span><span class="si">{tresh}</span><span class="s2">=&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">pot_tresh</span><span class="p">),</span>
+                                                                                      <span class="n">out_path</span><span class="o">=</span><span class="n">out_path</span> <span class="o">+</span> <span class="s2">&quot;/sampling_hist_&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;.png&quot;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="n">do_plot</span><span class="p">):</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">verbose</span><span class="p">):</span> <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n\n</span><span class="s2"> Sampling Matrix</span><span class="se">\n\n</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">reeds</span><span class="o">.</span><span class="n">function_libs</span><span class="o">.</span><span class="n">visualization</span><span class="o">.</span><span class="n">sampling_plots</span><span class="o">.</span><span class="n">plot_stateOccurence_matrix</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">replica_sampling_distributions</span><span class="p">,</span> <span class="n">out_dir</span><span class="o">=</span><span class="n">out_path</span><span class="p">,</span> <span class="n">s_values</span><span class="o">=</span><span class="n">s_vals_nice</span><span class="p">,</span>
+                                                                                    <span class="n">place_undersampling_threshold</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">title_suffix</span><span class="o">=</span><span class="s2">&quot;V_</span><span class="si">{tresh}</span><span class="s2">=&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">pot_tresh</span><span class="p">))</span>
+
+    <span class="c1">##get undersampling id:</span>
+    <span class="n">found_undersampling</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="n">undersampling_idx</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">replica_sampling_distributions</span><span class="p">:</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">replica_sampling_distributions</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s2">&quot;undersampling&quot;</span><span class="p">]):</span>
+            <span class="n">found_undersampling</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="n">undersampling_idx</span> <span class="o">=</span> <span class="n">i</span>
+            <span class="k">break</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="ow">not</span> <span class="n">found_undersampling</span><span class="p">):</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;Could not find undersampling!&quot;</span><span class="p">)</span>
+
+    <span class="n">final_results</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;undersamplingThreshold&quot;</span><span class="p">:</span> <span class="n">undersampling_idx</span><span class="p">,</span>
+                     <span class="s2">&quot;potentialThreshold&quot;</span><span class="p">:</span> <span class="n">potential_treshold</span><span class="p">,</span>
+                     <span class="s2">&quot;samplingDistributions&quot;</span><span class="p">:</span> <span class="n">replica_sampling_distributions</span><span class="p">,</span> 
+                    <span class="p">}</span>
+    <span class="k">return</span> <span class="n">final_results</span><span class="p">,</span> <span class="n">out_path</span></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2020, Benjamin Ries, Salome Rieder, Candide Champion. Project structure based on the Computational Molecular Science Python Cookiecutter version 1.3.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
