@@ -33,7 +33,7 @@ def do(out_root_dir: str, in_simSystem: fM.System, in_ene_ana_lib: str,
        gromosXX_bin_dir: str = None, gromosPP_bin_dir: str = None,
        exclude_residues: list = [], nmpi_per_replica: int = 1, num_simulation_runs: int = 2,
        num_equilibration_runs: int = 1, equilibration_trial_num: int = None,
-       pot_tresh: float = 0.0, queueing_sys: object = None, work_dir: str = None,
+       queueing_sys: object = None, work_dir: str = None,
        submit: bool = True, duration_per_job: str = "24:00", 
        initialize_first_run: bool = True, reinitialize: bool = False,
        do_not_doubly_submit_to_queue: bool = True,
@@ -76,8 +76,6 @@ s_num
     number of s_values( soptional)
 s_range
     start end end of desired s_distribution (optional)
-pot_tresh
-    set the potential threshold for the analysis
 queueing_sys
     Not implemented yet!
 submit
@@ -209,7 +207,6 @@ int
             "gromos_path": gromosPP_bin_dir,
             "in_ene_ana_lib": in_ene_ana_lib,
             "n_processors": 5,
-            "pot_tresh": pot_tresh,
             "frac_tresh": [0.1],
             "verbose": True,
             "grom_file_prefix": simSystem.name,
