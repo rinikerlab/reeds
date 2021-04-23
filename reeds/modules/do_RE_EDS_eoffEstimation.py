@@ -126,16 +126,21 @@ int
         bash.make_folder(coord_dir)
     
         # Modify the imd file to use the s-values generated previosuly
-        if not os.path.exists(sval_file) :
+
+
+        sval_file_path = lower_s_bound_dir+"/s_vals.csv"
+        state_undersampling_pot_tresh_path = lower_s_bound_dir+"/state_occurence_pot_thresh.csv"
+        if not os.path.exists(sval_file_path) :
             raise IOError("COULD NOT FIND S_VALS.CSV in : ", sval_file, "\n")
+        else:
+            tmp = open(sval_file_path, "r")
+            s_values = list(map(float, " ".join(tmp.readlines()).split()))
 
-
-        sval_file = lower_s_bound_dir+"/"
-        tmp = open(sval_file, "r")
-        s_values = list(map(float, " ".join(tmp.readlines()).split()))
-
-        tmp = open(sval_file, "r")
-        state_undersampling_pot_tresh =  list(map(float, " ".join(tmp.readlines()).split()))
+        if not os.path.exists(state_undersampling_pot_tresh_path) :
+            raise IOError("COULD NOT FIND state_occurence_pot_thresh.CSV in : ", state_undersampling_pot_tresh_path, "\n")
+        else:
+            tmp = open(state_undersampling_pot_tresh_path, "r")
+            state_undersampling_pot_tresh =  list(map(float, " ".join(tmp.readlines()).split()))
 
         print(simSystem)
 
