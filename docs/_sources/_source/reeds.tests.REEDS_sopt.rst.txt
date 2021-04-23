@@ -20,7 +20,6 @@ reeds.tests.REEDS\_sopt.test\_reeds\_soptimizers module
    :undoc-members:
    :show-inheritance:
 
-
 Module contents
 ---------------
 

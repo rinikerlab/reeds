@@ -1,0 +1,632 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>reeds.function_libs.analysis.free_energy &mdash; REEDS  documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../../" src="../../../../_static/documentation_options.js"></script>
+        <script src="../../../../_static/jquery.js"></script>
+        <script src="../../../../_static/underscore.js"></script>
+        <script src="../../../../_static/doctools.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    
+    <script type="text/javascript" src="../../../../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../../index.html" class="icon icon-home"> REEDS
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../introduction.html">REEDS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../Examples/index.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_source/modules.html">reeds</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">REEDS</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../../../index.html">Module code</a> &raquo;</li>
+        
+      <li>reeds.function_libs.analysis.free_energy</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for reeds.function_libs.analysis.free_energy</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Dict</span>
+
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">from</span> <span class="nn">pygromos.gromos</span> <span class="kn">import</span> <span class="n">gromosPP</span>
+<span class="kn">from</span> <span class="nn">pygromos.utils</span> <span class="kn">import</span> <span class="n">bash</span>
+
+<span class="kn">import</span> <span class="nn">reeds.function_libs.visualization.free_energy_plots</span>
+
+
+<div class="viewcode-block" id="multi_lig_dfmult"><a class="viewcode-back" href="../../../../_source/reeds.function_libs.analysis.html#reeds.function_libs.analysis.free_energy.multi_lig_dfmult">[docs]</a><span class="k">def</span> <span class="nf">multi_lig_dfmult</span><span class="p">(</span><span class="n">num_replicas</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+                     <span class="n">num_states</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+                     <span class="n">in_folder</span><span class="p">,</span>
+                     <span class="n">out_file</span><span class="p">,</span>
+                     <span class="n">eR_prefix</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;eR_s&quot;</span><span class="p">,</span>
+                     <span class="n">eX_prefix</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;eY_s&quot;</span><span class="p">,</span>
+                     <span class="n">temp</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">298</span><span class="p">,</span>
+                     <span class="n">gromos_binary</span><span class="o">=</span><span class="s2">&quot;dfmult&quot;</span><span class="p">,</span>
+                     <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;multi_lig_dfmult</span>
+<span class="sd">        @ WARNING GOING TO BE REMOVED - OLD Function@</span>
+<span class="sd">        This function is calculating dfmult with multiple ligands in a system</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    num_replicas :</span>
+<span class="sd">    num_states :</span>
+<span class="sd">    in_folder :</span>
+<span class="sd">    out_file :</span>
+<span class="sd">    eR_prefix :</span>
+<span class="sd">    eX_prefix :</span>
+<span class="sd">    temp :</span>
+<span class="sd">    gromos_binary :</span>
+<span class="sd">    verbose :</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    None</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">gen_results_string</span><span class="p">(</span><span class="n">results_dict</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="c1"># This func generates an readable output</span>
+        <span class="c1"># generate out string:</span>
+        <span class="n">result_string</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+        <span class="n">float_format</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{: &gt; 13.3f}</span><span class="s2">&quot;</span>
+        <span class="n">str_format</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{:&gt;13}</span><span class="s2">&quot;</span>
+        <span class="n">str_head_format</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{:^27}</span><span class="s2">&quot;</span>
+        <span class="n">state</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;lig&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">state</span><span class="p">)</span> <span class="k">for</span> <span class="n">state</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">num_states</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)]</span>
+        <span class="n">state</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;ligR&quot;</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">results_dict</span><span class="p">:</span>
+            <span class="n">first</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="n">s_results_dict</span> <span class="o">=</span> <span class="n">results_dict</span><span class="p">[</span><span class="n">s</span><span class="p">]</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;result_keys: &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">s_results_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">())))</span>
+            <span class="n">result_string</span> <span class="o">+=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2"> dF for s= &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="k">for</span> <span class="n">l1</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">s_results_dict</span><span class="p">):</span>
+
+                <span class="c1"># Header</span>
+                <span class="k">if</span> <span class="p">(</span><span class="n">first</span><span class="p">):</span>
+                    <span class="n">results</span> <span class="o">=</span> <span class="p">[]</span>
+                    <span class="n">format_list</span> <span class="o">=</span> <span class="p">[]</span>
+                    <span class="k">for</span> <span class="n">l2</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">s_results_dict</span><span class="p">[</span><span class="s2">&quot;lig&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">num_states</span><span class="p">)]):</span>
+                        <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">l2</span><span class="p">)</span>
+                        <span class="n">format_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">str_head_format</span><span class="p">)</span>
+                    <span class="n">formatting</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{: &lt;10}</span><span class="s2"> &quot;</span> <span class="o">+</span> <span class="s2">&quot; | &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">format_list</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span>
+                    <span class="n">result_string</span> <span class="o">+=</span> <span class="n">formatting</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s2">&quot;ligname&quot;</span><span class="p">,</span> <span class="o">*</span><span class="n">results</span><span class="p">)</span>
+
+                    <span class="n">results</span> <span class="o">=</span> <span class="p">[]</span>
+                    <span class="n">format_list</span> <span class="o">=</span> <span class="p">[]</span>
+                    <span class="k">for</span> <span class="n">l2</span> <span class="ow">in</span> <span class="n">state</span><span class="p">:</span>
+                        <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;mean&quot;</span><span class="p">)</span>
+                        <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;err&quot;</span><span class="p">)</span>
+                        <span class="n">format_list</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="n">str_format</span> <span class="o">+</span> <span class="s2">&quot; &quot;</span> <span class="o">+</span> <span class="n">str_format</span><span class="p">])</span>
+                    <span class="n">formatting</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{: &lt;10}</span><span class="s2"> &quot;</span> <span class="o">+</span> <span class="s2">&quot; | &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">format_list</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span>
+                    <span class="n">result_string</span> <span class="o">+=</span> <span class="n">formatting</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s2">&quot;ligname&quot;</span><span class="p">,</span> <span class="o">*</span><span class="n">results</span><span class="p">)</span>
+                    <span class="n">first</span> <span class="o">=</span> <span class="kc">False</span>
+
+                <span class="n">results</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="n">format_list</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="k">for</span> <span class="n">l2</span> <span class="ow">in</span> <span class="n">state</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="p">(</span><span class="n">l2</span> <span class="ow">in</span> <span class="n">s_results_dict</span><span class="p">[</span><span class="n">l1</span><span class="p">]):</span>
+                        <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">s_results_dict</span><span class="p">[</span><span class="n">l1</span><span class="p">][</span><span class="n">l2</span><span class="p">][</span><span class="s2">&quot;mean&quot;</span><span class="p">]))</span>
+                        <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">s_results_dict</span><span class="p">[</span><span class="n">l1</span><span class="p">][</span><span class="n">l2</span><span class="p">][</span><span class="s2">&quot;err&quot;</span><span class="p">]))</span>
+                        <span class="n">format_list</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="n">float_format</span> <span class="o">+</span> <span class="s2">&quot; &quot;</span> <span class="o">+</span> <span class="n">float_format</span><span class="p">])</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="s2">&quot; - &quot;</span><span class="p">))</span>
+                        <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="s2">&quot; - &quot;</span><span class="p">))</span>
+                        <span class="n">format_list</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="n">str_format</span> <span class="o">+</span> <span class="s2">&quot; &quot;</span> <span class="o">+</span> <span class="n">str_format</span><span class="p">])</span>
+
+                <span class="n">formatting</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{: &lt;10}</span><span class="s2"> &quot;</span> <span class="o">+</span> <span class="s2">&quot; | &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">format_list</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span>
+                <span class="n">result_string</span> <span class="o">+=</span> <span class="n">formatting</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">l1</span><span class="p">,</span> <span class="o">*</span><span class="n">results</span><span class="p">)</span>
+
+            <span class="n">result_string</span> <span class="o">+=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span>
+        <span class="n">result_string</span> <span class="o">+=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span>
+        <span class="k">return</span> <span class="n">result_string</span>
+
+    <span class="c1"># DO PER REPLICA</span>
+    <span class="n">grom</span> <span class="o">=</span> <span class="n">gromosPP</span><span class="o">.</span><span class="n">GromosPP</span><span class="p">()</span>
+    <span class="n">results_dict</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">dfmult_replica_results</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">num_replicas</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+        <span class="c1"># reference Hamiltonian Potential file at s</span>
+        <span class="n">results_dict</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="n">s</span><span class="p">:</span> <span class="p">{}})</span>
+        <span class="n">eR_file</span> <span class="o">=</span> <span class="n">in_folder</span> <span class="o">+</span> <span class="s2">&quot;/&quot;</span> <span class="o">+</span> <span class="n">eR_prefix</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;.dat&quot;</span>
+
+        <span class="c1"># find Potentials of each state</span>
+        <span class="n">ei_files</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">num_states</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+            <span class="n">ei_files</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">in_folder</span> <span class="o">+</span> <span class="s2">&quot;/&quot;</span> <span class="o">+</span> <span class="n">eX_prefix</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;Y&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">))</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;.dat &quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">s</span><span class="p">),</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="n">tmp_file_path</span> <span class="o">=</span> <span class="n">grom</span><span class="o">.</span><span class="n">dfmult</span><span class="p">(</span><span class="n">ei_files</span><span class="p">,</span> <span class="n">in_reference_state_file_path</span><span class="o">=</span><span class="n">eR_file</span><span class="p">,</span> <span class="n">temperature</span><span class="o">=</span><span class="n">temp</span><span class="p">,</span>
+                                    <span class="n">_binary_name</span><span class="o">=</span><span class="n">gromos_binary</span><span class="p">,</span>
+                                    <span class="n">out_file_path</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">out_file</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;/tmp_&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;.out&quot;</span><span class="p">)</span>
+
+        <span class="c1"># parse again file for nicer</span>
+        <span class="n">tmp_file</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">tmp_file_path</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">tmp_file</span><span class="o">.</span><span class="n">readlines</span><span class="p">():</span>
+
+            <span class="n">fields</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+            <span class="n">keyfields</span> <span class="o">=</span> <span class="n">fields</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;_&quot;</span><span class="p">)</span>
+            <span class="n">dF_mean</span> <span class="o">=</span> <span class="n">fields</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+            <span class="n">dF_err</span> <span class="o">=</span> <span class="n">fields</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+            <span class="k">if</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">fields</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">3</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">keyfields</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">3</span><span class="p">):</span>
+                <span class="k">continue</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">l1</span> <span class="o">=</span> <span class="s2">&quot;lig&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">keyfields</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+                <span class="k">if</span> <span class="p">(</span><span class="s2">&quot;lig&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">keyfields</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="ow">in</span> <span class="n">results_dict</span><span class="p">[</span><span class="n">s</span><span class="p">]):</span>
+                    <span class="n">results_dict</span><span class="p">[</span><span class="n">s</span><span class="p">][</span><span class="n">l1</span><span class="p">]</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s2">&quot;lig&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">keyfields</span><span class="p">[</span><span class="mi">2</span><span class="p">]):</span> <span class="p">{</span><span class="s2">&quot;mean&quot;</span><span class="p">:</span> <span class="n">dF_mean</span><span class="p">,</span> <span class="s2">&quot;err&quot;</span><span class="p">:</span> <span class="n">dF_err</span><span class="p">}})</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">results_dict</span><span class="p">[</span><span class="n">s</span><span class="p">]</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="n">l1</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;lig&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">keyfields</span><span class="p">[</span><span class="mi">2</span><span class="p">]):</span> <span class="p">{</span><span class="s2">&quot;mean&quot;</span><span class="p">:</span> <span class="n">dF_mean</span><span class="p">,</span> <span class="s2">&quot;err&quot;</span><span class="p">:</span> <span class="n">dF_err</span><span class="p">}}})</span>
+        <span class="n">tmp_file</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="n">dfmult_replica_results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tmp_file_path</span><span class="p">)</span>
+
+    <span class="c1"># FINAL write out</span>
+    <span class="n">result_file</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">out_file</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span>
+    <span class="n">result_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">gen_results_string</span><span class="p">(</span><span class="n">results_dict</span><span class="p">))</span>
+    <span class="n">result_file</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+    <span class="k">for</span> <span class="n">file_path</span> <span class="ow">in</span> <span class="n">dfmult_replica_results</span><span class="p">:</span>
+        <span class="n">bash</span><span class="o">.</span><span class="n">remove_file</span><span class="p">(</span><span class="n">file_path</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">results_dict</span></div>
+
+
+<div class="viewcode-block" id="free_energy_convergence_analysis"><a class="viewcode-back" href="../../../../_source/reeds.function_libs.analysis.html#reeds.function_libs.analysis.free_energy.free_energy_convergence_analysis">[docs]</a><span class="k">def</span> <span class="nf">free_energy_convergence_analysis</span><span class="p">(</span><span class="n">ene_ana_trajs</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">],</span>
+                                     <span class="n">out_dir</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+                                     <span class="n">in_prefix</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+                                     <span class="n">out_prefix</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;energy_convergence&quot;</span><span class="p">,</span>
+                                     <span class="n">dfmult_all_replicas</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+                                     <span class="n">time_blocks</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span>
+                                     <span class="n">recalculate_all</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+                                     <span class="n">verbose</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;free_energy_convergence</span>
+<span class="sd">    This function calculates and visualizes the convergence of the free energy calculation</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    ene_ana_trajs:  List[pd.DataFrame]</span>
+<span class="sd">        a list of pandas dataframes containing the energy data of each state eX</span>
+<span class="sd">    out_dir : str</span>
+<span class="sd">        path where the plots and data should be stored</span>
+<span class="sd">    in_prefix : str, optional</span>
+<span class="sd">        prefix for the input files (default &quot;&quot;)</span>
+<span class="sd">    out_prefix : str, optional</span>
+<span class="sd">        prefix for the output files (default &quot;energy_convergence&quot;)</span>
+<span class="sd">    dfmult_all_replicas : bool, optional</span>
+<span class="sd">        calculate free energy differences for all replicas or only s = 1 (default False)</span>
+<span class="sd">    time_blocks : int, optional</span>
+<span class="sd">        number of time blocks for the convergence visualization (default 10)</span>
+<span class="sd">    recalculate_all : bool, optional</span>
+<span class="sd">        recalculate or use old summary file (default False)</span>
+<span class="sd">    verbose: bool, optional</span>
+<span class="sd">        verbose output (default False)</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    None</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="n">verbose</span><span class="p">):</span> <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;start dfmult&quot;</span><span class="p">)</span>
+    <span class="n">ene_trajs</span> <span class="o">=</span> <span class="p">{</span><span class="nb">int</span><span class="p">(</span><span class="n">ene_ana_traj</span><span class="o">.</span><span class="n">s</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;s&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)):</span> <span class="n">ene_ana_traj</span> <span class="k">for</span> <span class="n">ene_ana_traj</span> <span class="ow">in</span> <span class="n">ene_ana_trajs</span><span class="p">}</span>
+
+    <span class="c1"># DF Convergence</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">verbose</span><span class="p">):</span> <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Calc conf&quot;</span><span class="p">)</span>
+    <span class="n">dF_conv_all_replicas</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="c1"># generate time conevergence data</span>
+    <span class="n">summary_file_path</span> <span class="o">=</span> <span class="n">out_dir</span> <span class="o">+</span> <span class="s2">&quot;/summary_allReplicas_dfmult_timeblocks_&quot;</span> <span class="o">+</span> <span class="n">out_prefix</span> <span class="o">+</span> <span class="s2">&quot;.dat&quot;</span>
+    <span class="k">if</span> <span class="p">(</span><span class="kc">False</span> <span class="ow">and</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">summary_file_path</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">recalculate_all</span><span class="p">):</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">verbose</span><span class="p">):</span> <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Found summary file</span><span class="se">\t</span><span class="s2"> LOAD: &quot;</span> <span class="o">+</span> <span class="n">summary_file_path</span><span class="p">)</span>
+        <span class="n">dF_conv_all_replicas</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="nb">open</span><span class="p">(</span><span class="n">summary_file_path</span><span class="p">,</span> <span class="s2">&quot;rb&quot;</span><span class="p">))</span>
+    <span class="k">else</span><span class="p">:</span>
+
+        <span class="k">if</span> <span class="p">(</span><span class="n">verbose</span><span class="p">):</span> <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;CALCULATE&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">dfmult_all_replicas</span><span class="p">:</span>
+            <span class="n">svals_for_analysis</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">ene_trajs</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">svals_for_analysis</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">]</span>  <span class="c1"># just do s = 1.</span>
+
+        <span class="k">for</span> <span class="n">s_index</span> <span class="ow">in</span> <span class="n">svals_for_analysis</span><span class="p">:</span>
+            <span class="n">replica_key</span> <span class="o">=</span> <span class="s2">&quot;replica_&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">s_index</span><span class="p">)</span>
+            <span class="n">ene_traj</span> <span class="o">=</span> <span class="n">ene_trajs</span><span class="p">[</span><span class="n">s_index</span><span class="p">]</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">verbose</span><span class="p">):</span> <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n\n</span><span class="s2">REPLICA: &quot;</span><span class="p">,</span> <span class="n">s_index</span><span class="p">)</span>
+
+            <span class="c1"># CALC_ Free Energy</span>
+            <span class="n">dF_time</span> <span class="o">=</span> <span class="n">eds_dF_time_convergence_dfmult</span><span class="p">(</span><span class="n">eds_eneTraj</span><span class="o">=</span><span class="n">ene_traj</span><span class="p">,</span> <span class="n">out_dir</span><span class="o">=</span><span class="n">out_dir</span><span class="p">,</span> <span class="n">time_blocks</span><span class="o">=</span><span class="n">time_blocks</span><span class="p">,</span>
+                                                     <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span>
+            <span class="n">dF_conv_all_replicas</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="n">replica_key</span><span class="p">:</span> <span class="n">dF_time</span><span class="p">})</span>
+
+            <span class="c1"># Plotting</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">verbose</span><span class="p">):</span> <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Plotting&quot;</span><span class="p">)</span>
+            <span class="n">updated_keys</span> <span class="o">=</span> <span class="p">{</span><span class="nb">str</span><span class="p">(</span><span class="n">replica_key</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;_&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">key</span><span class="p">):</span> <span class="n">value</span> <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span>
+                            <span class="n">dF_conv_all_replicas</span><span class="p">[</span><span class="n">replica_key</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="p">(</span><span class="n">key</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;1&quot;</span><span class="p">))}</span>
+            <span class="n">reeds</span><span class="o">.</span><span class="n">function_libs</span><span class="o">.</span><span class="n">visualization</span><span class="o">.</span><span class="n">free_energy_plots</span><span class="o">.</span><span class="n">plot_dF_conv</span><span class="p">(</span><span class="n">updated_keys</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Free energy convergence&quot;</span><span class="p">,</span>
+                                                                             <span class="n">out_path</span><span class="o">=</span><span class="n">out_dir</span> <span class="o">+</span> <span class="s2">&quot;/&quot;</span> <span class="o">+</span> <span class="n">out_prefix</span> <span class="o">+</span> <span class="s2">&quot;_&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">replica_key</span><span class="p">),</span> <span class="n">show_legend</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">dF_conv_all_replicas</span><span class="p">,</span> <span class="n">fp</span><span class="o">=</span><span class="nb">open</span><span class="p">(</span><span class="n">out_dir</span> <span class="o">+</span> <span class="s2">&quot;/tmp_dF_&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">s_index</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;.dat&quot;</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">),</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+
+        <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">dF_conv_all_replicas</span><span class="p">,</span> <span class="n">fp</span><span class="o">=</span><span class="nb">open</span><span class="p">(</span><span class="n">summary_file_path</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">),</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+
+    <span class="c1"># nice_result file</span>
+    <span class="n">out_dfmult</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">out_dir</span> <span class="o">+</span> <span class="s2">&quot;/free_energy_result.dat&quot;</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span>
+    <span class="n">out_string</span> <span class="o">=</span> <span class="n">gen_results_string</span><span class="p">(</span><span class="n">dF_conv_all_replicas</span><span class="p">)</span>
+    <span class="n">out_dfmult</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">out_string</span><span class="p">)</span>
+    <span class="n">out_dfmult</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="eds_dF_time_convergence_dfmult"><a class="viewcode-back" href="../../../../_source/reeds.function_libs.analysis.html#reeds.function_libs.analysis.free_energy.eds_dF_time_convergence_dfmult">[docs]</a><span class="k">def</span> <span class="nf">eds_dF_time_convergence_dfmult</span><span class="p">(</span><span class="n">eds_eneTraj</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span>
+                                   <span class="n">out_dir</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+                                   <span class="n">time_blocks</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span>
+                                   <span class="n">gromos_bindir</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                                   <span class="n">verbose</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;eds_dF_time_convergence_dfmult</span>
+<span class="sd">    This function generates a dictionary, which contains time-dependent dF values.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    eds_eneTraj : pd.DataFrame</span>
+<span class="sd">        pandas dataframe containing energy trajectories</span>
+<span class="sd">    out_dir : str</span>
+<span class="sd">        path for the output directory</span>
+<span class="sd">    time_blocks : int, optional</span>
+<span class="sd">        number of time blocks for the free energy convergence calculation (default 10)</span>
+<span class="sd">    gromos_bindir : str, optional</span>
+<span class="sd">        path to gromos binaries (default None)</span>
+<span class="sd">    verbose : bool, optional</span>
+<span class="sd">        verbose output (default False)</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    dF_timewise : Dict</span>
+<span class="sd">        dict containing free energies after different time lengths</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Split the data timewise!</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">out_dir</span><span class="p">)):</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">out_dir</span><span class="p">)</span>
+    <span class="n">traj_length</span> <span class="o">=</span> <span class="n">eds_eneTraj</span><span class="p">[</span><span class="s2">&quot;time&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">size</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">verbose</span><span class="p">):</span> <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;traj length: &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">traj_length</span><span class="p">))</span>
+
+    <span class="n">step_size</span> <span class="o">=</span> <span class="n">traj_length</span> <span class="o">//</span> <span class="n">time_blocks</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">verbose</span><span class="p">):</span> <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;step size: &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">step_size</span><span class="p">))</span>
+    <span class="n">data_chunk_indices</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">step_size</span><span class="p">,</span> <span class="n">traj_length</span> <span class="o">+</span> <span class="n">step_size</span><span class="p">,</span> <span class="n">step_size</span><span class="p">))</span>
+    <span class="n">data_chunk_indices</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>  <span class="c1"># add a very small time interval at the beginning</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="n">verbose</span><span class="p">):</span> <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">GATHER &quot;</span><span class="p">,</span> <span class="n">time_blocks</span><span class="p">,</span> <span class="s2">&quot;time _blocks in steps of &quot;</span><span class="p">,</span> <span class="n">step_size</span><span class="p">,</span> <span class="s2">&quot;</span><span class="se">\t</span><span class="s2">leading to final: &quot;</span><span class="p">,</span>
+                        <span class="n">eds_eneTraj</span><span class="p">[</span><span class="s2">&quot;time&quot;</span><span class="p">][</span><span class="n">traj_length</span> <span class="o">-</span> <span class="mi">1</span><span class="p">],</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">verbose</span><span class="p">):</span> <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;data chunks: &quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">verbose</span><span class="p">):</span> <span class="nb">print</span><span class="p">(</span><span class="n">data_chunk_indices</span><span class="p">)</span>
+
+    <span class="c1"># STEP1: generate files with blocked data</span>
+    <span class="n">properties_timesolv</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="nb">property</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;e&quot;</span><span class="p">),</span> <span class="n">eds_eneTraj</span><span class="o">.</span><span class="n">columns</span><span class="p">)):</span>
+        <span class="c1"># chunk data</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">verbose</span><span class="p">):</span> <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span><span class="p">,</span> <span class="nb">property</span><span class="p">)</span>
+        <span class="n">sub_ste</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">step</span><span class="p">,</span> <span class="n">end_step</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">data_chunk_indices</span><span class="p">):</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">verbose</span><span class="p">):</span> <span class="nb">print</span><span class="p">(</span><span class="n">step</span><span class="p">,</span> <span class="s2">&quot; &quot;</span><span class="p">,</span> <span class="n">end_step</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">out_path</span> <span class="o">=</span> <span class="n">out_dir</span> <span class="o">+</span> <span class="s2">&quot;/tmp_&quot;</span> <span class="o">+</span> <span class="nb">property</span> <span class="o">+</span> <span class="s2">&quot;_step&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">step</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;.dat&quot;</span>
+            <span class="n">eds_eneTraj</span><span class="p">[[</span><span class="s2">&quot;time&quot;</span><span class="p">,</span> <span class="nb">property</span><span class="p">]][:</span><span class="n">end_step</span><span class="p">]</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">out_path</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;# time&quot;</span><span class="p">,</span> <span class="nb">property</span><span class="p">],</span>
+                                                              <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+            <span class="n">sub_ste</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">out_path</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="p">(</span><span class="n">end_step</span> <span class="o">!=</span> <span class="n">traj_length</span><span class="p">):</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">verbose</span><span class="p">):</span> <span class="nb">print</span><span class="p">(</span><span class="n">step</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot; &quot;</span><span class="p">,</span> <span class="n">end_step</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">out_path</span> <span class="o">=</span> <span class="n">out_dir</span> <span class="o">+</span> <span class="s2">&quot;/tmp_&quot;</span> <span class="o">+</span> <span class="nb">property</span> <span class="o">+</span> <span class="s2">&quot;_step&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">step</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;.dat&quot;</span>
+            <span class="n">eds_eneTraj</span><span class="p">[[</span><span class="s2">&quot;time&quot;</span><span class="p">,</span> <span class="nb">property</span><span class="p">]]</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">out_path</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;# time&quot;</span><span class="p">,</span> <span class="nb">property</span><span class="p">],</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+            <span class="n">sub_ste</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">out_path</span><span class="p">)</span>
+            <span class="n">bash</span><span class="o">.</span><span class="n">wait_for_fileSystem</span><span class="p">(</span><span class="n">out_path</span><span class="p">)</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">verbose</span><span class="p">):</span> <span class="nb">print</span><span class="p">()</span>
+        <span class="n">properties_timesolv</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="nb">property</span><span class="p">:</span> <span class="n">sub_ste</span><span class="p">})</span>
+
+        <span class="c1"># check if lsf is has the result files already.</span>
+        <span class="n">bash</span><span class="o">.</span><span class="n">wait_for_fileSystem</span><span class="p">(</span><span class="n">sub_ste</span><span class="p">)</span>
+
+    <span class="c1"># STEP2: calc dF timedep - with generated files from above</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">verbose</span><span class="p">):</span> <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n\n</span><span class="s2">calc dF with dfmult&quot;</span><span class="p">)</span>
+    <span class="n">gromPP</span> <span class="o">=</span> <span class="n">gromosPP</span><span class="o">.</span><span class="n">GromosPP</span><span class="p">(</span><span class="n">gromos_bindir</span><span class="p">)</span>
+    <span class="n">dF_timewise</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">step</span><span class="p">,</span> <span class="n">stop_index</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">data_chunk_indices</span><span class="p">):</span>
+        <span class="n">Vr</span> <span class="o">=</span> <span class="n">properties_timesolv</span><span class="p">[</span><span class="s2">&quot;eR&quot;</span><span class="p">][</span><span class="n">step</span><span class="p">]</span>
+        <span class="n">Vi</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span>
+            <span class="nb">sorted</span><span class="p">([</span><span class="n">value</span><span class="p">[</span><span class="n">step</span><span class="p">]</span> <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">properties_timesolv</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="p">(</span><span class="n">key</span> <span class="o">!=</span> <span class="s2">&quot;eR&quot;</span> <span class="ow">and</span> <span class="n">key</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;e&quot;</span><span class="p">))],</span>
+                   <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;_&quot;</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;e&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">))))</span>
+
+        <span class="n">tmp_out</span> <span class="o">=</span> <span class="n">out_dir</span> <span class="o">+</span> <span class="s2">&quot;/tmp_dfmult_&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">step</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;.dat&quot;</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">verbose</span><span class="p">):</span> <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Dfmult: &quot;</span><span class="p">,</span> <span class="n">step</span><span class="p">)</span>
+        <span class="n">tmp_out</span> <span class="o">=</span> <span class="n">gromPP</span><span class="o">.</span><span class="n">dfmult</span><span class="p">(</span><span class="n">in_endstate_file_paths</span><span class="o">=</span><span class="n">Vi</span><span class="p">,</span> <span class="n">in_reference_state_file_path</span><span class="o">=</span><span class="n">Vr</span><span class="p">,</span> <span class="n">out_file_path</span><span class="o">=</span><span class="n">tmp_out</span><span class="p">,</span>
+                                <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span>
+
+        <span class="n">out_tmp</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">tmp_out</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span>
+        <span class="n">lines</span> <span class="o">=</span> <span class="n">out_tmp</span><span class="o">.</span><span class="n">readlines</span><span class="p">()</span>
+
+        <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">lines</span><span class="p">:</span>
+            <span class="k">if</span> <span class="p">(</span><span class="s2">&quot;DF_&quot;</span> <span class="ow">in</span> <span class="n">line</span><span class="p">):</span>
+                <span class="nb">print</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+                <span class="n">ind_1</span><span class="p">,</span> <span class="n">ind_2</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;  &quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;DF_&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;_&quot;</span><span class="p">)</span>
+                <span class="n">key_v</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">ind_1</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;_&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">ind_2</span><span class="p">)</span>
+                <span class="k">if</span> <span class="p">(</span><span class="ow">not</span> <span class="n">key_v</span> <span class="ow">in</span> <span class="n">dF_timewise</span><span class="p">):</span>
+                    <span class="n">dF_timewise</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="n">key_v</span><span class="p">:</span> <span class="p">{}})</span>
+                <span class="n">h</span><span class="p">,</span> <span class="n">meanDF</span><span class="p">,</span> <span class="n">errDF</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+                <span class="n">dF_timewise</span><span class="p">[</span><span class="n">key_v</span><span class="p">]</span><span class="o">.</span><span class="n">update</span><span class="p">(</span>
+                    <span class="p">{</span><span class="nb">float</span><span class="p">(</span><span class="n">eds_eneTraj</span><span class="p">[</span><span class="s2">&quot;time&quot;</span><span class="p">][</span><span class="n">stop_index</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]):</span> <span class="p">{</span><span class="s2">&quot;mean&quot;</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">meanDF</span><span class="p">),</span> <span class="s2">&quot;err&quot;</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">errDF</span><span class="p">)}})</span>
+
+        <span class="c1"># STEP 3: CLEAN</span>
+        <span class="n">Vi</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Vr</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">tmp_path</span> <span class="ow">in</span> <span class="n">Vi</span><span class="p">:</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">tmp_path</span><span class="p">)</span>
+        <span class="n">out_tmp</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">tmp_out</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">dF_timewise</span></div>
+
+
+<div class="viewcode-block" id="gen_results_string"><a class="viewcode-back" href="../../../../_source/reeds.function_libs.analysis.html#reeds.function_libs.analysis.free_energy.gen_results_string">[docs]</a><span class="k">def</span> <span class="nf">gen_results_string</span><span class="p">(</span><span class="n">results_dict</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;gen_results_string</span>
+<span class="sd">    This function generates a string for the output of the free energy calculations</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    results_dict : dict</span>
+<span class="sd">        dict containing the free energy calculations</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    str</span>
+<span class="sd">        nicely formated string for the output of the free energy calculations</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">result_string</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+    <span class="n">float_format</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{: &gt; 13.3f}</span><span class="s2">&quot;</span>
+    <span class="n">str_format</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{:&gt;13}</span><span class="s2">&quot;</span>
+    <span class="n">str_head_format</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{:^27}</span><span class="s2">&quot;</span>
+    <span class="n">states</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">results_dict</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;_&quot;</span><span class="p">)[</span><span class="mi">1</span><span class="p">])):</span>
+        <span class="n">first</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="n">s_results_dict</span> <span class="o">=</span> <span class="n">results_dict</span><span class="p">[</span><span class="n">s</span><span class="p">]</span>
+        <span class="n">result_string</span> <span class="o">+=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2"> dF for &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n\n</span><span class="s2">&quot;</span>
+
+        <span class="c1"># translate dict</span>
+        <span class="n">file_dict</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">ligand_pair</span> <span class="ow">in</span> <span class="n">s_results_dict</span><span class="p">:</span>
+            <span class="n">l1</span> <span class="o">=</span> <span class="n">ligand_pair</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;_&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">l2</span> <span class="o">=</span> <span class="n">ligand_pair</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;_&quot;</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
+            <span class="n">states</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">l1</span><span class="p">)</span>
+            <span class="n">states</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">l2</span><span class="p">)</span>
+            <span class="k">if</span> <span class="p">(</span><span class="ow">not</span> <span class="n">l1</span> <span class="ow">in</span> <span class="n">file_dict</span><span class="p">):</span>
+                <span class="n">file_dict</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="n">l1</span><span class="p">:</span> <span class="p">{</span><span class="n">l2</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;mean&quot;</span><span class="p">:</span> <span class="s2">&quot;-&quot;</span><span class="p">,</span> <span class="s2">&quot;err&quot;</span><span class="p">:</span> <span class="s2">&quot;-&quot;</span><span class="p">}}})</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">file_dict</span><span class="p">[</span><span class="n">l1</span><span class="p">]</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="n">l2</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;mean&quot;</span><span class="p">:</span> <span class="s2">&quot;-&quot;</span><span class="p">,</span> <span class="s2">&quot;err&quot;</span><span class="p">:</span> <span class="s2">&quot;-&quot;</span><span class="p">}})</span>
+
+            <span class="n">last_step</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">s_results_dict</span><span class="p">[</span><span class="n">ligand_pair</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">()))[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+            <span class="n">file_dict</span><span class="p">[</span><span class="n">l1</span><span class="p">][</span><span class="n">l2</span><span class="p">]</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s2">&quot;mean&quot;</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">s_results_dict</span><span class="p">[</span><span class="n">ligand_pair</span><span class="p">][</span><span class="n">last_step</span><span class="p">][</span><span class="s2">&quot;mean&quot;</span><span class="p">]),</span>
+                                      <span class="s2">&quot;err&quot;</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">s_results_dict</span><span class="p">[</span><span class="n">ligand_pair</span><span class="p">][</span><span class="n">last_step</span><span class="p">][</span><span class="s2">&quot;err&quot;</span><span class="p">])})</span>
+
+        <span class="c1"># fill up missing states comparison</span>
+        <span class="n">states</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">states</span><span class="p">)))</span>
+        <span class="k">for</span> <span class="n">l1</span> <span class="ow">in</span> <span class="n">states</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">l2</span> <span class="ow">in</span> <span class="n">states</span><span class="p">:</span>
+                <span class="k">if</span> <span class="p">(</span><span class="ow">not</span> <span class="n">l1</span> <span class="ow">in</span> <span class="n">file_dict</span><span class="p">):</span>
+                    <span class="n">file_dict</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="n">l1</span><span class="p">:</span> <span class="p">{</span><span class="n">l2</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;mean&quot;</span><span class="p">:</span> <span class="s2">&quot;-&quot;</span><span class="p">,</span> <span class="s2">&quot;err&quot;</span><span class="p">:</span> <span class="s2">&quot;-&quot;</span><span class="p">}}})</span>
+                <span class="k">elif</span> <span class="p">(</span><span class="n">l1</span> <span class="ow">in</span> <span class="n">file_dict</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">l2</span> <span class="ow">in</span> <span class="n">file_dict</span><span class="p">[</span><span class="n">l1</span><span class="p">]):</span>
+                    <span class="n">file_dict</span><span class="p">[</span><span class="n">l1</span><span class="p">]</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="n">l2</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;mean&quot;</span><span class="p">:</span> <span class="s2">&quot;-&quot;</span><span class="p">,</span> <span class="s2">&quot;err&quot;</span><span class="p">:</span> <span class="s2">&quot;-&quot;</span><span class="p">}})</span>
+
+        <span class="c1"># write files</span>
+
+        <span class="n">l1_ordered_states</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="nb">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="ow">not</span> <span class="s2">&quot;R&quot;</span> <span class="ow">in</span> <span class="n">x</span><span class="p">,</span> <span class="nb">list</span><span class="p">(</span><span class="n">file_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">())),</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">x</span><span class="p">)))</span>
+        <span class="k">for</span> <span class="n">l1</span> <span class="ow">in</span> <span class="n">l1_ordered_states</span><span class="p">:</span>
+            <span class="c1"># Header</span>
+            <span class="n">l2_ordered_states</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span>
+                <span class="nb">sorted</span><span class="p">(</span><span class="nb">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="ow">not</span> <span class="s2">&quot;R&quot;</span> <span class="ow">in</span> <span class="n">x</span><span class="p">,</span> <span class="nb">list</span><span class="p">(</span><span class="n">file_dict</span><span class="p">[</span><span class="n">l1</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">())),</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">x</span><span class="p">)))</span>
+            <span class="n">l2_ordered_states</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;R&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">first</span><span class="p">):</span>
+                <span class="n">results</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="n">format_list</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="c1"># ligandname line</span>
+                <span class="k">for</span> <span class="n">l2</span> <span class="ow">in</span> <span class="n">l2_ordered_states</span><span class="p">:</span>
+                    <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">l2</span><span class="p">)</span>
+                    <span class="n">format_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">str_head_format</span><span class="p">)</span>
+                <span class="n">formatting</span> <span class="o">=</span> <span class="s2">&quot;| </span><span class="si">{: &lt;10}</span><span class="s2"> | &quot;</span> <span class="o">+</span> <span class="s2">&quot; | | &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">format_list</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;|</span><span class="se">\n</span><span class="s2">&quot;</span>
+                <span class="n">result_string</span> <span class="o">+=</span> <span class="n">formatting</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s2">&quot;ligname&quot;</span><span class="p">,</span> <span class="o">*</span><span class="n">results</span><span class="p">)</span>
+
+                <span class="c1"># column description line</span>
+                <span class="n">results</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="n">format_list</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="k">for</span> <span class="n">l2</span> <span class="ow">in</span> <span class="n">l2_ordered_states</span><span class="p">:</span>
+                    <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;mean&quot;</span><span class="p">)</span>
+                    <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;err&quot;</span><span class="p">)</span>
+                    <span class="n">format_list</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="n">str_format</span> <span class="o">+</span> <span class="s2">&quot; &quot;</span> <span class="o">+</span> <span class="n">str_format</span><span class="p">])</span>
+                <span class="n">formatting</span> <span class="o">=</span> <span class="s2">&quot;| </span><span class="si">{: &lt;10}</span><span class="s2"> |&quot;</span> <span class="o">+</span> <span class="s2">&quot; | &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">format_list</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;|</span><span class="se">\n</span><span class="s2">&quot;</span>
+                <span class="n">result_string</span> <span class="o">+=</span> <span class="n">formatting</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s2">&quot;ligname&quot;</span><span class="p">,</span> <span class="o">*</span><span class="n">results</span><span class="p">)</span>
+                <span class="n">result_string</span> <span class="o">+=</span> <span class="s2">&quot;|---&quot;</span> <span class="o">*</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">results</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;|</span><span class="se">\n</span><span class="s2">&quot;</span>
+
+                <span class="n">first</span> <span class="o">=</span> <span class="kc">False</span>
+
+            <span class="n">results</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">format_list</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">l2</span> <span class="ow">in</span> <span class="n">l2_ordered_states</span><span class="p">:</span>
+                <span class="k">if</span> <span class="p">(</span><span class="n">file_dict</span><span class="p">[</span><span class="n">l1</span><span class="p">][</span><span class="n">l2</span><span class="p">][</span><span class="s2">&quot;mean&quot;</span><span class="p">]</span> <span class="o">!=</span> <span class="s2">&quot;-&quot;</span><span class="p">):</span>
+                    <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">file_dict</span><span class="p">[</span><span class="n">l1</span><span class="p">][</span><span class="n">l2</span><span class="p">][</span><span class="s2">&quot;mean&quot;</span><span class="p">]))</span>
+                    <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">file_dict</span><span class="p">[</span><span class="n">l1</span><span class="p">][</span><span class="n">l2</span><span class="p">][</span><span class="s2">&quot;err&quot;</span><span class="p">]))</span>
+                    <span class="n">format_list</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="n">float_format</span> <span class="o">+</span> <span class="s2">&quot; &quot;</span> <span class="o">+</span> <span class="n">float_format</span><span class="p">])</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="s2">&quot; - &quot;</span><span class="p">))</span>
+                    <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="s2">&quot; - &quot;</span><span class="p">))</span>
+                    <span class="n">format_list</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="n">str_format</span> <span class="o">+</span> <span class="s2">&quot; &quot;</span> <span class="o">+</span> <span class="n">str_format</span><span class="p">])</span>
+            <span class="n">formatting</span> <span class="o">=</span> <span class="s2">&quot;| </span><span class="si">{: &lt;10}</span><span class="s2"> &quot;</span> <span class="o">+</span> <span class="s2">&quot; | &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">format_list</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;|</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="n">result_string</span> <span class="o">+=</span> <span class="n">formatting</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">l1</span><span class="p">,</span> <span class="o">*</span><span class="n">results</span><span class="p">)</span>
+        <span class="n">result_string</span> <span class="o">+=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span>
+    <span class="n">result_string</span> <span class="o">+=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span>
+    <span class="k">return</span> <span class="n">result_string</span></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2020, Benjamin Ries, Salome Rieder, Candide Champion. Project structure based on the Computational Molecular Science Python Cookiecutter version 1.3.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

@@ -60,7 +60,6 @@ reeds.modules.do\_RE\_EDS\_sOptimisation module
    :undoc-members:
    :show-inheritance:
 
-
 Module contents
 ---------------
 

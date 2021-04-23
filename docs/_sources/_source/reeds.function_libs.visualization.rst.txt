@@ -20,6 +20,14 @@ reeds.function\_libs.visualization.parameter\_optimization\_plots module
    :undoc-members:
    :show-inheritance:
 
+reeds.function\_libs.visualization.plots\_style module
+------------------------------------------------------
+
+.. automodule:: reeds.function_libs.visualization.plots_style
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 reeds.function\_libs.visualization.pot\_energy\_plots module
 ------------------------------------------------------------
 
