@@ -70,7 +70,7 @@ def analyse_sopt_iteration(repdat_path: str, out_dir: str, title: str, pot_tresh
         state_pots = row.state_potentials
 
         for ind, state in enumerate(state_pots):
-            if (state_pots[state] < pot_tresh[state]):
+            if (state_pots[state] < pot_tresh[int(state.replace("Vr", ""))-1]):
                 occurrence_counts[state] += 1
 
         id_ene = {val: key for key, val in state_pots.items()}
