@@ -148,6 +148,7 @@ int
             state_physical_pot_tresh = list(map(float, " ".join(tmp.readlines()).split()))
         else:
             warnings.warn("setting physical state occurrence thresholds == undersampling state occurrence thresholds\n Because I could not find:   "+state_physical_pot_tresh_path)
+            state_physical_pot_tresh = state_undersampling_pot_tresh
         print(simSystem)
 
         ##adapt imd_templates

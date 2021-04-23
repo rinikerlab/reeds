@@ -39,8 +39,10 @@ def do(out_root_dir: str, in_simSystem: fM.System, in_template_imd: str = None,
        soptIterations: int = 4, add_replicas: int = 4,
        adding_new_sReplicas_Scheme: adding_Scheme_new_Replicas = adding_Scheme_new_Replicas.from_below,
        noncontinous: bool = False,
-       optimized_states: str = os.path.abspath("a_optimizedState/analysis/next"),
+       optimized_states_dir: str = os.path.abspath("a_optimizedState/analysis/next"),
+       lower_bound_dir: str = os.path.abspath("b_lowerBound/analysis/next"),
        state_physical_occurrence_potential_threshold:List[float]=None,
+       undersampling_fraction_threshold:float=0.9,
        equil_runs: int = None, steps_between_trials: int = 20, trials_per_run: int = 12500,
        non_ligand_residues: list = [],
        in_gromosXX_bin_dir: str = None, in_gromosPP_bin_dir: str = None,
@@ -178,7 +180,7 @@ int
         iteration_folder_prefix = out_root_dir + "/sopt"
         bash.make_folder(out_root_dir)
 
-        state_undersampling_pot_tresh_path = optimized_states+"/state_occurence_pot_thresh.csv"
+        state_undersampling_pot_tresh_path = optimized_states_dir + "/state_occurence_pot_thresh.csv"
         if(state_physical_occurrence_potential_threshold is None and os.path.exists(state_undersampling_pot_tresh_path)):
             if not os.path.exists(state_undersampling_pot_tresh_path) :
                 raise IOError("COULD NOT FIND state_occurence_pot_thresh.CSV in : ", state_undersampling_pot_tresh_path, "\n")
@@ -188,6 +190,15 @@ int
         elif(state_physical_occurrence_potential_threshold is None):
             state_physical_occurrence_potential_threshold = [0 for x in range(num_states)]
 
+        state_undersampling_pot_tresh_path = optimized_states_dir + "/state_occurence_pot_thresh.csv"
+        if(state_physical_occurrence_potential_threshold is None and os.path.exists(state_undersampling_pot_tresh_path)):
+            if not os.path.exists(state_undersampling_pot_tresh_path) :
+                raise IOError("COULD NOT FIND state_occurence_pot_thresh.CSV in : ", state_undersampling_pot_tresh_path, "\n")
+            else:
+                tmp = open(state_undersampling_pot_tresh_path, "r")
+                state_undersampling_occurrence_potential_threshold =  list(map(float, " ".join(tmp.readlines()).split()))
+        elif(state_physical_occurrence_potential_threshold is None):
+            state_undersampling_occurrence_potential_threshold = [0 for x in range(num_states)]
 
 
     except Exception as err:
@@ -255,6 +266,9 @@ int
                                                      num_equilibration_runs=equil_runs,
                                                      imd_name_prefix=imd_name_prefix, in_simSystem=simSystem,
                                                      in_ene_ana_lib_path=in_ene_ana_lib_path,
+                                                     state_undersampling_pot_tresh=state_undersampling_occurrence_potential_threshold,
+                                                     state_physical_pot_tresh=state_physical_occurrence_potential_threshold,
+                                                     undersampling_frac_thresh=undersampling_fraction_threshold,
                                                      in_gromosPP_bin_dir=in_gromosPP_bin_dir,
                                                      in_gromosXX_bin_dir=in_gromosXX_bin_dir,
                                                      ligands=ligands, old_sopt_job=iteration_sopt_job,

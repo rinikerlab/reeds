@@ -363,6 +363,7 @@ def adapt_imd_template_eoff(system: fM.System, imd_out_path: str, imd_path: str,
 """
 def build_sopt_step_dir(iteration: int, iteration_folder_prefix: str,pot_tresh: List[float] ,
                         soptimization_options, in_simSystem: fM.System,
+                        state_undersampling_pot_tresh:List[float], state_physical_pot_tresh:List[float], undersampling_frac_thresh:float,
                         num_equilibration_runs: int, imd_name_prefix: str,
                         in_ene_ana_lib_path: str, in_gromosPP_bin_dir: str,
                         in_gromosXX_bin_dir: str, ligands, last_data_folder: str, nmpi_per_replica: int,
@@ -391,7 +392,6 @@ def build_sopt_step_dir(iteration: int, iteration_folder_prefix: str,pot_tresh: 
         path to gromosPP binary dir
     in_gromosXX_bin_dir : str
         path to gromosXX binary dir
-    ligands : ?
 
     last_data_folder : str
         data folder from previous rund
