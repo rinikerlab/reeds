@@ -39,7 +39,7 @@ def do(root_dir: str, system: fM.System,
        template_imd: str = imd_templates.__path__._path[0] + "/eds_md.imd",
        gromosXX_bin: str = None, gromosPP_bin: str = None,
        in_ene_ana_lib: str = ene_ana_libs.__path__._path[0] + "/new_ene_ana_REEDS_9state.md++.lib",
-       pot_tresh: float = 200, non_ligand_residues: list = [], min_s_limit: float = 0.00036, final_num_s: int = None,
+       non_ligand_residues: list = [], min_s_limit: float = 0.00036, final_num_s: int = None,
        submit: bool = True, simulation_steps: int = 4000, memory: int = None) -> int:
     """
     __ UNDER CONSTRUCTION!__
@@ -170,7 +170,6 @@ def do(root_dir: str, system: fM.System,
                                                            out_analysis_dir=out_state_dir + "/analysis",
                                                            in_simulation_dir=sim_dir, in_top=system.top.top_path,
                                                            s_vals=s_log_dist, numstates=ligands.number,
-                                                           undersampling_pot_tresh=pot_tresh,
                                                            ene_ana_lib=in_ene_ana_lib, gromosPP_bin=gromosPP_bin)
 
         # build: sopt_job array_schedule script
