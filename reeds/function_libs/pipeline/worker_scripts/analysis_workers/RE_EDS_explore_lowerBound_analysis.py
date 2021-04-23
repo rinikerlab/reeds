@@ -162,8 +162,7 @@ def do(out_analysis_dir: str, system_name: str,
     out_analysis_next_dir = out_analysis_dir + "/next"
     bash.make_folder(out_analysis_next_dir, "-p")
 
-    u_idx = sampling_analysis_results["undersamlingThreshold"]
-    
+    u_idx = sampling_analysis_results["undersamplingThreshold"]
     # Make the new s-distribution based on this 
     print("undersampling found after replica: " + str(u_idx) + ' with s = ' + str(s_values[u_idx]))    
     print('New s distribution will place ' + str(num_states) + ' replicas between '
