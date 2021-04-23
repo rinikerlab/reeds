@@ -327,12 +327,6 @@ def sampling_analysis(ene_traj_csvs: List[pd.DataFrame],
             reeds.function_libs.visualization.sampling_plots.plot_stateOccurence_hist(data=replica_sampling_distributions[x],
                                                                                       title="s=" + str(s_vals_nice[ind]) + ", V_{tresh}=",
                                                                                       out_path=out_path + "/sampling_hist_" + str(x) + ".png")
-
-    if (do_plot):
-        if (verbose): print("\n\n Sampling Matrix\n\n")
-        reeds.function_libs.visualization.sampling_plots.plot_stateOccurence_matrix(data=replica_sampling_distributions, out_dir=out_path, s_values=s_vals_nice,
-                                                                                    place_undersampling_threshold=True, title_suffix="")
-
     final_results = {"potentialThreshold": state_potential_treshold,
                      "samplingDistributions": replica_sampling_distributions,
                     }
@@ -406,8 +400,15 @@ def detect_undersampling(ene_traj_csvs: List[pd.DataFrame],
     if (not found_undersampling):
         warnings.warn("Could not find undersampling!")
 
+    if (do_plot):
+        if (verbose): print("\n\n Sampling Matrix\n\n")
+        s_vals_nice = nice_s_vals(s_values)
+        reeds.function_libs.visualization.sampling_plots.plot_stateOccurence_matrix(data=replica_sampling_distributions, out_dir=out_path, s_values=s_vals_nice,
+                                                                                    place_undersampling_threshold=True, title_suffix="")
+
     sampling_stat.update({"undersamplingThreshold": undersampling_idx})
     sampling_stat.update({"state_undersampling_potTresh": state_potential_treshold,
                           "undersampling_occurence_sampling_tresh": undersampling_occurence_sampling_tresh})
+
 
     return sampling_stat, out_path

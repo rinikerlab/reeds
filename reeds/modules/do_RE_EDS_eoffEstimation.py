@@ -184,7 +184,6 @@ int
                 f = bash.copy_file(optimized_coordinates[i % numstates],
                                    coord_dir + "/" + cnf_prefix + "_ssm_" + str(i + 1) + ".cnf")
                 out_cnfs.append(f)
-
             simSystem.coordinates = out_cnfs
         else:
             lower_s_bound_coordinates = glob.glob(lower_s_bound_dir + "/*.cnf")
