@@ -1,0 +1,1184 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>reeds.function_libs.optimization.src package &mdash; REEDS  documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="reeds.function_libs.pipeline package" href="reeds.function_libs.pipeline.html" />
+    <link rel="prev" title="reeds.function_libs.optimization package" href="reeds.function_libs.optimization.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> REEDS
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../introduction.html">REEDS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Examples/index.html">Examples</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">reeds</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="reeds.html">reeds package</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="reeds.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="reeds.data.html">reeds.data package</a></li>
+<li class="toctree-l4 current"><a class="reference internal" href="reeds.function_libs.html">reeds.function_libs package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="reeds.modules.html">reeds.modules package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="reeds.tests.html">reeds.tests package</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="reeds.html#submodules">Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="reeds.html#module-reeds.reeds">reeds.reeds module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="reeds.html#module-reeds">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">REEDS</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="modules.html">reeds</a> &raquo;</li>
+        
+          <li><a href="reeds.html">reeds package</a> &raquo;</li>
+        
+          <li><a href="reeds.function_libs.html">reeds.function_libs package</a> &raquo;</li>
+        
+          <li><a href="reeds.function_libs.optimization.html">reeds.function_libs.optimization package</a> &raquo;</li>
+        
+      <li>reeds.function_libs.optimization.src package</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="../_sources/_source/reeds.function_libs.optimization.src.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  
+<style>
+/* CSS overrides for sphinx_rtd_theme */
+
+/* 24px margin */
+.nbinput.nblast.container,
+.nboutput.nblast.container {
+    margin-bottom: 19px;  /* padding has already 5px */
+}
+
+/* ... except between code cells! */
+.nblast.container + .nbinput.container {
+    margin-top: -19px;
+}
+
+.admonition > p:before {
+    margin-right: 4px;  /* make room for the exclamation icon */
+}
+
+/* Fix math alignment, see https://github.com/rtfd/sphinx_rtd_theme/pull/686 */
+.math {
+    text-align: unset;
+}
+</style>
+<div class="section" id="reeds-function-libs-optimization-src-package">
+<h1>reeds.function_libs.optimization.src package<a class="headerlink" href="#reeds-function-libs-optimization-src-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-reeds.function_libs.optimization.src.energy_offset_estimator">
+<span id="reeds-function-libs-optimization-src-energy-offset-estimator-module"></span><h2>reeds.function_libs.optimization.src.energy_offset_estimator module<a class="headerlink" href="#module-reeds.function_libs.optimization.src.energy_offset_estimator" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="reeds.function_libs.optimization.src.energy_offset_estimator.EnergyOffset">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">reeds.function_libs.optimization.src.energy_offset_estimator.</span></code><code class="sig-name descname"><span class="pre">EnergyOffset</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mean</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">std</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#reeds.function_libs.optimization.src.energy_offset_estimator.EnergyOffset" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></p>
+<dl class="py attribute">
+<dt id="reeds.function_libs.optimization.src.energy_offset_estimator.EnergyOffset.mean">
+<code class="sig-name descname"><span class="pre">mean</span></code><a class="headerlink" href="#reeds.function_libs.optimization.src.energy_offset_estimator.EnergyOffset.mean" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 0</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="reeds.function_libs.optimization.src.energy_offset_estimator.EnergyOffset.std">
+<code class="sig-name descname"><span class="pre">std</span></code><a class="headerlink" href="#reeds.function_libs.optimization.src.energy_offset_estimator.EnergyOffset.std" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 1</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="reeds.function_libs.optimization.src.energy_offset_estimator.EnergyStatistic">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">reeds.function_libs.optimization.src.energy_offset_estimator.</span></code><code class="sig-name descname"><span class="pre">EnergyStatistic</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">offsets</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">minCount</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">negCount</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eoff_per_replica</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#reeds.function_libs.optimization.src.energy_offset_estimator.EnergyStatistic" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></p>
+<dl class="py attribute">
+<dt id="reeds.function_libs.optimization.src.energy_offset_estimator.EnergyStatistic.eoff_per_replica">
+<code class="sig-name descname"><span class="pre">eoff_per_replica</span></code><a class="headerlink" href="#reeds.function_libs.optimization.src.energy_offset_estimator.EnergyStatistic.eoff_per_replica" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 3</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="reeds.function_libs.optimization.src.energy_offset_estimator.EnergyStatistic.minCount">
+<code class="sig-name descname"><span class="pre">minCount</span></code><a class="headerlink" href="#reeds.function_libs.optimization.src.energy_offset_estimator.EnergyStatistic.minCount" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 1</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="reeds.function_libs.optimization.src.energy_offset_estimator.EnergyStatistic.negCount">
+<code class="sig-name descname"><span class="pre">negCount</span></code><a class="headerlink" href="#reeds.function_libs.optimization.src.energy_offset_estimator.EnergyStatistic.negCount" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 2</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="reeds.function_libs.optimization.src.energy_offset_estimator.EnergyStatistic.offsets">
+<code class="sig-name descname"><span class="pre">offsets</span></code><a class="headerlink" href="#reeds.function_libs.optimization.src.energy_offset_estimator.EnergyStatistic.offsets" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 0</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="reeds.function_libs.optimization.src.energy_offset_estimator.Eoff_estimator">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">reeds.function_libs.optimization.src.energy_offset_estimator.</span></code><code class="sig-name descname"><span class="pre">Eoff_estimator</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">eir_old_init</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vvr</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vvy</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">s_values</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/reeds/function_libs/optimization/src/energy_offset_estimator.html#Eoff_estimator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reeds.function_libs.optimization.src.energy_offset_estimator.Eoff_estimator" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt id="reeds.function_libs.optimization.src.energy_offset_estimator.Eoff_estimator.__init__">
+<code class="sig-name descname"><span class="pre">__init__</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">eir_old_init</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vvr</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vvy</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">s_values</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/reeds/function_libs/optimization/src/energy_offset_estimator.html#Eoff_estimator.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reeds.function_libs.optimization.src.energy_offset_estimator.Eoff_estimator.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="simple">
+<dt>Args:</dt><dd><p>eir_old_init:
+vvr:
+vvy:
+s_values:</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="reeds.function_libs.optimization.src.energy_offset_estimator.Eoff_estimator._calc_form_5">
+<code class="sig-name descname"><span class="pre">_calc_form_5</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="pre">vr:</span> <span class="pre">List[float],</span> <span class="pre">vy:</span> <span class="pre">List[List[float]],</span> <span class="pre">s_in:</span> <span class="pre">List[float],</span> <span class="pre">beta:</span> <span class="pre">float,</span> <span class="pre">num_states:</span> <span class="pre">int,</span> <span class="pre">max_iter:</span> <span class="pre">int,</span> <span class="pre">rho:</span> <span class="pre">float</span> <span class="pre">=</span> <span class="pre">0.0)</span> <span class="pre">-&gt;</span> <span class="pre">(typing.List[float],</span> <span class="pre">&lt;class</span> <span class="pre">'int'&gt;</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/reeds/function_libs/optimization/src/energy_offset_estimator.html#Eoff_estimator._calc_form_5"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reeds.function_libs.optimization.src.energy_offset_estimator.Eoff_estimator._calc_form_5" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate “form 5” of original cc program to estimate new offsets for
+a single s value :param self.eir_old_init: Energy offsets used in
+simulation. :param vr: Reference energies :param vy: Energies for each
+state :param s_in: s values :param beta: kb*T :param num_states: number
+of states :param max_iter: maximum number of iterations :param rho:
+convergence criteria :return: New energy offsets</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>vr:
+vy:
+s_in:
+beta (float):
+num_states (int):
+max_iter (int):
+rho (float):</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="reeds.function_libs.optimization.src.energy_offset_estimator.Eoff_estimator._calculate_E_i_r">
+<code class="sig-name descname"><span class="pre">_calculate_E_i_r</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vr</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vy</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eir_old</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">s_ref</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">s_stat</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">beta</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p_i</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_states</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">float</span><a class="reference internal" href="../_modules/reeds/function_libs/optimization/src/energy_offset_estimator.html#Eoff_estimator._calculate_E_i_r"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reeds.function_libs.optimization.src.energy_offset_estimator.Eoff_estimator._calculate_E_i_r" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate new energy offset</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>vr: Reference energies per state
+vy: Energies per state
+eir_old: Energy offsets of previous iteration
+s_ref (float): Reference s value
+s_stat (float): s value
+beta (float): kb*T
+p_i (int): index of state considered
+num_states (int): number of states</p>
+</dd>
+<dt>Returns:</dt><dd><p>new offset for state</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="reeds.function_libs.optimization.src.energy_offset_estimator.Eoff_estimator._calculate_f_ir">
+<code class="sig-name descname"><span class="pre">_calculate_f_ir</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vr</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vy</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eir_old</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">s_ref</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">s_stat</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">beta</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p_i</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_states</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">float</span><a class="reference internal" href="../_modules/reeds/function_libs/optimization/src/energy_offset_estimator.html#Eoff_estimator._calculate_f_ir"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reeds.function_libs.optimization.src.energy_offset_estimator.Eoff_estimator._calculate_f_ir" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate new energy offset</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>vr: Reference energies per state
+vy: Energies per state
+eir_old: Energy offsets of previous iteration
+s_ref (float): Reference s value
+s_stat (float): s value
+beta (float): kb*T
+p_i (int): index of state considered
+num_states (int): number of states</p>
+</dd>
+<dt>Returns:</dt><dd><p>new offset for state</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="reeds.function_libs.optimization.src.energy_offset_estimator.Eoff_estimator._ln_exp_avg">
+<code class="sig-name descname"><span class="pre">_ln_exp_avg</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">values</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/reeds/function_libs/optimization/src/energy_offset_estimator.html#Eoff_estimator._ln_exp_avg"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reeds.function_libs.optimization.src.energy_offset_estimator.Eoff_estimator._ln_exp_avg" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="simple">
+<dt>Log average.</dt><dd><p>implementation for Potential energies, avoiding overflows errors</p>
+</dd>
+<dt>Args:</dt><dd><p>values: List of input values.</p>
+</dd>
+<dt>Returns:</dt><dd><p>Log average</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="reeds.function_libs.optimization.src.energy_offset_estimator.Eoff_estimator.optimize_energy_offsets">
+<code class="sig-name descname"><span class="pre">optimize_energy_offsets</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">beta</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">frac_tresh</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_iter</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rho</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pot_tresh</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">float</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">0.0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/reeds/function_libs/optimization/src/energy_offset_estimator.html#Eoff_estimator.optimize_energy_offsets"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reeds.function_libs.optimization.src.energy_offset_estimator.Eoff_estimator.optimize_energy_offsets" title="Permalink to this definition">¶</a></dt>
+<dd><p>Optimizes the energy offsets based on simulation results.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>beta (float): k_b * T
+frac_tresh: Threshold on fraction of negative energies
+max_iter (int): Maximum iterations
+rho (float): convergence threshold
+pot_tresh (float): b</p>
+</dd>
+<dt>Returns:</dt><dd><p>List of new energy offsets for each s value.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-reeds.function_libs.optimization.src.energy_offset_optimization">
+<span id="reeds-function-libs-optimization-src-energy-offset-optimization-module"></span><h2>reeds.function_libs.optimization.src.energy_offset_optimization module<a class="headerlink" href="#module-reeds.function_libs.optimization.src.energy_offset_optimization" title="Permalink to this headline">¶</a></h2>
+<dl class="py function">
+<dt id="reeds.function_libs.optimization.src.energy_offset_optimization.calc_form_5">
+<code class="sig-prename descclassname"><span class="pre">reeds.function_libs.optimization.src.energy_offset_optimization.</span></code><code class="sig-name descname"><span class="pre">calc_form_5</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="pre">eir_old_init:</span> <span class="pre">List[float],</span> <span class="pre">vr:</span> <span class="pre">List[float],</span> <span class="pre">vy:</span> <span class="pre">List[List[float]],</span> <span class="pre">s_in:</span> <span class="pre">List[float],</span> <span class="pre">beta:</span> <span class="pre">float,</span> <span class="pre">num_states:</span> <span class="pre">int,</span> <span class="pre">max_iter:</span> <span class="pre">int,</span> <span class="pre">rho:</span> <span class="pre">float</span> <span class="pre">=</span> <span class="pre">0.0)</span> <span class="pre">-&gt;</span> <span class="pre">(typing.List[float],</span> <span class="pre">&lt;class</span> <span class="pre">'int'&gt;</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/reeds/function_libs/optimization/src/energy_offset_optimization.html#calc_form_5"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reeds.function_libs.optimization.src.energy_offset_optimization.calc_form_5" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate “form 5” of original cc program to estimate new offsets for a
+single s value</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>eir_old_init: Energy offsets used in simulation.
+vr: Reference energies
+vy: Energies for each state
+s_in: s values
+beta (float): kb*T
+num_states (int): number of states
+max_iter (int): maximum number of iterations
+rho (float): convergence criteria</p>
+</dd>
+<dt>Returns:</dt><dd><p>New energy offsets</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="reeds.function_libs.optimization.src.energy_offset_optimization.calculate_f_ir">
+<code class="sig-prename descclassname"><span class="pre">reeds.function_libs.optimization.src.energy_offset_optimization.</span></code><code class="sig-name descname"><span class="pre">calculate_f_ir</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vr</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vy</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eir_old</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">s_ref</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">s_stat</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">beta</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p_i</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_states</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">float</span><a class="reference internal" href="../_modules/reeds/function_libs/optimization/src/energy_offset_optimization.html#calculate_f_ir"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reeds.function_libs.optimization.src.energy_offset_optimization.calculate_f_ir" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate new energy offset</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>vr: Reference energies per state
+vy: Energies per state
+eir_old: Energy offsets of previous iteration
+s_ref (float): Reference s value
+s_stat (float): s value
+beta (float): kb*T
+p_i (int): index of state considered
+num_states (int): number of states</p>
+</dd>
+<dt>Returns:</dt><dd><p>new offset for state</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="reeds.function_libs.optimization.src.energy_offset_optimization.ln_exp_avg">
+<code class="sig-prename descclassname"><span class="pre">reeds.function_libs.optimization.src.energy_offset_optimization.</span></code><code class="sig-name descname"><span class="pre">ln_exp_avg</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">values</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/reeds/function_libs/optimization/src/energy_offset_optimization.html#ln_exp_avg"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reeds.function_libs.optimization.src.energy_offset_optimization.ln_exp_avg" title="Permalink to this definition">¶</a></dt>
+<dd><p>Log average.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>values: List of input values.</p>
+</dd>
+<dt>Returns:</dt><dd><p>Log average</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="reeds.function_libs.optimization.src.energy_offset_optimization.optimize_energy_offsets">
+<code class="sig-prename descclassname"><span class="pre">reeds.function_libs.optimization.src.energy_offset_optimization.</span></code><code class="sig-name descname"><span class="pre">optimize_energy_offsets</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">eir_old_init</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vvr</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vvy</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">s_values</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">beta</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">frac_tresh</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_iter</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rho</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pot_tresh</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">float</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">0.0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/reeds/function_libs/optimization/src/energy_offset_optimization.html#optimize_energy_offsets"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reeds.function_libs.optimization.src.energy_offset_optimization.optimize_energy_offsets" title="Permalink to this definition">¶</a></dt>
+<dd><p>Optimizes the energy offsets based on simulation results.</p>
+<dl>
+<dt>Args:</dt><dd><p>eir_old_init: Energy offsets used in simulation.
+vvr: Reference.
+vvy: Energies for each s value and state. Outer index: s value. Inner</p>
+<blockquote>
+<div><p>index: state</p>
+</div></blockquote>
+<p>s_values: s values
+beta (float): k_b * T
+frac_tresh: Threshold on fraction of negative energies
+max_iter (int): Maximum iterations
+rho (float): convergence threshold
+pot_tresh (float): b</p>
+</dd>
+<dt>Returns:</dt><dd><p>List of new energy offsets for each s value.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="module-reeds.function_libs.optimization.src.s_optimizer">
+<span id="reeds-function-libs-optimization-src-s-optimizer-module"></span><h2>reeds.function_libs.optimization.src.s_optimizer module<a class="headerlink" href="#module-reeds.function_libs.optimization.src.s_optimizer" title="Permalink to this headline">¶</a></h2>
+<dl class="simple">
+<dt>eds_optimization  - A library for optimization of input values for eds simulations</dt><dd><p>This module is containing all the replica exchange round trip alogrithms, described by Sidler et al. and Katzgraber et al. 2006.</p>
+</dd>
+<dt>References:</dt><dd><ul class="simple">
+<li><p>Sidler et al. 2017</p></li>
+<li><p>Katzgraber et al. 2006</p></li>
+</ul>
+</dd>
+</dl>
+<p>&#64;author bries</p>
+<dl class="py class">
+<dt id="reeds.function_libs.optimization.src.s_optimizer.Equalized_N_LRTO">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">reeds.function_libs.optimization.src.s_optimizer.</span></code><code class="sig-name descname"><span class="pre">Equalized_N_LRTO</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">replica_exchange_statistics</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">state_weights</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/reeds/function_libs/optimization/src/s_optimizer.html#Equalized_N_LRTO"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reeds.function_libs.optimization.src.s_optimizer.Equalized_N_LRTO" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#reeds.function_libs.optimization.src.s_optimizer._RTOptimizer" title="reeds.function_libs.optimization.src.s_optimizer._RTOptimizer"><code class="xref py py-class docutils literal notranslate"><span class="pre">reeds.function_libs.optimization.src.s_optimizer._RTOptimizer</span></code></a></p>
+<p>DEAPRECIATED</p>
+<dl class="py method">
+<dt id="reeds.function_libs.optimization.src.s_optimizer.Equalized_N_LRTO._calculate_replica_visit_fraction">
+<code class="sig-name descname"><span class="pre">_calculate_replica_visit_fraction</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">s_in</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_up_list</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_down_list</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">state_weights</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><a class="reference internal" href="../_modules/reeds/function_libs/optimization/src/s_optimizer.html#Equalized_N_LRTO._calculate_replica_visit_fraction"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reeds.function_libs.optimization.src.s_optimizer.Equalized_N_LRTO._calculate_replica_visit_fraction" title="Permalink to this definition">¶</a></dt>
+<dd><p>see _RTOptimizer._calculate_replica_visit_fraction_n_states_equalized</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="reeds.function_libs.optimization.src.s_optimizer.Equalized_N_LRTO.optimize">
+<code class="sig-name descname"><span class="pre">optimize</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">add_replicas</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">None</span><a class="reference internal" href="../_modules/reeds/function_libs/optimization/src/s_optimizer.html#Equalized_N_LRTO.optimize"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reeds.function_libs.optimization.src.s_optimizer.Equalized_N_LRTO.optimize" title="Permalink to this definition">¶</a></dt>
+<dd><p>see _RTOptimizer._optimize_LRTO</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="reeds.function_libs.optimization.src.s_optimizer.N_GRTO">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">reeds.function_libs.optimization.src.s_optimizer.</span></code><code class="sig-name descname"><span class="pre">N_GRTO</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">replica_exchange_statistics</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">state_weights</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/reeds/function_libs/optimization/src/s_optimizer.html#N_GRTO"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reeds.function_libs.optimization.src.s_optimizer.N_GRTO" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#reeds.function_libs.optimization.src.s_optimizer._RTOptimizer" title="reeds.function_libs.optimization.src.s_optimizer._RTOptimizer"><code class="xref py py-class docutils literal notranslate"><span class="pre">reeds.function_libs.optimization.src.s_optimizer._RTOptimizer</span></code></a></p>
+<dl class="py method">
+<dt id="reeds.function_libs.optimization.src.s_optimizer.N_GRTO.__init__">
+<code class="sig-name descname"><span class="pre">__init__</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">replica_exchange_statistics</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">state_weights</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/reeds/function_libs/optimization/src/s_optimizer.html#N_GRTO.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reeds.function_libs.optimization.src.s_optimizer.N_GRTO.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><blockquote>
+<div><p>Performs a global roundtrip optimization
+Sidler et al. 2017</p>
+</div></blockquote>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>replica_exchange_statistics</strong> (<em>(sopt_Pathstatistic.PathStatistic or repdat.Repdat)</em>) – the exchange statistics, that should be analysed</p></li>
+<li><p><strong>state_weights</strong> (<em>List[float]</em>) – weights for the individual states in a replica, used to optimize the s-distribution state dependingly</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="reeds.function_libs.optimization.src.s_optimizer.N_GRTO._calculate_replica_visit_fraction">
+<code class="sig-name descname"><span class="pre">_calculate_replica_visit_fraction</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">s_in</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_up_list</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_down_list</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">state_weights</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><a class="reference internal" href="../_modules/reeds/function_libs/optimization/src/s_optimizer.html#N_GRTO._calculate_replica_visit_fraction"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reeds.function_libs.optimization.src.s_optimizer.N_GRTO._calculate_replica_visit_fraction" title="Permalink to this definition">¶</a></dt>
+<dd><p>see _RTOptimizer._calculate_replica_visit_fraction_n_states</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="reeds.function_libs.optimization.src.s_optimizer.N_GRTO.optimize">
+<code class="sig-name descname"><span class="pre">optimize</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">add_replicas</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ds</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">float</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">0.0001</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">detail_verbose</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/reeds/function_libs/optimization/src/s_optimizer.html#N_GRTO.optimize"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reeds.function_libs.optimization.src.s_optimizer.N_GRTO.optimize" title="Permalink to this definition">¶</a></dt>
+<dd><p>see _RTOptimizer._optimize_GRTO</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="reeds.function_libs.optimization.src.s_optimizer.N_LRTO">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">reeds.function_libs.optimization.src.s_optimizer.</span></code><code class="sig-name descname"><span class="pre">N_LRTO</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">replica_exchange_statistics</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">state_weights</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/reeds/function_libs/optimization/src/s_optimizer.html#N_LRTO"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reeds.function_libs.optimization.src.s_optimizer.N_LRTO" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#reeds.function_libs.optimization.src.s_optimizer._RTOptimizer" title="reeds.function_libs.optimization.src.s_optimizer._RTOptimizer"><code class="xref py py-class docutils literal notranslate"><span class="pre">reeds.function_libs.optimization.src.s_optimizer._RTOptimizer</span></code></a></p>
+<dl class="py method">
+<dt id="reeds.function_libs.optimization.src.s_optimizer.N_LRTO.__init__">
+<code class="sig-name descname"><span class="pre">__init__</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">replica_exchange_statistics</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">state_weights</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/reeds/function_libs/optimization/src/s_optimizer.html#N_LRTO.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reeds.function_libs.optimization.src.s_optimizer.N_LRTO.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><blockquote>
+<div><p>Performs a Local roundtrip optimization
+Sidler et al. 2017</p>
+</div></blockquote>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>replica_exchange_statistics</strong> (<em>(sopt_Pathstatistic.PathStatistic or repdat.Repdat)</em>) – the exchange statistics, that should be analysed</p></li>
+<li><p><strong>state_weights</strong> (<em>List[float]</em>) – weights for the individual states in a replica, used to optimize the s-distribution state dependingly</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="reeds.function_libs.optimization.src.s_optimizer.N_LRTO._calculate_replica_visit_fraction">
+<code class="sig-name descname"><span class="pre">_calculate_replica_visit_fraction</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">s_in</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_up_list</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_down_list</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">state_weights</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><a class="reference internal" href="../_modules/reeds/function_libs/optimization/src/s_optimizer.html#N_LRTO._calculate_replica_visit_fraction"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reeds.function_libs.optimization.src.s_optimizer.N_LRTO._calculate_replica_visit_fraction" title="Permalink to this definition">¶</a></dt>
+<dd><p>see _RTOptimizer._calculate_replica_visit_fraction_n_states</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="reeds.function_libs.optimization.src.s_optimizer.N_LRTO.optimize">
+<code class="sig-name descname"><span class="pre">optimize</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">add_replicas</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">None</span><a class="reference internal" href="../_modules/reeds/function_libs/optimization/src/s_optimizer.html#N_LRTO.optimize"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reeds.function_libs.optimization.src.s_optimizer.N_LRTO.optimize" title="Permalink to this definition">¶</a></dt>
+<dd><p>see _RTOptimizer._optimize_LRTO</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="reeds.function_libs.optimization.src.s_optimizer.One_GRTO">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">reeds.function_libs.optimization.src.s_optimizer.</span></code><code class="sig-name descname"><span class="pre">One_GRTO</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">replica_exchange_statistics</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/reeds/function_libs/optimization/src/s_optimizer.html#One_GRTO"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reeds.function_libs.optimization.src.s_optimizer.One_GRTO" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#reeds.function_libs.optimization.src.s_optimizer._RTOptimizer" title="reeds.function_libs.optimization.src.s_optimizer._RTOptimizer"><code class="xref py py-class docutils literal notranslate"><span class="pre">reeds.function_libs.optimization.src.s_optimizer._RTOptimizer</span></code></a></p>
+<p>Performs a global roundtrip optimization</p>
+<dl class="py method">
+<dt id="reeds.function_libs.optimization.src.s_optimizer.One_GRTO.__init__">
+<code class="sig-name descname"><span class="pre">__init__</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">replica_exchange_statistics</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/reeds/function_libs/optimization/src/s_optimizer.html#One_GRTO.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reeds.function_libs.optimization.src.s_optimizer.One_GRTO.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><blockquote>
+<div><p>Performs a global roundtrip optimization
+Katgraber et al. 2006</p>
+</div></blockquote>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>replica_exchange_statistics</strong> (<em>(sopt_Pathstatistic.PathStatistic or repdat.Repdat)</em>) – the exchange statistics, that should be analysed</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="reeds.function_libs.optimization.src.s_optimizer.One_GRTO._calculate_replica_visit_fraction">
+<code class="sig-name descname"><span class="pre">_calculate_replica_visit_fraction</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">s_in</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_up_list</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_down_list</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">state_weights</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><a class="reference internal" href="../_modules/reeds/function_libs/optimization/src/s_optimizer.html#One_GRTO._calculate_replica_visit_fraction"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reeds.function_libs.optimization.src.s_optimizer.One_GRTO._calculate_replica_visit_fraction" title="Permalink to this definition">¶</a></dt>
+<dd><p>see _RTOptimizer._calculate_replica_visit_fraction_one_state</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="reeds.function_libs.optimization.src.s_optimizer.One_GRTO.optimize">
+<code class="sig-name descname"><span class="pre">optimize</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">add_replicas</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ds</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">float</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">0.0001</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">detail_verbose</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/reeds/function_libs/optimization/src/s_optimizer.html#One_GRTO.optimize"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reeds.function_libs.optimization.src.s_optimizer.One_GRTO.optimize" title="Permalink to this definition">¶</a></dt>
+<dd><p>see _RTOptimizer._optimize_GRTO</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="reeds.function_libs.optimization.src.s_optimizer.One_LRTO">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">reeds.function_libs.optimization.src.s_optimizer.</span></code><code class="sig-name descname"><span class="pre">One_LRTO</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">replica_exchange_statistics</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/reeds/function_libs/optimization/src/s_optimizer.html#One_LRTO"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reeds.function_libs.optimization.src.s_optimizer.One_LRTO" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#reeds.function_libs.optimization.src.s_optimizer._RTOptimizer" title="reeds.function_libs.optimization.src.s_optimizer._RTOptimizer"><code class="xref py py-class docutils literal notranslate"><span class="pre">reeds.function_libs.optimization.src.s_optimizer._RTOptimizer</span></code></a></p>
+<dl class="py method">
+<dt id="reeds.function_libs.optimization.src.s_optimizer.One_LRTO.__init__">
+<code class="sig-name descname"><span class="pre">__init__</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">replica_exchange_statistics</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/reeds/function_libs/optimization/src/s_optimizer.html#One_LRTO.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reeds.function_libs.optimization.src.s_optimizer.One_LRTO.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><blockquote>
+<div><p>Performs a Local roundtrip optimization
+Katzgraber et al. 2006</p>
+</div></blockquote>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>replica_exchange_statistics</strong> (<em>(sopt_Pathstatistic.PathStatistic or repdat.Repdat)</em>) – the exchange statistics, that should be analysed</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="reeds.function_libs.optimization.src.s_optimizer.One_LRTO._calculate_replica_visit_fraction">
+<code class="sig-name descname"><span class="pre">_calculate_replica_visit_fraction</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">s_in</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_up_list</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_down_list</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">state_weights</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><a class="reference internal" href="../_modules/reeds/function_libs/optimization/src/s_optimizer.html#One_LRTO._calculate_replica_visit_fraction"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reeds.function_libs.optimization.src.s_optimizer.One_LRTO._calculate_replica_visit_fraction" title="Permalink to this definition">¶</a></dt>
+<dd><p>see _RTOptimizer._calculate_replica_visit_fraction_one_state</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="reeds.function_libs.optimization.src.s_optimizer.One_LRTO.optimize">
+<code class="sig-name descname"><span class="pre">optimize</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">add_replicas</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ds</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">float</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">0.001</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">detail_verbose</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/reeds/function_libs/optimization/src/s_optimizer.html#One_LRTO.optimize"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reeds.function_libs.optimization.src.s_optimizer.One_LRTO.optimize" title="Permalink to this definition">¶</a></dt>
+<dd><p>see _RTOptimizer._optimize_LRTO</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="reeds.function_libs.optimization.src.s_optimizer.Replica_Flow_Position">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">reeds.function_libs.optimization.src.s_optimizer.</span></code><code class="sig-name descname"><span class="pre">Replica_Flow_Position</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">s</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/reeds/function_libs/optimization/src/s_optimizer.html#Replica_Flow_Position"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reeds.function_libs.optimization.src.s_optimizer.Replica_Flow_Position" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Pair of Replica and corresponding replica visit fraction f from Eq. 11.</p>
+<p>Stores additional S values between S_i and S_i+1 with a counter,
+for equidisftant distribution of new S values in interval.</p>
+<dl class="py method">
+<dt id="reeds.function_libs.optimization.src.s_optimizer.Replica_Flow_Position.__init__">
+<code class="sig-name descname"><span class="pre">__init__</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">s</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">None</span><a class="reference internal" href="../_modules/reeds/function_libs/optimization/src/s_optimizer.html#Replica_Flow_Position.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reeds.function_libs.optimization.src.s_optimizer.Replica_Flow_Position.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Constructor of SFPair.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>s</strong> – S value of replica</p></li>
+<li><p><strong>f</strong> – f value calculated from path statistic</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="reeds.function_libs.optimization.src.s_optimizer._RTOptimizer">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">reeds.function_libs.optimization.src.s_optimizer.</span></code><code class="sig-name descname"><span class="pre">_RTOptimizer</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">replica_exchange_statistics</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="#reeds.function_libs.optimization.src.sopt_Pathstatistic.PathStatistic" title="reeds.function_libs.optimization.src.sopt_Pathstatistic.PathStatistic"><span class="pre">reeds.function_libs.optimization.src.sopt_Pathstatistic.PathStatistic</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">state_weights</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/reeds/function_libs/optimization/src/s_optimizer.html#_RTOptimizer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reeds.function_libs.optimization.src.s_optimizer._RTOptimizer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Base class for RTO optimizers</p>
+<dl class="py method">
+<dt id="reeds.function_libs.optimization.src.s_optimizer._RTOptimizer.__init__">
+<code class="sig-name descname"><span class="pre">__init__</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">replica_exchange_statistics</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="#reeds.function_libs.optimization.src.sopt_Pathstatistic.PathStatistic" title="reeds.function_libs.optimization.src.sopt_Pathstatistic.PathStatistic"><span class="pre">reeds.function_libs.optimization.src.sopt_Pathstatistic.PathStatistic</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">state_weights</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/reeds/function_libs/optimization/src/s_optimizer.html#_RTOptimizer.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reeds.function_libs.optimization.src.s_optimizer._RTOptimizer.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><blockquote>
+<div><p>This baseclass is the common substructure of all optimizer approaches.</p>
+</div></blockquote>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>replica_exchange_statistics</strong> (<em>(sopt_Pathstatistic.PathStatistic or repdat.Repdat)</em>) – input for the replica exchange statistics</p></li>
+<li><p><strong>state_weights</strong> (<em>List[float]</em>) – weigthing of the different states.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="reeds.function_libs.optimization.src.s_optimizer._RTOptimizer._add_dummy_replica_to_intervall">
+<code class="sig-name descname"><span class="pre">_add_dummy_replica_to_intervall</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">index</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">None</span><a class="reference internal" href="../_modules/reeds/function_libs/optimization/src/s_optimizer.html#_RTOptimizer._add_dummy_replica_to_intervall"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reeds.function_libs.optimization.src.s_optimizer._RTOptimizer._add_dummy_replica_to_intervall" title="Permalink to this definition">¶</a></dt>
+<dd><blockquote>
+<div><p>index of lower replica, of the gap where a new replica should be added</p>
+</div></blockquote>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>index</strong> (<em>int</em>) – index of the replica bucket</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="reeds.function_libs.optimization.src.s_optimizer._RTOptimizer._add_s_values_accord_to_flow_area">
+<code class="sig-name descname"><span class="pre">_add_s_values_accord_to_flow_area</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">old_s_dist</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f_n_list</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c_prime</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">numpy.float64</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ds</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">new_replica_num</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/reeds/function_libs/optimization/src/s_optimizer.html#_RTOptimizer._add_s_values_accord_to_flow_area"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reeds.function_libs.optimization.src.s_optimizer._RTOptimizer._add_s_values_accord_to_flow_area" title="Permalink to this definition">¶</a></dt>
+<dd><blockquote>
+<div><p>This function is required for GRTO algorithm.
+it calculates the new position for the replicas accordingt to the integral of the flow curve over all replicas</p>
+</div></blockquote>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>old_s_dist</strong> (<em>List[float]</em>) – old s-values</p></li>
+<li><p><strong>f_n_list</strong> (<em>List[List[float]]</em>) – state dependendt flow lsit</p></li>
+<li><p><strong>c_prime</strong> (<em>float</em>) – coefficient for flow//replicas</p></li>
+<li><p><strong>ds</strong> (<em>float</em>) – integral step size</p></li>
+<li><p><strong>new_replica_num</strong> (<em>int</em>) – adding replicas</p></li>
+<li><p><strong>verbose</strong> (<em>bool</em>) – verbosity level</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>new_s_dist</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>List[float]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="reeds.function_libs.optimization.src.s_optimizer._RTOptimizer._add_s_values_accord_to_flow_area_fast">
+<code class="sig-name descname"><span class="pre">_add_s_values_accord_to_flow_area_fast</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">old_s_dist</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f_n_list</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c_prime</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">numpy.float64</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ds</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">new_replica_num</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/reeds/function_libs/optimization/src/s_optimizer.html#_RTOptimizer._add_s_values_accord_to_flow_area_fast"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reeds.function_libs.optimization.src.s_optimizer._RTOptimizer._add_s_values_accord_to_flow_area_fast" title="Permalink to this definition">¶</a></dt>
+<dd><p>&#64;DEVELOPING!
+Think more thorrow about it! not working at this time</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>old_s_dist</strong> – </p></li>
+<li><p><strong>f_n_list</strong> – </p></li>
+<li><p><strong>c_prime</strong> – </p></li>
+<li><p><strong>ds</strong> – </p></li>
+<li><p><strong>new_replica_num</strong> – </p></li>
+<li><p><strong>verbose</strong> – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="reeds.function_libs.optimization.src.s_optimizer._RTOptimizer._calculate_normalisation_c_prime">
+<code class="sig-name descname"><span class="pre">_calculate_normalisation_c_prime</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">old_s_dist</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f_n_list</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ds</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">numpy.float64</span><a class="reference internal" href="../_modules/reeds/function_libs/optimization/src/s_optimizer.html#_RTOptimizer._calculate_normalisation_c_prime"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reeds.function_libs.optimization.src.s_optimizer._RTOptimizer._calculate_normalisation_c_prime" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>old_s_dist</strong> (<em>List[float]</em>) – s-list</p></li>
+<li><p><strong>f_n_list</strong> (<em>List[List[float]]</em>) – flows of the replicas state dependend</p></li>
+<li><p><strong>ds</strong> (<em>float</em>) – stepsize in the integral</p></li>
+<li><p><strong>verbose</strong> (<em>bool, optional</em>) – verbosity on?</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>c_prime</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="reeds.function_libs.optimization.src.s_optimizer._RTOptimizer._calculate_normalisation_c_prime_integral">
+<code class="sig-name descname"><span class="pre">_calculate_normalisation_c_prime_integral</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">old_s_dist</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f_n_list</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ds</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">numpy.float64</span><a class="reference internal" href="../_modules/reeds/function_libs/optimization/src/s_optimizer.html#_RTOptimizer._calculate_normalisation_c_prime_integral"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reeds.function_libs.optimization.src.s_optimizer._RTOptimizer._calculate_normalisation_c_prime_integral" title="Permalink to this definition">¶</a></dt>
+<dd><blockquote>
+<div><p>Deapriceated: Old implementation, doing a real integral. Not needed for a linear propagation. - slow</p>
+</div></blockquote>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>old_s_dist</strong> (<em>List[float]</em>) – s-list</p></li>
+<li><p><strong>f_n_list</strong> (<em>List[List[float]]</em>) – flows of the replicas state dependend</p></li>
+<li><p><strong>ds</strong> (<em>float</em>) – stepsize in the integral</p></li>
+<li><p><strong>verbose</strong> (<em>bool, optional</em>) – verbosity on?</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>c_prime</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="reeds.function_libs.optimization.src.s_optimizer._RTOptimizer._calculate_replica_visit_fraction_n_states">
+<code class="sig-name descname"><span class="pre">_calculate_replica_visit_fraction_n_states</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">s_in</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_up_list</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_down_list</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">state_weights</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><a class="reference internal" href="../_modules/reeds/function_libs/optimization/src/s_optimizer.html#_RTOptimizer._calculate_replica_visit_fraction_n_states"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reeds.function_libs.optimization.src.s_optimizer._RTOptimizer._calculate_replica_visit_fraction_n_states" title="Permalink to this definition">¶</a></dt>
+<dd><blockquote>
+<div><p>Sidler et al. 2017 - Eq. 11 - calculate the fraction of replicas, that have visited this replica position in a certain state. for N-states!</p>
+</div></blockquote>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>s_in</strong> (<em>List[float]</em>) – list of input s-values</p></li>
+<li><p><strong>n_up_list</strong> (<em>List[float]</em>) – replicas moving up (coming from down)</p></li>
+<li><p><strong>n_down_list</strong> (<em>List[float]</em>) – replicas moving down (coming from up)</p></li>
+<li><p><strong>state_weights</strong> (<em>List[float]</em>) – weigth factors for the different states in the replicas</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>gives the fraction of how many replicas visited a replica position.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>List[float]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="reeds.function_libs.optimization.src.s_optimizer._RTOptimizer._calculate_replica_visit_fraction_n_states_equalized">
+<code class="sig-name descname"><span class="pre">_calculate_replica_visit_fraction_n_states_equalized</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">s_in</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_up_list</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_down_list</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">state_weights</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><a class="reference internal" href="../_modules/reeds/function_libs/optimization/src/s_optimizer.html#_RTOptimizer._calculate_replica_visit_fraction_n_states_equalized"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reeds.function_libs.optimization.src.s_optimizer._RTOptimizer._calculate_replica_visit_fraction_n_states_equalized" title="Permalink to this definition">¶</a></dt>
+<dd><p>&#64;DEVELOP! - try and thing about it!
+Modified Sidler et al. 2017 - Eq. 11 - calculate the fraction of replicas, that have visited this replica position in a certain state. for N-states!
+Difference is factor N for the states comming down, try to evaluate down and up as equals.
+:param n_up_in: replicas moving up (coming from down)
+:param n_down_in: replicas moving down (coming from up)
+:param num_replicas: total number of replicas
+:param state_weights:
+:return: replica_visits_fraction: gives the fraction of how many replicas visited a replica position.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="reeds.function_libs.optimization.src.s_optimizer._RTOptimizer._calculate_replica_visit_fraction_one_state">
+<code class="sig-name descname"><span class="pre">_calculate_replica_visit_fraction_one_state</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">s_in</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_up_list</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_down_list</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><a class="reference internal" href="../_modules/reeds/function_libs/optimization/src/s_optimizer.html#_RTOptimizer._calculate_replica_visit_fraction_one_state"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reeds.function_libs.optimization.src.s_optimizer._RTOptimizer._calculate_replica_visit_fraction_one_state" title="Permalink to this definition">¶</a></dt>
+<dd><blockquote>
+<div><p>Sidler et al. 2017 - Eq. 5 - calculate the fraction of replicas, that have visited this replica_position position in a certain state, for 1 state.</p>
+</div></blockquote>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>s_in</strong> (<em>List[float]</em>) – input s-distribution</p></li>
+<li><p><strong>n_up_list</strong> (<em>List[float]</em>) – replicas moving up (coming from down)</p></li>
+<li><p><strong>n_down_list</strong> (<em>List[List[float]]</em>) – replicas moving down (coming from up)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>gives the fraction of how many replicas visited a replica_position position.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>List[float]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="reeds.function_libs.optimization.src.s_optimizer._RTOptimizer._find_max_diff_index">
+<code class="sig-name descname"><span class="pre">_find_max_diff_index</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <span class="pre">int</span><a class="reference internal" href="../_modules/reeds/function_libs/optimization/src/s_optimizer.html#_RTOptimizer._find_max_diff_index"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reeds.function_libs.optimization.src.s_optimizer._RTOptimizer._find_max_diff_index" title="Permalink to this definition">¶</a></dt>
+<dd><blockquote>
+<div><p>Find maximal flow loss off replicas</p>
+</div></blockquote>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>index of upper replica position of the bottle neck</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="reeds.function_libs.optimization.src.s_optimizer._RTOptimizer._optimize_GRTO">
+<code class="sig-name descname"><span class="pre">_optimize_GRTO</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">add_replicas</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ds</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">float</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">0.0001</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">detail_verbose</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">None</span><a class="reference internal" href="../_modules/reeds/function_libs/optimization/src/s_optimizer.html#_RTOptimizer._optimize_GRTO"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reeds.function_libs.optimization.src.s_optimizer._RTOptimizer._optimize_GRTO" title="Permalink to this definition">¶</a></dt>
+<dd><blockquote>
+<div><p>optimization in GRTO style</p>
+</div></blockquote>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>add_replicas</strong> (<em>int</em>) – add number of replicas</p></li>
+<li><p><strong>ds</strong> (<em>int</em>) – integration step size</p></li>
+<li><p><strong>verbose</strong> (<em>bool</em>) – verbosity</p></li>
+<li><p><strong>detail_verbose</strong> (<em>int</em>) – level of verbosity</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="reeds.function_libs.optimization.src.s_optimizer._RTOptimizer._optimize_LRTO">
+<code class="sig-name descname"><span class="pre">_optimize_LRTO</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">add_replicas</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">None</span><a class="reference internal" href="../_modules/reeds/function_libs/optimization/src/s_optimizer.html#_RTOptimizer._optimize_LRTO"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reeds.function_libs.optimization.src.s_optimizer._RTOptimizer._optimize_LRTO" title="Permalink to this definition">¶</a></dt>
+<dd><blockquote>
+<div><p>optimization in LRTO style (Katzgraber et al. 2006)</p>
+</div></blockquote>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>add_replicas</strong> (<em>int</em>) – number of replicas to add.</p></li>
+<li><p><strong>verbose</strong> (<em>bool</em>) – not used here</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="reeds.function_libs.optimization.src.s_optimizer._RTOptimizer.get_new_replica_dist">
+<code class="sig-name descname"><span class="pre">get_new_replica_dist</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <span class="pre">list</span><a class="reference internal" href="../_modules/reeds/function_libs/optimization/src/s_optimizer.html#_RTOptimizer.get_new_replica_dist"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reeds.function_libs.optimization.src.s_optimizer._RTOptimizer.get_new_replica_dist" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the current replica parameters.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>List of current parameters values</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="reeds.function_libs.optimization.src.s_optimizer._RTOptimizer.get_replica_position_flows">
+<code class="sig-name descname"><span class="pre">get_replica_position_flows</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <span class="pre">pandas.core.frame.DataFrame</span><a class="reference internal" href="../_modules/reeds/function_libs/optimization/src/s_optimizer.html#_RTOptimizer.get_replica_position_flows"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reeds.function_libs.optimization.src.s_optimizer._RTOptimizer.get_replica_position_flows" title="Permalink to this definition">¶</a></dt>
+<dd><blockquote>
+<div><p>Returns the replica-position  flow distribution and the number of replicas in a bin</p>
+</div></blockquote>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>contains the flow distribution</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>pd.Dataframe</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="reeds.function_libs.optimization.src.s_optimizer._RTOptimizer.get_replica_position_flows_optimization">
+<code class="sig-name descname"><span class="pre">get_replica_position_flows_optimization</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <span class="pre">pandas.core.frame.DataFrame</span><a class="reference internal" href="../_modules/reeds/function_libs/optimization/src/s_optimizer.html#_RTOptimizer.get_replica_position_flows_optimization"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reeds.function_libs.optimization.src.s_optimizer._RTOptimizer.get_replica_position_flows_optimization" title="Permalink to this definition">¶</a></dt>
+<dd><blockquote>
+<div><p>Returns the optimized replica-position flow distribution and the number of added replicas in a bin</p>
+</div></blockquote>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>contains the flow distribution</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>pd.Dataframe</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="reeds.function_libs.optimization.src.s_optimizer._RTOptimizer.optimize">
+<code class="sig-name descname"><span class="pre">optimize</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">add_replicas</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/reeds/function_libs/optimization/src/s_optimizer.html#_RTOptimizer.optimize"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reeds.function_libs.optimization.src.s_optimizer._RTOptimizer.optimize" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="reeds.function_libs.optimization.src.s_optimizer._RTOptimizer.replica_position_flow_list">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">replica_position_flow_list</span></code><a class="headerlink" href="#reeds.function_libs.optimization.src.s_optimizer._RTOptimizer.replica_position_flow_list" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="reeds.function_libs.optimization.src.s_optimizer._RTOptimizer.replica_position_flow_list_opt">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">replica_position_flow_list_opt</span></code><a class="headerlink" href="#reeds.function_libs.optimization.src.s_optimizer._RTOptimizer.replica_position_flow_list_opt" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-reeds.function_libs.optimization.src.sopt_Pathstatistic">
+<span id="reeds-function-libs-optimization-src-sopt-pathstatistic-module"></span><h2>reeds.function_libs.optimization.src.sopt_Pathstatistic module<a class="headerlink" href="#module-reeds.function_libs.optimization.src.sopt_Pathstatistic" title="Permalink to this headline">¶</a></h2>
+<p>This is an old way of using the optimizers. In general I would like to try to avoid this.</p>
+<dl class="py class">
+<dt id="reeds.function_libs.optimization.src.sopt_Pathstatistic.PathStatistic">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">reeds.function_libs.optimization.src.sopt_Pathstatistic.</span></code><code class="sig-name descname"><span class="pre">PathStatistic</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">init_block</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#reeds.function_libs.optimization.src.sopt_Pathstatistic.Replica" title="reeds.function_libs.optimization.src.sopt_Pathstatistic.Replica"><span class="pre">reeds.function_libs.optimization.src.sopt_Pathstatistic.Replica</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_states</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">s_values</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">skipped_s_values</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/reeds/function_libs/optimization/src/sopt_Pathstatistic.html#PathStatistic"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reeds.function_libs.optimization.src.sopt_Pathstatistic.PathStatistic" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Statistic of all paths of initial configurations between different
+replica levels. Stores the number of “up” and “down” movements. For “down”,
+the counter is incremented only for the corresponding state at the current
+replica level.</p>
+<dl class="py method">
+<dt id="reeds.function_libs.optimization.src.sopt_Pathstatistic.PathStatistic.__init__">
+<code class="sig-name descname"><span class="pre">__init__</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">init_block</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#reeds.function_libs.optimization.src.sopt_Pathstatistic.Replica" title="reeds.function_libs.optimization.src.sopt_Pathstatistic.Replica"><span class="pre">reeds.function_libs.optimization.src.sopt_Pathstatistic.Replica</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_states</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">s_values</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">skipped_s_values</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">None</span><a class="reference internal" href="../_modules/reeds/function_libs/optimization/src/sopt_Pathstatistic.html#PathStatistic.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reeds.function_libs.optimization.src.sopt_Pathstatistic.PathStatistic.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Constructor of PathStatistic.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>init_block</strong> (<em>List[Replica]</em>) – First block of replicas in gromos_file</p></li>
+<li><p><strong>n_states</strong> (<em>int</em>) – Number of states</p></li>
+<li><p><strong>s_values</strong> (<em>List[float]</em>) – Initial S values</p></li>
+<li><p><strong>skipped_s_values</strong> (<em>List[float]</em>) – s_vals to be skipped</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>IOError</strong> – </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="reeds.function_libs.optimization.src.sopt_Pathstatistic.PathStatistic.append_block">
+<code class="sig-name descname"><span class="pre">append_block</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">block</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#reeds.function_libs.optimization.src.sopt_Pathstatistic.Replica" title="reeds.function_libs.optimization.src.sopt_Pathstatistic.Replica"><span class="pre">reeds.function_libs.optimization.src.sopt_Pathstatistic.Replica</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">None</span><a class="reference internal" href="../_modules/reeds/function_libs/optimization/src/sopt_Pathstatistic.html#PathStatistic.append_block"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reeds.function_libs.optimization.src.sopt_Pathstatistic.PathStatistic.append_block" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adds a block of replicas from a single time step to the statistic.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>block</strong> (<em>List[Replica]</em>) – Block of replicas at time step</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="reeds.function_libs.optimization.src.sopt_Pathstatistic.Replica">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">reeds.function_libs.optimization.src.sopt_Pathstatistic.</span></code><code class="sig-name descname"><span class="pre">Replica</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">id</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">partner_id</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">swap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">state</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_skip_replicas</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/reeds/function_libs/optimization/src/sopt_Pathstatistic.html#Replica"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reeds.function_libs.optimization.src.sopt_Pathstatistic.Replica" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>A replica with its parameters at a time step.</p>
+<p>Stores its id and partner id, as well as the current state, determined
+from the minimum of energies.</p>
+<dl class="py method">
+<dt id="reeds.function_libs.optimization.src.sopt_Pathstatistic.Replica.__init__">
+<code class="sig-name descname"><span class="pre">__init__</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">id</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">partner_id</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">swap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">state</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_skip_replicas</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">None</span><a class="reference internal" href="../_modules/reeds/function_libs/optimization/src/sopt_Pathstatistic.html#Replica.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reeds.function_libs.optimization.src.sopt_Pathstatistic.Replica.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Constructor of Replica</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>num_skip_replicas</strong> (<em>int, optional</em>) – Number of replicas skipped due to duplication/</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>IOError</strong> – </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="reeds.function_libs.optimization.src.sopt_Pathstatistic.Replica.id">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">id</span></code><a class="headerlink" href="#reeds.function_libs.optimization.src.sopt_Pathstatistic.Replica.id" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="reeds.function_libs.optimization.src.sopt_Pathstatistic.Replica.partner_id">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">partner_id</span></code><a class="headerlink" href="#reeds.function_libs.optimization.src.sopt_Pathstatistic.Replica.partner_id" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="reeds.function_libs.optimization.src.sopt_Pathstatistic.Replica.state">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">state</span></code><a class="headerlink" href="#reeds.function_libs.optimization.src.sopt_Pathstatistic.Replica.state" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="reeds.function_libs.optimization.src.sopt_Pathstatistic.Replica.swap">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">swap</span></code><a class="headerlink" href="#reeds.function_libs.optimization.src.sopt_Pathstatistic.Replica.swap" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="reeds.function_libs.optimization.src.sopt_Pathstatistic.ReplicaPath">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">reeds.function_libs.optimization.src.sopt_Pathstatistic.</span></code><code class="sig-name descname"><span class="pre">ReplicaPath</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">level</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">state</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/reeds/function_libs/optimization/src/sopt_Pathstatistic.html#ReplicaPath"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reeds.function_libs.optimization.src.sopt_Pathstatistic.ReplicaPath" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>A path of a specific configuration, tracking its current state, assigned
+replica level. Tracks current state, assigned replica level and direction
+(up or down).</p>
+<dl class="py method">
+<dt id="reeds.function_libs.optimization.src.sopt_Pathstatistic.ReplicaPath.__init__">
+<code class="sig-name descname"><span class="pre">__init__</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">level</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">state</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">None</span><a class="reference internal" href="../_modules/reeds/function_libs/optimization/src/sopt_Pathstatistic.html#ReplicaPath.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reeds.function_libs.optimization.src.sopt_Pathstatistic.ReplicaPath.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>ReplicaPath</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>level</strong> – Level / Replica ID</p></li>
+<li><p><strong>state</strong> – State at current level</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="reeds.function_libs.optimization.src.sopt_Pathstatistic.ReplicaPath.down">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">down</span></code><a class="headerlink" href="#reeds.function_libs.optimization.src.sopt_Pathstatistic.ReplicaPath.down" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="reeds.function_libs.optimization.src.sopt_Pathstatistic.ReplicaPath.level">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">level</span></code><a class="headerlink" href="#reeds.function_libs.optimization.src.sopt_Pathstatistic.ReplicaPath.level" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="reeds.function_libs.optimization.src.sopt_Pathstatistic.ReplicaPath.state">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">state</span></code><a class="headerlink" href="#reeds.function_libs.optimization.src.sopt_Pathstatistic.ReplicaPath.state" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt id="reeds.function_libs.optimization.src.sopt_Pathstatistic.generate_PathStatistic_from_file">
+<code class="sig-prename descclassname"><span class="pre">reeds.function_libs.optimization.src.sopt_Pathstatistic.</span></code><code class="sig-name descname"><span class="pre">generate_PathStatistic_from_file</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_name</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">trial_range</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">tuple</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="#reeds.function_libs.optimization.src.sopt_Pathstatistic.PathStatistic" title="reeds.function_libs.optimization.src.sopt_Pathstatistic.PathStatistic"><span class="pre">reeds.function_libs.optimization.src.sopt_Pathstatistic.PathStatistic</span></a><a class="reference internal" href="../_modules/reeds/function_libs/optimization/src/sopt_Pathstatistic.html#generate_PathStatistic_from_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reeds.function_libs.optimization.src.sopt_Pathstatistic.generate_PathStatistic_from_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reads GROMOS repdat file and generates the path statistic.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>file_names</strong> (<em>List[str]</em>) – input Files</p></li>
+<li><p><strong>trial_range</strong> (<em>tuple</em>) – give a range of trials to be evaluated (time dimension)</p></li>
+<li><p><strong>verbose</strong> (<em>bool</em>) – Loud and noisy?</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Statistic of exchanges between replicas generated from paths taken by initial configurations</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#reeds.function_libs.optimization.src.sopt_Pathstatistic.PathStatistic" title="reeds.function_libs.optimization.src.sopt_Pathstatistic.PathStatistic">PathStatistic</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="module-reeds.function_libs.optimization.src.util">
+<span id="reeds-function-libs-optimization-src-util-module"></span><h2>reeds.function_libs.optimization.src.util module<a class="headerlink" href="#module-reeds.function_libs.optimization.src.util" title="Permalink to this headline">¶</a></h2>
+<dl class="py function">
+<dt id="reeds.function_libs.optimization.src.util.get_str_from_list">
+<code class="sig-prename descclassname"><span class="pre">reeds.function_libs.optimization.src.util.</span></code><code class="sig-name descname"><span class="pre">get_str_from_list</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">in_list</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">List</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">val_type</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_per_line</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">10</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">str</span><a class="reference internal" href="../_modules/reeds/function_libs/optimization/src/util.html#get_str_from_list"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reeds.function_libs.optimization.src.util.get_str_from_list" title="Permalink to this definition">¶</a></dt>
+<dd><p>Pretty print of list of values.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>in_list</strong> (<em>List</em>) – List of values to print.</p></li>
+<li><p><strong>val_type</strong> (<em>str</em>) – Print style of type. Possible values: “float”, “int”, “”</p></li>
+<li><p><strong>n_per_line</strong> (<em>int</em>) – Maximum number of values per line</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>message</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="reeds.function_libs.optimization.src.util.read_gromos_csv">
+<code class="sig-prename descclassname"><span class="pre">reeds.function_libs.optimization.src.util.</span></code><code class="sig-name descname"><span class="pre">read_gromos_csv</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fileName</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sep</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'</span> <span class="pre">'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">column</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/reeds/function_libs/optimization/src/util.html#read_gromos_csv"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reeds.function_libs.optimization.src.util.read_gromos_csv" title="Permalink to this definition">¶</a></dt>
+<dd><blockquote>
+<div><p>&#64;Old-deapreciated
+reads in a repdat file.</p>
+</div></blockquote>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>fileName</strong> (<em>str</em>) – path to the repdat file</p></li>
+<li><p><strong>sep</strong> (<em>str</em>) – seperator char</p></li>
+<li><p><strong>column</strong> (<em>int</em>)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="module-reeds.function_libs.optimization.src">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-reeds.function_libs.optimization.src" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+        <a href="reeds.function_libs.pipeline.html" class="btn btn-neutral float-right" title="reeds.function_libs.pipeline package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="reeds.function_libs.optimization.html" class="btn btn-neutral float-left" title="reeds.function_libs.optimization package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2020, Benjamin Ries, Salome Rieder, Candide Champion. Project structure based on the Computational Molecular Science Python Cookiecutter version 1.3.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

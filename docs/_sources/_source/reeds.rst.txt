@@ -1,0 +1,33 @@
+reeds package
+=============
+
+Subpackages
+-----------
+
+.. toctree::
+   :maxdepth: 4
+
+   reeds.data
+   reeds.function_libs
+   reeds.modules
+   reeds.tests
+
+Submodules
+----------
+
+reeds.reeds module
+------------------
+
+.. automodule:: reeds.reeds
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+
+Module contents
+---------------
+
+.. automodule:: reeds
+   :members:
+   :undoc-members:
+   :show-inheritance:

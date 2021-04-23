@@ -1,0 +1,2684 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>Replica Exchange - Enveloping Distribution Sampling - automatic Workflow &mdash; REEDS  documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="RE-EDS - S-Optimization (RTO-Algorithms)" href="RE_EDS_s_optimization_RTO.html" />
+    <link rel="prev" title="RE-EDS - State Sampling Analysis" href="RE_EDS_State_Sampling_Analysis.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> REEDS
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../introduction.html">REEDS</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Examples</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="RE_EDS_PEOE_energy_offset_estimation.html">RE-EDS - PEOE - Energy Offset Estimation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="RE_EDS_State_Sampling_Analysis.html">RE-EDS - State Sampling Analysis</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Replica Exchange - Enveloping Distribution Sampling - automatic Workflow</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#Global-Definition">Global Definition</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Optimize-Single-EDS-End-states">Optimize Single EDS-End states</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#Job-Execution">Job Execution</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Analysis">Analysis</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#Find-lower-Bound">Find lower Bound</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#id1">Job Execution</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id2">Analysis</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#Energy-Offset-Estimation">Energy Offset Estimation</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#id3">Job Execution</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id4">Analysis</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#Energy-offset-Estimation">Energy offset Estimation</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#Bottle-neck">Bottle neck</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#s-Optimization">s-Optimization</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#id6">Job Execution</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id7">Analysis</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#Production-Run">Production Run</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#id8">Job Execution</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id9">Analysis</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="RE_EDS_s_optimization_RTO.html">RE-EDS - S-Optimization (RTO-Algorithms)</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../_source/modules.html">reeds</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">REEDS</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="index.html">Examples</a> &raquo;</li>
+        
+      <li>Replica Exchange - Enveloping Distribution Sampling - automatic Workflow</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="../_sources/Examples/RE_EDS_pipeline.ipynb.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  
+<style>
+/* CSS for nbsphinx extension */
+
+/* remove conflicting styling from Sphinx themes */
+div.nbinput.container div.prompt *,
+div.nboutput.container div.prompt *,
+div.nbinput.container div.input_area pre,
+div.nboutput.container div.output_area pre,
+div.nbinput.container div.input_area .highlight,
+div.nboutput.container div.output_area .highlight {
+    border: none;
+    padding: 0;
+    margin: 0;
+    box-shadow: none;
+}
+
+div.nbinput.container > div[class*=highlight],
+div.nboutput.container > div[class*=highlight] {
+    margin: 0;
+}
+
+div.nbinput.container div.prompt *,
+div.nboutput.container div.prompt * {
+    background: none;
+}
+
+div.nboutput.container div.output_area .highlight,
+div.nboutput.container div.output_area pre {
+    background: unset;
+}
+
+div.nboutput.container div.output_area div.highlight {
+    color: unset;  /* override Pygments text color */
+}
+
+/* avoid gaps between output lines */
+div.nboutput.container div[class*=highlight] pre {
+    line-height: normal;
+}
+
+/* input/output containers */
+div.nbinput.container,
+div.nboutput.container {
+    display: -webkit-flex;
+    display: flex;
+    align-items: flex-start;
+    margin: 0;
+    width: 100%;
+}
+@media (max-width: 540px) {
+    div.nbinput.container,
+    div.nboutput.container {
+        flex-direction: column;
+    }
+}
+
+/* input container */
+div.nbinput.container {
+    padding-top: 5px;
+}
+
+/* last container */
+div.nblast.container {
+    padding-bottom: 5px;
+}
+
+/* input prompt */
+div.nbinput.container div.prompt pre {
+    color: #307FC1;
+}
+
+/* output prompt */
+div.nboutput.container div.prompt pre {
+    color: #BF5B3D;
+}
+
+/* all prompts */
+div.nbinput.container div.prompt,
+div.nboutput.container div.prompt {
+    width: 4.5ex;
+    padding-top: 5px;
+    position: relative;
+    user-select: none;
+}
+
+div.nbinput.container div.prompt > div,
+div.nboutput.container div.prompt > div {
+    position: absolute;
+    right: 0;
+    margin-right: 0.3ex;
+}
+
+@media (max-width: 540px) {
+    div.nbinput.container div.prompt,
+    div.nboutput.container div.prompt {
+        width: unset;
+        text-align: left;
+        padding: 0.4em;
+    }
+    div.nboutput.container div.prompt.empty {
+        padding: 0;
+    }
+
+    div.nbinput.container div.prompt > div,
+    div.nboutput.container div.prompt > div {
+        position: unset;
+    }
+}
+
+/* disable scrollbars on prompts */
+div.nbinput.container div.prompt pre,
+div.nboutput.container div.prompt pre {
+    overflow: hidden;
+}
+
+/* input/output area */
+div.nbinput.container div.input_area,
+div.nboutput.container div.output_area {
+    -webkit-flex: 1;
+    flex: 1;
+    overflow: auto;
+}
+@media (max-width: 540px) {
+    div.nbinput.container div.input_area,
+    div.nboutput.container div.output_area {
+        width: 100%;
+    }
+}
+
+/* input area */
+div.nbinput.container div.input_area {
+    border: 1px solid #e0e0e0;
+    border-radius: 2px;
+    /*background: #f5f5f5;*/
+}
+
+/* override MathJax center alignment in output cells */
+div.nboutput.container div[class*=MathJax] {
+    text-align: left !important;
+}
+
+/* override sphinx.ext.imgmath center alignment in output cells */
+div.nboutput.container div.math p {
+    text-align: left;
+}
+
+/* standard error */
+div.nboutput.container div.output_area.stderr {
+    background: #fdd;
+}
+
+/* ANSI colors */
+.ansi-black-fg { color: #3E424D; }
+.ansi-black-bg { background-color: #3E424D; }
+.ansi-black-intense-fg { color: #282C36; }
+.ansi-black-intense-bg { background-color: #282C36; }
+.ansi-red-fg { color: #E75C58; }
+.ansi-red-bg { background-color: #E75C58; }
+.ansi-red-intense-fg { color: #B22B31; }
+.ansi-red-intense-bg { background-color: #B22B31; }
+.ansi-green-fg { color: #00A250; }
+.ansi-green-bg { background-color: #00A250; }
+.ansi-green-intense-fg { color: #007427; }
+.ansi-green-intense-bg { background-color: #007427; }
+.ansi-yellow-fg { color: #DDB62B; }
+.ansi-yellow-bg { background-color: #DDB62B; }
+.ansi-yellow-intense-fg { color: #B27D12; }
+.ansi-yellow-intense-bg { background-color: #B27D12; }
+.ansi-blue-fg { color: #208FFB; }
+.ansi-blue-bg { background-color: #208FFB; }
+.ansi-blue-intense-fg { color: #0065CA; }
+.ansi-blue-intense-bg { background-color: #0065CA; }
+.ansi-magenta-fg { color: #D160C4; }
+.ansi-magenta-bg { background-color: #D160C4; }
+.ansi-magenta-intense-fg { color: #A03196; }
+.ansi-magenta-intense-bg { background-color: #A03196; }
+.ansi-cyan-fg { color: #60C6C8; }
+.ansi-cyan-bg { background-color: #60C6C8; }
+.ansi-cyan-intense-fg { color: #258F8F; }
+.ansi-cyan-intense-bg { background-color: #258F8F; }
+.ansi-white-fg { color: #C5C1B4; }
+.ansi-white-bg { background-color: #C5C1B4; }
+.ansi-white-intense-fg { color: #A1A6B2; }
+.ansi-white-intense-bg { background-color: #A1A6B2; }
+
+.ansi-default-inverse-fg { color: #FFFFFF; }
+.ansi-default-inverse-bg { background-color: #000000; }
+
+.ansi-bold { font-weight: bold; }
+.ansi-underline { text-decoration: underline; }
+
+
+div.nbinput.container div.input_area div[class*=highlight] > pre,
+div.nboutput.container div.output_area div[class*=highlight] > pre,
+div.nboutput.container div.output_area div[class*=highlight].math,
+div.nboutput.container div.output_area.rendered_html,
+div.nboutput.container div.output_area > div.output_javascript,
+div.nboutput.container div.output_area:not(.rendered_html) > img{
+    padding: 5px;
+    margin: 0;
+}
+
+/* fix copybtn overflow problem in chromium (needed for 'sphinx_copybutton') */
+div.nbinput.container div.input_area > div[class^='highlight'],
+div.nboutput.container div.output_area > div[class^='highlight']{
+    overflow-y: hidden;
+}
+
+/* hide copybtn icon on prompts (needed for 'sphinx_copybutton') */
+.prompt a.copybtn {
+    display: none;
+}
+
+/* Some additional styling taken form the Jupyter notebook CSS */
+div.rendered_html table {
+  border: none;
+  border-collapse: collapse;
+  border-spacing: 0;
+  color: black;
+  font-size: 12px;
+  table-layout: fixed;
+}
+div.rendered_html thead {
+  border-bottom: 1px solid black;
+  vertical-align: bottom;
+}
+div.rendered_html tr,
+div.rendered_html th,
+div.rendered_html td {
+  text-align: right;
+  vertical-align: middle;
+  padding: 0.5em 0.5em;
+  line-height: normal;
+  white-space: normal;
+  max-width: none;
+  border: none;
+}
+div.rendered_html th {
+  font-weight: bold;
+}
+div.rendered_html tbody tr:nth-child(odd) {
+  background: #f5f5f5;
+}
+div.rendered_html tbody tr:hover {
+  background: rgba(66, 165, 245, 0.2);
+}
+
+/* CSS overrides for sphinx_rtd_theme */
+
+/* 24px margin */
+.nbinput.nblast.container,
+.nboutput.nblast.container {
+    margin-bottom: 19px;  /* padding has already 5px */
+}
+
+/* ... except between code cells! */
+.nblast.container + .nbinput.container {
+    margin-top: -19px;
+}
+
+.admonition > p:before {
+    margin-right: 4px;  /* make room for the exclamation icon */
+}
+
+/* Fix math alignment, see https://github.com/rtfd/sphinx_rtd_theme/pull/686 */
+.math {
+    text-align: unset;
+}
+</style>
+<div class="section" id="Replica-Exchange---Enveloping-Distribution-Sampling---automatic-Workflow">
+<h1>Replica Exchange - Enveloping Distribution Sampling - automatic Workflow<a class="headerlink" href="#Replica-Exchange---Enveloping-Distribution-Sampling---automatic-Workflow" title="Permalink to this headline">¶</a></h1>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">reeds</span>
+<span class="n">help</span><span class="p">(</span><span class="n">reeds</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Help on package reeds:
+
+NAME
+    reeds
+
+DESCRIPTION
+    Replica Exchange - Enveloping Distribution Sampling - Project
+    This Package is giving all code to the REEDS Projects.
+
+    STRUCTURE
+    ------------
+    The project is structured into three folders:
+    - The module folder, contains main functionality of the package and is a good start.
+    - The function_libs folder contains all the code you could use in one of your own scripts.
+    - The scripts folder contains code bits, that I&#39;m sometimes using.
+
+    REQUIREMENTS
+    ------------
+    * Python version: 3.6
+    * Required packages:
+        - Numpy
+        - pandas
+        - matplotlib
+        - mdtraj
+        - numpydoc
+
+        - pygromos - also repository on the riniker gitlab
+
+PACKAGE CONTENTS
+    function_libs (package)
+
+FILE
+    /cluster/home/bschroed/code/reeds/__init__.py
+
+
+</pre></div></div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="c1">#IMPORTs:</span>
+<span class="kn">import</span> <span class="nn">os</span><span class="o">,</span> <span class="nn">glob</span>
+<span class="kn">from</span> <span class="nn">IPython.display</span> <span class="kn">import</span> <span class="n">HTML</span><span class="p">,</span> <span class="n">Image</span><span class="p">,</span><span class="n">Markdown</span>
+
+<span class="kn">from</span> <span class="nn">pygromos.utils</span> <span class="kn">import</span> <span class="n">bash</span>
+<span class="kn">from</span> <span class="nn">pygromos.euler_submissions</span> <span class="kn">import</span> <span class="n">FileManager</span> <span class="k">as</span> <span class="n">fM</span>
+</pre></div>
+</div>
+</div>
+#adapt standard imd to paper
+from pygromos.utils import bash
+from pygromos.files import imd
+
+from reeds.gromos_files import imd_templates
+
+in_template_reeds_imd = "/cluster/work/igc/bschroed/REEDS/PNMT/test_PNMT/0_input/template_reeds.imd"
+print(imd_templates.reeds_md_path)
+i = imd.Imd(imd_templates.reeds_md_path)
+i.NONBONDED.NSLFEXCL=0
+i.write(in_template_reeds_imd)
+i.REPLICA_EDS.NTRIALS = 10
+i.STEP.NSLIM = 10
+del i
+
+
+in_template_md_imd = "/cluster/work/igc/bschroed/REEDS/PNMT/test_PNMT/0_input/template_md.imd"
+print(imd_templates.eds_md_path)
+i = imd.Imd(imd_templates.eds_md_path)
+i.NONBONDED.NSLFEXCL=0
+i.write(in_template_md_imd)
+del i<div class="section" id="Global-Definition">
+<h2>Global Definition<a class="headerlink" href="#Global-Definition" title="Permalink to this headline">¶</a></h2>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+
+<span></span><span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">from</span> <span class="nn">pygromos.utils</span> <span class="kn">import</span> <span class="n">bash</span>
+<span class="kn">from</span> <span class="nn">pygromos.euler_submissions</span> <span class="kn">import</span> <span class="n">FileManager</span> <span class="k">as</span> <span class="n">fM</span>
+
+<span class="c1">#needs to be provided via gromos compiling</span>
+<span class="n">gromosXX_bin</span> <span class="o">=</span> <span class="s2">&quot;/cluster/home/bschroed/gromos/gromos_native/gromosXX_mpi/bin&quot;</span>
+<span class="n">gromosPP_bin</span> <span class="o">=</span> <span class="s2">&quot;/cluster/home/bschroed/gromos/gromos_native/gromos++/bin&quot;</span>
+<span class="n">ene_ana_lib</span> <span class="o">=</span><span class="s2">&quot;/cluster/home/bschroed/gromos/ene_ana_libs/ene_ana.md.lib&quot;</span>
+
+<span class="c1">#System Dependent settings:</span>
+<span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;MY_NAME&quot;</span>
+<span class="n">root_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">()</span>
+<span class="n">input_folder</span> <span class="o">=</span>    <span class="n">root_dir</span><span class="o">+</span><span class="s2">&quot;/input/&quot;</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">root_dir</span><span class="p">)</span>
+
+
+<span class="c1">##input Files</span>
+<span class="c1">###general Templates</span>
+<span class="n">in_template_md_imd</span> <span class="o">=</span> <span class="n">root_dir</span><span class="o">+</span><span class="s2">&quot;/input/template_md.imd&quot;</span>
+<span class="n">in_template_reeds_imd</span> <span class="o">=</span> <span class="n">root_dir</span><span class="o">+</span><span class="s2">&quot;/input/template_reeds.imd&quot;</span>
+
+<span class="c1">###System dependent Files</span>
+<span class="n">in_cnf_file</span> <span class="o">=</span>     <span class="n">input_folder</span><span class="o">+</span><span class="s2">&quot;/PNMT_9lig_water.cnf&quot;</span>
+<span class="n">in_top_file</span> <span class="o">=</span>     <span class="n">input_folder</span><span class="o">+</span><span class="s2">&quot;/PNMT_9lig_water.top&quot;</span>
+<span class="n">in_pert_file</span> <span class="o">=</span>    <span class="n">input_folder</span><span class="o">+</span><span class="s2">&quot;/PNMT_9lig_water.ptp&quot;</span>
+<span class="n">in_disres_file</span> <span class="o">=</span>  <span class="n">input_folder</span><span class="o">+</span><span class="s2">&quot;/PNMT_9lig_water_disres.dat&quot;</span>
+
+
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="Optimize-Single-EDS-End-states">
+<h2>Optimize Single EDS-End states<a class="headerlink" href="#Optimize-Single-EDS-End-states" title="Permalink to this headline">¶</a></h2>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">reeds.modules</span> <span class="kn">import</span> <span class="n">do_RE_EDS_generateOptimizedStates</span> <span class="k">as</span> <span class="n">optimizeStates</span>
+<span class="n">help</span><span class="p">(</span><span class="n">optimizeStates</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Help on module reeds.modules.do_RE_EDS_generateOptimizedStates in reeds.modules:
+
+NAME
+    reeds.modules.do_RE_EDS_generateOptimizedStates
+
+DESCRIPTION
+    Generate Optimized structures with EDS
+    Description:
+      This script executes simulations, that optimize the input EDS system in each state seperatley.
+      The number of simulations is dependent on the ligands (endstates) of the system.
+      Each simulation is biased towards one state via the Energy Offsets.
+      After simulating the potentials energies get analysed and plotted.
+      You should see, that in each simulation only one state is dominating the system. (e.g.: Check root_path_to_out_dir/analysis/sampling_undersampling.png)
+
+      This output will be automatically used by do_RE_EDS_eoffEstimation.py(provide: &#34;root_path_to_out_dir/simulation/&#34;)
+
+      As input template file the file: .../reeds/gromos_files/imd_templates/eds_md.imd
+
+      Further optimisations suggestions, if you can not generate the optimized states:
+          * use coordinates of this System in an a undersampling -&gt; allows easier transitions
+          * increase the absolute values of the EOFFs in .imd file -&gt; &#34;&#34;
+          * increase simulation duration, to get the desired transition
+
+      Todo: enable protein useage in system (Problem with parameter file adaption. - protein should be one energygroup)
+
+    Useage:
+      * via commandline
+         use: python do_RE_EDS_generateOptimizedStates.py -h to get input help.
+      * via python
+         for getting the input right see main part under the function.
+     Author: Benjamin Schroeder
+
+FUNCTIONS
+    do(out_root_dir: str, in_simSystem: pygromos.euler_submissions.FileManager.Simulation_System.System, in_imd_template_path: str = &#39;/cluster/home/bschroed/code/reeds/gromos_files/imd_templates/eds_md.imd&#39;, in_gromosXX_bin_dir: str = None, in_gromosPP_bin_dir: str = None, ene_ana_lib: str = &#39;/cluster/home/bschroed/code/reeds/gromos_files/ene_ana_libs/new_ene_ana_REEDS_9state.md++.lib&#39;, simulation_steps: int = 1000000, exclude_residues: list = [], cpus_per_job: int = 4, submit: bool = True, verbose: bool = True) -&gt; int
+        Generate Optimized structures with EDS
+
+                This script executes simulations, that optimize the input EDS system in each state seperatley.
+                The number of simulations is dependent on the ligands (endstates) of the system.
+                Each simulation is biased towards one state via the Energy Offsets.
+                After simulating the potentials energies get analysed and plotted.
+                You should see, that in each simulation only one state is dominating the system. (e.g.: Check root_path_to_out_dir/analysis/sampling_undersampling.png)
+
+                This output will be automatically used by do_RE_EDS_eoffEstimation.py(provide: &#34;root_path_to_out_dir/simulation/&#34;)
+
+                As input template file the file: .../reeds/gromos_files/imd_templates/eds_md.imd
+
+                Further optimisations suggestions, if you can not generate the optimized states:
+                    * use coordinates of this System in an a undersampling -&gt; allows easier transitions
+                    * increase the absolute values of the EOFFs in .imd file -&gt; &#34;&#34;
+                    * increase simulation duration, to get the desired transition
+
+
+        Parameters
+        ----------
+        out_root_dir
+            path to the root output dir, in which the script directories wild be build into
+        system:  pygromos.PipelineManager.Simulation_System
+            System obj. that contains information about the System-Files (cnf, top,...0)
+        in_imd_template_path: str, optional
+            gives the path to the template parameter file (.imd), that is adapted to fit the system.
+
+        in_gromosXX_bin_dir: str, optional
+            Flag, if the generated sopt_job should be submitted to lsf queue.
+        in_gromosPP_bin_dir: str, optional
+            How many cpus shall be used per simulation?
+        ene_ana_lib: str, optional
+            ene ana lib for the analysis
+
+        simulation_steps: : int, optional
+            how many simulation steps, shall be carried out? (default=1000000)
+        exclude_residues: List[str], optional
+            Which non protein residues shall be ignored and not treated as eds-state(cofactors)
+        cpus_per_job: int, optional
+            how many mpi cores per job, shall be used?
+        submit: bool, optional
+            should the prepared scripts be executed? (or even queued)
+        verbose: bool, optional
+            verbosity of the code
+        Returns
+        -------
+        int
+            returnCode
+
+DATA
+    spacer = &#39;////////////////////////////////////////////////.../////////...
+
+FILE
+    /cluster/home/bschroed/code/reeds/modules/do_RE_EDS_generateOptimizedStates.py
+
+
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="c1">#Setup Simulation Step:</span>
+
+<span class="n">out_gOptStates_dir</span> <span class="o">=</span> <span class="n">root_dir</span><span class="o">+</span><span class="s2">&quot;/a_optimizedState&quot;</span>
+<span class="n">in_name</span> <span class="o">=</span> <span class="n">name</span><span class="o">+</span><span class="s2">&quot;_optimize_single_state&quot;</span>
+
+<span class="n">out_gOptStates_dir</span> <span class="o">=</span> <span class="n">bash</span><span class="o">.</span><span class="n">make_folder</span><span class="p">(</span><span class="n">out_gOptStates_dir</span><span class="p">)</span>
+
+
+<span class="n">topology_state_opt</span> <span class="o">=</span> <span class="n">fM</span><span class="o">.</span><span class="n">Topology</span><span class="p">(</span><span class="n">top_path</span><span class="o">=</span><span class="n">in_top_file</span><span class="p">,</span>
+                                 <span class="n">disres_path</span><span class="o">=</span><span class="n">in_disres_file</span><span class="p">,</span>
+                                 <span class="n">pertubation_path</span><span class="o">=</span><span class="n">in_pert_file</span><span class="p">)</span>
+
+<span class="n">system_state_opt</span> <span class="o">=</span> <span class="n">fM</span><span class="o">.</span><span class="n">System</span><span class="p">(</span><span class="n">coordinates</span><span class="o">=</span><span class="n">in_cnf_file</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">in_name</span><span class="p">,</span> <span class="n">top</span><span class="o">=</span><span class="n">topology_state_opt</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">system_state_opt</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+System
+        name:  PNMT_9ligs_water_optimize_single_state
+        top:
+                Topology
+                        top_path:  /cluster/work/igc/bschroed/REEDS/PNMT/test_PNMT/0_input/PNMT_9lig_water.top
+                        disres_path:  /cluster/work/igc/bschroed/REEDS/PNMT/test_PNMT/0_input/PNMT_9lig_water_disres.dat
+                        pertubation_path:  /cluster/work/igc/bschroed/REEDS/PNMT/test_PNMT/0_input/PNMT_9lig_water.ptp
+
+        coordinates:  /cluster/work/igc/bschroed/REEDS/PNMT/test_PNMT/0_input/PNMT_9lig_water.cnf
+        solvent:  None
+
+</pre></div></div>
+</div>
+<div class="section" id="Job-Execution">
+<h3>Job Execution<a class="headerlink" href="#Job-Execution" title="Permalink to this headline">¶</a></h3>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">optimizeStates</span><span class="o">.</span><span class="n">do</span><span class="p">(</span><span class="n">in_simSystem</span><span class="o">=</span><span class="n">system_state_opt</span><span class="p">,</span> <span class="n">in_imd_template_path</span><span class="o">=</span><span class="n">in_template_md_imd</span><span class="p">,</span>
+                  <span class="n">out_root_dir</span><span class="o">=</span><span class="n">out_gOptStates_dir</span><span class="p">,</span> <span class="n">in_gromosXX_bin_dir</span><span class="o">=</span><span class="n">gromosXX_bin</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+<span class="ansi-red-fg">---------------------------------------------------------------------------</span>
+<span class="ansi-red-fg">NameError</span>                                 Traceback (most recent call last)
+<span class="ansi-green-fg">&lt;ipython-input-5-b2677482d18b&gt;</span> in <span class="ansi-cyan-fg">&lt;module&gt;</span>
+<span class="ansi-green-fg">----&gt; 1</span><span class="ansi-red-fg"> </span>optimizeStates<span class="ansi-blue-fg">.</span>do<span class="ansi-blue-fg">(</span>in_simSystem<span class="ansi-blue-fg">=</span>system_state_opt<span class="ansi-blue-fg">,</span> in_imd_template_path<span class="ansi-blue-fg">=</span>in_template_md_imd<span class="ansi-blue-fg">,</span> out_root_dir<span class="ansi-blue-fg">=</span>out_gOptStates_dir<span class="ansi-blue-fg">,</span> in_gromosXX_bin_dir<span class="ansi-blue-fg">=</span>gromosXX_bin<span class="ansi-blue-fg">,</span> submit<span class="ansi-blue-fg">=</span><span class="ansi-green-fg">False</span><span class="ansi-blue-fg">)</span>
+
+<span class="ansi-red-fg">NameError</span>: name &#39;optimizeStates&#39; is not defined
+</pre></div></div>
+</div>
+</div>
+<div class="section" id="Analysis">
+<h3>Analysis<a class="headerlink" href="#Analysis" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="Check-optimized-states">
+<h4>Check optimized states<a class="headerlink" href="#Check-optimized-states" title="Permalink to this headline">¶</a></h4>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[25]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">Image</span><span class="p">(</span><span class="n">out_gOptStates_dir</span><span class="o">+</span><span class="s2">&quot;/analysis/plots/sampling_minstate_matrix.png&quot;</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">300</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[25]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/Examples_RE_EDS_pipeline_12_0.png" class="no-scaled-link" src="../_images/Examples_RE_EDS_pipeline_12_0.png" style="width: 300px;" />
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="Find-lower-Bound">
+<h2>Find lower Bound<a class="headerlink" href="#Find-lower-Bound" title="Permalink to this headline">¶</a></h2>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">reeds.modules</span> <span class="kn">import</span> <span class="n">do_RE_EDS_findLowerBound</span> <span class="k">as</span> <span class="n">findLowerBound</span>
+<span class="n">help</span><span class="p">(</span><span class="n">findLowerBound</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">out_lowerBound_dir</span> <span class="o">=</span> <span class="n">root_dir</span><span class="o">+</span><span class="s2">&quot;/b_lowerBound&quot;</span>
+<span class="n">in_name</span> <span class="o">=</span> <span class="n">name</span><span class="o">+</span><span class="s2">&quot;_find_lower_bound&quot;</span>
+
+<span class="n">out_lowerBound_dir</span> <span class="o">=</span> <span class="n">bash</span><span class="o">.</span><span class="n">make_folder</span><span class="p">(</span><span class="n">out_lowerBound_dir</span><span class="p">)</span>
+
+
+<span class="n">topology_lower_bound</span> <span class="o">=</span> <span class="n">fM</span><span class="o">.</span><span class="n">Topology</span><span class="p">(</span><span class="n">top_path</span><span class="o">=</span><span class="n">in_top_file</span><span class="p">,</span> <span class="n">disres_path</span><span class="o">=</span><span class="n">in_disres_file</span><span class="p">,</span> <span class="n">pertubation_path</span><span class="o">=</span><span class="n">in_pert_file</span><span class="p">)</span>
+<span class="n">system_lower_bound</span> <span class="o">=</span> <span class="n">fM</span><span class="o">.</span><span class="n">System</span><span class="p">(</span><span class="n">coordinates</span><span class="o">=</span><span class="n">in_cnf_file</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">in_name</span><span class="p">,</span> <span class="n">top</span><span class="o">=</span><span class="n">topology_lower_bound</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">system_lower_bound</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+System
+        name:  PNMT_9ligs_water_find_lower_bound
+        top:
+                Topology
+                        top_path:  /cluster/work/igc/bschroed/REEDS/PNMT/test_PNMT/0_input/PNMT_9lig_water.top
+                        disres_path:  /cluster/work/igc/bschroed/REEDS/PNMT/test_PNMT/0_input/PNMT_9lig_water_disres.dat
+                        pertubation_path:  /cluster/work/igc/bschroed/REEDS/PNMT/test_PNMT/0_input/PNMT_9lig_water.ptp
+
+        coordinates:  /cluster/work/igc/bschroed/REEDS/PNMT/test_PNMT/0_input/PNMT_9lig_water.cnf
+        solvent:  None
+
+</pre></div></div>
+</div>
+<div class="section" id="id1">
+<h3>Job Execution<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">findLowerBound</span><span class="o">.</span><span class="n">do</span><span class="p">(</span><span class="n">in_simSystem</span><span class="o">=</span><span class="n">system_lower_bound</span><span class="p">,</span> <span class="n">template_imd</span><span class="o">=</span><span class="n">in_template_md_imd</span><span class="p">,</span>
+                  <span class="n">out_root_dir</span><span class="o">=</span><span class="n">out_lowerBound_dir</span><span class="p">,</span>
+                  <span class="n">gromosXX_bin</span><span class="o">=</span><span class="n">gromosXX_bin</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="id2">
+<h3>Analysis<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="Verify-undersampling">
+<h4>Verify undersampling<a class="headerlink" href="#Verify-undersampling" title="Permalink to this headline">¶</a></h4>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">Image</span><span class="p">(</span><span class="n">out_lowerBound_dir</span><span class="o">+</span><span class="s2">&quot;/analysis/plots/sampling_undersample_matrix.png&quot;</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">300</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/Examples_RE_EDS_pipeline_20_0.png" class="no-scaled-link" src="../_images/Examples_RE_EDS_pipeline_20_0.png" style="width: 300px;" />
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="Energy-Offset-Estimation">
+<h2>Energy Offset Estimation<a class="headerlink" href="#Energy-Offset-Estimation" title="Permalink to this headline">¶</a></h2>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">reeds.modules</span> <span class="kn">import</span> <span class="n">do_RE_EDS_eoffEstimation</span> <span class="k">as</span> <span class="n">eoffEstm</span>
+<span class="n">help</span><span class="p">(</span><span class="n">eoffEstm</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[28]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">out_eoff_dir</span> <span class="o">=</span> <span class="n">root_dir</span><span class="o">+</span><span class="s2">&quot;/c_eoff&quot;</span>
+<span class="n">next_lowerBound_dir</span> <span class="o">=</span> <span class="n">root_dir</span><span class="o">+</span><span class="s2">&quot;/b_lower_bound/analysis/next&quot;</span>
+<span class="n">in_name</span> <span class="o">=</span> <span class="n">name</span><span class="o">+</span><span class="s2">&quot;_energy_offsets&quot;</span>
+
+
+<span class="n">out_eoff_dir</span> <span class="o">=</span> <span class="n">bash</span><span class="o">.</span><span class="n">make_folder</span><span class="p">(</span><span class="n">out_eoff_dir</span><span class="p">)</span>
+
+
+
+<span class="n">topology</span> <span class="o">=</span> <span class="n">fM</span><span class="o">.</span><span class="n">Topology</span><span class="p">(</span><span class="n">top_path</span><span class="o">=</span><span class="n">in_top_file</span><span class="p">,</span> <span class="n">disres_path</span><span class="o">=</span><span class="n">in_disres_file</span><span class="p">,</span> <span class="n">pertubation_path</span><span class="o">=</span><span class="n">in_pert_file</span><span class="p">)</span>
+<span class="n">system</span> <span class="o">=</span> <span class="n">fM</span><span class="o">.</span><span class="n">System</span><span class="p">(</span><span class="n">coordinates</span><span class="o">=</span><span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="n">next_lowerBound_dir</span><span class="o">+</span><span class="s2">&quot;/*.cnf&quot;</span><span class="p">),</span> <span class="n">name</span><span class="o">=</span><span class="n">in_name</span><span class="p">,</span> <span class="n">top</span><span class="o">=</span><span class="n">topology</span><span class="p">)</span>
+
+</pre></div>
+</div>
+</div>
+<div class="section" id="id3">
+<h3>Job Execution<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h3>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">last_jobID</span> <span class="o">=</span> <span class="n">eoffEstm</span><span class="o">.</span><span class="n">do</span><span class="p">(</span><span class="n">out_root_dir</span><span class="o">=</span><span class="n">out_eoff_dir</span><span class="p">,</span> <span class="n">in_simSystem</span><span class="o">=</span><span class="n">system</span><span class="p">,</span>
+                         <span class="n">in_template_imd_path</span><span class="o">=</span><span class="n">in_template_reeds_imd</span><span class="p">,</span>
+                         <span class="n">in_ene_ana_lib</span><span class="o">=</span><span class="n">ene_ana_lib</span><span class="p">)</span>
+
+<span class="n">last_jobID</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="id4">
+<h3>Analysis<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="Potential-energies-of-the-states">
+<h4>Potential energies of the states<a class="headerlink" href="#Potential-energies-of-the-states" title="Permalink to this headline">¶</a></h4>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[34]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">Image</span><span class="p">(</span><span class="n">out_eoff_dir</span><span class="o">+</span><span class="s2">&quot;/analysis/plots/edsState_potential_timeseries_stageGrid_s15.png&quot;</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">600</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[34]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/Examples_RE_EDS_pipeline_28_0.png" class="no-scaled-link" src="../_images/Examples_RE_EDS_pipeline_28_0.png" style="width: 600px;" />
+</div>
+</div>
+</div>
+<div class="section" id="Check-undersampling-of-the-replicas">
+<h4>Check undersampling of the replicas<a class="headerlink" href="#Check-undersampling-of-the-replicas" title="Permalink to this headline">¶</a></h4>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[29]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">Image</span><span class="p">(</span><span class="n">out_eoff_dir</span><span class="o">+</span><span class="s2">&quot;/analysis/plots/sampling_undersample_matrix.png&quot;</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">300</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[29]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/Examples_RE_EDS_pipeline_30_0.png" class="no-scaled-link" src="../_images/Examples_RE_EDS_pipeline_30_0.png" style="width: 300px;" />
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="Energy-offset-Estimation">
+<h2>Energy offset Estimation<a class="headerlink" href="#Energy-offset-Estimation" title="Permalink to this headline">¶</a></h2>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[100]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">Markdown</span><span class="p">(</span><span class="n">out_eoff_dir</span><span class="o">+</span><span class="s2">&quot;/analysis/Eoff_estimate.out&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[100]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="section" id="REEDS---Eoff-Estimation:">
+<h3>REEDS - Eoff Estimation:<a class="headerlink" href="#REEDS---Eoff-Estimation:" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>Energy Offsets for each Replica
+</pre></div>
+</div>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 9%" />
+<col style="width: 9%" />
+<col style="width: 9%" />
+<col style="width: 9%" />
+<col style="width: 9%" />
+<col style="width: 9%" />
+<col style="width: 9%" />
+<col style="width: 9%" />
+<col style="width: 9%" />
+<col style="width: 9%" />
+<col style="width: 9%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>S</p></th>
+<th class="head"><p>e1</p></th>
+<th class="head"><p>e2</p></th>
+<th class="head"><p>e3</p></th>
+<th class="head"><p>e4</p></th>
+<th class="head"><p>e5</p></th>
+<th class="head"><p>e6</p></th>
+<th class="head"><p>e7</p></th>
+<th class="head"><p>e8</p></th>
+<th class="head"><p>e9</p></th>
+<th class="head"><p>iterations</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>1.0000</p></td>
+<td><p>0.0</p></td>
+<td><p>636.0681</p></td>
+<td><p>158.943</p></td>
+<td><p>370.8993</p></td>
+<td><p>108.9934</p></td>
+<td><p>-360.8402</p></td>
+<td><p>-601.6696</p></td>
+<td><p>69.0161</p></td>
+<td><p>478469.9988</p></td>
+<td><p>1</p></td>
+</tr>
+<tr class="row-odd"><td><p>0.5620</p></td>
+<td><p>0.0</p></td>
+<td><p>643.8805</p></td>
+<td><p>166.8479</p></td>
+<td><p>360.0789</p></td>
+<td><p>116.2305</p></td>
+<td><p>-354.6437</p></td>
+<td><p>-593.8572</p></td>
+<td><p>76.8285</p></td>
+<td><p>275003.5493</p></td>
+<td><p>1</p></td>
+</tr>
+<tr class="row-even"><td><p>0.3160</p></td>
+<td><p>0.0</p></td>
+<td><p>643.7946</p></td>
+<td><p>70.8092</p></td>
+<td><p>360.0041</p></td>
+<td><p>116.1558</p></td>
+<td><p>-355.2782</p></td>
+<td><p>-593.9319</p></td>
+<td><p>76.7975</p></td>
+<td><p>66055.4054</p></td>
+<td><p>1</p></td>
+</tr>
+<tr class="row-odd"><td><p>0.1780</p></td>
+<td><p>0.0</p></td>
+<td><p>548.9044</p></td>
+<td><p>-24.0813</p></td>
+<td><p>294.1459</p></td>
+<td><p>21.5693</p></td>
+<td><p>-457.057</p></td>
+<td><p>-688.8221</p></td>
+<td><p>-18.0927</p></td>
+<td><p>65960.5152</p></td>
+<td><p>1</p></td>
+</tr>
+<tr class="row-even"><td><p>0.1000</p></td>
+<td><p>0.0</p></td>
+<td><p>312.6528</p></td>
+<td><p>-260.5298</p></td>
+<td><p>507.5461</p></td>
+<td><p>-214.6817</p></td>
+<td><p>-693.5774</p></td>
+<td><p>-925.0728</p></td>
+<td><p>-254.4915</p></td>
+<td><p>35255.692</p></td>
+<td><p>1</p></td>
+</tr>
+<tr class="row-odd"><td><p>0.0562</p></td>
+<td><p>0.0</p></td>
+<td><p>312.6482</p></td>
+<td><p>-260.4845</p></td>
+<td><p>507.5415</p></td>
+<td><p>-214.7107</p></td>
+<td><p>-697.292</p></td>
+<td><p>-925.0303</p></td>
+<td><p>-254.4928</p></td>
+<td><p>35255.7417</p></td>
+<td><p>1</p></td>
+</tr>
+<tr class="row-even"><td><p>0.0316</p></td>
+<td><p>0.0</p></td>
+<td><p>361.4541</p></td>
+<td><p>37.7465</p></td>
+<td><p>173.8266</p></td>
+<td><p>84.033</p></td>
+<td><p>-506.0606</p></td>
+<td><p>-612.7407</p></td>
+<td><p>-41.2746</p></td>
+<td><p>35021.3534</p></td>
+<td><p>1</p></td>
+</tr>
+<tr class="row-odd"><td><p>0.0178</p></td>
+<td><p>0.0</p></td>
+<td><p>251.6421</p></td>
+<td><p>90.1223</p></td>
+<td><p>112.7153</p></td>
+<td><p>-12.4274</p></td>
+<td><p>-445.7497</p></td>
+<td><p>-535.4198</p></td>
+<td><p>-0.4714</p></td>
+<td><p>33091.7281</p></td>
+<td><p>1</p></td>
+</tr>
+<tr class="row-even"><td><p>0.0100</p></td>
+<td><p>0.0</p></td>
+<td><p>-1.361</p></td>
+<td><p>47.1801</p></td>
+<td><p>28.3029</p></td>
+<td><p>-18.557</p></td>
+<td><p>-371.3496</p></td>
+<td><p>-395.9814</p></td>
+<td><p>-19.4162</p></td>
+<td><p>-33.1947</p></td>
+<td><p>1</p></td>
+</tr>
+<tr class="row-odd"><td><p>0.0056</p></td>
+<td><p>0.0</p></td>
+<td><p>1.1021</p></td>
+<td><p>-14.9446</p></td>
+<td><p>9.8619</p></td>
+<td><p>-25.6958</p></td>
+<td><p>-298.7615</p></td>
+<td><p>-366.9213</p></td>
+<td><p>-13.5085</p></td>
+<td><p>-69.3831</p></td>
+<td><p>1</p></td>
+</tr>
+<tr class="row-even"><td><p>0.0032</p></td>
+<td><p>0.0</p></td>
+<td><p>0.5878</p></td>
+<td><p>-14.7208</p></td>
+<td><p>9.1451</p></td>
+<td><p>-28.1186</p></td>
+<td><p>-297.3954</p></td>
+<td><p>-364.1193</p></td>
+<td><p>-17.1935</p></td>
+<td><p>-70.4942</p></td>
+<td><p>1</p></td>
+</tr>
+<tr class="row-odd"><td><p>0.0018</p></td>
+<td><p>0.0</p></td>
+<td><p>3.4021</p></td>
+<td><p>-15.1735</p></td>
+<td><p>7.48</p></td>
+<td><p>-28.8133</p></td>
+<td><p>-293.9541</p></td>
+<td><p>-364.0154</p></td>
+<td><p>-17.2555</p></td>
+<td><p>-68.9907</p></td>
+<td><p>1</p></td>
+</tr>
+<tr class="row-even"><td><p>0.0010</p></td>
+<td><p>0.0</p></td>
+<td><p>4.1996</p></td>
+<td><p>-14.3693</p></td>
+<td><p>7.3393</p></td>
+<td><p>-28.5365</p></td>
+<td><p>-293.016</p></td>
+<td><p>-361.7074</p></td>
+<td><p>-17.1641</p></td>
+<td><p>-68.4065</p></td>
+<td><p>1</p></td>
+</tr>
+<tr class="row-odd"><td><p>0.0006</p></td>
+<td><p>0.0</p></td>
+<td><p>4.9752</p></td>
+<td><p>-14.4112</p></td>
+<td><p>7.6172</p></td>
+<td><p>-28.7545</p></td>
+<td><p>-291.8812</p></td>
+<td><p>-361.7002</p></td>
+<td><p>-17.1837</p></td>
+<td><p>-68.1541</p></td>
+<td><p>1</p></td>
+</tr>
+<tr class="row-even"><td><p>0.0003</p></td>
+<td><p>0.0</p></td>
+<td><p>5.2779</p></td>
+<td><p>-14.1929</p></td>
+<td><p>7.6978</p></td>
+<td><p>-28.7624</p></td>
+<td><p>-291.6566</p></td>
+<td><p>-360.9287</p></td>
+<td><p>-17.1028</p></td>
+<td><p>-67.9616</p></td>
+<td><p>1</p></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>Minimum energy count per state
+</pre></div>
+</div>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 8%" />
+<col style="width: 8%" />
+<col style="width: 8%" />
+<col style="width: 8%" />
+<col style="width: 8%" />
+<col style="width: 8%" />
+<col style="width: 8%" />
+<col style="width: 8%" />
+<col style="width: 8%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>S</p></th>
+<th class="head"><p>e1</p></th>
+<th class="head"><p>e2</p></th>
+<th class="head"><p>e3</p></th>
+<th class="head"><p>e4</p></th>
+<th class="head"><p>e5</p></th>
+<th class="head"><p>e6</p></th>
+<th class="head"><p>e7</p></th>
+<th class="head"><p>e8</p></th>
+<th class="head"><p>e9</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>1.0000</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>19</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+</tr>
+<tr class="row-odd"><td><p>0.5620</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>19</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+</tr>
+<tr class="row-even"><td><p>0.3160</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>19</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+</tr>
+<tr class="row-odd"><td><p>0.1780</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>19</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+</tr>
+<tr class="row-even"><td><p>0.1000</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>19</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+</tr>
+<tr class="row-odd"><td><p>0.0562</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>19</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+</tr>
+<tr class="row-even"><td><p>0.0316</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>19</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+</tr>
+<tr class="row-odd"><td><p>0.0178</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>19</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+</tr>
+<tr class="row-even"><td><p>0.0100</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>5</p></td>
+<td><p>14</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+</tr>
+<tr class="row-odd"><td><p>0.0056</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>1</p></td>
+<td><p>18</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+</tr>
+<tr class="row-even"><td><p>0.0032</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>1</p></td>
+<td><p>18</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+</tr>
+<tr class="row-odd"><td><p>0.0018</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>2</p></td>
+<td><p>17</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+</tr>
+<tr class="row-even"><td><p>0.0010</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>2</p></td>
+<td><p>17</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+</tr>
+<tr class="row-odd"><td><p>0.0006</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>2</p></td>
+<td><p>17</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+</tr>
+<tr class="row-even"><td><p>0.0003</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>2</p></td>
+<td><p>17</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>Negative energy count per state(pottresh=0.0)
+</pre></div>
+</div>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 8%" />
+<col style="width: 8%" />
+<col style="width: 8%" />
+<col style="width: 8%" />
+<col style="width: 8%" />
+<col style="width: 8%" />
+<col style="width: 8%" />
+<col style="width: 8%" />
+<col style="width: 8%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>S</p></th>
+<th class="head"><p>e1</p></th>
+<th class="head"><p>e2</p></th>
+<th class="head"><p>e3</p></th>
+<th class="head"><p>e4</p></th>
+<th class="head"><p>e5</p></th>
+<th class="head"><p>e6</p></th>
+<th class="head"><p>e7</p></th>
+<th class="head"><p>e8</p></th>
+<th class="head"><p>e9</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>1.0000</p></td>
+<td><p>4</p></td>
+<td><p>0</p></td>
+<td><p>5</p></td>
+<td><p>0</p></td>
+<td><p>5</p></td>
+<td><p>11</p></td>
+<td><p>19</p></td>
+<td><p>8</p></td>
+<td><p>0</p></td>
+</tr>
+<tr class="row-odd"><td><p>0.5620</p></td>
+<td><p>3</p></td>
+<td><p>0</p></td>
+<td><p>6</p></td>
+<td><p>0</p></td>
+<td><p>5</p></td>
+<td><p>12</p></td>
+<td><p>19</p></td>
+<td><p>9</p></td>
+<td><p>0</p></td>
+</tr>
+<tr class="row-even"><td><p>0.3160</p></td>
+<td><p>2</p></td>
+<td><p>0</p></td>
+<td><p>7</p></td>
+<td><p>0</p></td>
+<td><p>6</p></td>
+<td><p>13</p></td>
+<td><p>19</p></td>
+<td><p>9</p></td>
+<td><p>0</p></td>
+</tr>
+<tr class="row-odd"><td><p>0.1780</p></td>
+<td><p>1</p></td>
+<td><p>0</p></td>
+<td><p>8</p></td>
+<td><p>0</p></td>
+<td><p>6</p></td>
+<td><p>14</p></td>
+<td><p>19</p></td>
+<td><p>9</p></td>
+<td><p>0</p></td>
+</tr>
+<tr class="row-even"><td><p>0.1000</p></td>
+<td><p>1</p></td>
+<td><p>0</p></td>
+<td><p>9</p></td>
+<td><p>0</p></td>
+<td><p>6</p></td>
+<td><p>14</p></td>
+<td><p>19</p></td>
+<td><p>9</p></td>
+<td><p>0</p></td>
+</tr>
+<tr class="row-odd"><td><p>0.0562</p></td>
+<td><p>1</p></td>
+<td><p>0</p></td>
+<td><p>9</p></td>
+<td><p>0</p></td>
+<td><p>6</p></td>
+<td><p>14</p></td>
+<td><p>19</p></td>
+<td><p>9</p></td>
+<td><p>0</p></td>
+</tr>
+<tr class="row-even"><td><p>0.0316</p></td>
+<td><p>10</p></td>
+<td><p>0</p></td>
+<td><p>14</p></td>
+<td><p>1</p></td>
+<td><p>6</p></td>
+<td><p>19</p></td>
+<td><p>19</p></td>
+<td><p>13</p></td>
+<td><p>0</p></td>
+</tr>
+<tr class="row-odd"><td><p>0.0178</p></td>
+<td><p>17</p></td>
+<td><p>1</p></td>
+<td><p>14</p></td>
+<td><p>2</p></td>
+<td><p>8</p></td>
+<td><p>19</p></td>
+<td><p>19</p></td>
+<td><p>17</p></td>
+<td><p>0</p></td>
+</tr>
+<tr class="row-even"><td><p>0.0100</p></td>
+<td><p>19</p></td>
+<td><p>19</p></td>
+<td><p>19</p></td>
+<td><p>19</p></td>
+<td><p>19</p></td>
+<td><p>19</p></td>
+<td><p>19</p></td>
+<td><p>19</p></td>
+<td><p>19</p></td>
+</tr>
+<tr class="row-odd"><td><p>0.0056</p></td>
+<td><p>19</p></td>
+<td><p>19</p></td>
+<td><p>19</p></td>
+<td><p>19</p></td>
+<td><p>19</p></td>
+<td><p>19</p></td>
+<td><p>19</p></td>
+<td><p>19</p></td>
+<td><p>19</p></td>
+</tr>
+<tr class="row-even"><td><p>0.0032</p></td>
+<td><p>19</p></td>
+<td><p>19</p></td>
+<td><p>19</p></td>
+<td><p>19</p></td>
+<td><p>19</p></td>
+<td><p>19</p></td>
+<td><p>19</p></td>
+<td><p>19</p></td>
+<td><p>19</p></td>
+</tr>
+<tr class="row-odd"><td><p>0.0018</p></td>
+<td><p>19</p></td>
+<td><p>19</p></td>
+<td><p>19</p></td>
+<td><p>19</p></td>
+<td><p>19</p></td>
+<td><p>19</p></td>
+<td><p>19</p></td>
+<td><p>19</p></td>
+<td><p>19</p></td>
+</tr>
+<tr class="row-even"><td><p>0.0010</p></td>
+<td><p>19</p></td>
+<td><p>19</p></td>
+<td><p>19</p></td>
+<td><p>19</p></td>
+<td><p>19</p></td>
+<td><p>19</p></td>
+<td><p>19</p></td>
+<td><p>19</p></td>
+<td><p>19</p></td>
+</tr>
+<tr class="row-odd"><td><p>0.0006</p></td>
+<td><p>19</p></td>
+<td><p>19</p></td>
+<td><p>19</p></td>
+<td><p>19</p></td>
+<td><p>19</p></td>
+<td><p>19</p></td>
+<td><p>19</p></td>
+<td><p>19</p></td>
+<td><p>19</p></td>
+</tr>
+<tr class="row-even"><td><p>0.0003</p></td>
+<td><p>19</p></td>
+<td><p>19</p></td>
+<td><p>19</p></td>
+<td><p>19</p></td>
+<td><p>19</p></td>
+<td><p>19</p></td>
+<td><p>19</p></td>
+<td><p>19</p></td>
+<td><p>19</p></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>Fraction of undersampling energies per state (fractresh=[0.1])
+</pre></div>
+</div>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 10%" />
+<col style="width: 10%" />
+<col style="width: 10%" />
+<col style="width: 10%" />
+<col style="width: 10%" />
+<col style="width: 10%" />
+<col style="width: 10%" />
+<col style="width: 10%" />
+<col style="width: 10%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>S</p></th>
+<th class="head"><p>e1</p></th>
+<th class="head"><p>e2</p></th>
+<th class="head"><p>e3</p></th>
+<th class="head"><p>e4</p></th>
+<th class="head"><p>e5</p></th>
+<th class="head"><p>e6</p></th>
+<th class="head"><p>e7</p></th>
+<th class="head"><p>e8</p></th>
+<th class="head"><p>e9</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>1.0000</p></td>
+<td><p>0.2105</p></td>
+<td><p>0.0000</p></td>
+<td><p>0.2632</p></td>
+<td><p>0.0000</p></td>
+<td><p>0.2632</p></td>
+<td><p>0.5789</p></td>
+<td><p>1.0000</p></td>
+<td><p>0.4211</p></td>
+<td><p>0.0000</p></td>
+</tr>
+<tr class="row-odd"><td><p>0.5620</p></td>
+<td><p>0.1579</p></td>
+<td><p>0.0000</p></td>
+<td><p>0.3158</p></td>
+<td><p>0.0000</p></td>
+<td><p>0.2632</p></td>
+<td><p>0.6316</p></td>
+<td><p>1.0000</p></td>
+<td><p>0.4737</p></td>
+<td><p>0.0000</p></td>
+</tr>
+<tr class="row-even"><td><p>0.3160</p></td>
+<td><p>0.1053</p></td>
+<td><p>0.0000</p></td>
+<td><p>0.3684</p></td>
+<td><p>0.0000</p></td>
+<td><p>0.3158</p></td>
+<td><p>0.6842</p></td>
+<td><p>1.0000</p></td>
+<td><p>0.4737</p></td>
+<td><p>0.0000</p></td>
+</tr>
+<tr class="row-odd"><td><p>0.1780</p></td>
+<td><p>0.0526</p></td>
+<td><p>0.0000</p></td>
+<td><p>0.4211</p></td>
+<td><p>0.0000</p></td>
+<td><p>0.3158</p></td>
+<td><p>0.7368</p></td>
+<td><p>1.0000</p></td>
+<td><p>0.4737</p></td>
+<td><p>0.0000</p></td>
+</tr>
+<tr class="row-even"><td><p>0.1000</p></td>
+<td><p>0.0526</p></td>
+<td><p>0.0000</p></td>
+<td><p>0.4737</p></td>
+<td><p>0.0000</p></td>
+<td><p>0.3158</p></td>
+<td><p>0.7368</p></td>
+<td><p>1.0000</p></td>
+<td><p>0.4737</p></td>
+<td><p>0.0000</p></td>
+</tr>
+<tr class="row-odd"><td><p>0.0562</p></td>
+<td><p>0.0526</p></td>
+<td><p>0.0000</p></td>
+<td><p>0.4737</p></td>
+<td><p>0.0000</p></td>
+<td><p>0.3158</p></td>
+<td><p>0.7368</p></td>
+<td><p>1.0000</p></td>
+<td><p>0.4737</p></td>
+<td><p>0.0000</p></td>
+</tr>
+<tr class="row-even"><td><p>0.0316</p></td>
+<td><p>0.5263</p></td>
+<td><p>0.0000</p></td>
+<td><p>0.7368</p></td>
+<td><p>0.0526</p></td>
+<td><p>0.3158</p></td>
+<td><p>1.0000</p></td>
+<td><p>1.0000</p></td>
+<td><p>0.6842</p></td>
+<td><p>0.0000</p></td>
+</tr>
+<tr class="row-odd"><td><p>0.0178</p></td>
+<td><p>0.8947</p></td>
+<td><p>0.0526</p></td>
+<td><p>0.7368</p></td>
+<td><p>0.1053</p></td>
+<td><p>0.4211</p></td>
+<td><p>1.0000</p></td>
+<td><p>1.0000</p></td>
+<td><p>0.8947</p></td>
+<td><p>0.0000</p></td>
+</tr>
+<tr class="row-even"><td><p>0.0100</p></td>
+<td><p>1.0000</p></td>
+<td><p>1.0000</p></td>
+<td><p>1.0000</p></td>
+<td><p>1.0000</p></td>
+<td><p>1.0000</p></td>
+<td><p>1.0000</p></td>
+<td><p>1.0000</p></td>
+<td><p>1.0000</p></td>
+<td><p>1.0000</p></td>
+</tr>
+<tr class="row-odd"><td><p>0.0056</p></td>
+<td><p>1.0000</p></td>
+<td><p>1.0000</p></td>
+<td><p>1.0000</p></td>
+<td><p>1.0000</p></td>
+<td><p>1.0000</p></td>
+<td><p>1.0000</p></td>
+<td><p>1.0000</p></td>
+<td><p>1.0000</p></td>
+<td><p>1.0000</p></td>
+</tr>
+<tr class="row-even"><td><p>0.0032</p></td>
+<td><p>1.0000</p></td>
+<td><p>1.0000</p></td>
+<td><p>1.0000</p></td>
+<td><p>1.0000</p></td>
+<td><p>1.0000</p></td>
+<td><p>1.0000</p></td>
+<td><p>1.0000</p></td>
+<td><p>1.0000</p></td>
+<td><p>1.0000</p></td>
+</tr>
+<tr class="row-odd"><td><p>0.0018</p></td>
+<td><p>1.0000</p></td>
+<td><p>1.0000</p></td>
+<td><p>1.0000</p></td>
+<td><p>1.0000</p></td>
+<td><p>1.0000</p></td>
+<td><p>1.0000</p></td>
+<td><p>1.0000</p></td>
+<td><p>1.0000</p></td>
+<td><p>1.0000</p></td>
+</tr>
+<tr class="row-even"><td><p>0.0010</p></td>
+<td><p>1.0000</p></td>
+<td><p>1.0000</p></td>
+<td><p>1.0000</p></td>
+<td><p>1.0000</p></td>
+<td><p>1.0000</p></td>
+<td><p>1.0000</p></td>
+<td><p>1.0000</p></td>
+<td><p>1.0000</p></td>
+<td><p>1.0000</p></td>
+</tr>
+<tr class="row-odd"><td><p>0.0006</p></td>
+<td><p>1.0000</p></td>
+<td><p>1.0000</p></td>
+<td><p>1.0000</p></td>
+<td><p>1.0000</p></td>
+<td><p>1.0000</p></td>
+<td><p>1.0000</p></td>
+<td><p>1.0000</p></td>
+<td><p>1.0000</p></td>
+<td><p>1.0000</p></td>
+</tr>
+<tr class="row-even"><td><p>0.0003</p></td>
+<td><p>1.0000</p></td>
+<td><p>1.0000</p></td>
+<td><p>1.0000</p></td>
+<td><p>1.0000</p></td>
+<td><p>1.0000</p></td>
+<td><p>1.0000</p></td>
+<td><p>1.0000</p></td>
+<td><p>1.0000</p></td>
+<td><p>1.0000</p></td>
+</tr>
+</tbody>
+</table>
+<p>New energy offset for each state:</p>
+<ol class="arabic">
+<li><div class="highlight-none notranslate"><div class="highlight"><pre><span></span>0.0000   +-    0.0000
+</pre></div>
+</div>
+</li>
+<li><div class="highlight-none notranslate"><div class="highlight"><pre><span></span>2.5977   +-    2.3298
+</pre></div>
+</div>
+</li>
+<li><p>-5.8046 +- 21.6332</p></li>
+<li><p>11.0635 +- 7.0936</p></li>
+<li><p>-26.7483 +- 3.4975</p></li>
+<li><p>-305.4306 +- 27.0278</p></li>
+<li><p>-367.9105 +- 11.6146</p></li>
+<li><p>-16.9749 +- 1.6124</p></li>
+<li><p>-63.7978 +- 12.5192</p></li>
+</ol>
+</div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[89]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">Image</span><span class="p">(</span><span class="n">out_eoff_dir</span><span class="o">+</span><span class="s2">&quot;/analysis/plots/PNMT_9ligs_water_energy_offsets_eoff_s.png&quot;</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">600</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[89]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/Examples_RE_EDS_pipeline_34_0.png" class="no-scaled-link" src="../_images/Examples_RE_EDS_pipeline_34_0.png" style="width: 600px;" />
+</div>
+</div>
+<div class="section" id="Bottle-neck">
+<h3>Bottle neck<a class="headerlink" href="#Bottle-neck" title="Permalink to this headline">¶</a></h3>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[36]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">Image</span><span class="p">(</span><span class="n">out_eoff_dir</span><span class="o">+</span><span class="s2">&quot;/analysis/plots/transitions.png&quot;</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">600</span><span class="p">)</span>
+
+
+
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[36]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/Examples_RE_EDS_pipeline_36_0.png" class="no-scaled-link" src="../_images/Examples_RE_EDS_pipeline_36_0.png" style="width: 600px;" />
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="s-Optimization">
+<h2>s-Optimization<a class="headerlink" href="#s-Optimization" title="Permalink to this headline">¶</a></h2>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">reeds.modules</span> <span class="kn">import</span> <span class="n">do_RE_EDS_sOptimisation</span> <span class="k">as</span> <span class="n">sOptimization</span>
+<span class="n">help</span><span class="p">(</span><span class="n">sOptimization</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[41]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">out_sopt_dir</span> <span class="o">=</span> <span class="n">root_dir</span><span class="o">+</span><span class="s2">&quot;/d_sopt&quot;</span>
+<span class="n">next_sopt_dir</span> <span class="o">=</span> <span class="n">root_dir</span><span class="o">+</span><span class="s2">&quot;/c_eoff/analysis/next&quot;</span>
+<span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;PNMT_9ligs_water_sopt&quot;</span>
+
+<span class="n">soptIterations</span> <span class="o">=</span><span class="mi">4</span>
+
+<span class="n">in_template_reeds_imd</span> <span class="o">=</span> <span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="n">next_sopt_dir</span><span class="o">+</span><span class="s2">&quot;/*imd&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+
+<span class="n">out_sopt_dir</span> <span class="o">=</span> <span class="n">bash</span><span class="o">.</span><span class="n">make_folder</span><span class="p">(</span><span class="n">out_sopt_dir</span><span class="p">)</span>
+
+
+<span class="n">topology</span> <span class="o">=</span> <span class="n">fM</span><span class="o">.</span><span class="n">Topology</span><span class="p">(</span><span class="n">top_path</span><span class="o">=</span><span class="n">in_top_file</span><span class="p">,</span> <span class="n">disres_path</span><span class="o">=</span><span class="n">in_disres_file</span><span class="p">,</span> <span class="n">pertubation_path</span><span class="o">=</span><span class="n">in_pert_file</span><span class="p">)</span>
+<span class="n">system_sopt</span> <span class="o">=</span> <span class="n">fM</span><span class="o">.</span><span class="n">System</span><span class="p">(</span><span class="n">coordinates</span><span class="o">=</span><span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="n">next_sopt_dir</span><span class="o">+</span><span class="s2">&quot;/*cnf&quot;</span><span class="p">),</span> <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span> <span class="n">top</span><span class="o">=</span><span class="n">topology</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">system</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+System
+        name:  PNMT_9ligs_water_sopt
+        top:
+                Topology
+                        top_path:  /cluster/work/igc/bschroed/REEDS/PNMT/test_PNMT/0_input/PNMT_9lig_water.top
+                        disres_path:  /cluster/work/igc/bschroed/REEDS/PNMT/test_PNMT/0_input/PNMT_9lig_water_disres.dat
+                        pertubation_path:  /cluster/work/igc/bschroed/REEDS/PNMT/test_PNMT/0_input/PNMT_9lig_water.ptp
+
+        coordinates:  /cluster/work/igc/bschroed/REEDS/PNMT/test_PNMT/0_input/2_next_sopt/PNMT_bs_9_lig_work_17.cnf
+        /cluster/work/igc/bschroed/REEDS/PNMT/test_PNMT/0_input/2_next_sopt/PNMT_bs_9_lig_work_4.cnf
+        /cluster/work/igc/bschroed/REEDS/PNMT/test_PNMT/0_input/2_next_sopt/PNMT_bs_9_lig_work_9.cnf
+        /cluster/work/igc/bschroed/REEDS/PNMT/test_PNMT/0_input/2_next_sopt/PNMT_bs_9_lig_work_6.cnf
+        /cluster/work/igc/bschroed/REEDS/PNMT/test_PNMT/0_input/2_next_sopt/PNMT_bs_9_lig_work_1.cnf
+        /cluster/work/igc/bschroed/REEDS/PNMT/test_PNMT/0_input/2_next_sopt/PNMT_bs_9_lig_work_7.cnf
+        /cluster/work/igc/bschroed/REEDS/PNMT/test_PNMT/0_input/2_next_sopt/PNMT_bs_9_lig_work_15.cnf
+        /cluster/work/igc/bschroed/REEDS/PNMT/test_PNMT/0_input/2_next_sopt/PNMT_bs_9_lig_work_12.cnf
+        /cluster/work/igc/bschroed/REEDS/PNMT/test_PNMT/0_input/2_next_sopt/PNMT_bs_9_lig_work_10.cnf
+        /cluster/work/igc/bschroed/REEDS/PNMT/test_PNMT/0_input/2_next_sopt/PNMT_bs_9_lig_work_5.cnf
+        /cluster/work/igc/bschroed/REEDS/PNMT/test_PNMT/0_input/2_next_sopt/PNMT_bs_9_lig_work_3.cnf
+        /cluster/work/igc/bschroed/REEDS/PNMT/test_PNMT/0_input/2_next_sopt/PNMT_bs_9_lig_work_11.cnf
+        /cluster/work/igc/bschroed/REEDS/PNMT/test_PNMT/0_input/2_next_sopt/PNMT_bs_9_lig_work_8.cnf
+        /cluster/work/igc/bschroed/REEDS/PNMT/test_PNMT/0_input/2_next_sopt/PNMT_bs_9_lig_work_16.cnf
+        /cluster/work/igc/bschroed/REEDS/PNMT/test_PNMT/0_input/2_next_sopt/PNMT_bs_9_lig_work_14.cnf
+        /cluster/work/igc/bschroed/REEDS/PNMT/test_PNMT/0_input/2_next_sopt/PNMT_bs_9_lig_work_2.cnf
+        /cluster/work/igc/bschroed/REEDS/PNMT/test_PNMT/0_input/2_next_sopt/PNMT_bs_9_lig_work_13.cnf
+        solvent:  None
+
+</pre></div></div>
+</div>
+<div class="section" id="id6">
+<h3>Job Execution<a class="headerlink" href="#id6" title="Permalink to this headline">¶</a></h3>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">last_jobID</span> <span class="o">=</span> <span class="n">sOptimization</span><span class="o">.</span><span class="n">do</span><span class="p">(</span><span class="n">out_root_dir</span><span class="o">=</span><span class="n">out_sopt_dir</span><span class="p">,</span> <span class="n">in_simSystem</span><span class="o">=</span><span class="n">system</span><span class="p">,</span>
+                              <span class="n">in_template_imd</span><span class="o">=</span><span class="n">in_template_reeds_imd</span><span class="p">,</span>
+                              <span class="n">in_ene_ana_lib_path</span><span class="o">=</span><span class="n">ene_ana_lib</span><span class="p">,</span>
+                              <span class="n">soptIterations</span><span class="o">=</span><span class="n">soptIterations</span><span class="p">)</span>
+
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="id7">
+<h3>Analysis<a class="headerlink" href="#id7" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="Increase-Replica-Exchanges-with-N-LRTO">
+<h4>Increase Replica Exchanges with N-LRTO<a class="headerlink" href="#Increase-Replica-Exchanges-with-N-LRTO" title="Permalink to this headline">¶</a></h4>
+<div class="section" id="sopt1">
+<h5>sopt1<a class="headerlink" href="#sopt1" title="Permalink to this headline">¶</a></h5>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[43]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">Image</span><span class="p">(</span><span class="n">out_sopt_dir</span><span class="o">+</span><span class="s2">&quot;/sopt1/analysis/plots/transitions.png&quot;</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">600</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[43]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/Examples_RE_EDS_pipeline_43_0.png" class="no-scaled-link" src="../_images/Examples_RE_EDS_pipeline_43_0.png" style="width: 600px;" />
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[115]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">Markdown</span><span class="p">(</span><span class="n">out_sopt_dir</span><span class="o">+</span><span class="s2">&quot;/sopt1/analysis/s_opt_NLRTO.out&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[115]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="section" id="SOPT---N-LRTO">
+<h6>SOPT - N-LRTO<a class="headerlink" href="#SOPT---N-LRTO" title="Permalink to this headline">¶</a></h6>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>&gt; State-WEIGHTS: 0.1111111111111111 0.1111111111111111  0.1111111111111111  0.1111111111111111  0.1111111111111111  0.1111111111111111  0.1111111111111111  0.1111111111111111  0.1111111111111111
+</pre></div>
+</div>
+<div class="section" id="FLOW-STATISTICS">
+<h7>FLOW STATISTICS<a class="headerlink" href="#FLOW-STATISTICS" title="Permalink to this headline">¶</a></h7>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 9%" />
+<col style="width: 9%" />
+<col style="width: 9%" />
+<col style="width: 9%" />
+<col style="width: 9%" />
+<col style="width: 9%" />
+<col style="width: 9%" />
+<col style="width: 9%" />
+<col style="width: 9%" />
+<col style="width: 9%" />
+<col style="width: 9%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>s</p></th>
+<th class="head"><p>n_up</p></th>
+<th class="head"><p>n_down_state_1</p></th>
+<th class="head"><p>n_down_state_2</p></th>
+<th class="head"><p>n_down_state_3</p></th>
+<th class="head"><p>n_down_state_4</p></th>
+<th class="head"><p>n_down_state_5</p></th>
+<th class="head"><p>n_down_state_6</p></th>
+<th class="head"><p>n_down_state_7</p></th>
+<th class="head"><p>n_down_state_8</p></th>
+<th class="head"><p>n_down_state_9</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>1.000000</p></td>
+<td><p>0</p></td>
+<td><p>4</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>5</p></td>
+<td><p>1</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+</tr>
+<tr class="row-odd"><td><p>0.312000</p></td>
+<td><p>1</p></td>
+<td><p>1</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>4</p></td>
+<td><p>4</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+</tr>
+<tr class="row-even"><td><p>0.100000</p></td>
+<td><p>1</p></td>
+<td><p>1</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>3</p></td>
+<td><p>5</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+</tr>
+<tr class="row-odd"><td><p>0.031600</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>6</p></td>
+<td><p>4</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+</tr>
+<tr class="row-even"><td><p>0.017800</p></td>
+<td><p>1</p></td>
+<td><p>2</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>6</p></td>
+<td><p>1</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+</tr>
+<tr class="row-odd"><td><p>0.010000</p></td>
+<td><p>6</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>3</p></td>
+<td><p>1</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+</tr>
+<tr class="row-even"><td><p>0.003160</p></td>
+<td><p>1</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>6</p></td>
+<td><p>0</p></td>
+<td><p>3</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+</tr>
+<tr class="row-odd"><td><p>0.001780</p></td>
+<td><p>1</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>1</p></td>
+<td><p>0</p></td>
+<td><p>8</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+</tr>
+<tr class="row-even"><td><p>0.001000</p></td>
+<td><p>7</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>1</p></td>
+<td><p>0</p></td>
+<td><p>2</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="ADDED-S">
+<h7>ADDED-S<a class="headerlink" href="#ADDED-S" title="Permalink to this headline">¶</a></h7>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 14%" />
+<col style="width: 20%" />
+<col style="width: 17%" />
+<col style="width: 49%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>repID</p></th>
+<th class="head"><p>s</p></th>
+<th class="head"><p>f(s)</p></th>
+<th class="head"><p>svals_in_interval</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>9</p></td>
+<td><p>1.0</p></td>
+<td><p>0.3333</p></td>
+<td><p>1</p></td>
+</tr>
+<tr class="row-odd"><td><p>10</p></td>
+<td><p>0.312</p></td>
+<td><p>0.3162</p></td>
+<td><p>1</p></td>
+</tr>
+<tr class="row-even"><td><p>11</p></td>
+<td><p>0.1</p></td>
+<td><p>0.3158</p></td>
+<td><p>1</p></td>
+</tr>
+<tr class="row-odd"><td><p>12</p></td>
+<td><p>0.0316</p></td>
+<td><p>0.2222</p></td>
+<td><p>3</p></td>
+</tr>
+<tr class="row-even"><td><p>13</p></td>
+<td><p>0.0178</p></td>
+<td><p>0.3144</p></td>
+<td><p>2</p></td>
+</tr>
+<tr class="row-odd"><td><p>14</p></td>
+<td><p>0.01</p></td>
+<td><p>0.1576</p></td>
+<td><p>4</p></td>
+</tr>
+<tr class="row-even"><td><p>15</p></td>
+<td><p>0.00316</p></td>
+<td><p>0.2162</p></td>
+<td><p>2</p></td>
+</tr>
+<tr class="row-odd"><td><p>16</p></td>
+<td><p>0.00178</p></td>
+<td><p>0.2096</p></td>
+<td><p>1</p></td>
+</tr>
+<tr class="row-even"><td><p>17</p></td>
+<td><p>0.001</p></td>
+<td><p>0.1425</p></td>
+<td><p>2</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="S_VALUES">
+<h7>S_VALUES<a class="headerlink" href="#S_VALUES" title="Permalink to this headline">¶</a></h7>
+<div class="section" id="Input-s_values:-used-for-statistics:-#9">
+<h8>Input s_values: used for statistics: #9<a class="headerlink" href="#Input-s_values:-used-for-statistics:-#9" title="Permalink to this headline">¶</a></h8>
+<blockquote>
+<div><p>1.00000 0.31200 0.10000 0.03160 0.01780 0.01000 0.00316 0.00178 0.00100</p>
+</div></blockquote>
+</div>
+<div class="section" id="New-s_values:-#17">
+<h8>New s_values: #17<a class="headerlink" href="#New-s_values:-#17" title="Permalink to this headline">¶</a></h8>
+<blockquote>
+<div><p>1.00000 0.31200 0.10000 0.07720 0.05440 0.03160 0.02470 0.01780 0.01585 0.01390 0.01195 0.01000 0.00658 0.00316 0.00178 0.00139 0.00100</p>
+</div></blockquote>
+</div>
+<div class="section" id="New-s-values-including-skipped-values:-#25">
+<h8>New s values including skipped values: #25<a class="headerlink" href="#New-s-values-including-skipped-values:-#25" title="Permalink to this headline">¶</a></h8>
+<blockquote>
+<div><p>1.00000 1.00000 1.00000 1.00000 1.00000 1.00000 1.00000 1.00000 1.00000 0.31200 0.10000 0.07720 0.05440 0.03160 0.02470 0.01780 0.01585 0.01390 0.01195 0.01000 0.00658 0.00316 0.00178 0.00139 0.00100</p>
+</div></blockquote>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="sopt2">
+<h5>sopt2<a class="headerlink" href="#sopt2" title="Permalink to this headline">¶</a></h5>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[45]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">Image</span><span class="p">(</span><span class="n">out_sopt_dir</span><span class="o">+</span><span class="s2">&quot;/sopt2/analysis/plots/transitions.png&quot;</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">600</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[45]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/Examples_RE_EDS_pipeline_46_0.png" class="no-scaled-link" src="../_images/Examples_RE_EDS_pipeline_46_0.png" style="width: 600px;" />
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[112]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">Markdown</span><span class="p">(</span><span class="n">out_sopt_dir</span><span class="o">+</span><span class="s2">&quot;/sopt2/analysis/s_opt_NLRTO.out&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[112]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<p>/cluster/work/igc/bschroed/REEDS/PNMT/test_PNMT/test_d_sopt/sopt2/analysis/s_opt_NLRTO.out</p>
+</div>
+</div>
+</div>
+<div class="section" id="sopt3">
+<h5>sopt3<a class="headerlink" href="#sopt3" title="Permalink to this headline">¶</a></h5>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[46]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">Image</span><span class="p">(</span><span class="n">out_sopt_dir</span><span class="o">+</span><span class="s2">&quot;/sopt3/analysis/plots/transitions.png&quot;</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">600</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[46]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/Examples_RE_EDS_pipeline_49_0.png" class="no-scaled-link" src="../_images/Examples_RE_EDS_pipeline_49_0.png" style="width: 600px;" />
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[116]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">Markdown</span><span class="p">(</span><span class="n">out_sopt_dir</span><span class="o">+</span><span class="s2">&quot;/sopt3/analysis/s_opt_NLRTO.out&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[116]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<p>/cluster/work/igc/bschroed/REEDS/PNMT/test_PNMT/test_d_sopt/sopt3/analysis/s_opt_NLRTO.out</p>
+</div>
+</div>
+</div>
+<div class="section" id="sopt4">
+<h5>sopt4<a class="headerlink" href="#sopt4" title="Permalink to this headline">¶</a></h5>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[47]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">Image</span><span class="p">(</span><span class="n">out_sopt_dir</span><span class="o">+</span><span class="s2">&quot;/sopt4/analysis/plots/transitions.png&quot;</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">600</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[47]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/Examples_RE_EDS_pipeline_52_0.png" class="no-scaled-link" src="../_images/Examples_RE_EDS_pipeline_52_0.png" style="width: 600px;" />
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="Check-state-switches-in-the-replicas:">
+<h4>Check state switches in the replicas:<a class="headerlink" href="#Check-state-switches-in-the-replicas:" title="Permalink to this headline">¶</a></h4>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[49]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">Image</span><span class="p">(</span><span class="n">out_sopt_dir</span><span class="o">+</span><span class="s2">&quot;/sopt4/analysis/plots/transitions_trace_19.png&quot;</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">600</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[49]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/Examples_RE_EDS_pipeline_54_0.png" class="no-scaled-link" src="../_images/Examples_RE_EDS_pipeline_54_0.png" style="width: 600px;" />
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[53]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">Image</span><span class="p">(</span><span class="n">out_sopt_dir</span><span class="o">+</span><span class="s2">&quot;/sopt4/analysis/plots/transitions_trace_14.png&quot;</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">600</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[53]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/Examples_RE_EDS_pipeline_55_0.png" class="no-scaled-link" src="../_images/Examples_RE_EDS_pipeline_55_0.png" style="width: 600px;" />
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="Production-Run">
+<h2>Production Run<a class="headerlink" href="#Production-Run" title="Permalink to this headline">¶</a></h2>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">reeds.modules</span> <span class="kn">import</span> <span class="n">do_RE_EDS_production</span> <span class="k">as</span> <span class="n">production</span>
+<span class="n">help</span><span class="p">(</span><span class="n">production</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[58]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">out_production_dir</span> <span class="o">=</span> <span class="n">root_dir</span><span class="o">+</span><span class="s2">&quot;/test_e_production&quot;</span>
+<span class="n">next_production_dir</span> <span class="o">=</span> <span class="n">root_dir</span><span class="o">+</span><span class="s2">&quot;/0_input/3_next_prod&quot;</span>
+
+<span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;PNMT_9ligs_water_prod&quot;</span>
+
+
+<span class="n">out_production_dir</span> <span class="o">=</span> <span class="n">bash</span><span class="o">.</span><span class="n">make_folder</span><span class="p">(</span><span class="n">out_production_dir</span><span class="p">)</span>
+
+
+<span class="n">production_imd</span> <span class="o">=</span> <span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="n">next_production_dir</span><span class="o">+</span><span class="s2">&quot;/*imd&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+<span class="n">topology</span> <span class="o">=</span> <span class="n">fM</span><span class="o">.</span><span class="n">Topology</span><span class="p">(</span><span class="n">top_path</span><span class="o">=</span><span class="n">in_top_file</span><span class="p">,</span> <span class="n">disres_path</span><span class="o">=</span><span class="n">in_disres_file</span><span class="p">,</span> <span class="n">pertubation_path</span><span class="o">=</span><span class="n">in_pert_file</span><span class="p">)</span>
+<span class="n">system</span> <span class="o">=</span> <span class="n">fM</span><span class="o">.</span><span class="n">System</span><span class="p">(</span><span class="n">coordinates</span><span class="o">=</span><span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="n">next_production_dir</span><span class="o">+</span><span class="s2">&quot;/*cnf&quot;</span><span class="p">),</span> <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span> <span class="n">top</span><span class="o">=</span><span class="n">topology</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">system</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+System
+        name:  PNMT_9ligs_water_prod
+        top:
+                Topology
+                        top_path:  /cluster/work/igc/bschroed/REEDS/PNMT/test_PNMT/0_input/PNMT_9lig_water.top
+                        disres_path:  /cluster/work/igc/bschroed/REEDS/PNMT/test_PNMT/0_input/PNMT_9lig_water_disres.dat
+                        pertubation_path:  /cluster/work/igc/bschroed/REEDS/PNMT/test_PNMT/0_input/PNMT_9lig_water.ptp
+
+        coordinates:  /cluster/work/igc/bschroed/REEDS/PNMT/test_PNMT/0_input/3_next_prod/PNMT_bs_9_lig_work_17.cnf
+        /cluster/work/igc/bschroed/REEDS/PNMT/test_PNMT/0_input/3_next_prod/PNMT_bs_9_lig_work_4.cnf
+        /cluster/work/igc/bschroed/REEDS/PNMT/test_PNMT/0_input/3_next_prod/PNMT_bs_9_lig_work_9.cnf
+        /cluster/work/igc/bschroed/REEDS/PNMT/test_PNMT/0_input/3_next_prod/PNMT_bs_9_lig_work_6.cnf
+        /cluster/work/igc/bschroed/REEDS/PNMT/test_PNMT/0_input/3_next_prod/PNMT_bs_9_lig_work_1.cnf
+        /cluster/work/igc/bschroed/REEDS/PNMT/test_PNMT/0_input/3_next_prod/PNMT_bs_9_lig_work_7.cnf
+        /cluster/work/igc/bschroed/REEDS/PNMT/test_PNMT/0_input/3_next_prod/PNMT_bs_9_lig_work_15.cnf
+        /cluster/work/igc/bschroed/REEDS/PNMT/test_PNMT/0_input/3_next_prod/PNMT_bs_9_lig_work_12.cnf
+        /cluster/work/igc/bschroed/REEDS/PNMT/test_PNMT/0_input/3_next_prod/PNMT_bs_9_lig_work_10.cnf
+        /cluster/work/igc/bschroed/REEDS/PNMT/test_PNMT/0_input/3_next_prod/PNMT_bs_9_lig_work_5.cnf
+        /cluster/work/igc/bschroed/REEDS/PNMT/test_PNMT/0_input/3_next_prod/PNMT_bs_9_lig_work_3.cnf
+        /cluster/work/igc/bschroed/REEDS/PNMT/test_PNMT/0_input/3_next_prod/PNMT_bs_9_lig_work_11.cnf
+        /cluster/work/igc/bschroed/REEDS/PNMT/test_PNMT/0_input/3_next_prod/PNMT_bs_9_lig_work_8.cnf
+        /cluster/work/igc/bschroed/REEDS/PNMT/test_PNMT/0_input/3_next_prod/PNMT_bs_9_lig_work_16.cnf
+        /cluster/work/igc/bschroed/REEDS/PNMT/test_PNMT/0_input/3_next_prod/PNMT_bs_9_lig_work_14.cnf
+        /cluster/work/igc/bschroed/REEDS/PNMT/test_PNMT/0_input/3_next_prod/PNMT_bs_9_lig_work_2.cnf
+        /cluster/work/igc/bschroed/REEDS/PNMT/test_PNMT/0_input/3_next_prod/PNMT_bs_9_lig_work_13.cnf
+        solvent:  None
+
+</pre></div></div>
+</div>
+<div class="section" id="id8">
+<h3>Job Execution<a class="headerlink" href="#id8" title="Permalink to this headline">¶</a></h3>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">last_jobID</span> <span class="o">=</span> <span class="n">production</span><span class="o">.</span><span class="n">do</span><span class="p">(</span><span class="n">out_root_dir</span><span class="o">=</span><span class="n">out_production_dir</span><span class="p">,</span>
+                           <span class="n">in_simSystem</span><span class="o">=</span><span class="n">system</span><span class="p">,</span> <span class="n">in_template_imd</span><span class="o">=</span><span class="n">production_imd</span><span class="p">,</span>
+                           <span class="n">in_ene_ana_lib_path</span><span class="o">=</span><span class="n">ene_ana_lib</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="id9">
+<h3>Analysis<a class="headerlink" href="#id9" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="Check-State-Sampling">
+<h4>Check State Sampling<a class="headerlink" href="#Check-State-Sampling" title="Permalink to this headline">¶</a></h4>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[60]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">Image</span><span class="p">(</span><span class="n">out_production_dir</span><span class="o">+</span><span class="s2">&quot;/analysis/plots/sampling1.png&quot;</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">600</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[60]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/Examples_RE_EDS_pipeline_62_0.png" class="no-scaled-link" src="../_images/Examples_RE_EDS_pipeline_62_0.png" style="width: 600px;" />
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">Image</span><span class="p">(</span><span class="n">out_production_dir</span><span class="o">+</span><span class="s2">&quot;/analysis/plots/sampling1.png&quot;</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">600</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="Calculation-of-Free-Energies">
+<h4>Calculation of Free Energies<a class="headerlink" href="#Calculation-of-Free-Energies" title="Permalink to this headline">¶</a></h4>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[69]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[114]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">Markdown</span><span class="p">(</span><span class="n">out_production_dir</span><span class="o">+</span><span class="s2">&quot;/analysis/convergence/free_energy_result.dat&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[114]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="line-block">
+<div class="line">dF for replica_1 ligname 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | R</div>
+<div class="line">ligname mean err | mean err | mean err | mean err | mean err | mean err | mean err | mean err | mean err | mean err 1 - - | - - | - - | - - | - - | - - | - - | - - | - - | 4.564 0.651 2 -5.309 0.700 | - - | - - | - - | - - | - - | - - | - - | - - | -0.745 0.256 3 -3.933 1.044 | 1.376 0.855 | - - | - - | - - | - - | - - | - - | - - | 0.631 0.815 4 7.870 1.979 | 13.180 1.586 | 11.804 1.765 | - - | - - | - - | - - | - - | - - | 12.434 1.565 5 -22.984
+2.767 | -17.675 2.701 | -19.051 2.810 | -30.854 3.111 | - - | - - | - - | - - | - - | -18.420 2.689 6 -259.008 2.551 | -253.699 2.491 | -255.075 2.609 | -266.878 2.931 | -236.024 3.656 | - - | - - | - - | - - | -254.444 2.478 7 -186.513 2.233 | -181.204 2.491 | -182.580 2.609 | -194.383 2.931 | -163.529 3.656 | 72.495 3.504 | - - | - - | - - | -181.949 2.478 8 10.561 2.562 | 15.870 2.491 | 14.494 2.609 | 2.690 2.931 | 33.544 3.656 | 269.568 3.504 | 197.073
+3.504 | - - | - - | 15.124 2.478 9 -19.061 2.562 | -13.752 2.491 | -15.128 2.580 | -26.931 2.931 | 3.923 3.656 | 239.947 3.504 | 167.452 3.504 | -29.621 3.504 | - - | -14.497 2.478</div>
+</div>
+<div class="line-block">
+<div class="line">dF for replica_2 ligname 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | R</div>
+<div class="line">ligname mean err | mean err | mean err | mean err | mean err | mean err | mean err | mean err | mean err | mean err 1 - - | - - | - - | - - | - - | - - | - - | - - | - - | 4.562 0.650 2 -5.307 0.700 | - - | - - | - - | - - | - - | - - | - - | - - | -0.745 0.256 3 -3.931 1.043 | 1.376 0.855 | - - | - - | - - | - - | - - | - - | - - | 0.631 0.815 4 7.872 1.979 | 13.179 1.586 | 11.804 1.765 | - - | - - | - - | - - | - - | - - | 12.434 1.565 5 -22.982
+2.766 | -17.675 2.701 | -19.051 2.810 | -30.854 3.111 | - - | - - | - - | - - | - - | -18.420 2.689 6 -259.006 2.551 | -253.699 2.491 | -255.075 2.609 | -266.878 2.931 | -236.024 3.656 | - - | - - | - - | - - | -254.444 2.478 7 -186.511 2.234 | -181.204 2.491 | -182.580 2.609 | -194.383 2.931 | -163.529 3.656 | 72.495 3.504 | - - | - - | - - | -181.949 2.478 8 10.562 2.562 | 15.869 2.491 | 14.494 2.609 | 2.690 2.931 | 33.544 3.656 | 269.568 3.504 | 197.073
+3.504 | - - | - - | 15.124 2.478 9 -19.059 2.562 | -13.752 2.491 | -15.128 2.584 | -26.931 2.931 | 3.923 3.656 | 239.947 3.504 | 167.452 3.504 | -29.621 3.504 | - - | -14.497 2.478</div>
+</div>
+<div class="line-block">
+<div class="line">dF for replica_3 ligname 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | R</div>
+<div class="line">ligname mean err | mean err | mean err | mean err | mean err | mean err | mean err | mean err | mean err | mean err 1 - - | - - | - - | - - | - - | - - | - - | - - | - - | 4.561 0.650 2 -5.305 0.700 | - - | - - | - - | - - | - - | - - | - - | - - | -0.744 0.256 3 -3.930 1.043 | 1.375 0.855 | - - | - - | - - | - - | - - | - - | - - | 0.631 0.815 4 7.874 1.979 | 13.179 1.586 | 11.804 1.765 | - - | - - | - - | - - | - - | - - | 12.434 1.565 5 -22.980
+2.766 | -17.675 2.701 | -19.051 2.810 | -30.854 3.111 | - - | - - | - - | - - | - - | -18.420 2.689 6 -259.005 2.553 | -253.699 2.491 | -255.075 2.609 | -266.878 2.931 | -236.024 3.656 | - - | - - | - - | - - | -254.444 2.478 7 -186.510 2.234 | -181.205 2.491 | -182.580 2.609 | -194.383 2.931 | -163.529 3.656 | 72.495 3.504 | - - | - - | - - | -181.949 2.478 8 10.564 2.562 | 15.869 2.491 | 14.494 2.609 | 2.690 2.931 | 33.544 3.656 | 269.568 3.504 | 197.073
+3.504 | - - | - - | 15.124 2.478 9 -28.736 2.562 | -23.431 2.491 | -24.806 2.584 | -36.609 2.931 | -5.755 3.656 | 230.269 3.504 | 157.774 3.504 | -39.299 3.504 | - - | -24.175 2.478</div>
+</div>
+<div class="line-block">
+<div class="line">dF for replica_4 ligname 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | R</div>
+<div class="line">ligname mean err | mean err | mean err | mean err | mean err | mean err | mean err | mean err | mean err | mean err 1 - - | - - | - - | - - | - - | - - | - - | - - | - - | 4.559 0.650 2 -5.303 0.699 | - - | - - | - - | - - | - - | - - | - - | - - | -0.744 0.256 3 -3.928 1.043 | 1.375 0.855 | - - | - - | - - | - - | - - | - - | - - | 0.631 0.815 4 8.136 2.057 | 13.439 1.692 | 12.064 1.861 | - - | - - | - - | - - | - - | - - | 12.695 1.672 5 -22.978
+2.766 | -17.676 2.701 | -19.051 2.810 | -31.115 3.167 | - - | - - | - - | - - | - - | -18.420 2.689 6 -259.003 2.553 | -253.700 2.491 | -255.075 2.609 | -267.139 2.990 | -236.024 3.656 | - - | - - | - - | - - | -254.444 2.478 7 -186.508 2.234 | -181.205 2.491 | -182.580 2.609 | -194.644 2.989 | -163.529 3.656 | 72.495 3.504 | - - | - - | - - | -181.949 2.478 8 10.566 2.562 | 15.868 2.491 | 14.494 2.609 | 2.429 2.989 | 33.544 3.656 | 269.568 3.504 | 197.073
+3.504 | - - | - - | 15.124 2.478 9 -28.734 2.562 | -23.431 2.491 | -24.806 2.584 | -36.870 2.990 | -5.755 3.656 | 230.269 3.504 | 157.774 3.504 | -39.299 3.504 | - - | -24.175 2.478</div>
+</div>
+<div class="line-block">
+<div class="line">dF for replica_5 ligname 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | R</div>
+<div class="line">ligname mean err | mean err | mean err | mean err | mean err | mean err | mean err | mean err | mean err | mean err 1 - - | - - | - - | - - | - - | - - | - - | - - | - - | 4.556 0.649 2 -5.299 0.699 | - - | - - | - - | - - | - - | - - | - - | - - | -0.743 0.256 3 -3.925 1.043 | 1.374 0.855 | - - | - - | - - | - - | - - | - - | - - | 0.631 0.815 4 8.431 2.200 | 13.730 1.874 | 12.356 2.027 | - - | - - | - - | - - | - - | - - | 12.987 1.856 5 -22.976
+2.766 | -17.677 2.701 | -19.051 2.810 | -31.407 3.267 | - - | - - | - - | - - | - - | -18.420 2.689 6 -259.000 2.553 | -253.700 2.491 | -255.075 2.609 | -267.430 3.096 | -236.023 3.656 | - - | - - | - - | - - | -254.444 2.478 7 -186.508 2.225 | -181.209 2.488 | -182.583 2.606 | -194.939 3.093 | -163.532 3.654 | 72.492 3.502 | - - | - - | - - | -181.952 2.474 8 10.568 2.562 | 15.868 2.491 | 14.494 2.609 | 2.138 3.096 | 33.545 3.656 | 269.568 3.504 | 197.077
+3.502 | - - | - - | 15.124 2.478 9 -27.753 2.562 | -22.453 2.491 | -23.828 2.584 | -36.183 3.096 | -4.776 3.656 | 231.247 3.504 | 158.756 3.502 | -38.321 3.504 | - - | -23.197 2.478</div>
+</div>
+<div class="line-block">
+<div class="line">dF for replica_6 ligname 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | R</div>
+<div class="line">ligname mean err | mean err | mean err | mean err | mean err | mean err | mean err | mean err | mean err | mean err 1 - - | - - | - - | - - | - - | - - | - - | - - | - - | 4.554 0.649 2 -5.297 0.699 | - - | - - | - - | - - | - - | - - | - - | - - | -0.743 0.256 3 -3.923 1.043 | 1.374 0.855 | - - | - - | - - | - - | - - | - - | - - | 0.631 0.815 4 8.433 2.203 | 13.730 1.876 | 12.356 2.030 | - - | - - | - - | - - | - - | - - | 12.987 1.858 5 -22.974
+2.766 | -17.678 2.701 | -19.051 2.810 | -31.407 3.268 | - - | - - | - - | - - | - - | -18.420 2.689 6 -258.998 2.552 | -253.701 2.491 | -255.075 2.609 | -267.431 3.097 | -236.023 3.656 | - - | - - | - - | - - | -254.444 2.478 7 -186.506 2.226 | -181.209 2.488 | -182.583 2.606 | -194.939 3.095 | -163.532 3.654 | 72.492 3.502 | - - | - - | - - | -181.952 2.474 8 10.571 2.561 | 15.867 2.491 | 14.494 2.609 | 2.138 3.097 | 33.545 3.656 | 269.568 3.504 | 197.077
+3.504 | - - | - - | 15.124 2.478 9 -27.750 2.562 | -22.454 2.491 | -23.828 2.584 | -36.183 3.097 | -4.776 3.656 | 231.247 3.504 | 158.756 3.502 | -38.321 3.504 | - - | -23.197 2.478</div>
+</div>
+<div class="line-block">
+<div class="line">dF for replica_7 ligname 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | R</div>
+<div class="line">ligname mean err | mean err | mean err | mean err | mean err | mean err | mean err | mean err | mean err | mean err 1 - - | - - | - - | - - | - - | - - | - - | - - | - - | 4.553 0.649 2 -5.295 0.699 | - - | - - | - - | - - | - - | - - | - - | - - | -0.742 0.256 3 -3.922 1.043 | 1.373 0.855 | - - | - - | - - | - - | - - | - - | - - | 0.631 0.815 4 8.434 2.202 | 13.729 1.875 | 12.356 2.028 | - - | - - | - - | - - | - - | - - | 12.987 1.857 5 -22.972
+2.766 | -17.677 2.701 | -19.050 2.810 | -31.407 3.268 | - - | - - | - - | - - | - - | -18.420 2.689 6 -258.996 2.552 | -253.701 2.491 | -255.075 2.609 | -267.431 3.096 | -236.024 3.656 | - - | - - | - - | - - | -254.444 2.478 7 -186.532 2.227 | -181.237 2.489 | -182.610 2.607 | -194.966 3.095 | -163.560 3.655 | 72.465 3.503 | - - | - - | - - | -181.979 2.476 8 10.572 2.561 | 15.867 2.491 | 14.494 2.609 | 2.138 3.096 | 33.544 3.656 | 269.568 3.504 | 197.104
+3.503 | - - | - - | 15.124 2.478 9 -31.162 2.561 | -25.867 2.491 | -27.240 2.581 | -39.596 3.096 | -8.190 3.656 | 227.835 3.504 | 155.370 3.503 | -41.734 3.504 | - - | -26.609 2.478</div>
+</div>
+<div class="line-block">
+<div class="line">dF for replica_8 ligname 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | R</div>
+<div class="line">ligname mean err | mean err | mean err | mean err | mean err | mean err | mean err | mean err | mean err | mean err 1 - - | - - | - - | - - | - - | - - | - - | - - | - - | 4.552 0.649 2 -5.295 0.698 | - - | - - | - - | - - | - - | - - | - - | - - | -0.743 0.256 3 -3.921 1.042 | 1.374 0.855 | - - | - - | - - | - - | - - | - - | - - | 0.632 0.815 4 8.432 2.201 | 13.727 1.876 | 12.353 2.029 | - - | - - | - - | - - | - - | - - | 12.984 1.858 5 -22.972
+2.766 | -17.677 2.701 | -19.051 2.810 | -31.404 3.268 | - - | - - | - - | - - | - - | -18.420 2.689 6 -258.996 2.553 | -253.701 2.491 | -255.075 2.609 | -267.428 3.097 | -236.024 3.656 | - - | - - | - - | - - | -254.444 2.478 7 -186.531 2.227 | -181.237 2.489 | -182.611 2.607 | -194.964 3.096 | -163.560 3.655 | 72.464 3.503 | - - | - - | - - | -181.979 2.476 8 12.290 2.561 | 17.585 2.491 | 16.210 2.609 | 3.858 3.097 | 35.262 3.656 | 271.286 3.504 | 198.821
+3.503 | - - | - - | 16.842 2.478 9 -31.161 2.561 | -25.867 2.491 | -27.241 2.584 | -39.594 3.097 | -8.190 3.656 | 227.835 3.504 | 155.370 3.503 | -43.451 3.504 | - - | -26.609 2.478</div>
+</div>
+<div class="line-block">
+<div class="line">dF for replica_9 ligname 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | R</div>
+<div class="line">ligname mean err | mean err | mean err | mean err | mean err | mean err | mean err | mean err | mean err | mean err 1 - - | - - | - - | - - | - - | - - | - - | - - | - - | 4.550 0.648 2 -5.293 0.698 | - - | - - | - - | - - | - - | - - | - - | - - | -0.743 0.257 3 -3.918 1.042 | 1.375 0.856 | - - | - - | - - | - - | - - | - - | - - | 0.632 0.816 4 8.434 2.200 | 13.727 1.877 | 12.352 2.030 | - - | - - | - - | - - | - - | - - | 12.984 1.859 5 -22.970
+2.766 | -17.677 2.701 | -19.052 2.810 | -31.404 3.269 | - - | - - | - - | - - | - - | -18.420 2.689 6 -258.994 2.553 | -253.701 2.491 | -255.076 2.609 | -267.428 3.098 | -236.024 3.656 | - - | - - | - - | - - | -254.444 2.478 7 -187.250 1.809 | -181.958 2.115 | -183.332 2.252 | -195.684 2.804 | -164.280 3.017 | 71.744 3.247 | - - | - - | - - | -182.700 2.099 8 52.385 2.554 | 57.678 2.484 | 56.304 2.014 | 43.952 3.092 | 75.355 3.651 | 311.380 3.499 | 239.636
+3.242 | - - | - - | 56.936 2.470 9 -34.206 2.561 | -28.913 2.491 | -30.288 2.580 | -42.640 3.097 | -11.236 3.656 | 224.788 3.504 | 153.045 3.247 | -86.591 3.499 | - - | -29.655 2.477</div>
+</div>
+<div class="line-block">
+<div class="line">dF for replica_10 ligname 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | R</div>
+<div class="line">ligname mean err | mean err | mean err | mean err | mean err | mean err | mean err | mean err | mean err | mean err 1 - - | - - | - - | - - | - - | - - | - - | - - | - - | 4.569 0.651 2 -5.285 0.701 | - - | - - | - - | - - | - - | - - | - - | - - | -0.716 0.258 3 -3.917 1.046 | 1.368 0.858 | - - | - - | - - | - - | - - | - - | - - | 0.652 0.818 4 9.376 2.197 | 14.661 1.970 | 13.293 2.117 | - - | - - | - - | - - | - - | - - | 13.945 1.953 5 -22.846
+2.760 | -17.561 2.694 | -18.929 2.804 | -32.222 3.318 | - - | - - | - - | - - | - - | -18.277 2.682 6 -212.829 2.562 | -207.544 2.491 | -208.912 2.609 | -222.205 3.155 | -189.983 0.204 | - - | - - | - - | - - | -208.261 2.478 7 -187.267 1.806 | -181.982 2.116 | -183.351 2.254 | -196.643 2.868 | -164.421 2.988 | 25.562 2.911 | - - | - - | - - | -182.699 2.100 8 52.417 2.555 | 57.703 2.484 | 56.334 2.004 | 43.042 3.149 | 75.264 3.646 | 265.247 3.499 | 239.685
+3.242 | - - | - - | 56.986 2.470 9 -34.223 2.562 | -28.938 2.491 | -30.306 2.581 | -43.599 3.155 | -11.377 3.651 | 178.607 3.503 | 153.045 3.248 | -86.640 3.498 | - - | -29.654 2.477</div>
+</div>
+<div class="line-block">
+<div class="line">dF for replica_11 ligname 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | R</div>
+<div class="line">ligname mean err | mean err | mean err | mean err | mean err | mean err | mean err | mean err | mean err | mean err 1 - - | - - | - - | - - | - - | - - | - - | - - | - - | 5.417 0.815 2 -5.087 0.938 | - - | - - | - - | - - | - - | - - | - - | - - | 0.329 0.464 3 -3.745 1.246 | 1.343 1.051 | - - | - - | - - | - - | - - | - - | - - | 1.672 0.942 4 18.711 1.959 | 23.799 1.841 | 22.456 2.015 | - - | - - | - - | - - | - - | - - | 24.128 1.781 5 18.606
+2.013 | 23.694 1.899 | 22.351 2.068 | -0.105 2.562 | - - | - - | - - | - - | - - | 24.023 1.841 6 -211.315 2.532 | -206.228 2.442 | -207.571 2.576 | -230.027 2.987 | -229.922 3.023 | - - | - - | - - | - - | -205.899 2.397 7 -187.714 2.062 | -182.627 2.521 | -183.969 2.651 | -206.426 3.052 | -206.321 3.087 | 23.601 3.448 | - - | - - | - - | -182.298 2.478 8 41.652 2.282 | 46.740 2.182 | 45.397 2.330 | 22.941 2.778 | 23.046 2.540 | 252.968 3.152 | 229.367 3.268
+| - - | - - | 47.069 2.131 9 -40.447 2.608 | -35.359 2.521 | -36.702 2.640 | -59.158 3.052 | -59.053 3.087 | 170.869 3.448 | 147.268 3.504 | -82.099 3.269 | - - | -35.030 2.478</div>
+</div>
+<div class="line-block">
+<div class="line">dF for replica_12 ligname 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | R</div>
+<div class="line">ligname mean err | mean err | mean err | mean err | mean err | mean err | mean err | mean err | mean err | mean err 1 - - | - - | - - | - - | - - | - - | - - | - - | - - | 74.379 1.881 2 -1.724 1.594 | - - | - - | - - | - - | - - | - - | - - | - - | 72.655 0.784 3 -5.949 2.713 | -4.225 2.106 | - - | - - | - - | - - | - - | - - | - - | 68.430 1.955 4 13.947 2.810 | 15.671 2.230 | 19.896 2.860 | - - | - - | - - | - - | - - | - - | 88.326 2.088 5
+-24.472 2.081 | -22.749 1.186 | -18.523 2.148 | -38.419 2.269 | - - | - - | - - | - - | - - | 49.907 0.889 6 -307.748 2.740 | -306.024 2.141 | -301.799 2.791 | -321.695 2.886 | -283.276 2.182 | - - | - - | - - | - - | -233.369 1.992 7 -350.529 3.019 | -348.805 2.488 | -344.580 3.065 | -364.476 3.152 | -326.056 2.523 | -42.781 3.089 | - - | - - | - - | -276.150 2.361 8 6.443 2.894 | 8.167 2.335 | 12.393 2.942 | -7.503 3.032 | 30.916 2.372 | 314.192 2.968 |
+356.972 3.227 | - - | - - | 80.823 2.199 9 -83.931 3.108 | -82.207 2.595 | -77.982 3.153 | -97.878 3.237 | -59.459 2.629 | 223.817 3.176 | 266.598 3.420 | -90.375 3.310 | - - | -9.552 2.474</div>
+</div>
+<div class="line-block">
+<div class="line">dF for replica_13 ligname 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | R</div>
+<div class="line">ligname mean err | mean err | mean err | mean err | mean err | mean err | mean err | mean err | mean err | mean err 1 - - | - - | - - | - - | - - | - - | - - | - - | - - | 214.298 1.834 2 8.582 0.642 | - - | - - | - - | - - | - - | - - | - - | - - | 222.880 1.196 3 7.981 2.557 | -0.601 2.142 | - - | - - | - - | - - | - - | - - | - - | 222.279 1.781 4 9.570 1.525 | 0.988 0.697 | 1.589 2.600 | - - | - - | - - | - - | - - | - - | 223.868 1.893 5
+-30.843 2.398 | -39.425 1.954 | -38.824 2.358 | -40.413 3.173 | - - | - - | - - | - - | - - | 183.455 1.545 6 -309.214 2.859 | -317.796 2.499 | -317.195 2.826 | -318.784 2.898 | -278.371 2.683 | - - | - - | - - | - - | -94.916 2.194 7 -344.217 2.268 | -352.799 1.792 | -352.198 2.226 | -353.787 2.316 | -313.374 2.041 | -35.003 2.568 | - - | - - | - - | -129.919 1.334 8 7.213 3.039 | -1.369 2.633 | -0.768 3.050 | -2.357 3.117 | 38.056 2.918 | 316.427 3.308 |
+351.430 2.812 | - - | - - | 221.511 2.476 9 -74.992 2.417 | -83.574 1.977 | -82.973 2.378 | -84.562 2.463 | -44.149 2.206 | 234.221 2.700 | 269.225 2.064 | -82.205 2.934 | - - | 139.306 1.574</div>
+</div>
+<div class="line-block">
+<div class="line">dF for replica_14 ligname 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | R</div>
+<div class="line">ligname mean err | mean err | mean err | mean err | mean err | mean err | mean err | mean err | mean err | mean err 1 - - | - - | - - | - - | - - | - - | - - | - - | - - | 390.147 2.478 2 13.907 0.017 | - - | - - | - - | - - | - - | - - | - - | - - | 404.055 2.483 3 80.116 3.196 | 66.209 3.200 | - - | - - | - - | - - | - - | - - | - - | 470.264 2.018 4 -11.167 0.020 | -25.075 0.030 | -91.283 3.196 | - - | - - | - - | - - | - - | - - | 378.980 2.478
+5 34.810 0.040 | 20.902 0.111 | -45.306 3.168 | 45.977 0.046 | - - | - - | - - | - - | - - | 424.957 2.442 6 -249.851 3.503 | -263.758 3.507 | -329.967 3.195 | -238.683 3.503 | -284.660 3.478 | - - | - - | - - | - - | 140.297 2.477 7 -276.232 2.701 | -290.139 2.706 | -356.348 2.286 | -265.064 2.701 | -311.041 2.668 | -26.381 2.700 | - - | - - | - - | 113.916 1.074 8 44.616 3.533 | 30.709 3.508 | -35.500 3.196 | 55.783 3.504 | 9.806 4.484 | 294.467 3.503 |
+320.848 2.701 | - - | - - | 434.764 2.478 9 -14.484 3.163 | -28.392 3.168 | -94.600 2.818 | -3.317 3.163 | -49.294 3.135 | 235.366 3.163 | 261.747 2.241 | -59.100 3.163 | - - | 375.663 1.967</div>
+</div>
+<div class="line-block">
+<div class="line">dF for replica_15 ligname 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | R</div>
+<div class="line">ligname mean err | mean err | mean err | mean err | mean err | mean err | mean err | mean err | mean err | mean err 1 - - | - - | - - | - - | - - | - - | - - | - - | - - | 1215.294 2.478 2 81.344 0.020 | - - | - - | - - | - - | - - | - - | - - | - - | 1296.638 2.478 3 425.722 3.433 | 344.378 3.433 | - - | - - | - - | - - | - - | - - | - - | 1641.016 2.375 4 -4.583 0.000 | -85.927 0.020 | -430.305 3.433 | - - | - - | - - | - - | - - | - - | 1210.711
+2.478 5 63.934 0.000 | -17.410 0.020 | -361.788 3.433 | 68.516 0.000 | - - | - - | - - | - - | - - | 1279.228 2.478 6 -146.285 0.020 | -227.629 0.000 | -572.007 3.433 | -141.703 0.020 | -210.219 0.020 | - - | - - | - - | - - | 1069.008 2.478 7 20.590 3.504 | -60.754 4.955 | -405.132 3.433 | 25.173 3.504 | -43.344 3.504 | 166.876 4.955 | - - | - - | - - | 1235.884 2.478 8 271.197 3.504 | 189.853 3.504 | -154.525 3.433 | 275.780 3.504 | 207.263 3.504 | 417.482
+4.955 | 250.607 0.000 | - - | - - | 1486.491 2.478 9 340.811 3.192 | 259.467 3.192 | -84.911 3.113 | 345.393 3.192 | 276.877 3.192 | 487.096 3.192 | 320.221 3.192 | 69.614 3.192 | - - | 1556.105 2.012</div>
+</div>
+<div class="line-block">
+<div class="line">dF for replica_16 ligname 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | R</div>
+<div class="line">ligname mean err | mean err | mean err | mean err | mean err | mean err | mean err | mean err | mean err | mean err 1 - - | - - | - - | - - | - - | - - | - - | - - | - - | 2192.400 2.478 2 81.346 0.000 | - - | - - | - - | - - | - - | - - | - - | - - | 2273.746 2.478 3 706.587 3.342 | 625.241 3.342 | - - | - - | - - | - - | - - | - - | - - | 2898.986 2.243 4 -4.583 0.000 | -85.929 0.000 | -711.169 3.342 | - - | - - | - - | - - | - - | - - | 2187.817
+2.478 5 63.934 0.000 | -17.412 0.000 | -642.653 3.342 | 68.516 0.000 | - - | - - | - - | - - | - - | 2256.334 2.478 6 -146.258 0.000 | -227.604 0.000 | -852.845 3.342 | -141.675 0.000 | -210.192 0.000 | - - | - - | - - | - - | 2046.142 2.478 7 371.569 3.908 | 290.223 3.908 | -335.018 3.471 | 376.151 3.908 | 307.635 3.908 | 517.826 3.908 | - - | - - | - - | 2563.968 3.023 8 530.741 3.504 | 449.395 3.504 | -175.846 3.359 | 535.323 3.504 | 466.807 3.504 | 676.999
+3.504 | 159.172 3.910 | - - | - - | 2723.140 2.478 9 698.576 3.184 | 617.230 3.184 | -8.011 3.005 | 703.159 3.184 | 634.642 3.184 | 844.834 3.184 | 327.008 3.624 | 167.835 3.184 | - - | 2890.976 2.000</div>
+</div>
+<div class="line-block">
+<div class="line">dF for replica_17 ligname 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | R</div>
+<div class="line">ligname mean err | mean err | mean err | mean err | mean err | mean err | mean err | mean err | mean err | mean err 1 - - | - - | - - | - - | - - | - - | - - | - - | - - | 3967.575 2.478 2 82.339 0.000 | - - | - - | - - | - - | - - | - - | - - | - - | 4049.913 2.478 3 1222.884 4.955 | 1140.545 4.955 | - - | - - | - - | - - | - - | - - | - - | 5190.459 2.478 4 -9.198 0.000 | -91.537 0.000 | -1232.083 4.955 | - - | - - | - - | - - | - - | - - |
+3958.376 2.478 5 57.960 0.000 | -24.379 nan | -1164.924 4.955 | 67.159 0.000 | - - | - - | - - | - - | - - | 4025.535 2.478 6 -197.882 nan | -280.221 0.000 | -1420.766 4.955 | -188.683 nan | -255.842 nan | - - | - - | - - | - - | 3769.693 2.478 7 737.000 3.504 | 654.661 3.504 | -485.885 3.504 | 746.198 3.504 | 679.040 3.504 | 934.882 3.504 | - - | - - | - - | 4704.574 2.478 8 1029.441 3.504 | 947.102 3.504 | -193.444 3.504 | 1038.639 3.504 | 971.481 3.504 |
+1227.322 3.504 | 292.441 0.000 | - - | - - | 4997.015 2.478 9 1308.888 3.178 | 1226.550 3.178 | 86.004 3.178 | 1318.087 3.178 | 1250.928 3.178 | 1506.770 3.178 | 571.889 3.178 | 279.448 3.178 | - - | 5276.463 1.990</div>
+</div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[59]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">Image</span><span class="p">(</span><span class="n">out_production_dir</span><span class="o">+</span><span class="s2">&quot;/analysis/convergence/PNMT_9ligs_water_prod_replica_1.png&quot;</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">600</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[59]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/Examples_RE_EDS_pipeline_68_0.png" class="no-scaled-link" src="../_images/Examples_RE_EDS_pipeline_68_0.png" style="width: 600px;" />
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+        <a href="RE_EDS_s_optimization_RTO.html" class="btn btn-neutral float-right" title="RE-EDS - S-Optimization (RTO-Algorithms)" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="RE_EDS_State_Sampling_Analysis.html" class="btn btn-neutral float-left" title="RE-EDS - State Sampling Analysis" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2020, Benjamin Ries, Salome Rieder, Candide Champion. Project structure based on the Computational Molecular Science Python Cookiecutter version 1.3.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

@@ -1,0 +1,507 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>reeds.function_libs.optimization.src.energy_offset_estimator &mdash; REEDS  documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../../../_static/pygments.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../../../" src="../../../../../_static/documentation_options.js"></script>
+        <script src="../../../../../_static/jquery.js"></script>
+        <script src="../../../../../_static/underscore.js"></script>
+        <script src="../../../../../_static/doctools.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    
+    <script type="text/javascript" src="../../../../../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../../../index.html" class="icon icon-home"> REEDS
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../introduction.html">REEDS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../Examples/index.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_source/modules.html">reeds</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../../index.html">REEDS</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../../../../index.html">Module code</a> &raquo;</li>
+        
+      <li>reeds.function_libs.optimization.src.energy_offset_estimator</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for reeds.function_libs.optimization.src.energy_offset_estimator</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">copy</span>
+<span class="kn">import</span> <span class="nn">math</span>
+<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">namedtuple</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span>
+
+<span class="c1"># struct</span>
+<span class="n">EnergyOffset</span> <span class="o">=</span> <span class="n">namedtuple</span><span class="p">(</span><span class="s1">&#39;EnergyOffset&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;mean&#39;</span><span class="p">,</span> <span class="s1">&#39;std&#39;</span><span class="p">])</span>
+<span class="n">EnergyStatistic</span> <span class="o">=</span> <span class="n">namedtuple</span><span class="p">(</span><span class="s1">&#39;EnergyStatistic&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;offsets&#39;</span><span class="p">,</span> <span class="s1">&#39;minCount&#39;</span><span class="p">,</span> <span class="s1">&#39;negCount&#39;</span><span class="p">,</span> <span class="s2">&quot;eoff_per_replica&quot;</span><span class="p">])</span>
+
+
+<div class="viewcode-block" id="Eoff_estimator"><a class="viewcode-back" href="../../../../../_source/reeds.function_libs.optimization.src.html#reeds.function_libs.optimization.src.energy_offset_estimator.Eoff_estimator">[docs]</a><span class="k">class</span> <span class="nc">Eoff_estimator</span><span class="p">():</span>
+<div class="viewcode-block" id="Eoff_estimator.__init__"><a class="viewcode-back" href="../../../../../_source/reeds.function_libs.optimization.src.html#reeds.function_libs.optimization.src.energy_offset_estimator.Eoff_estimator.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">eir_old_init</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="n">vvr</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">]],</span> <span class="n">vvy</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">]]],</span>
+                 <span class="n">s_values</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">]):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Args:</span>
+<span class="sd">            eir_old_init:</span>
+<span class="sd">            vvr:</span>
+<span class="sd">            vvy:</span>
+<span class="sd">            s_values:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># Input</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">s_values</span> <span class="o">=</span> <span class="n">s_values</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">eir_old_init</span> <span class="o">=</span> <span class="n">eir_old_init</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">vvr</span> <span class="o">=</span> <span class="n">vvr</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">vvy</span> <span class="o">=</span> <span class="n">vvy</span>
+
+        <span class="c1"># Results</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_fractiontresh</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_pot_tresh</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_times_steps</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">result</span><span class="p">:</span> <span class="n">EnergyStatistic</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">eoff_per_replica</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">EnergyOffset</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">new_Eoffs</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">EnergyOffset</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span></div>
+
+    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">if</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">result</span> <span class="o">!=</span> <span class="kc">None</span><span class="p">):</span>
+            <span class="n">num_s_values</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">s_values</span><span class="p">)</span>
+
+            <span class="n">print_lines</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;</span><span class="se">\n\n</span><span class="s2">REEDS - Eoff Estimation:</span><span class="se">\n\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="p">]</span>
+            <span class="n">print_lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n\n</span><span class="s2">S</span><span class="se">\t</span><span class="s2">|</span><span class="se">\t</span><span class="s2">Eoff_per_s</span><span class="se">\t</span><span class="s2">|</span><span class="se">\t</span><span class="s2">iterations</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">eoff_per_rep</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">result</span><span class="o">.</span><span class="n">eoff_per_replica</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">eoff_per_rep</span><span class="p">)[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
+                <span class="n">print_lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{:2.4f}</span><span class="se">\t</span><span class="s1">|&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">i</span><span class="p">))</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+                    <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="mi">4</span><span class="p">)),</span> <span class="n">eoff_per_rep</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s2">&quot;eoff&quot;</span><span class="p">])))</span> <span class="o">+</span> <span class="s2">&quot; </span><span class="se">\t</span><span class="s2">|</span><span class="se">\t</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span>
+                    <span class="n">eoff_per_rep</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s2">&quot;iterations&quot;</span><span class="p">])</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+
+            <span class="n">print_lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n\n</span><span class="s2">S</span><span class="se">\t</span><span class="s2">|</span><span class="se">\t</span><span class="s2">Minimum energy count per state</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_s_values</span><span class="p">):</span>
+                <span class="n">print_lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{:2.4f}</span><span class="se">\t</span><span class="s1">|&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">s_values</span><span class="p">[</span><span class="n">i</span><span class="p">]))</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\t</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+                    <span class="s1">&#39; </span><span class="si">{:8d}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">val</span><span class="p">)</span> <span class="k">for</span> <span class="n">val</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">result</span><span class="o">.</span><span class="n">minCount</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+
+            <span class="n">print_lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">S</span><span class="se">\t</span><span class="s2">|</span><span class="se">\t</span><span class="s2">Negative energy count per state(pottresh=&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_pot_tresh</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;)</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_s_values</span><span class="p">):</span>
+                <span class="n">print_lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{:2.4f}</span><span class="se">\t</span><span class="s1">|&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">s_values</span><span class="p">[</span><span class="n">i</span><span class="p">]))</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\t</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+                    <span class="s1">&#39; </span><span class="si">{:8d}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">val</span><span class="p">)</span> <span class="k">for</span> <span class="n">val</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">result</span><span class="o">.</span><span class="n">negCount</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+
+            <span class="n">print_lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">S</span><span class="se">\t</span><span class="s2">|</span><span class="se">\t</span><span class="s2">Fraction of undersampling energies per state (fractresh=&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_frac_tresh</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;)</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_s_values</span><span class="p">):</span>
+                <span class="n">print_lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{:2.4f}</span><span class="se">\t</span><span class="s1">|&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">s_values</span><span class="p">[</span><span class="n">i</span><span class="p">]))</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\t</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+                    <span class="s1">&#39; </span><span class="si">{:8.4f}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">val</span><span class="p">)</span> <span class="o">/</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_time_steps</span><span class="p">))</span> <span class="k">for</span> <span class="n">val</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">result</span><span class="o">.</span><span class="n">negCount</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+
+            <span class="n">print_lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n\n</span><span class="s2">New energy offset for each state:</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">offset</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">result</span><span class="o">.</span><span class="n">offsets</span><span class="p">:</span>
+                <span class="n">print_lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{:10.4f}</span><span class="s1">   +- </span><span class="si">{:8.4f}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">offset</span><span class="o">.</span><span class="n">mean</span><span class="p">),</span> <span class="nb">float</span><span class="p">(</span><span class="n">offset</span><span class="o">.</span><span class="n">std</span><span class="p">))</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+
+            <span class="k">return</span> <span class="n">print_lines</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Energy Offset estimation was not executed yet! use optimize_energy_offsets&quot;</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Eoff_estimator.optimize_energy_offsets"><a class="viewcode-back" href="../../../../../_source/reeds.function_libs.optimization.src.html#reeds.function_libs.optimization.src.energy_offset_estimator.Eoff_estimator.optimize_energy_offsets">[docs]</a>    <span class="k">def</span> <span class="nf">optimize_energy_offsets</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">beta</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">frac_tresh</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="n">max_iter</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">rho</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+                                <span class="n">pot_tresh</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Optimizes the energy offsets based on simulation results.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            beta (float): k_b * T</span>
+<span class="sd">            frac_tresh: Threshold on fraction of negative energies</span>
+<span class="sd">            max_iter (int): Maximum iterations</span>
+<span class="sd">            rho (float): convergence threshold</span>
+<span class="sd">            pot_tresh (float): b</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            List of new energy offsets for each s value.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_pot_tresh</span> <span class="o">=</span> <span class="n">pot_tresh</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_frac_tresh</span> <span class="o">=</span> <span class="n">frac_tresh</span>
+        <span class="n">num_states</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vvy</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="n">num_s_values</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vvr</span><span class="p">)</span>
+        <span class="n">time_steps</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vvr</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="n">new_energies</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">eoff_per_replica</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="c1"># CALC initial Vals</span>
+        <span class="c1">## calc new EIR per replica</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_s_values</span><span class="p">):</span>
+            <span class="c1"># print(&#39;\nS = {:.4f}:&#39;.format(self.s_values[i]))</span>
+            <span class="n">eir_out</span><span class="p">,</span> <span class="n">iterations</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_calc_form_5</span><span class="p">(</span><span class="n">vr</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">vvr</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">vy</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">vvy</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">s_in</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">s_values</span><span class="p">,</span> <span class="n">beta</span><span class="o">=</span><span class="n">beta</span><span class="p">,</span>
+                                                    <span class="n">num_states</span><span class="o">=</span><span class="n">num_states</span><span class="p">,</span> <span class="n">max_iter</span><span class="o">=</span><span class="n">max_iter</span><span class="p">,</span> <span class="n">rho</span><span class="o">=</span><span class="n">rho</span><span class="p">)</span>
+            <span class="n">new_energies</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">eir_out</span><span class="p">)</span>
+            <span class="n">eoff_per_replica</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="bp">self</span><span class="o">.</span><span class="n">s_values</span><span class="p">[</span><span class="n">i</span><span class="p">]:</span> <span class="p">{</span><span class="s2">&quot;eoff&quot;</span><span class="p">:</span> <span class="n">eir_out</span><span class="p">,</span> <span class="s2">&quot;iterations&quot;</span><span class="p">:</span> <span class="n">iterations</span><span class="p">}})</span>
+
+        <span class="c1">## calc fraction of minimal counts and undersampling counts</span>
+        <span class="n">zero_sate_list</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span> <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_states</span><span class="p">)]</span>
+        <span class="n">v_pot_num_under_Tresh</span> <span class="o">=</span> <span class="p">[</span><span class="n">copy</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">zero_sate_list</span><span class="p">)</span> <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_s_values</span><span class="p">)]</span>
+        <span class="n">v_pot_min_count</span> <span class="o">=</span> <span class="p">[</span><span class="n">copy</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">zero_sate_list</span><span class="p">)</span> <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_s_values</span><span class="p">)]</span>
+        <span class="k">for</span> <span class="n">si</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_s_values</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">time_steps</span><span class="p">):</span>
+                <span class="n">min_stat_index</span> <span class="o">=</span> <span class="mi">0</span>
+                <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_states</span><span class="p">):</span>
+                    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">vvy</span><span class="p">[</span><span class="n">si</span><span class="p">][</span><span class="n">k</span><span class="p">][</span><span class="n">t</span><span class="p">]</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">vvy</span><span class="p">[</span><span class="n">si</span><span class="p">][</span><span class="n">min_stat_index</span><span class="p">][</span><span class="n">t</span><span class="p">]:</span>
+                        <span class="n">min_stat_index</span> <span class="o">=</span> <span class="n">k</span>
+                    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">vvy</span><span class="p">[</span><span class="n">si</span><span class="p">][</span><span class="n">k</span><span class="p">][</span><span class="n">t</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">pot_tresh</span><span class="p">:</span>
+                        <span class="n">v_pot_num_under_Tresh</span><span class="p">[</span><span class="n">si</span><span class="p">][</span><span class="n">k</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+
+                <span class="n">v_pot_min_count</span><span class="p">[</span><span class="n">si</span><span class="p">][</span><span class="n">min_stat_index</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+
+        <span class="c1">## check if frac tresh is fullfiled</span>
+        <span class="n">threshold_fulfilled</span> <span class="o">=</span> <span class="p">[</span><span class="kc">True</span> <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_s_values</span><span class="p">)]</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_states</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_s_values</span><span class="p">):</span>
+                <span class="k">if</span> <span class="p">(</span><span class="n">v_pot_num_under_Tresh</span><span class="p">[</span><span class="n">j</span><span class="p">][</span><span class="n">i</span><span class="p">]</span> <span class="o">/</span> <span class="nb">float</span><span class="p">(</span><span class="n">time_steps</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">frac_tresh</span><span class="p">[</span><span class="n">i</span><span class="p">]):</span>
+                    <span class="n">threshold_fulfilled</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="c1">##get mean and std for Energy offsets</span>
+        <span class="n">new_offsets</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_states</span><span class="p">):</span>
+            <span class="n">state_energy_sum</span> <span class="o">=</span> <span class="mf">0.0</span>
+            <span class="n">state_energy_squared_sum</span> <span class="o">=</span> <span class="mf">0.0</span>
+            <span class="n">state_energy_counter</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_s_values</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">threshold_fulfilled</span><span class="p">[</span><span class="n">j</span><span class="p">]:</span>
+                    <span class="n">state_energy_sum</span> <span class="o">+=</span> <span class="n">new_energies</span><span class="p">[</span><span class="n">j</span><span class="p">][</span><span class="n">i</span><span class="p">]</span>
+                    <span class="n">state_energy_squared_sum</span> <span class="o">+=</span> <span class="n">new_energies</span><span class="p">[</span><span class="n">j</span><span class="p">][</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="n">new_energies</span><span class="p">[</span><span class="n">j</span><span class="p">][</span><span class="n">i</span><span class="p">]</span>
+                    <span class="n">state_energy_counter</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="k">if</span> <span class="n">state_energy_counter</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;WARNING: Threshold never fulfilled for state </span><span class="si">{:d}</span><span class="s1"> (-frac_tresh parameter)!&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="p">))</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">mean</span> <span class="o">=</span> <span class="n">state_energy_sum</span> <span class="o">/</span> <span class="nb">float</span><span class="p">(</span><span class="n">state_energy_counter</span><span class="p">)</span>
+                <span class="n">standard_deviation</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span>
+                    <span class="n">state_energy_squared_sum</span> <span class="o">/</span> <span class="nb">float</span><span class="p">(</span><span class="n">state_energy_counter</span><span class="p">)</span> <span class="o">-</span> <span class="n">mean</span> <span class="o">*</span> <span class="n">mean</span><span class="p">)</span>  <span class="c1"># whut?</span>
+
+            <span class="n">new_offsets</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">EnergyOffset</span><span class="p">(</span><span class="n">mean</span><span class="p">,</span> <span class="n">standard_deviation</span><span class="p">))</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">eoff_per_replica</span> <span class="o">=</span> <span class="n">eoff_per_replica</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">new_Eoffs</span> <span class="o">=</span> <span class="n">new_offsets</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">result</span> <span class="o">=</span> <span class="n">EnergyStatistic</span><span class="p">(</span><span class="n">new_offsets</span><span class="p">,</span> <span class="n">v_pot_min_count</span><span class="p">,</span> <span class="n">v_pot_num_under_Tresh</span><span class="p">,</span> <span class="n">eoff_per_replica</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Eoff_estimator._calculate_E_i_r"><a class="viewcode-back" href="../../../../../_source/reeds.function_libs.optimization.src.html#reeds.function_libs.optimization.src.energy_offset_estimator.Eoff_estimator._calculate_E_i_r">[docs]</a>    <span class="k">def</span> <span class="nf">_calculate_E_i_r</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vr</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="n">vy</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">]],</span> <span class="n">eir_old</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span>
+                         <span class="n">s_ref</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">s_stat</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">beta</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">p_i</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">num_states</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Calculate new energy offset</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            vr: Reference energies per state</span>
+<span class="sd">            vy: Energies per state</span>
+<span class="sd">            eir_old: Energy offsets of previous iteration</span>
+<span class="sd">            s_ref (float): Reference s value</span>
+<span class="sd">            s_stat (float): s value</span>
+<span class="sd">            beta (float): kb*T</span>
+<span class="sd">            p_i (int): index of state considered</span>
+<span class="sd">            num_states (int): number of states</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            new offset for state</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_times_steps</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">vr</span><span class="p">)</span>
+        <span class="n">state_sum</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_times_steps</span><span class="p">)]</span>
+        <span class="n">weights</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_times_steps</span><span class="p">)]</span>
+        <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">vr</span><span class="p">)):</span>
+            <span class="c1"># BUILD VRnew</span>
+            <span class="n">vr_new</span> <span class="o">=</span> <span class="mf">0.</span>
+            <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_states</span><span class="p">):</span>
+                <span class="n">beta_s</span> <span class="o">=</span> <span class="n">beta</span> <span class="o">*</span> <span class="n">s_stat</span>
+                <span class="n">diff_ln</span> <span class="o">=</span> <span class="o">-</span><span class="n">beta_s</span> <span class="o">*</span> <span class="p">(</span><span class="n">vy</span><span class="p">[</span><span class="n">j</span><span class="p">][</span><span class="n">k</span><span class="p">]</span> <span class="o">-</span> <span class="n">eir_old</span><span class="p">[</span><span class="n">j</span><span class="p">])</span>
+                <span class="n">vr_new</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">vr_new</span><span class="p">,</span> <span class="n">diff_ln</span><span class="p">)</span> <span class="o">+</span> <span class="n">math</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mf">1.0</span> <span class="o">+</span> <span class="n">math</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="nb">min</span><span class="p">(</span><span class="n">vr_new</span><span class="p">,</span> <span class="n">diff_ln</span><span class="p">)</span> <span class="o">-</span> <span class="nb">max</span><span class="p">(</span><span class="n">vr_new</span><span class="p">,</span> <span class="n">diff_ln</span><span class="p">)))</span> <span class="o">/</span> \
+                         <span class="n">s_stat</span>
+            <span class="n">vr_new</span> <span class="o">=</span> <span class="o">-</span> <span class="n">vr_new</span> <span class="o">/</span> <span class="n">beta</span>
+            <span class="c1"># Build VRstat</span>
+            <span class="n">vr_stat</span> <span class="o">=</span> <span class="mf">0.</span>
+            <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_states</span><span class="p">):</span>
+                <span class="n">diff_ln</span> <span class="o">=</span> <span class="o">-</span> <span class="n">beta</span> <span class="o">*</span> <span class="n">s_ref</span> <span class="o">*</span> <span class="p">(</span><span class="n">vy</span><span class="p">[</span><span class="n">j</span><span class="p">][</span><span class="n">k</span><span class="p">]</span> <span class="o">-</span> <span class="n">eir_old</span><span class="p">[</span><span class="n">j</span><span class="p">])</span>
+                <span class="n">vr_stat</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">vr_stat</span><span class="p">,</span> <span class="n">diff_ln</span><span class="p">)</span> <span class="o">+</span> <span class="n">math</span><span class="o">.</span><span class="n">log</span><span class="p">(</span>
+                    <span class="mf">1.0</span> <span class="o">+</span> <span class="n">math</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="nb">min</span><span class="p">(</span><span class="n">vr_stat</span><span class="p">,</span> <span class="n">diff_ln</span><span class="p">)</span> <span class="o">-</span> <span class="nb">max</span><span class="p">(</span><span class="n">vr_stat</span><span class="p">,</span> <span class="n">diff_ln</span><span class="p">)))</span> <span class="o">/</span> \
+                          <span class="n">s_ref</span>
+            <span class="n">vr_stat</span> <span class="o">=</span> <span class="o">-</span><span class="n">vr_stat</span> <span class="o">/</span> <span class="n">beta</span>
+            <span class="n">sum_ln</span> <span class="o">=</span> <span class="o">-</span><span class="n">beta</span> <span class="o">*</span> <span class="p">(</span><span class="n">vy</span><span class="p">[</span><span class="n">p_i</span><span class="p">][</span><span class="n">k</span><span class="p">]</span> <span class="o">-</span> <span class="n">vr_stat</span><span class="p">)</span>
+
+            <span class="n">diff_wei</span> <span class="o">=</span> <span class="o">-</span><span class="n">beta</span> <span class="o">*</span> <span class="p">(</span><span class="n">vr_new</span> <span class="o">-</span> <span class="n">vr</span><span class="p">[</span><span class="n">k</span><span class="p">])</span>
+
+            <span class="n">state_sum</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">diff_wei</span> <span class="o">+</span> <span class="n">sum_ln</span>
+            <span class="n">weights</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">diff_wei</span>
+
+        <span class="n">ln_xy</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ln_exp_avg</span><span class="p">(</span><span class="n">state_sum</span><span class="p">)</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ln_exp_avg</span><span class="p">(</span><span class="n">weights</span><span class="p">)</span>
+
+        <span class="c1"># now calculate the new EiR</span>
+        <span class="k">return</span> <span class="o">-</span><span class="n">ln_xy</span> <span class="o">/</span> <span class="n">beta</span></div>
+
+<div class="viewcode-block" id="Eoff_estimator._calc_form_5"><a class="viewcode-back" href="../../../../../_source/reeds.function_libs.optimization.src.html#reeds.function_libs.optimization.src.energy_offset_estimator.Eoff_estimator._calc_form_5">[docs]</a>    <span class="k">def</span> <span class="nf">_calc_form_5</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vr</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="n">vy</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">]],</span>
+                     <span class="n">s_in</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="n">beta</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">num_states</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">max_iter</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">rho</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="p">(</span>
+    <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="nb">int</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Calculate &quot;form 5&quot; of original cc program to estimate new offsets for</span>
+<span class="sd">        a single s value :param self.eir_old_init: Energy offsets used in</span>
+<span class="sd">        simulation. :param vr: Reference energies :param vy: Energies for each</span>
+<span class="sd">        state :param s_in: s values :param beta: kb*T :param num_states: number</span>
+<span class="sd">        of states :param max_iter: maximum number of iterations :param rho:</span>
+<span class="sd">        convergence criteria :return: New energy offsets</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            vr:</span>
+<span class="sd">            vy:</span>
+<span class="sd">            s_in:</span>
+<span class="sd">            beta (float):</span>
+<span class="sd">            num_states (int):</span>
+<span class="sd">            max_iter (int):</span>
+<span class="sd">            rho (float):</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">eir_old</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">eir_old_init</span><span class="p">)</span>
+        <span class="n">eir_new</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.0</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_states</span><span class="p">)]</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">max_iter</span><span class="p">):</span>
+            <span class="n">diff_eir</span> <span class="o">=</span> <span class="mf">0.</span>
+            <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_states</span><span class="p">):</span>
+                <span class="c1"># note: s_vaues now hardcoded to 1.0, was s_in[0] for s_stat</span>
+                <span class="n">eir_new</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_calculate_f_ir</span><span class="p">(</span><span class="n">vr</span><span class="o">=</span><span class="n">vr</span><span class="p">,</span> <span class="n">vy</span><span class="o">=</span><span class="n">vy</span><span class="p">,</span> <span class="n">eir_old</span><span class="o">=</span><span class="n">eir_old</span><span class="p">,</span> <span class="n">s_ref</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">s_stat</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">beta</span><span class="o">=</span><span class="n">beta</span><span class="p">,</span>
+                                                  <span class="n">p_i</span><span class="o">=</span><span class="n">j</span><span class="p">,</span> <span class="n">num_states</span><span class="o">=</span><span class="n">num_states</span><span class="p">)</span>  <span class="c1"># Calc effectivley new EIR</span>
+
+            <span class="n">e0_r</span> <span class="o">=</span> <span class="n">eir_new</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_states</span><span class="p">):</span>
+                <span class="n">eir_new</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">-=</span> <span class="n">e0_r</span>
+                <span class="n">diff_eir</span> <span class="o">+=</span> <span class="n">math</span><span class="o">.</span><span class="n">fabs</span><span class="p">(</span><span class="n">eir_new</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">-</span> <span class="n">eir_old</span><span class="p">[</span><span class="n">j</span><span class="p">])</span>
+                <span class="n">eir_old</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">eir_new</span><span class="p">[</span><span class="n">j</span><span class="p">]</span>
+                <span class="c1"># print(eir_old[j], &quot;, &quot;, end=&#39;&#39;)</span>
+
+            <span class="c1"># print(&#39;{:3d} / {:3d}&#39;.format(i + 1, max_iter))</span>
+
+            <span class="k">if</span> <span class="n">diff_eir</span> <span class="o">&lt;=</span> <span class="n">rho</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;State Eoff converged after &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot; steps&quot;</span><span class="p">)</span>
+                <span class="k">break</span>
+        <span class="k">return</span> <span class="n">eir_old</span><span class="p">,</span> <span class="n">i</span></div>
+
+<div class="viewcode-block" id="Eoff_estimator._calculate_f_ir"><a class="viewcode-back" href="../../../../../_source/reeds.function_libs.optimization.src.html#reeds.function_libs.optimization.src.energy_offset_estimator.Eoff_estimator._calculate_f_ir">[docs]</a>    <span class="k">def</span> <span class="nf">_calculate_f_ir</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vr</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="n">vy</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">]],</span> <span class="n">eir_old</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span>
+                        <span class="n">s_ref</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">s_stat</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">beta</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">p_i</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">num_states</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Calculate new energy offset</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            vr: Reference energies per state</span>
+<span class="sd">            vy: Energies per state</span>
+<span class="sd">            eir_old: Energy offsets of previous iteration</span>
+<span class="sd">            s_ref (float): Reference s value</span>
+<span class="sd">            s_stat (float): s value</span>
+<span class="sd">            beta (float): kb*T</span>
+<span class="sd">            p_i (int): index of state considered</span>
+<span class="sd">            num_states (int): number of states</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            new offset for state</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">times_steps</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">vr</span><span class="p">)</span>
+        <span class="n">state_sum</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">times_steps</span><span class="p">)]</span>
+        <span class="n">weights</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">times_steps</span><span class="p">)]</span>
+        <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">vr</span><span class="p">)):</span>
+            <span class="c1"># BUILD VRnew</span>
+            <span class="n">vr_new</span> <span class="o">=</span> <span class="mf">0.</span>
+            <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_states</span><span class="p">):</span>
+                <span class="n">beta_s</span> <span class="o">=</span> <span class="n">beta</span> <span class="o">*</span> <span class="n">s_stat</span>
+                <span class="n">diff_ln</span> <span class="o">=</span> <span class="o">-</span><span class="n">beta_s</span> <span class="o">*</span> <span class="p">(</span><span class="n">vy</span><span class="p">[</span><span class="n">j</span><span class="p">][</span><span class="n">k</span><span class="p">]</span> <span class="o">-</span> <span class="n">eir_old</span><span class="p">[</span><span class="n">j</span><span class="p">])</span>
+                <span class="n">vr_new</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">vr_new</span><span class="p">,</span> <span class="n">diff_ln</span><span class="p">)</span> <span class="o">+</span> <span class="n">math</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mf">1.0</span> <span class="o">+</span> <span class="n">math</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="nb">min</span><span class="p">(</span><span class="n">vr_new</span><span class="p">,</span> <span class="n">diff_ln</span><span class="p">)</span> <span class="o">-</span> <span class="nb">max</span><span class="p">(</span><span class="n">vr_new</span><span class="p">,</span> <span class="n">diff_ln</span><span class="p">)))</span> <span class="o">/</span> \
+                         <span class="n">s_stat</span>
+            <span class="n">vr_new</span> <span class="o">=</span> <span class="o">-</span> <span class="n">vr_new</span> <span class="o">/</span> <span class="n">beta</span>
+            <span class="c1"># Build VRstat</span>
+            <span class="n">vr_stat</span> <span class="o">=</span> <span class="mf">0.</span>
+            <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_states</span><span class="p">):</span>
+                <span class="n">diff_ln</span> <span class="o">=</span> <span class="o">-</span> <span class="n">beta</span> <span class="o">*</span> <span class="n">s_ref</span> <span class="o">*</span> <span class="p">(</span><span class="n">vy</span><span class="p">[</span><span class="n">j</span><span class="p">][</span><span class="n">k</span><span class="p">]</span> <span class="o">-</span> <span class="n">eir_old</span><span class="p">[</span><span class="n">j</span><span class="p">])</span>
+                <span class="n">vr_stat</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">vr_stat</span><span class="p">,</span> <span class="n">diff_ln</span><span class="p">)</span> <span class="o">+</span> <span class="n">math</span><span class="o">.</span><span class="n">log</span><span class="p">(</span>
+                    <span class="mf">1.0</span> <span class="o">+</span> <span class="n">math</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="nb">min</span><span class="p">(</span><span class="n">vr_stat</span><span class="p">,</span> <span class="n">diff_ln</span><span class="p">)</span> <span class="o">-</span> <span class="nb">max</span><span class="p">(</span><span class="n">vr_stat</span><span class="p">,</span> <span class="n">diff_ln</span><span class="p">)))</span> <span class="o">/</span> \
+                          <span class="n">s_ref</span>
+            <span class="n">vr_stat</span> <span class="o">=</span> <span class="o">-</span><span class="n">vr_stat</span> <span class="o">/</span> <span class="n">beta</span>
+            <span class="n">sum_ln</span> <span class="o">=</span> <span class="o">-</span><span class="n">beta</span> <span class="o">*</span> <span class="p">(</span><span class="n">vy</span><span class="p">[</span><span class="n">p_i</span><span class="p">][</span><span class="n">k</span><span class="p">]</span> <span class="o">-</span> <span class="n">vr_stat</span><span class="p">)</span>
+
+            <span class="n">diff_wei</span> <span class="o">=</span> <span class="o">-</span><span class="n">beta</span> <span class="o">*</span> <span class="p">(</span><span class="n">vr_new</span> <span class="o">-</span> <span class="n">vr</span><span class="p">[</span><span class="n">k</span><span class="p">])</span>
+
+            <span class="n">state_sum</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">diff_wei</span> <span class="o">+</span> <span class="n">sum_ln</span>
+            <span class="n">weights</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">diff_wei</span>
+
+        <span class="n">ln_xy</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ln_exp_avg</span><span class="p">(</span><span class="n">state_sum</span><span class="p">)</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ln_exp_avg</span><span class="p">(</span><span class="n">weights</span><span class="p">)</span>
+
+        <span class="c1"># now calculate the new EiR</span>
+        <span class="k">return</span> <span class="o">-</span><span class="n">ln_xy</span> <span class="o">/</span> <span class="n">beta</span></div>
+
+<div class="viewcode-block" id="Eoff_estimator._ln_exp_avg"><a class="viewcode-back" href="../../../../../_source/reeds.function_libs.optimization.src.html#reeds.function_libs.optimization.src.energy_offset_estimator.Eoff_estimator._ln_exp_avg">[docs]</a>    <span class="k">def</span> <span class="nf">_ln_exp_avg</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">values</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">]):</span>
+        <span class="sd">&quot;&quot;&quot;Log average.</span>
+<span class="sd">            implementation for Potential energies, avoiding overflows errors</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            values: List of input values.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Log average</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">values</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mf">0.</span>
+        <span class="n">avg</span> <span class="o">=</span> <span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">values</span><span class="p">)):</span>
+            <span class="n">avg</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">avg</span><span class="p">,</span> <span class="n">values</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="o">+</span> <span class="n">math</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mf">1.</span> <span class="o">+</span> <span class="n">math</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="nb">min</span><span class="p">(</span><span class="n">avg</span><span class="p">,</span> <span class="n">values</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="o">-</span> <span class="nb">max</span><span class="p">(</span><span class="n">avg</span><span class="p">,</span> <span class="n">values</span><span class="p">[</span><span class="n">i</span><span class="p">])))</span>
+        <span class="k">return</span> <span class="n">avg</span> <span class="o">-</span> <span class="n">math</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">values</span><span class="p">)))</span></div></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2020, Benjamin Ries, Salome Rieder, Candide Champion. Project structure based on the Computational Molecular Science Python Cookiecutter version 1.3.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

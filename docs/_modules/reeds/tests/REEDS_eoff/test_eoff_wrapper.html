@@ -1,41 +1,42 @@
 
 
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8">
+  <meta charset="utf-8" />
   
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>reeds.tests.REEDS_eoff.test_eoff_wrapper &mdash; REEDS  documentation</title>
   
 
   
-  
+  <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+
   
   
 
   
-  <script type="text/javascript" src="../../../../_static/js/modernizr.min.js"></script>
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../../../" src="../../../../_static/documentation_options.js"></script>
         <script src="../../../../_static/jquery.js"></script>
         <script src="../../../../_static/underscore.js"></script>
         <script src="../../../../_static/doctools.js"></script>
-        <script src="../../../../_static/language_data.js"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
-        <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
     
     <script type="text/javascript" src="../../../../_static/js/theme.js"></script>
 
     
-
-  
-  <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="../../../../genindex.html" />
     <link rel="search" title="Search" href="../../../../search.html" /> 
 </head>
@@ -74,6 +75,7 @@
           
         </div>
 
+        
         <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
           
             
@@ -85,12 +87,13 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../introduction.html">REEDS</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../Examples/index.html">Examples</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../_source/modules.html">Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_source/modules.html">reeds</a></li>
 </ul>
 
             
           
         </div>
+        
       </div>
     </nav>
 
@@ -125,11 +128,13 @@
 
 
 
+
+
 <div role="navigation" aria-label="breadcrumbs navigation">
 
   <ul class="wy-breadcrumbs">
     
-      <li><a href="../../../../index.html">Docs</a> &raquo;</li>
+      <li><a href="../../../../index.html" class="icon icon-home"></a> &raquo;</li>
         
           <li><a href="../../../index.html">Module code</a> &raquo;</li>
         
@@ -154,6 +159,8 @@
 <span class="kn">from</span> <span class="nn">reeds.function_libs.optimization</span> <span class="kn">import</span> <span class="n">eds_energy_offsets</span>
 <span class="kn">from</span> <span class="nn">reeds.function_libs.file_management</span> <span class="kn">import</span> <span class="n">file_management</span> <span class="k">as</span> <span class="n">fM</span>
 
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
 <span class="n">in_BRD4_7ligs</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;/data/7ligs&quot;</span>
 <span class="n">in_PNMT_9ligs</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)</span><span class="o">+</span><span class="s2">&quot;/data/PNMT_9ligs&quot;</span>
 
@@ -162,131 +169,111 @@
 
 
 <div class="viewcode-block" id="test_Eoff_wrapper"><a class="viewcode-back" href="../../../../_source/reeds.tests.REEDS_eoff.html#reeds.tests.REEDS_eoff.test_eoff_wrapper.test_Eoff_wrapper">[docs]</a><span class="k">class</span> <span class="nc">test_Eoff_wrapper</span><span class="p">(</span><span class="n">unittest</span><span class="o">.</span><span class="n">TestCase</span><span class="p">):</span>
-<div class="viewcode-block" id="test_Eoff_wrapper.test_parser"><a class="viewcode-back" href="../../../../_source/reeds.tests.REEDS_eoff.html#reeds.tests.REEDS_eoff.test_eoff_wrapper.test_Eoff_wrapper.test_parser">[docs]</a>    <span class="k">def</span> <span class="nf">test_parser</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="c1">#check_files</span>
-
-        <span class="c1">#params:</span>
-        <span class="n">T</span> <span class="o">=</span> <span class="mi">298</span>
-        <span class="n">kb</span><span class="o">=</span><span class="mf">0.00831451</span>
-        <span class="n">frac_tresh</span> <span class="o">=</span> <span class="mf">0.6</span>
-        <span class="n">rho</span> <span class="o">=</span> <span class="mf">0.0</span>
-        <span class="n">pot_tresh</span> <span class="o">=</span> <span class="mi">200</span>
-        <span class="n">max_iter</span> <span class="o">=</span> <span class="mi">20</span>
-
-        <span class="n">s_values</span> <span class="o">=</span> <span class="p">[</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.5623</span><span class="p">,</span> <span class="mf">0.3162</span><span class="p">,</span> <span class="mf">0.1778</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.0562</span><span class="p">,</span> <span class="mf">0.0316</span><span class="p">,</span> <span class="mf">0.0178</span><span class="p">,</span> <span class="mf">0.01</span><span class="p">,</span> <span class="mf">0.0056</span><span class="p">,</span> <span class="mf">0.0032</span><span class="p">,</span> <span class="mf">0.0018</span><span class="p">,</span> <span class="mf">0.001</span><span class="p">,</span>
-                    <span class="mf">0.0006</span><span class="p">,</span> <span class="mf">0.0003</span><span class="p">]</span>
-        <span class="n">s_val_num</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">s_values</span><span class="p">)</span>
-        <span class="n">states_num</span> <span class="o">=</span> <span class="mi">7</span>
-
-        <span class="n">init_Eoff</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.0</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">states_num</span><span class="p">)]</span>
-
-        <span class="c1">#find Files</span>
-        <span class="n">ene_ana_trajs</span> <span class="o">=</span> <span class="n">fM</span><span class="o">.</span><span class="n">parse_csv_energy_trajectories</span><span class="p">(</span><span class="n">in_folder</span><span class="o">=</span><span class="n">in_BRD4_7ligs</span><span class="p">,</span> <span class="n">ene_trajs_prefix</span><span class="o">=</span><span class="s2">&quot;energies_&quot;</span><span class="p">)</span>
-        <span class="nb">print</span><span class="p">(</span><span class="n">ene_ana_trajs</span><span class="p">)</span>
-        <span class="c1">#calc Eoffs and control</span>
-        <span class="n">parse</span> <span class="o">=</span> <span class="n">eds_energy_offsets</span><span class="o">.</span><span class="n">parse_args</span><span class="p">(</span><span class="n">ene_ana_trajs</span><span class="o">=</span><span class="n">ene_ana_trajs</span><span class="p">,</span>
-                                  <span class="n">s_values</span><span class="o">=</span><span class="n">s_values</span><span class="p">,</span> <span class="n">Eoff</span><span class="o">=</span><span class="n">init_Eoff</span><span class="p">,</span>
-                                  <span class="n">Temp</span><span class="o">=</span><span class="n">T</span><span class="p">,</span>  <span class="c1">#kb=kb,</span>
-                                  <span class="n">frac_tresh</span><span class="o">=</span><span class="p">[</span><span class="n">frac_tresh</span><span class="p">],</span> <span class="n">max_iter</span><span class="o">=</span><span class="n">max_iter</span><span class="p">,</span> <span class="n">convergenceradius</span><span class="o">=</span><span class="n">rho</span><span class="p">,</span> <span class="n">pot_tresh</span><span class="o">=</span><span class="n">pot_tresh</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="test_Eoff_wrapper.test_eoff_BRD4_7ligs"><a class="viewcode-back" href="../../../../_source/reeds.tests.REEDS_eoff.html#reeds.tests.REEDS_eoff.test_eoff_wrapper.test_Eoff_wrapper.test_eoff_BRD4_7ligs">[docs]</a>    <span class="k">def</span> <span class="nf">test_eoff_BRD4_7ligs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="c1">#result:</span>
-        <span class="n">expected_Eoffs</span> <span class="o">=</span> <span class="p">[(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">),</span> <span class="p">(</span><span class="mf">290.8132</span><span class="p">,</span> <span class="mf">10.5879</span><span class="p">),</span> <span class="p">(</span><span class="mf">233.9000</span><span class="p">,</span> <span class="mf">3.4339</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="mf">98.1871</span><span class="p">,</span> <span class="mf">7.9141</span><span class="p">),</span> <span class="p">(</span><span class="mf">34.4407</span><span class="p">,</span> <span class="mf">6.7009</span><span class="p">),</span>
-                          <span class="p">(</span><span class="o">-</span><span class="mf">308.3202</span><span class="p">,</span> <span class="mf">4.5301</span><span class="p">),</span> <span class="p">(</span><span class="mf">140.6267</span><span class="p">,</span> <span class="mf">7.4697</span><span class="p">)]</span>
+    
+        <span class="n">expected_eoffs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span>
+            <span class="p">[</span>     <span class="mf">0.</span><span class="p">,</span>          <span class="o">-</span><span class="mf">3477.665911</span><span class="p">,</span>   <span class="o">-</span><span class="mf">25277.106431</span><span class="p">,</span>   <span class="o">-</span><span class="mf">25243.526011</span><span class="p">,</span> <span class="o">-</span><span class="mf">19647.956147</span><span class="p">,</span>   <span class="o">-</span><span class="mf">26222.50097884</span><span class="p">,</span> <span class="o">-</span><span class="mf">19669.102572</span>  <span class="p">],</span>
+            <span class="p">[</span>     <span class="mf">0.</span><span class="p">,</span>          <span class="mf">32566.474782</span><span class="p">,</span>   <span class="o">-</span><span class="mf">17624.648377</span><span class="p">,</span>   <span class="o">-</span><span class="mf">17547.77742</span><span class="p">,</span>   <span class="o">-</span><span class="mf">6028.870275</span><span class="p">,</span>   <span class="o">-</span><span class="mf">18561.00373584</span><span class="p">,</span> <span class="o">-</span><span class="mf">14804.752015</span>  <span class="p">],</span>
+            <span class="p">[</span>     <span class="mf">0.</span><span class="p">,</span>          <span class="mf">51202.172245</span><span class="p">,</span>   <span class="o">-</span><span class="mf">13424.54721083</span><span class="p">,</span> <span class="o">-</span><span class="mf">13568.346403</span><span class="p">,</span>  <span class="o">-</span><span class="mf">2871.574164</span><span class="p">,</span>   <span class="o">-</span><span class="mf">14460.48970784</span><span class="p">,</span> <span class="o">-</span><span class="mf">11677.249527</span>  <span class="p">],</span>
+            <span class="p">[</span>     <span class="mf">0.</span><span class="p">,</span>          <span class="mf">32233.320004</span><span class="p">,</span>   <span class="o">-</span><span class="mf">16236.235581</span><span class="p">,</span>   <span class="o">-</span><span class="mf">16295.123735</span><span class="p">,</span>  <span class="o">-</span><span class="mf">7370.974142</span><span class="p">,</span>   <span class="o">-</span><span class="mf">17131.32000884</span><span class="p">,</span> <span class="o">-</span><span class="mf">14112.996993</span>  <span class="p">],</span>
+            <span class="p">[</span>     <span class="mf">0.</span><span class="p">,</span>          <span class="mf">21706.320631</span><span class="p">,</span>   <span class="o">-</span><span class="mf">25574.64824</span><span class="p">,</span>    <span class="o">-</span><span class="mf">25600.24727501</span><span class="p">,</span> <span class="o">-</span><span class="mf">15670.607396</span><span class="p">,</span> <span class="o">-</span><span class="mf">26438.71212484</span><span class="p">,</span> <span class="o">-</span><span class="mf">21713.395748</span>  <span class="p">],</span>
+            <span class="p">[</span>     <span class="mf">0.</span><span class="p">,</span>          <span class="mf">34834.060143</span><span class="p">,</span>   <span class="o">-</span><span class="mf">13764.013669</span><span class="p">,</span>   <span class="o">-</span><span class="mf">13883.155494</span><span class="p">,</span>    <span class="o">-</span><span class="mf">9439.909438</span><span class="p">,</span> <span class="o">-</span><span class="mf">14716.40340984</span><span class="p">,</span> <span class="o">-</span><span class="mf">11703.401339</span>  <span class="p">],</span>
+            <span class="p">[</span>     <span class="mf">0.</span><span class="p">,</span>          <span class="mf">52727.8412</span><span class="p">,</span>     <span class="o">-</span><span class="mf">10757.898227</span><span class="p">,</span>   <span class="o">-</span><span class="mf">10902.08184635</span><span class="p">,</span>  <span class="o">-</span><span class="mf">304.210506</span><span class="p">,</span>  <span class="o">-</span><span class="mf">11752.70209342</span><span class="p">,</span>  <span class="o">-</span><span class="mf">9669.599035</span>  <span class="p">],</span>
+            <span class="p">[</span>     <span class="mf">0.</span><span class="p">,</span>          <span class="mf">30267.947423</span><span class="p">,</span>    <span class="o">-</span><span class="mf">9751.32691253</span><span class="p">,</span>  <span class="o">-</span><span class="mf">9783.295176</span><span class="p">,</span>    <span class="o">-</span><span class="mf">195.599075</span><span class="p">,</span>  <span class="o">-</span><span class="mf">10685.44874403</span><span class="p">,</span>  <span class="o">-</span><span class="mf">7564.997107</span>  <span class="p">],</span>
+            <span class="p">[</span>     <span class="mf">0.</span><span class="p">,</span>          <span class="mf">43977.68671</span><span class="p">,</span>     <span class="o">-</span><span class="mf">5067.23676023</span><span class="p">,</span>  <span class="o">-</span><span class="mf">5506.5152002</span><span class="p">,</span>   <span class="o">-</span><span class="mf">3330.662978</span><span class="p">,</span> <span class="o">-</span><span class="mf">5793.48818846</span><span class="p">,</span>  <span class="o">-</span><span class="mf">4650.414262</span>  <span class="p">],</span>
+            <span class="p">[</span>     <span class="mf">0.</span><span class="p">,</span>          <span class="mf">2637.58545279</span><span class="p">,</span>    <span class="mf">266.12185815</span><span class="p">,</span>    <span class="o">-</span><span class="mf">89.57325054</span><span class="p">,</span>   <span class="mf">47.13542781</span><span class="p">,</span>  <span class="o">-</span><span class="mf">319.03035415</span><span class="p">,</span>    <span class="mf">159.90802968</span><span class="p">],</span>
+            <span class="p">[</span>     <span class="mf">0.</span><span class="p">,</span>          <span class="mf">321.49197543</span><span class="p">,</span>    <span class="mf">248.16835992</span><span class="p">,</span>    <span class="o">-</span><span class="mf">84.9513929</span><span class="p">,</span>    <span class="mf">37.60692756</span><span class="p">,</span>   <span class="o">-</span><span class="mf">318.24696274</span><span class="p">,</span>    <span class="mf">148.16364835</span><span class="p">],</span>
+            <span class="p">[</span>     <span class="mf">0.</span><span class="p">,</span>          <span class="mf">306.30322957</span><span class="p">,</span>    <span class="mf">242.4176958</span><span class="p">,</span>     <span class="o">-</span><span class="mf">82.05107038</span><span class="p">,</span>   <span class="mf">37.6572784</span><span class="p">,</span>    <span class="o">-</span><span class="mf">306.344127</span><span class="p">,</span>    <span class="mf">155.59786761</span><span class="p">],</span>
+            <span class="p">[</span>     <span class="mf">0.</span><span class="p">,</span>          <span class="mf">289.80169858</span><span class="p">,</span>    <span class="mf">230.86488193</span><span class="p">,</span>   <span class="o">-</span><span class="mf">103.46218717</span><span class="p">,</span>   <span class="mf">42.77049576</span><span class="p">,</span>   <span class="o">-</span><span class="mf">305.00825801</span><span class="p">,</span>    <span class="mf">131.59990836</span><span class="p">],</span>
+            <span class="p">[</span>     <span class="mf">0.</span><span class="p">,</span>          <span class="mf">304.25679099</span><span class="p">,</span>    <span class="mf">238.70062531</span><span class="p">,</span>   <span class="o">-</span><span class="mf">104.09826592</span><span class="p">,</span>   <span class="mf">26.36253701</span><span class="p">,</span>   <span class="o">-</span><span class="mf">314.72557004</span><span class="p">,</span>   <span class="mf">140.3880654</span> <span class="p">],</span>
+            <span class="p">[</span>     <span class="mf">0.</span><span class="p">,</span>          <span class="mf">278.38106171</span><span class="p">,</span>    <span class="mf">232.13447009</span><span class="p">,</span>    <span class="o">-</span><span class="mf">87.00095251</span><span class="p">,</span>   <span class="mf">34.18917823</span><span class="p">,</span>   <span class="o">-</span><span class="mf">305.22691863</span><span class="p">,</span>    <span class="mf">149.8921765</span> <span class="p">]</span>
+        <span class="p">])</span>
+
+
 
         <span class="c1">#params:</span>
         <span class="n">T</span> <span class="o">=</span> <span class="mi">298</span>
-        <span class="n">kb</span><span class="o">=</span><span class="mf">0.00831451</span>
-        <span class="n">frac_tresh</span> <span class="o">=</span> <span class="mf">0.6</span>
-        <span class="n">rho</span> <span class="o">=</span> <span class="mf">0.0</span>
-        <span class="n">pot_tresh</span> <span class="o">=</span> <span class="mi">200</span>
-        <span class="n">max_iter</span> <span class="o">=</span> <span class="mi">20</span>
-
         <span class="n">s_values</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">float</span><span class="p">,</span> <span class="s2">&quot;1.0 0.56234133 0.31622777 0.17782794 0.1 0.05623413 0.03162278 0.01778279 0.01 0.00562341 0.00316228 0.00177828 0.001 0.00056234 0.00031623&quot;</span><span class="o">.</span><span class="n">split</span><span class="p">()))</span>
         <span class="n">s_val_num</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">s_values</span><span class="p">)</span>
         <span class="n">states_num</span> <span class="o">=</span> <span class="mi">7</span>
         <span class="n">init_Eoff</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.0</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">states_num</span><span class="p">)]</span>
+        
+        <span class="nb">print</span> <span class="p">(</span><span class="s1">&#39;testing we get the same results with BRD4 data&#39;</span><span class="p">)</span>
 
         <span class="c1">#find Files</span>
         <span class="n">ene_ana_trajs</span> <span class="o">=</span> <span class="n">fM</span><span class="o">.</span><span class="n">parse_csv_energy_trajectories</span><span class="p">(</span><span class="n">in_folder</span><span class="o">=</span><span class="n">in_BRD4_7ligs</span><span class="p">,</span> <span class="n">ene_trajs_prefix</span><span class="o">=</span><span class="s2">&quot;energies_&quot;</span><span class="p">)</span>
+        
+        <span class="n">new_eoffs</span><span class="p">,</span> <span class="n">all_eoffs</span> <span class="o">=</span> <span class="n">eds_energy_offsets</span><span class="o">.</span><span class="n">estimate_energy_offsets</span><span class="p">(</span><span class="n">ene_ana_trajs</span><span class="p">,</span> <span class="n">initial_offsets</span> <span class="o">=</span> <span class="n">init_Eoff</span><span class="p">,</span> 
+                                                                          <span class="n">s_values</span> <span class="o">=</span> <span class="n">s_values</span><span class="p">,</span> <span class="n">out_path</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> 
+                                                                          <span class="n">temp</span> <span class="o">=</span> <span class="n">T</span><span class="p">,</span> <span class="n">trim_beg</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span> <span class="n">undersampling_idx</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> 
+                                                                          <span class="n">plot_results</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">calc_clara</span> <span class="o">=</span> <span class="kc">False</span>
+                                                                          <span class="p">)</span>
+        <span class="c1"># do the comparison with the previous data</span>
+ 
+        <span class="n">equal_criteria</span> <span class="o">=</span> <span class="mf">0.1</span> <span class="c1"># kJ/mol, results must not differ by more than this value</span>
 
-        <span class="c1">#calc Eoffs and control</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">estEoff</span><span class="p">(</span><span class="n">ene_ana_trajs</span><span class="o">=</span><span class="n">ene_ana_trajs</span><span class="p">,</span> <span class="n">init_Eoff</span><span class="o">=</span><span class="n">init_Eoff</span><span class="p">,</span> <span class="n">s_values</span><span class="o">=</span><span class="n">s_values</span><span class="p">,</span> <span class="n">expected_Eoffs</span><span class="o">=</span><span class="n">expected_Eoffs</span><span class="p">,</span> <span class="n">output_result</span><span class="o">=</span><span class="n">out_result_BRD4_7ligs</span><span class="p">,</span>
-                    <span class="n">T</span> <span class="o">=</span> <span class="n">T</span><span class="p">,</span> <span class="n">kb</span> <span class="o">=</span> <span class="n">kb</span><span class="p">,</span>
-                    <span class="n">pot_tresh</span> <span class="o">=</span> <span class="n">pot_tresh</span><span class="p">,</span> <span class="n">frac_tresh</span> <span class="o">=</span> <span class="n">frac_tresh</span><span class="p">,</span>
-                    <span class="n">rho</span> <span class="o">=</span> <span class="n">rho</span><span class="p">,</span> <span class="n">max_iter</span> <span class="o">=</span> <span class="n">max_iter</span><span class="p">)</span></div>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">all_eoffs</span> <span class="o">-</span> <span class="n">expected_eoffs</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">equal_criteria</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;BRD4 offsets calculated to be different&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">print</span> <span class="p">(</span><span class="s1">&#39;BRD4 data gives the same results&#39;</span><span class="p">)</span></div>
+
 
 <div class="viewcode-block" id="test_Eoff_wrapper.test_eoff_PNMT_9ligs"><a class="viewcode-back" href="../../../../_source/reeds.tests.REEDS_eoff.html#reeds.tests.REEDS_eoff.test_eoff_wrapper.test_Eoff_wrapper.test_eoff_PNMT_9ligs">[docs]</a>    <span class="k">def</span> <span class="nf">test_eoff_PNMT_9ligs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Data from publication Sidler 2016 - 9ligands Table IV</span>
-<span class="sd">        :return:</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">expected_Eoffs</span><span class="o">=</span><span class="p">[(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="mf">1.872856</span><span class="p">,</span> <span class="mf">7.53874</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="mf">3.2207</span> <span class="p">,</span> <span class="mf">6.160522</span><span class="p">),</span>
-                        <span class="p">(</span><span class="mf">7.41792</span><span class="p">,</span> <span class="mf">6.93919</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="mf">36.8417</span><span class="p">,</span> <span class="mf">6.21895</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="mf">335.875</span><span class="p">,</span> <span class="mf">10.5098</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="mf">382.97</span><span class="p">,</span> <span class="mf">19.7235</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="mf">8.67558</span><span class="p">,</span> <span class="mf">5.40899</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="mf">123.815</span><span class="p">,</span> <span class="mf">5.35271</span><span class="p">)]</span>
+        
+        <span class="n">expected_eoffs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span>
+         <span class="p">[</span>   <span class="mf">0.0</span><span class="p">,</span>           <span class="mf">12.72507142</span><span class="p">,</span>   <span class="mf">20.05976081</span><span class="p">,</span>  <span class="o">-</span><span class="mf">25.62036539</span><span class="p">,</span>  <span class="o">-</span><span class="mf">13.15887897</span><span class="p">,</span> <span class="o">-</span><span class="mf">336.83665691</span><span class="p">,</span> <span class="o">-</span><span class="mf">504.19747211</span><span class="p">,</span>   <span class="mf">21.93712241</span><span class="p">,</span>    <span class="mf">4.79907405</span><span class="p">],</span>
+         <span class="p">[</span>   <span class="mf">0.0</span><span class="p">,</span>            <span class="mf">7.79728192</span><span class="p">,</span>   <span class="mf">30.30650457</span><span class="p">,</span>   <span class="o">-</span><span class="mf">5.42730397</span><span class="p">,</span>   <span class="o">-</span><span class="mf">1.87408498</span><span class="p">,</span> <span class="o">-</span><span class="mf">280.16669749</span><span class="p">,</span> <span class="o">-</span><span class="mf">499.16648857</span><span class="p">,</span>  <span class="o">-</span><span class="mf">26.3761377</span><span class="p">,</span>   <span class="o">-</span><span class="mf">72.31883187</span><span class="p">],</span>
+         <span class="p">[</span>   <span class="mf">0.0</span><span class="p">,</span>           <span class="mf">21.94475404</span><span class="p">,</span>    <span class="mf">4.77255521</span><span class="p">,</span>   <span class="mf">18.30944948</span><span class="p">,</span>   <span class="o">-</span><span class="mf">3.16837365</span><span class="p">,</span> <span class="o">-</span><span class="mf">289.52657702</span><span class="p">,</span> <span class="o">-</span><span class="mf">492.68223004</span><span class="p">,</span>   <span class="mf">16.46356148</span><span class="p">,</span>  <span class="o">-</span><span class="mf">39.16086421</span><span class="p">],</span>
+         <span class="p">[</span>   <span class="mf">0.0</span><span class="p">,</span>          <span class="o">-</span><span class="mf">12.59810399</span><span class="p">,</span>   <span class="mf">15.47408475</span><span class="p">,</span>  <span class="o">-</span><span class="mf">13.12023784</span><span class="p">,</span>  <span class="o">-</span><span class="mf">16.06243093</span><span class="p">,</span> <span class="o">-</span><span class="mf">325.21752006</span><span class="p">,</span> <span class="o">-</span><span class="mf">507.99624893</span><span class="p">,</span>    <span class="mf">7.31812804</span><span class="p">,</span>  <span class="o">-</span><span class="mf">78.99522206</span><span class="p">],</span>
+         <span class="p">[</span>   <span class="mf">0.0</span><span class="p">,</span>            <span class="mf">2.75649107</span><span class="p">,</span>    <span class="mf">8.13690798</span><span class="p">,</span>  <span class="o">-</span><span class="mf">13.84585243</span><span class="p">,</span>  <span class="o">-</span><span class="mf">21.85057136</span><span class="p">,</span> <span class="o">-</span><span class="mf">282.93737402</span><span class="p">,</span> <span class="o">-</span><span class="mf">500.27318313</span><span class="p">,</span>   <span class="o">-</span><span class="mf">2.0855101</span><span class="p">,</span>   <span class="o">-</span><span class="mf">11.57737438</span><span class="p">],</span>
+         <span class="p">[</span>   <span class="mf">0.0</span><span class="p">,</span>            <span class="mf">4.08140669</span><span class="p">,</span>    <span class="mf">3.21576768</span><span class="p">,</span>   <span class="o">-</span><span class="mf">1.20486334</span><span class="p">,</span>   <span class="o">-</span><span class="mf">5.35329057</span><span class="p">,</span> <span class="o">-</span><span class="mf">319.73353025</span><span class="p">,</span> <span class="o">-</span><span class="mf">508.81298842</span><span class="p">,</span>   <span class="mf">16.98748738</span><span class="p">,</span>  <span class="o">-</span><span class="mf">22.21220394</span><span class="p">],</span>
+         <span class="p">[</span>   <span class="mf">0.0</span><span class="p">,</span>           <span class="mf">15.66378689</span><span class="p">,</span>   <span class="mf">39.98890657</span><span class="p">,</span>   <span class="mf">24.538459</span>  <span class="p">,</span>   <span class="o">-</span><span class="mf">6.55874685</span><span class="p">,</span> <span class="o">-</span><span class="mf">309.19254098</span><span class="p">,</span> <span class="o">-</span><span class="mf">479.36416672</span><span class="p">,</span>   <span class="mf">37.51263524</span><span class="p">,</span>  <span class="o">-</span><span class="mf">29.10856717</span><span class="p">],</span>
+         <span class="p">[</span>   <span class="mf">0.0</span><span class="p">,</span>            <span class="mf">1.80585478</span><span class="p">,</span>   <span class="o">-</span><span class="mf">5.44434504</span><span class="p">,</span>    <span class="mf">0.29940514</span><span class="p">,</span>   <span class="o">-</span><span class="mf">5.4597886</span><span class="p">,</span>  <span class="o">-</span><span class="mf">299.61390276</span><span class="p">,</span> <span class="o">-</span><span class="mf">499.75284645</span><span class="p">,</span>   <span class="o">-</span><span class="mf">0.79510748</span><span class="p">,</span>  <span class="o">-</span><span class="mf">19.52586253</span><span class="p">],</span>
+         <span class="p">[</span>   <span class="mf">0.0</span><span class="p">,</span>           <span class="mf">11.38899217</span><span class="p">,</span>   <span class="mf">24.54550266</span><span class="p">,</span>   <span class="mf">31.97101691</span><span class="p">,</span>  <span class="o">-</span><span class="mf">22.32300735</span><span class="p">,</span> <span class="o">-</span><span class="mf">364.03968497</span><span class="p">,</span> <span class="o">-</span><span class="mf">494.10471298</span><span class="p">,</span>   <span class="mf">19.43628647</span><span class="p">,</span>  <span class="o">-</span><span class="mf">39.72010141</span><span class="p">],</span>
+         <span class="p">[</span>   <span class="mf">0.0</span><span class="p">,</span>           <span class="o">-</span><span class="mf">9.01614423</span><span class="p">,</span>    <span class="mf">0.90079861</span><span class="p">,</span>   <span class="mf">11.10510425</span><span class="p">,</span>    <span class="mf">1.32407133</span><span class="p">,</span> <span class="o">-</span><span class="mf">297.40412347</span><span class="p">,</span> <span class="o">-</span><span class="mf">493.46939524</span><span class="p">,</span>   <span class="mf">11.87810236</span><span class="p">,</span>  <span class="o">-</span><span class="mf">18.80446089</span><span class="p">],</span>
+         <span class="p">[</span>   <span class="mf">0.0</span><span class="p">,</span>            <span class="mf">8.02965178</span><span class="p">,</span>    <span class="mf">9.25176196</span><span class="p">,</span>   <span class="o">-</span><span class="mf">0.82255875</span><span class="p">,</span>  <span class="o">-</span><span class="mf">44.56403826</span><span class="p">,</span> <span class="o">-</span><span class="mf">333.37867756</span><span class="p">,</span> <span class="o">-</span><span class="mf">495.16741143</span><span class="p">,</span>    <span class="mf">8.18953278</span><span class="p">,</span>    <span class="mf">5.58434011</span><span class="p">],</span>
+         <span class="p">[</span>   <span class="mf">0.0</span><span class="p">,</span>            <span class="mf">6.28473162</span><span class="p">,</span>   <span class="mf">35.74675219</span><span class="p">,</span>    <span class="mf">0.02260035</span><span class="p">,</span>  <span class="o">-</span><span class="mf">54.79282894</span><span class="p">,</span> <span class="o">-</span><span class="mf">413.66590508</span><span class="p">,</span> <span class="o">-</span><span class="mf">498.64293198</span><span class="p">,</span>    <span class="mf">9.61728156</span><span class="p">,</span>  <span class="o">-</span><span class="mf">30.02387337</span><span class="p">],</span>
+         <span class="p">[</span>   <span class="mf">0.0</span><span class="p">,</span>           <span class="mf">21.59430564</span><span class="p">,</span>    <span class="mf">0.27520316</span><span class="p">,</span>   <span class="mf">20.13021646</span><span class="p">,</span>  <span class="o">-</span><span class="mf">53.60906903</span><span class="p">,</span> <span class="o">-</span><span class="mf">403.1916287</span><span class="p">,</span>  <span class="o">-</span><span class="mf">454.38539656</span><span class="p">,</span>    <span class="mf">1.07450116</span><span class="p">,</span> <span class="o">-</span><span class="mf">114.30080107</span><span class="p">],</span>
+         <span class="p">[</span>   <span class="mf">0.0</span><span class="p">,</span>            <span class="mf">7.00657794</span><span class="p">,</span>    <span class="mf">6.97119376</span><span class="p">,</span>   <span class="mf">11.79268054</span><span class="p">,</span>  <span class="o">-</span><span class="mf">25.84198252</span><span class="p">,</span> <span class="o">-</span><span class="mf">349.10150685</span><span class="p">,</span> <span class="o">-</span><span class="mf">415.21568473</span><span class="p">,</span>    <span class="mf">1.06692688</span><span class="p">,</span> <span class="o">-</span><span class="mf">115.66752471</span><span class="p">],</span>
+         <span class="p">[</span>   <span class="mf">0.0</span><span class="p">,</span>          <span class="o">-</span><span class="mf">11.90459409</span><span class="p">,</span>   <span class="o">-</span><span class="mf">2.91144683</span><span class="p">,</span>    <span class="mf">1.80999571</span><span class="p">,</span>  <span class="o">-</span><span class="mf">43.4216908</span><span class="p">,</span>  <span class="o">-</span><span class="mf">354.35081104</span><span class="p">,</span> <span class="o">-</span><span class="mf">417.23130005</span><span class="p">,</span>  <span class="o">-</span><span class="mf">12.48364889</span><span class="p">,</span> <span class="o">-</span><span class="mf">128.09082999</span><span class="p">],</span>
+         <span class="p">[</span>   <span class="mf">0.0</span><span class="p">,</span>            <span class="mf">4.16931893</span><span class="p">,</span>   <span class="o">-</span><span class="mf">2.15332892</span><span class="p">,</span>   <span class="mf">16.59053623</span><span class="p">,</span>  <span class="o">-</span><span class="mf">36.37201814</span><span class="p">,</span> <span class="o">-</span><span class="mf">339.59978434</span><span class="p">,</span> <span class="o">-</span><span class="mf">373.03866938</span><span class="p">,</span>   <span class="o">-</span><span class="mf">6.42293304</span><span class="p">,</span> <span class="o">-</span><span class="mf">120.75926452</span><span class="p">],</span>
+         <span class="p">[</span>   <span class="mf">0.0</span><span class="p">,</span>            <span class="mf">4.91842155</span><span class="p">,</span>   <span class="o">-</span><span class="mf">1.31944729</span><span class="p">,</span>   <span class="mf">16.07279018</span><span class="p">,</span>  <span class="o">-</span><span class="mf">33.38562859</span><span class="p">,</span> <span class="o">-</span><span class="mf">322.02948509</span><span class="p">,</span> <span class="o">-</span><span class="mf">381.04213761</span><span class="p">,</span>  <span class="o">-</span><span class="mf">12.58182375</span><span class="p">,</span> <span class="o">-</span><span class="mf">120.75448705</span><span class="p">],</span>
+         <span class="p">[</span>   <span class="mf">0.0</span><span class="p">,</span>           <span class="o">-</span><span class="mf">7.82538448</span><span class="p">,</span>   <span class="o">-</span><span class="mf">9.77108036</span><span class="p">,</span>   <span class="mf">6.19027003</span> <span class="p">,</span> <span class="o">-</span><span class="mf">34.55431285</span><span class="p">,</span> <span class="o">-</span><span class="mf">334.88915121</span><span class="p">,</span>  <span class="o">-</span><span class="mf">371.094358</span>  <span class="p">,</span>   <span class="o">-</span><span class="mf">15.96248935</span><span class="p">,</span> <span class="o">-</span><span class="mf">121.25245287</span><span class="p">],</span>
+         <span class="p">[</span>   <span class="mf">0.0</span><span class="p">,</span>           <span class="o">-</span><span class="mf">5.91136477</span><span class="p">,</span>   <span class="o">-</span><span class="mf">8.3543212</span> <span class="p">,</span>    <span class="mf">2.16528193</span><span class="p">,</span>  <span class="o">-</span><span class="mf">46.61249371</span><span class="p">,</span> <span class="o">-</span><span class="mf">330.56653092</span><span class="p">,</span> <span class="o">-</span><span class="mf">373.4918628</span><span class="p">,</span>    <span class="o">-</span><span class="mf">5.9382177</span> <span class="p">,</span> <span class="o">-</span><span class="mf">133.95855808</span><span class="p">],</span>
+         <span class="p">[</span>   <span class="mf">0.0</span><span class="p">,</span>            <span class="mf">5.63037432</span><span class="p">,</span>    <span class="mf">3.77337435</span><span class="p">,</span>    <span class="mf">9.26545444</span><span class="p">,</span>  <span class="o">-</span><span class="mf">33.28069624</span><span class="p">,</span> <span class="o">-</span><span class="mf">325.4252408</span><span class="p">,</span>  <span class="o">-</span><span class="mf">368.66113113</span><span class="p">,</span>   <span class="o">-</span><span class="mf">3.86795046</span><span class="p">,</span> <span class="o">-</span><span class="mf">122.41915811</span><span class="p">],</span>
+         <span class="p">[</span>   <span class="mf">0.0</span><span class="p">,</span>          <span class="o">-</span><span class="mf">11.06604601</span><span class="p">,</span>  <span class="o">-</span><span class="mf">11.98836604</span><span class="p">,</span>   <span class="o">-</span><span class="mf">4.5436458</span> <span class="p">,</span>  <span class="o">-</span><span class="mf">41.26514536</span><span class="p">,</span> <span class="o">-</span><span class="mf">331.03427956</span><span class="p">,</span> <span class="o">-</span><span class="mf">363.98161834</span><span class="p">,</span>  <span class="o">-</span><span class="mf">13.21456143</span><span class="p">,</span> <span class="o">-</span><span class="mf">127.61468884</span><span class="p">]</span>
+        <span class="p">])</span>
 
         <span class="c1">#params:</span>
         <span class="n">T</span> <span class="o">=</span> <span class="mi">298</span>
-        <span class="n">kb</span><span class="o">=</span><span class="mf">0.00831451</span>
-        <span class="n">frac_tresh</span> <span class="o">=</span> <span class="mf">0.6</span>
-        <span class="n">rho</span> <span class="o">=</span> <span class="mf">0.0</span>
-        <span class="n">pot_tresh</span> <span class="o">=</span> <span class="mi">200</span>
-        <span class="n">max_iter</span> <span class="o">=</span> <span class="mi">20</span>
-
         <span class="n">s_values</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">float</span><span class="p">,</span> <span class="s2">&quot;1  0.7  0.5  0.35  0.25  0.18  0.13  0.089  0.063  0.044  0.031  0.022  0.016  0.011  0.008  0.0057  0.004  0.0028  0.002  0.0014  0.001&quot;</span><span class="o">.</span><span class="n">split</span><span class="p">()))</span>
-
         <span class="n">s_val_num</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">s_values</span><span class="p">)</span>
         <span class="n">states_num</span> <span class="o">=</span> <span class="mi">9</span>
         <span class="n">init_Eoff</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.0</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">states_num</span><span class="p">)]</span>
 
+        <span class="nb">print</span> <span class="p">(</span><span class="s1">&#39;testing we get the same results with BRD4 data&#39;</span><span class="p">)</span>
+
         <span class="c1">#find Files</span>
         <span class="n">ene_ana_trajs</span> <span class="o">=</span> <span class="n">fM</span><span class="o">.</span><span class="n">parse_csv_energy_trajectories</span><span class="p">(</span><span class="n">in_folder</span><span class="o">=</span><span class="n">in_PNMT_9ligs</span><span class="p">,</span> <span class="n">ene_trajs_prefix</span><span class="o">=</span><span class="s2">&quot;energies_&quot;</span><span class="p">)</span>
 
-        <span class="c1">#calc Eoffs and control</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">estEoff</span><span class="p">(</span><span class="n">ene_ana_trajs</span><span class="p">,</span> <span class="n">init_Eoff</span><span class="o">=</span><span class="n">init_Eoff</span><span class="p">,</span> <span class="n">s_values</span><span class="o">=</span><span class="n">s_values</span><span class="p">,</span> <span class="n">expected_Eoffs</span><span class="o">=</span><span class="n">expected_Eoffs</span><span class="p">,</span> <span class="n">output_result</span><span class="o">=</span><span class="n">out_result_BRD4_7ligs</span><span class="p">,</span>
-                    <span class="n">T</span> <span class="o">=</span> <span class="n">T</span><span class="p">,</span> <span class="n">kb</span> <span class="o">=</span> <span class="n">kb</span><span class="p">,</span>
-                    <span class="n">pot_tresh</span> <span class="o">=</span> <span class="n">pot_tresh</span><span class="p">,</span> <span class="n">frac_tresh</span> <span class="o">=</span> <span class="n">frac_tresh</span><span class="p">,</span>
-                    <span class="n">rho</span> <span class="o">=</span> <span class="n">rho</span><span class="p">,</span> <span class="n">max_iter</span> <span class="o">=</span> <span class="n">max_iter</span><span class="p">)</span></div>
+        <span class="n">new_eoffs</span><span class="p">,</span> <span class="n">all_eoffs</span> <span class="o">=</span> <span class="n">eds_energy_offsets</span><span class="o">.</span><span class="n">estimate_energy_offsets</span><span class="p">(</span><span class="n">ene_ana_trajs</span><span class="p">,</span> <span class="n">initial_offsets</span> <span class="o">=</span> <span class="n">init_Eoff</span><span class="p">,</span>
+                                                                          <span class="n">s_values</span> <span class="o">=</span> <span class="n">s_values</span><span class="p">,</span> <span class="n">out_path</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                                                                          <span class="n">temp</span> <span class="o">=</span> <span class="n">T</span><span class="p">,</span> <span class="n">trim_beg</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span> <span class="n">undersampling_idx</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+                                                                          <span class="n">plot_results</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">calc_clara</span> <span class="o">=</span> <span class="kc">False</span>
+                                                                          <span class="p">)</span>
+        <span class="c1"># do the comparison with the previous data</span>
+        <span class="n">equal_criteria</span> <span class="o">=</span> <span class="mf">0.1</span> <span class="c1"># kJ/mol, results must not differ by more than this value</span>
 
-<div class="viewcode-block" id="test_Eoff_wrapper.estEoff"><a class="viewcode-back" href="../../../../_source/reeds.tests.REEDS_eoff.html#reeds.tests.REEDS_eoff.test_eoff_wrapper.test_Eoff_wrapper.estEoff">[docs]</a>    <span class="k">def</span> <span class="nf">estEoff</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ene_ana_trajs</span><span class="p">:</span><span class="nb">list</span><span class="p">,</span> <span class="n">s_values</span><span class="p">:</span><span class="nb">list</span><span class="p">,</span> <span class="n">init_Eoff</span><span class="p">:</span><span class="nb">list</span><span class="p">,</span> <span class="n">expected_Eoffs</span><span class="p">:</span><span class="nb">list</span><span class="p">,</span> <span class="n">output_result</span><span class="p">:</span><span class="nb">str</span><span class="p">,</span> <span class="n">T</span><span class="p">:</span><span class="nb">float</span><span class="p">,</span> <span class="n">kb</span><span class="p">:</span><span class="nb">float</span><span class="p">,</span> <span class="n">pot_tresh</span><span class="p">:</span><span class="nb">float</span><span class="p">,</span> <span class="n">frac_tresh</span><span class="p">:</span><span class="nb">float</span><span class="p">,</span> <span class="n">rho</span><span class="p">:</span><span class="nb">float</span><span class="p">,</span> <span class="n">max_iter</span><span class="p">:</span><span class="nb">int</span><span class="p">):</span>
-        <span class="c1">#do</span>
-        <span class="n">eoffs</span> <span class="o">=</span> <span class="n">eds_energy_offsets</span><span class="o">.</span><span class="n">estEoff</span><span class="p">(</span><span class="n">ene_ana_trajs</span><span class="o">=</span><span class="n">ene_ana_trajs</span><span class="p">,</span> <span class="n">out_path</span><span class="o">=</span><span class="n">output_result</span><span class="p">,</span>
-                                   <span class="n">s_values</span><span class="o">=</span><span class="n">s_values</span><span class="p">,</span> <span class="n">Eoff</span><span class="o">=</span><span class="n">init_Eoff</span><span class="p">,</span>
-                                   <span class="n">Temp</span><span class="o">=</span><span class="n">T</span><span class="p">,</span>
-                                   <span class="n">pot_tresh</span><span class="o">=</span><span class="n">pot_tresh</span><span class="p">,</span> <span class="n">frac_tresh</span><span class="o">=</span><span class="p">[</span><span class="n">frac_tresh</span><span class="p">],</span> <span class="n">convergenceradius</span><span class="o">=</span><span class="n">rho</span><span class="p">,</span> <span class="n">max_iter</span><span class="o">=</span><span class="n">max_iter</span><span class="p">)</span>
-        <span class="c1">#check Result</span>
-        <span class="n">collect_error</span><span class="o">=</span><span class="p">[]</span>
-        <span class="k">for</span> <span class="n">ind</span><span class="p">,</span> <span class="n">offset</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">eoffs</span><span class="o">.</span><span class="n">offsets</span><span class="p">):</span>
-            <span class="n">accuracy</span><span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
-            <span class="k">try</span><span class="p">:</span>
-                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;decimal expected&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="o">/</span><span class="p">(</span><span class="mi">10</span><span class="o">**</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">expected_Eoffs</span><span class="p">[</span><span class="n">ind</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)[</span><span class="mi">1</span><span class="p">]))))</span>
-                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;decimal calc&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="o">/</span><span class="p">(</span><span class="mi">10</span><span class="o">**</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">offset</span><span class="o">.</span><span class="n">mean</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)[</span><span class="mi">1</span><span class="p">]))))</span>
-                <span class="n">accuracy</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="p">(</span><span class="mi">10</span><span class="o">**</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">expected_Eoffs</span><span class="p">[</span><span class="n">ind</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)[</span><span class="mi">1</span><span class="p">]))),</span> <span class="mi">1</span><span class="o">/</span><span class="p">(</span><span class="mi">10</span><span class="o">**</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">offset</span><span class="o">.</span><span class="n">mean</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)[</span><span class="mi">1</span><span class="p">]))))</span>
-                <span class="n">accuracy</span> <span class="o">=</span> <span class="mf">0.1</span> <span class="k">if</span><span class="p">(</span><span class="n">accuracy</span><span class="o">&gt;=</span><span class="mf">1.0</span> <span class="ow">or</span> <span class="n">accuracy</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="k">else</span> <span class="n">accuracy</span>
-                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;used_acc&quot;</span><span class="p">,</span> <span class="n">accuracy</span><span class="p">)</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">assertAlmostEqual</span><span class="p">(</span><span class="n">first</span><span class="o">=</span><span class="n">offset</span><span class="o">.</span><span class="n">mean</span><span class="p">,</span> <span class="n">second</span><span class="o">=</span><span class="n">expected_Eoffs</span><span class="p">[</span><span class="n">ind</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">delta</span><span class="o">=</span> <span class="n">accuracy</span><span class="p">,</span>
-                                   <span class="n">msg</span><span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">ind</span><span class="p">)</span><span class="o">+</span><span class="s2">&quot;. Offset mean was calculated as: </span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">offset</span><span class="o">.</span><span class="n">mean</span><span class="p">)</span><span class="o">+</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">but should be</span><span class="se">\t</span><span class="s2">&quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">expected_Eoffs</span><span class="p">[</span><span class="n">ind</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span><span class="o">+</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
-            <span class="k">except</span><span class="p">:</span>
-                <span class="n">msg</span><span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">ind</span><span class="p">)</span><span class="o">+</span><span class="s2">&quot;. Offset mean was calculated as: </span><span class="se">\n\t</span><span class="s2">&quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">offset</span><span class="o">.</span><span class="n">mean</span><span class="p">)</span><span class="o">+</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">but should be</span><span class="se">\t</span><span class="s2">&quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">expected_Eoffs</span><span class="p">[</span><span class="n">ind</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span><span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">this is outside of the accuracy range: &quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">accuracy</span><span class="p">)</span>
-                <span class="n">collect_error</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">all_eoffs</span> <span class="o">-</span> <span class="n">expected_eoffs</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">equal_criteria</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;PNMT offsets calculated to be different&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">print</span> <span class="p">(</span><span class="s1">&#39;PNMT data gives the same results&#39;</span><span class="p">)</span></div></div>
+ 
+    
+        
 
-            <span class="k">try</span><span class="p">:</span>
-                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;decimal expected&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="o">/</span><span class="p">(</span><span class="mi">10</span><span class="o">**</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">expected_Eoffs</span><span class="p">[</span><span class="n">ind</span><span class="p">][</span><span class="mi">1</span><span class="p">])</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)[</span><span class="mi">1</span><span class="p">]))))</span>
-                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;decimal calc&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="o">/</span><span class="p">(</span><span class="mi">10</span><span class="o">**</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">offset</span><span class="o">.</span><span class="n">std</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)[</span><span class="mi">1</span><span class="p">]))))</span>
-                <span class="n">accuracy</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="p">(</span><span class="mi">10</span><span class="o">**</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">expected_Eoffs</span><span class="p">[</span><span class="n">ind</span><span class="p">][</span><span class="mi">1</span><span class="p">])</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)[</span><span class="mi">1</span><span class="p">]))),</span> <span class="mi">1</span><span class="o">/</span><span class="p">(</span><span class="mi">10</span><span class="o">**</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">offset</span><span class="o">.</span><span class="n">std</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)[</span><span class="mi">1</span><span class="p">]))))</span>
-                <span class="n">accuracy</span> <span class="o">=</span> <span class="mf">0.1</span> <span class="k">if</span><span class="p">(</span><span class="n">accuracy</span><span class="o">&gt;=</span><span class="mf">1.0</span> <span class="ow">or</span> <span class="n">accuracy</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="k">else</span> <span class="n">accuracy</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">assertAlmostEqual</span><span class="p">(</span><span class="n">first</span><span class="o">=</span><span class="n">offset</span><span class="o">.</span><span class="n">std</span><span class="p">,</span> <span class="n">second</span><span class="o">=</span><span class="n">expected_Eoffs</span><span class="p">[</span><span class="n">ind</span><span class="p">][</span><span class="mi">1</span><span class="p">],</span> <span class="n">delta</span><span class="o">=</span> <span class="n">accuracy</span><span class="p">,</span>
-                                       <span class="n">msg</span><span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">ind</span><span class="p">)</span><span class="o">+</span><span class="s2">&quot;. Offset mean was calculated as: </span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">offset</span><span class="o">.</span><span class="n">std</span><span class="p">)</span><span class="o">+</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">but should be</span><span class="se">\t</span><span class="s2">&quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">expected_Eoffs</span><span class="p">[</span><span class="n">ind</span><span class="p">][</span><span class="mi">1</span><span class="p">]))</span>
-                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;used_acc&quot;</span><span class="p">,</span> <span class="n">accuracy</span><span class="p">)</span>
-
-            <span class="k">except</span><span class="p">:</span>
-                <span class="n">msg</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">ind</span><span class="p">)</span><span class="o">+</span><span class="s2">&quot;. Offset error was calculated as: </span><span class="se">\n\t</span><span class="s2">&quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">offset</span><span class="o">.</span><span class="n">std</span><span class="p">)</span><span class="o">+</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2"> but should be</span><span class="se">\t</span><span class="s2">&quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">expected_Eoffs</span><span class="p">[</span><span class="n">ind</span><span class="p">][</span><span class="mi">1</span><span class="p">])</span><span class="o">+</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span>
-                <span class="n">collect_error</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
-            <span class="k">if</span><span class="p">(</span><span class="n">accuracy</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">):</span>
-                <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;Accuracy was not set while checking Eoffs!&quot;</span><span class="p">)</span>
-
-        <span class="k">if</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">collect_error</span><span class="p">)</span><span class="o">&gt;</span> <span class="mi">0</span><span class="p">):</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;The calculated Values are not equal to control!: </span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">+</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">collect_error</span><span class="p">))</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">fail</span><span class="p">(</span><span class="s2">&quot;The calculated Values are not equal to control!:  </span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">+</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">collect_error</span><span class="p">))</span></div></div>
 
 </pre></div>
 
@@ -294,20 +281,25 @@
            
           </div>
           <footer>
-  
 
   <hr/>
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2020, Benjamin Ries, Salome Rieder, Candide Champion. Project structure based on the Computational Molecular Science Python Cookiecutter version 1.3
+        &#169; Copyright 2020, Benjamin Ries, Salome Rieder, Candide Champion. Project structure based on the Computational Molecular Science Python Cookiecutter version 1.3.
 
     </p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
-
         </div>
       </div>
 
@@ -315,7 +307,6 @@
 
   </div>
   
-
 
   <script type="text/javascript">
       jQuery(function () {

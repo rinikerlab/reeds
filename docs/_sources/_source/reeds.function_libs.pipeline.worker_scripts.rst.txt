@@ -1,0 +1,19 @@
+reeds.function\_libs.pipeline.worker\_scripts package
+=====================================================
+
+Subpackages
+-----------
+
+.. toctree::
+   :maxdepth: 4
+
+   reeds.function_libs.pipeline.worker_scripts.analysis_workers
+   reeds.function_libs.pipeline.worker_scripts.simulation_workers
+
+Module contents
+---------------
+
+.. automodule:: reeds.function_libs.pipeline.worker_scripts
+   :members:
+   :undoc-members:
+   :show-inheritance:

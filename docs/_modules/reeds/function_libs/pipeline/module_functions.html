@@ -1,41 +1,42 @@
 
 
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8">
+  <meta charset="utf-8" />
   
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>reeds.function_libs.pipeline.module_functions &mdash; REEDS  documentation</title>
   
 
   
-  
+  <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+
   
   
 
   
-  <script type="text/javascript" src="../../../../_static/js/modernizr.min.js"></script>
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../../../" src="../../../../_static/documentation_options.js"></script>
         <script src="../../../../_static/jquery.js"></script>
         <script src="../../../../_static/underscore.js"></script>
         <script src="../../../../_static/doctools.js"></script>
-        <script src="../../../../_static/language_data.js"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
-        <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
     
     <script type="text/javascript" src="../../../../_static/js/theme.js"></script>
 
     
-
-  
-  <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="../../../../genindex.html" />
     <link rel="search" title="Search" href="../../../../search.html" /> 
 </head>
@@ -74,6 +75,7 @@
           
         </div>
 
+        
         <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
           
             
@@ -85,12 +87,13 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../introduction.html">REEDS</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../Examples/index.html">Examples</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../_source/modules.html">Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_source/modules.html">reeds</a></li>
 </ul>
 
             
           
         </div>
+        
       </div>
     </nav>
 
@@ -125,11 +128,13 @@
 
 
 
+
+
 <div role="navigation" aria-label="breadcrumbs navigation">
 
   <ul class="wy-breadcrumbs">
     
-      <li><a href="../../../../index.html">Docs</a> &raquo;</li>
+      <li><a href="../../../../index.html" class="icon icon-home"></a> &raquo;</li>
         
           <li><a href="../../../index.html">Module code</a> &raquo;</li>
         
@@ -172,7 +177,7 @@
 <span class="sd">IMD template adaptations</span>
 <span class="sd">&quot;&quot;&quot;</span>
 <div class="viewcode-block" id="adapt_imd_template_optimizedState"><a class="viewcode-back" href="../../../../_source/reeds.function_libs.pipeline.html#reeds.function_libs.pipeline.module_functions.adapt_imd_template_optimizedState">[docs]</a><span class="k">def</span> <span class="nf">adapt_imd_template_optimizedState</span><span class="p">(</span><span class="n">in_template_imd_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">out_imd_dir</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">cnf</span><span class="p">:</span> <span class="n">cnf_cls</span><span class="o">.</span><span class="n">Cnf</span><span class="p">,</span> <span class="n">non_ligand_residues</span><span class="p">:</span> <span class="nb">list</span> <span class="o">=</span> <span class="p">[],</span>
-                                      <span class="n">simulation_steps</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">100000</span><span class="p">,</span> <span class="n">solvent_keyword</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;SOLV&quot;</span><span class="p">)</span><span class="o">-&gt;</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+                                      <span class="n">simulation_steps</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">100000</span><span class="p">,</span> <span class="n">solvent_keyword</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;SOLV&quot;</span><span class="p">,</span> <span class="n">single_bath</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span><span class="o">-&gt;</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">      modify_imds - for generateOptimizedStates</span>
 <span class="sd">        This function prepares the imd. protocol file for gromos simulation.</span>
@@ -191,6 +196,8 @@
 <span class="sd">        number of steps to simulate</span>
 <span class="sd">    solvent_keyword : str, optional</span>
 <span class="sd">        residue name for the solvent</span>
+<span class="sd">    single_bath : bool, optional</span>
+<span class="sd">        use single bath for all atoms (default False)</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -229,8 +236,14 @@
     <span class="n">imd_file</span><span class="o">.</span><span class="n">STEP</span><span class="o">.</span><span class="n">NSTLIM</span> <span class="o">=</span> <span class="n">simulation_steps</span>
     <span class="n">imd_file</span><span class="o">.</span><span class="n">STEP</span><span class="o">.</span><span class="n">NSTLIM</span> <span class="o">=</span> <span class="n">simulation_steps</span>
 
+    <span class="k">if</span><span class="p">(</span><span class="n">single_bath</span><span class="p">):</span>
+        <span class="n">solvent_bath</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="n">lig_atoms</span> <span class="o">+</span> <span class="nb">sum</span><span class="p">([</span><span class="nb">sum</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">residues</span><span class="p">[</span><span class="n">x</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">()))</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">non_ligand_residues</span><span class="p">])</span> <span class="o">+</span>
+                <span class="n">residues</span><span class="p">[</span><span class="n">solvent_keyword</span><span class="p">])</span>
+        <span class="n">temp_baths</span> <span class="o">=</span> <span class="p">{</span><span class="n">solvent_bath</span> <span class="p">:</span> <span class="mi">1</span><span class="p">}</span>
+
     <span class="c1"># hack for TIP3P explicit solvent</span>
-    <span class="k">if</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">non_ligand_residues</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="ow">not</span> <span class="p">(</span><span class="s2">&quot;prot&quot;</span> <span class="ow">in</span> <span class="n">residues</span> <span class="ow">or</span> <span class="s2">&quot;protein&quot;</span> <span class="ow">in</span> <span class="n">residues</span><span class="p">)):</span>
+    <span class="k">elif</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">non_ligand_residues</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="ow">not</span> <span class="p">(</span><span class="s2">&quot;prot&quot;</span> <span class="ow">in</span> <span class="n">residues</span> <span class="ow">or</span> <span class="s2">&quot;protein&quot;</span> <span class="ow">in</span> <span class="n">residues</span><span class="p">)):</span>
         <span class="n">solvent_bath</span> <span class="o">=</span> <span class="p">(</span>
                 <span class="n">lig_atoms</span> <span class="o">+</span> <span class="nb">sum</span><span class="p">([</span><span class="nb">sum</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">residues</span><span class="p">[</span><span class="n">x</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">()))</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">non_ligand_residues</span><span class="p">])</span> <span class="o">+</span>
                 <span class="n">residues</span><span class="p">[</span><span class="n">solvent_keyword</span><span class="p">])</span>
@@ -270,7 +283,8 @@
 
 <div class="viewcode-block" id="adapt_imd_template_lowerBound"><a class="viewcode-back" href="../../../../_source/reeds.function_libs.pipeline.html#reeds.function_libs.pipeline.module_functions.adapt_imd_template_lowerBound">[docs]</a><span class="k">def</span> <span class="nf">adapt_imd_template_lowerBound</span><span class="p">(</span><span class="n">in_template_imd_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">out_imd_dir</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">cnf</span><span class="p">:</span> <span class="n">coord</span><span class="o">.</span><span class="n">Cnf</span><span class="p">,</span>
                                   <span class="n">non_ligand_residues</span><span class="p">:</span> <span class="nb">list</span> <span class="o">=</span> <span class="p">[],</span> <span class="n">s_values</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-                                  <span class="n">simulation_steps</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1000000</span><span class="p">)</span><span class="o">-&gt;</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="nb">list</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
+                                  <span class="n">simulation_steps</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1000000</span><span class="p">,</span>
+                                  <span class="n">single_bath</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span><span class="o">-&gt;</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="nb">list</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        This function prepares the imd. protocol file for a gromos simulation.</span>
 
@@ -281,6 +295,7 @@
 <span class="sd">    cnf</span>
 <span class="sd">    non_ligand_residues</span>
 <span class="sd">    s_values</span>
+<span class="sd">    single_bath</span>
 <span class="sd">    simulation_steps</span>
 
 <span class="sd">    Returns</span>
@@ -316,8 +331,13 @@
     <span class="n">imd_file</span><span class="o">.</span><span class="n">STEP</span><span class="o">.</span><span class="n">step</span> <span class="o">=</span> <span class="n">simulation_steps</span>
     <span class="n">imd_file</span><span class="o">.</span><span class="n">FORCE</span><span class="o">.</span><span class="n">adapt_energy_groups</span><span class="p">(</span><span class="n">residues</span><span class="p">)</span>
 
+    <span class="k">if</span><span class="p">(</span><span class="n">single_bath</span><span class="p">):</span>
+        <span class="n">solvent_bath</span> <span class="o">=</span> <span class="p">(</span><span class="n">ligands</span><span class="o">.</span><span class="n">number_of_atoms</span> <span class="o">+</span> <span class="n">protein</span><span class="o">.</span><span class="n">number_of_atoms</span> <span class="o">+</span> <span class="n">non_ligands</span><span class="o">.</span><span class="n">number_of_atoms</span> <span class="o">+</span> <span class="n">residues</span><span class="p">[</span>
+                <span class="s2">&quot;SOLV&quot;</span><span class="p">])</span>
+        <span class="n">temp_baths</span> <span class="o">=</span> <span class="p">{</span><span class="n">solvent_bath</span> <span class="p">:</span> <span class="mi">1</span><span class="p">}</span>
+
     <span class="c1"># hack for TIP3P explicit solvent</span>
-    <span class="k">if</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">non_ligand_residues</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="ow">not</span> <span class="s2">&quot;prot&quot;</span> <span class="ow">in</span> <span class="n">residues</span><span class="p">):</span>
+    <span class="k">elif</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">non_ligand_residues</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="ow">not</span> <span class="s2">&quot;prot&quot;</span> <span class="ow">in</span> <span class="n">residues</span><span class="p">):</span>
         <span class="n">solvent_bath</span> <span class="o">=</span> <span class="p">(</span>
                 <span class="n">ligands</span><span class="o">.</span><span class="n">number_of_atoms</span> <span class="o">+</span> <span class="n">non_ligands</span><span class="o">.</span><span class="n">number_of_atoms</span><span class="p">)</span>
         <span class="n">temp_baths</span> <span class="o">=</span> <span class="p">{</span><span class="n">ligands</span><span class="o">.</span><span class="n">number_of_atoms</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="n">solvent_bath</span><span class="p">:</span> <span class="mi">2</span><span class="p">}</span>
@@ -372,8 +392,9 @@
 
 
 <div class="viewcode-block" id="adapt_imd_template_eoff"><a class="viewcode-back" href="../../../../_source/reeds.function_libs.pipeline.html#reeds.function_libs.pipeline.module_functions.adapt_imd_template_eoff">[docs]</a><span class="k">def</span> <span class="nf">adapt_imd_template_eoff</span><span class="p">(</span><span class="n">system</span><span class="p">:</span> <span class="n">fM</span><span class="o">.</span><span class="n">System</span><span class="p">,</span> <span class="n">imd_out_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">imd_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-                            <span class="n">old_svals</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">s_num</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">21</span><span class="p">,</span> <span class="n">s_range</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                            <span class="n">old_svals</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">s_num</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">s_range</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
                             <span class="n">non_ligand_residues</span><span class="p">:</span> <span class="nb">list</span> <span class="o">=</span> <span class="p">[],</span>
+                            <span class="n">single_bath</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
                             <span class="n">verbose</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">imd</span><span class="o">.</span><span class="n">Imd</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">            This function is preparing the imd_template in gromos_files for the REEDS SYSTEM&gt;</span>
@@ -407,22 +428,19 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">if</span> <span class="p">(</span><span class="n">verbose</span><span class="p">):</span> <span class="nb">print</span><span class="p">(</span><span class="n">s_num</span><span class="p">)</span>
-    <span class="k">if</span> <span class="p">(</span><span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">old_svals</span><span class="p">,</span> <span class="nb">type</span><span class="p">(</span><span class="kc">None</span><span class="p">))):</span>  <span class="c1"># pirority! are overwriting range!</span>
-        <span class="k">if</span> <span class="p">(</span><span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">s_range</span><span class="p">,</span> <span class="nb">type</span><span class="p">(</span><span class="kc">None</span><span class="p">))</span> <span class="ow">and</span> <span class="p">(</span>
-                <span class="nb">isinstance</span><span class="p">(</span><span class="n">s_range</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">Number</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">s_range</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">Number</span><span class="p">))</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">s_num</span><span class="p">,</span>
-                                                                                                      <span class="nb">type</span><span class="p">(</span><span class="kc">None</span><span class="p">))):</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">old_svals</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">):</span>  <span class="c1"># pirority! are overwriting range!</span>
+        <span class="k">if</span> <span class="p">((</span><span class="n">s_range</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">s_num</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">s_range</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">Number</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">s_range</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">Number</span><span class="p">))):</span>
             <span class="n">svals</span> <span class="o">=</span> <span class="n">s_log_dist</span><span class="o">.</span><span class="n">get_log_s_distribution_between</span><span class="p">(</span><span class="n">start</span><span class="o">=</span><span class="n">s_range</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">end</span><span class="o">=</span><span class="n">s_range</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">num</span><span class="o">=</span><span class="n">s_num</span><span class="p">)</span>
-
-        <span class="k">elif</span> <span class="p">(</span><span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">s_num</span><span class="p">,</span> <span class="nb">type</span><span class="p">(</span><span class="kc">None</span><span class="p">))):</span>  <span class="c1"># reduce svalues (with log dist)</span>
+        <span class="k">elif</span> <span class="p">(</span><span class="n">s_num</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">):</span>  <span class="c1"># reduce svalues (with log dist)</span>
             <span class="n">svals</span> <span class="o">=</span> <span class="n">s_log_dist</span><span class="o">.</span><span class="n">get_log_s_distribution_between</span><span class="p">(</span><span class="n">start</span><span class="o">=</span><span class="n">old_svals</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">end</span><span class="o">=</span><span class="n">old_svals</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">num</span><span class="o">=</span><span class="n">s_num</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">svals</span> <span class="o">=</span> <span class="n">old_svals</span>
-    <span class="k">elif</span> <span class="p">(</span><span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">s_num</span><span class="p">,</span> <span class="nb">type</span><span class="p">(</span><span class="kc">None</span><span class="p">))</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">s_range</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">Number</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">s_range</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">Number</span><span class="p">)):</span>
+    <span class="k">elif</span> <span class="p">(</span><span class="n">s_num</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">s_range</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">Number</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">s_range</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">Number</span><span class="p">)):</span>
         <span class="n">svals</span> <span class="o">=</span> <span class="n">s_log_dist</span><span class="o">.</span><span class="n">get_log_s_distribution_between</span><span class="p">(</span><span class="n">start</span><span class="o">=</span><span class="n">s_range</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">end</span><span class="o">=</span><span class="n">s_range</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">num</span><span class="o">=</span><span class="n">s_num</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span>
             <span class="s2">&quot;The imd file could not be adapted, as at least a s_vals_csv_path or s_num, s_range variable has to be given.&quot;</span><span class="p">)</span>
-
+    
     <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span> <span class="nb">print</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">svals</span><span class="p">))</span> <span class="o">+</span> <span class="s2">&quot; SVALUES: &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">svals</span><span class="p">))</span>
     <span class="c1"># extract residue and atom information from cnf file</span>
     <span class="n">cnf</span> <span class="o">=</span> <span class="n">cnf_cls</span><span class="o">.</span><span class="n">Cnf</span><span class="p">(</span><span class="n">system</span><span class="o">.</span><span class="n">coordinates</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
@@ -435,9 +453,12 @@
                         <span class="s2">&quot;</span><span class="se">\n\n</span><span class="s2"> ligands:</span><span class="se">\n</span><span class="s2"> &quot;</span><span class="p">,</span> <span class="n">ligands</span><span class="p">,</span>
                         <span class="s2">&quot;</span><span class="se">\n\n</span><span class="s2"> protein:</span><span class="se">\n</span><span class="s2"> &quot;</span><span class="p">,</span> <span class="n">protein</span><span class="p">,</span>
                         <span class="s2">&quot;</span><span class="se">\n\n</span><span class="s2"> non-ligands:</span><span class="se">\n</span><span class="s2"> &quot;</span><span class="p">,</span> <span class="n">non_ligands</span><span class="p">,</span> <span class="s2">&quot;</span><span class="se">\n\n</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">if</span><span class="p">(</span><span class="n">single_bath</span><span class="p">):</span>
+        <span class="n">solvent_bath</span> <span class="o">=</span> <span class="p">(</span><span class="n">ligands</span><span class="o">.</span><span class="n">number_of_atoms</span> <span class="o">+</span> <span class="n">protein</span><span class="o">.</span><span class="n">number_of_atoms</span> <span class="o">+</span> <span class="n">residues</span><span class="p">[</span><span class="s2">&quot;SOLV&quot;</span><span class="p">])</span>
+        <span class="n">temp_baths</span> <span class="o">=</span> <span class="p">{</span><span class="n">solvent_bath</span><span class="p">:</span> <span class="mi">1</span><span class="p">}</span>
 
     <span class="c1"># hack for TIP3P explicit solvent</span>
-    <span class="k">if</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">non_ligand_residues</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="ow">not</span> <span class="s2">&quot;prot&quot;</span> <span class="ow">in</span> <span class="n">residues</span><span class="p">):</span>
+    <span class="k">elif</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">non_ligand_residues</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="ow">not</span> <span class="s2">&quot;prot&quot;</span> <span class="ow">in</span> <span class="n">residues</span><span class="p">):</span>
         <span class="n">solvent_bath</span> <span class="o">=</span> <span class="p">(</span>
                 <span class="n">ligands</span><span class="o">.</span><span class="n">number_of_atoms</span> <span class="o">+</span> <span class="n">non_ligands</span><span class="o">.</span><span class="n">number_of_atoms</span><span class="p">)</span>
         <span class="n">temp_baths</span> <span class="o">=</span> <span class="p">{</span><span class="n">ligands</span><span class="o">.</span><span class="n">number_of_atoms</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="n">solvent_bath</span><span class="p">:</span> <span class="mi">2</span><span class="p">}</span>
@@ -830,7 +851,7 @@
     <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">s</span><span class="o">.</span><span class="n">parameters</span><span class="p">:</span>
         <span class="k">if</span> <span class="p">(</span><span class="n">key</span> <span class="ow">in</span> <span class="n">variable_dict</span><span class="p">):</span>
             <span class="n">value</span> <span class="o">=</span> <span class="n">variable_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
-            <span class="k">if</span> <span class="p">(</span><span class="n">key</span> <span class="o">==</span> <span class="s2">&quot;in_simSystem&quot;</span><span class="p">):</span>  <span class="c1"># this is a nasty way! ... tends to fail!</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">key</span> <span class="o">==</span> <span class="s2">&quot;in_simSystem&quot;</span><span class="p">):</span>  <span class="c1"># this is a nasty way! ... tends to fail! MAKE SURE CALL POINT HAS a variable like this!</span>
                 <span class="n">sys</span> <span class="o">=</span> <span class="n">value</span>
                 <span class="n">vars_string</span> <span class="o">+=</span> <span class="n">sys</span><span class="o">.</span><span class="n">get_script_generation_command</span><span class="p">(</span><span class="n">var_name</span><span class="o">=</span><span class="n">key</span><span class="p">,</span> <span class="n">var_prefixes</span><span class="o">=</span><span class="s2">&quot;system&quot;</span><span class="p">)</span>
             <span class="k">elif</span> <span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">Dict</span><span class="p">)):</span>
@@ -873,20 +894,25 @@
            
           </div>
           <footer>
-  
 
   <hr/>
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2020, Benjamin Ries, Salome Rieder, Candide Champion. Project structure based on the Computational Molecular Science Python Cookiecutter version 1.3
+        &#169; Copyright 2020, Benjamin Ries, Salome Rieder, Candide Champion. Project structure based on the Computational Molecular Science Python Cookiecutter version 1.3.
 
     </p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
-
         </div>
       </div>
 
@@ -894,7 +920,6 @@
 
   </div>
   
-
 
   <script type="text/javascript">
       jQuery(function () {

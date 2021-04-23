@@ -1,0 +1,419 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>reeds.function_libs.pipeline.worker_scripts.analysis_workers.RE_EDS_soptimization_final &mdash; REEDS  documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../../../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../../../../_static/pygments.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../../../../" src="../../../../../../_static/documentation_options.js"></script>
+        <script src="../../../../../../_static/jquery.js"></script>
+        <script src="../../../../../../_static/underscore.js"></script>
+        <script src="../../../../../../_static/doctools.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    
+    <script type="text/javascript" src="../../../../../../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../../../../index.html" class="icon icon-home"> REEDS
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../introduction.html">REEDS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../Examples/index.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../_source/modules.html">reeds</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../../../index.html">REEDS</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../../../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../../../../../index.html">Module code</a> &raquo;</li>
+        
+      <li>reeds.function_libs.pipeline.worker_scripts.analysis_workers.RE_EDS_soptimization_final</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for reeds.function_libs.pipeline.worker_scripts.analysis_workers.RE_EDS_soptimization_final</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">glob</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">pickle</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Union</span><span class="p">,</span> <span class="n">List</span>
+
+<span class="kn">from</span> <span class="nn">pygromos.files</span> <span class="kn">import</span> <span class="n">repdat</span>
+<span class="kn">from</span> <span class="nn">pygromos.utils</span> <span class="kn">import</span> <span class="n">bash</span>
+
+<span class="kn">import</span> <span class="nn">reeds.function_libs.visualization.re_plots</span>
+<span class="kn">from</span> <span class="nn">reeds.function_libs.analysis.parameter_optimization</span> <span class="kn">import</span> <span class="n">get_s_optimization_roundtrips_per_replica</span><span class="p">,</span> \
+    <span class="n">get_s_optimization_roundtrip_averages</span>
+<span class="kn">from</span> <span class="nn">reeds.function_libs.visualization.parameter_optimization_plots</span> <span class="kn">import</span> <span class="n">visualization_s_optimization_summary</span><span class="p">,</span> \
+    <span class="n">visualize_s_optimisation_convergence</span><span class="p">,</span> <span class="n">visualize_s_optimisation_sampling_optimization</span>
+
+
+<div class="viewcode-block" id="analyse_sopt_iteration"><a class="viewcode-back" href="../../../../../../_source/reeds.function_libs.pipeline.worker_scripts.analysis_workers.html#reeds.function_libs.pipeline.worker_scripts.analysis_workers.RE_EDS_soptimization_final.analyse_sopt_iteration">[docs]</a><span class="k">def</span> <span class="nf">analyse_sopt_iteration</span><span class="p">(</span><span class="n">repdat_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">out_dir</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">title</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">pot_tresh</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        analysis of a single optimization iteration.</span>
+<span class="sd">        - analyse sampling, round trips, round trip time</span>
+<span class="sd">        - generate replica transition plots, position histogram</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    repdat_path: str</span>
+<span class="sd">        path to the repdat file - contains information about the replcia exchange</span>
+<span class="sd">    out_dir : str</span>
+<span class="sd">        output dir for the analysis</span>
+<span class="sd">    title: str</span>
+<span class="sd">        title of the iteration</span>
+<span class="sd">    pot_tresh : Union[float, List[float]], optional</span>
+<span class="sd">        potential threshold for observing</span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    dict</span>
+<span class="sd">        returns the results of the analaysis.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># repdat file</span>
+
+    <span class="n">repdat_file</span> <span class="o">=</span> <span class="n">repdat</span><span class="o">.</span><span class="n">Repdat</span><span class="p">(</span><span class="n">repdat_path</span><span class="p">)</span>
+
+    <span class="n">s_values</span> <span class="o">=</span> <span class="n">repdat_file</span><span class="o">.</span><span class="n">system</span><span class="o">.</span><span class="n">s</span>
+    <span class="n">trans_dict</span> <span class="o">=</span> <span class="n">repdat_file</span><span class="o">.</span><span class="n">get_replica_traces</span><span class="p">()</span>
+    <span class="n">repOff</span> <span class="o">=</span> <span class="n">s_values</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span>
+
+    <span class="c1"># ouput_struct</span>
+    <span class="n">sopt_it</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="c1"># state Sampling</span>
+    <span class="n">states</span> <span class="o">=</span> <span class="n">repdat_file</span><span class="o">.</span><span class="n">DATA</span><span class="o">.</span><span class="n">state_potentials</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+    <span class="n">occurrence_counts</span> <span class="o">=</span> <span class="p">{</span><span class="n">state</span><span class="p">:</span> <span class="mi">0</span> <span class="k">for</span> <span class="n">state</span> <span class="ow">in</span> <span class="n">states</span><span class="p">}</span>
+    <span class="n">domination_counts</span> <span class="o">=</span> <span class="p">{</span><span class="n">state</span><span class="p">:</span> <span class="mi">0</span> <span class="k">for</span> <span class="n">state</span> <span class="ow">in</span> <span class="n">states</span><span class="p">}</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;cols: &quot;</span><span class="p">,</span> <span class="n">repdat_file</span><span class="o">.</span><span class="n">DATA</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span>
+    <span class="n">all_pos</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">repdat_file</span><span class="o">.</span><span class="n">DATA</span><span class="o">.</span><span class="n">ID</span><span class="p">)))</span>
+    <span class="n">min_pos</span><span class="p">,</span> <span class="n">max_pos</span> <span class="o">=</span> <span class="p">(</span><span class="n">all_pos</span><span class="p">[</span><span class="n">repOff</span><span class="p">],</span> <span class="n">all_pos</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;extremePos: &quot;</span><span class="p">,</span> <span class="n">min_pos</span><span class="p">,</span> <span class="n">max_pos</span><span class="p">)</span>
+    <span class="n">replica1</span> <span class="o">=</span> <span class="n">repdat_file</span><span class="o">.</span><span class="n">DATA</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">repdat_file</span><span class="o">.</span><span class="n">DATA</span><span class="o">.</span><span class="n">ID</span> <span class="o">==</span> <span class="mi">1</span><span class="p">]</span>
+
+
+    <span class="k">if</span> <span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">pot_tresh</span><span class="p">,</span> <span class="nb">float</span><span class="p">)):</span>
+        <span class="n">pot_tresh</span> <span class="o">=</span> <span class="p">{</span><span class="n">x</span><span class="p">:</span><span class="n">pot_tresh</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">replica1</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">state_potentials</span><span class="p">}</span>
+    <span class="k">elif</span><span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">pot_tresh</span><span class="p">,</span> <span class="nb">float</span><span class="p">)):</span>
+        <span class="n">pot_tresh</span> <span class="o">=</span> <span class="p">{</span><span class="n">x</span><span class="p">:</span><span class="n">y</span> <span class="k">for</span> <span class="n">x</span><span class="p">,</span><span class="n">y</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">replica1</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">state_potentials</span><span class="p">),</span> <span class="n">pot_tresh</span><span class="p">)}</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;potTresh&quot;</span><span class="p">,</span> <span class="n">pot_tresh</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">rowID</span><span class="p">,</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">replica1</span><span class="o">.</span><span class="n">iterrows</span><span class="p">():</span>
+        <span class="n">state_pots</span> <span class="o">=</span> <span class="n">row</span><span class="o">.</span><span class="n">state_potentials</span>
+
+        <span class="k">for</span> <span class="n">ind</span><span class="p">,</span> <span class="n">state</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">state_pots</span><span class="p">):</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">state_pots</span><span class="p">[</span><span class="n">state</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">pot_tresh</span><span class="p">[</span><span class="n">state</span><span class="p">]):</span>
+                <span class="n">occurrence_counts</span><span class="p">[</span><span class="n">state</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+
+        <span class="n">id_ene</span> <span class="o">=</span> <span class="p">{</span><span class="n">val</span><span class="p">:</span> <span class="n">key</span> <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">state_pots</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
+        <span class="n">min_state</span> <span class="o">=</span> <span class="n">id_ene</span><span class="p">[</span><span class="nb">min</span><span class="p">(</span><span class="n">id_ene</span><span class="p">)]</span>
+        <span class="n">domination_counts</span><span class="p">[</span><span class="n">min_state</span><span class="p">]</span> <span class="o">+=</span><span class="mi">1</span>
+
+    <span class="n">sopt_it</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s2">&quot;state_occurence_sampling&quot;</span><span class="p">:</span> <span class="n">occurrence_counts</span><span class="p">})</span>
+    <span class="n">sopt_it</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s2">&quot;state_domination_sampling&quot;</span><span class="p">:</span> <span class="n">domination_counts</span><span class="p">})</span>
+
+    <span class="k">del</span> <span class="n">repdat_file</span>
+
+    <span class="n">reeds</span><span class="o">.</span><span class="n">function_libs</span><span class="o">.</span><span class="n">visualization</span><span class="o">.</span><span class="n">re_plots</span><span class="o">.</span><span class="n">plot_repPos_replica_histogramm</span><span class="p">(</span><span class="n">out_path</span><span class="o">=</span><span class="n">out_dir</span> <span class="o">+</span> <span class="s2">&quot;/&quot;</span> <span class="o">+</span> <span class="n">title</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">,</span> <span class="s2">&quot;_&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;replicaPositions_hist.png&quot;</span><span class="p">,</span>
+                                                                              <span class="n">data</span><span class="o">=</span><span class="n">trans_dict</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="n">title</span><span class="p">,</span>
+                                                                              <span class="n">s_values</span><span class="o">=</span><span class="n">s_values</span><span class="p">[</span><span class="n">repOff</span><span class="p">:],</span> <span class="n">replica_offset</span><span class="o">=</span><span class="n">repOff</span><span class="p">)</span>
+
+    <span class="n">reeds</span><span class="o">.</span><span class="n">function_libs</span><span class="o">.</span><span class="n">visualization</span><span class="o">.</span><span class="n">re_plots</span><span class="o">.</span><span class="n">plot_replica_transitions</span><span class="p">(</span><span class="n">transition_dict</span><span class="o">=</span><span class="n">trans_dict</span><span class="p">,</span>
+                                                                        <span class="n">out_path</span><span class="o">=</span><span class="n">out_dir</span> <span class="o">+</span>   <span class="s2">&quot;/&quot;</span> <span class="o">+</span> <span class="n">title</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">,</span> <span class="s2">&quot;_&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;_transitions.png&quot;</span><span class="p">,</span>
+                                                                        <span class="n">title_prefix</span><span class="o">=</span><span class="n">title</span><span class="p">,</span>
+                                                                        <span class="n">s_values</span><span class="o">=</span><span class="n">s_values</span><span class="p">,</span> <span class="n">cut_1_replicas</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">equilibration_border</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+    <span class="c1"># calc roundtrips:</span>
+    <span class="n">stats</span> <span class="o">=</span> <span class="n">get_s_optimization_roundtrips_per_replica</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">trans_dict</span><span class="p">,</span> <span class="n">repOffsets</span><span class="o">=</span><span class="n">repOff</span><span class="p">,</span>
+                                                      <span class="n">min_pos</span><span class="o">=</span><span class="n">min_pos</span><span class="p">,</span> <span class="n">max_pos</span><span class="o">=</span><span class="n">max_pos</span><span class="p">)</span>
+    <span class="n">sopt_it</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s2">&quot;stats_per_replica&quot;</span><span class="p">:</span> <span class="n">stats</span><span class="p">})</span>
+    <span class="n">sopt_it</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s2">&quot;s_values&quot;</span><span class="p">:</span> <span class="n">s_values</span><span class="p">[</span><span class="n">repOff</span><span class="p">:]})</span>
+
+    <span class="n">sopt_it</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s2">&quot;state_domination_sampling&quot;</span><span class="p">:</span> <span class="n">domination_counts</span><span class="p">})</span>
+
+
+    <span class="n">sorted_dominating_state_samping</span> <span class="o">=</span>   <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">sopt_it</span><span class="p">[</span><span class="s2">&quot;state_domination_sampling&quot;</span><span class="p">][</span><span class="n">x</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span> <span class="n">sopt_it</span><span class="p">[</span><span class="s2">&quot;state_domination_sampling&quot;</span><span class="p">],</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;Vr&quot;</span><span class="p">,</span><span class="s2">&quot;&quot;</span><span class="p">))</span> <span class="p">)])</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">sorted_dominating_state_samping</span><span class="p">)</span>
+
+    <span class="n">optimal_samp</span> <span class="o">=</span><span class="mi">1</span><span class="o">/</span><span class="nb">len</span><span class="p">(</span><span class="n">sorted_dominating_state_samping</span><span class="p">)</span><span class="o">*</span><span class="mi">100</span>
+    <span class="n">iteration_norm</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">sorted_dominating_state_samping</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">sorted_dominating_state_samping</span><span class="p">)</span> <span class="o">*</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+    <span class="n">optimal_samp_dev</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">iteration_norm</span> <span class="o">-</span> <span class="n">optimal_samp</span><span class="p">)</span>
+
+    <span class="n">MAE</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">optimal_samp_dev</span><span class="p">),</span> <span class="mi">2</span><span class="p">)</span>
+    <span class="n">MAE_std</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">optimal_samp_dev</span><span class="p">)</span>
+
+    <span class="n">sopt_it</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s2">&quot;sampling_distribution_optimal_deviation_s1&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;MAE&quot;</span><span class="p">:</span> <span class="n">MAE</span><span class="p">,</span> <span class="s2">&quot;MAE_std&quot;</span><span class="p">:</span> <span class="n">MAE_std</span><span class="p">}})</span>
+    <span class="n">sopt_it</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s2">&quot;s_values&quot;</span><span class="p">:</span> <span class="n">s_values</span><span class="p">[</span><span class="n">repOff</span><span class="p">:]})</span>
+
+
+
+    <span class="n">nReplicasRoundtrips</span><span class="p">,</span> <span class="n">avg_numberOfRoundtrips</span><span class="p">,</span> <span class="n">avg_roundtrips</span> <span class="o">=</span> <span class="n">get_s_optimization_roundtrip_averages</span><span class="p">(</span><span class="n">stats</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;replicas doing at least one roundtrip:&quot;</span><span class="p">,</span> <span class="n">nReplicasRoundtrips</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;avg. number of roundtrips: &quot;</span><span class="p">,</span> <span class="n">avg_numberOfRoundtrips</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;avg. roundtrip durations:&quot;</span><span class="p">,</span> <span class="n">avg_roundtrips</span><span class="p">)</span>
+    <span class="n">sopt_it</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s2">&quot;nRoundTrips&quot;</span><span class="p">:</span> <span class="n">nReplicasRoundtrips</span><span class="p">,</span>
+                    <span class="s2">&quot;avg_nRoundtrips&quot;</span><span class="p">:</span> <span class="n">avg_numberOfRoundtrips</span><span class="p">,</span>
+                    <span class="s2">&quot;avg_rountrip_durations&quot;</span><span class="p">:</span> <span class="n">avg_roundtrips</span><span class="p">})</span>
+
+    <span class="k">del</span> <span class="n">trans_dict</span>
+    <span class="k">return</span> <span class="n">sopt_it</span></div>
+
+
+<div class="viewcode-block" id="do"><a class="viewcode-back" href="../../../../../../_source/reeds.function_libs.pipeline.worker_scripts.analysis_workers.html#reeds.function_libs.pipeline.worker_scripts.analysis_workers.RE_EDS_soptimization_final.do">[docs]</a><span class="k">def</span> <span class="nf">do</span><span class="p">(</span><span class="n">sopt_root_dir</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">pot_tresh</span><span class="p">:</span><span class="n">Union</span><span class="p">[</span><span class="n">List</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">out_dir</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">rt_convergence</span><span class="o">=</span><span class="mi">100</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        This function does the final analysis of an s-optimization. It analyses the outcome of the full s-optimization iterations.</span>
+<span class="sd">        Features:</span>
+<span class="sd">            - generate s-optimization summary</span>
+<span class="sd">            - average roundtrip time improvement efficiency</span>
+<span class="sd">            - deviation of sampling occurence (normalized) from the optimal sampling distribution.</span>
+
+<span class="sd">        The analysis of the individual s-optimization steps is stored and can be used at later executions. (if you want to analyse form scratch, keep in mind to delete the generated .npy files.)</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    sopt_root_dir : str</span>
+<span class="sd">        directory containing all s-optimization iterations</span>
+<span class="sd">    pot_tresh : Union[float, List[float]], optional</span>
+<span class="sd">        potential energy threshold, determining undersampling (default: 0)</span>
+<span class="sd">    title : str, optional</span>
+<span class="sd">        title of run (default: &quot;&quot;)</span>
+<span class="sd">    out_dir : str, optional</span>
+<span class="sd">        ananlysis output dir, default uses the same dir like root_dir (default: None)</span>
+<span class="sd">    rt_convergence : int, optional</span>
+<span class="sd">        roundtrip time convergence criterium  in ps(default: 10ps)</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">sopt_dirs</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">sopt_root_dir</span><span class="p">)</span> <span class="k">if</span> <span class="p">(</span><span class="s2">&quot;sopt&quot;</span> <span class="ow">in</span> <span class="n">x</span> <span class="ow">and</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">sopt_root_dir</span><span class="o">+</span><span class="s2">&quot;/&quot;</span><span class="o">+</span><span class="n">x</span><span class="p">))]</span>
+
+    <span class="c1"># sopt out_dir</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">out_dir</span><span class="p">,</span> <span class="nb">type</span><span class="p">(</span><span class="kc">None</span><span class="p">))):</span>
+        <span class="n">out_dir</span> <span class="o">=</span> <span class="n">sopt_root_dir</span> <span class="o">+</span> <span class="s2">&quot;/analysis&quot;</span>
+
+    <span class="n">out_dir</span> <span class="o">=</span> <span class="n">bash</span><span class="o">.</span><span class="n">make_folder</span><span class="p">(</span><span class="n">out_dir</span><span class="p">)</span>
+
+    <span class="c1"># analyse the individual iterations</span>
+    <span class="n">sopt_data</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">repdat_files</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">converged</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">sopt_dirs</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">iteration_folder</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">sopt_dirs</span><span class="p">):</span>
+        <span class="n">iteration</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">iteration_folder</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;sopt&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">))</span>
+        <span class="nb">print</span><span class="p">(</span> <span class="n">iteration</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">repdat</span> <span class="o">=</span> <span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="n">sopt_root_dir</span> <span class="o">+</span> <span class="s2">&quot;/&quot;</span> <span class="o">+</span> <span class="n">iteration_folder</span> <span class="o">+</span> <span class="s2">&quot;/analysis/data/*repdat*&quot;</span><span class="p">)</span>
+        <span class="n">out_iteration_file_path</span> <span class="o">=</span> <span class="n">out_dir</span> <span class="o">+</span> <span class="s2">&quot;/&quot;</span> <span class="o">+</span> <span class="n">iteration_folder</span> <span class="o">+</span> <span class="s2">&quot;_ana_data.npy&quot;</span>
+
+        <span class="k">if</span> <span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">out_iteration_file_path</span><span class="p">)):</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n\n</span><span class="s2">Loading precomputed data for iteration: &quot;</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">sopt_it_stats</span> <span class="o">=</span> <span class="n">pickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="nb">open</span><span class="p">(</span><span class="n">out_iteration_file_path</span><span class="p">,</span> <span class="s2">&quot;rb&quot;</span><span class="p">))</span>
+            <span class="n">sopt_data</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="n">iteration_folder</span><span class="p">:</span> <span class="n">sopt_it_stats</span><span class="p">})</span>
+
+        <span class="k">elif</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">repdat</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">):</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Calculate statistics for iteration: &quot;</span><span class="p">,</span> <span class="n">iteration</span><span class="p">)</span>
+            <span class="n">repdat_files</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="n">iteration</span><span class="p">:</span> <span class="n">repdat</span><span class="p">[</span><span class="mi">0</span><span class="p">]})</span>
+            <span class="n">sopt_it_stats</span> <span class="o">=</span> <span class="n">analyse_sopt_iteration</span><span class="p">(</span><span class="n">repdat_path</span><span class="o">=</span><span class="n">repdat_files</span><span class="p">[</span><span class="n">iteration</span><span class="p">],</span> <span class="n">out_dir</span><span class="o">=</span><span class="n">out_dir</span><span class="p">,</span>
+                                                   <span class="n">title</span><span class="o">=</span><span class="s2">&quot;s-opt &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">iteration</span><span class="p">),</span> <span class="n">pot_tresh</span><span class="o">=</span><span class="n">pot_tresh</span><span class="p">)</span>
+
+            <span class="n">pickle</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">obj</span><span class="o">=</span><span class="n">sopt_it_stats</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="nb">open</span><span class="p">(</span><span class="n">out_iteration_file_path</span><span class="p">,</span> <span class="s2">&quot;wb&quot;</span><span class="p">))</span>
+            <span class="n">sopt_data</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="n">iteration_folder</span><span class="p">:</span> <span class="n">sopt_it_stats</span><span class="p">})</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">continue</span>
+        <span class="c1"># round trip time efficiency</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">iteration</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">):</span>
+            <span class="n">sopt_it_stats</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s2">&quot;avg_rountrip_duration_optimization_efficiency&quot;</span><span class="p">:</span> <span class="n">sopt_data</span><span class="p">[</span><span class="s2">&quot;sopt&quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">iteration</span><span class="o">-</span> <span class="mi">1</span><span class="p">)][</span><span class="s2">&quot;avg_rountrip_durations&quot;</span><span class="p">]</span> <span class="o">-</span><span class="n">sopt_it_stats</span><span class="p">[</span><span class="s2">&quot;avg_rountrip_durations&quot;</span><span class="p">]})</span>
+
+        <span class="c1">#assign convergence in an conserative fasion.</span>
+        <span class="n">sopt_it_stats</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s2">&quot;converged&quot;</span><span class="p">:</span> <span class="n">converged</span><span class="p">})</span>
+        <span class="k">if</span><span class="p">(</span><span class="n">iteration</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">sopt_it_stats</span><span class="p">[</span><span class="s2">&quot;avg_rountrip_duration_optimization_efficiency&quot;</span><span class="p">]</span> <span class="o">&lt;</span>  <span class="n">rt_convergence</span> <span class="p">):</span>
+            <span class="n">converged</span><span class="o">=</span><span class="kc">True</span>
+
+
+    <span class="nb">print</span><span class="p">(</span><span class="n">sopt_data</span><span class="p">)</span>
+
+    <span class="c1">#overview</span>
+    <span class="n">visualization_s_optimization_summary</span><span class="p">(</span><span class="n">s_opt_data</span><span class="o">=</span><span class="n">sopt_data</span><span class="p">,</span> <span class="n">out_path</span><span class="o">=</span><span class="n">out_dir</span> <span class="o">+</span> <span class="s2">&quot;/&quot;</span> <span class="o">+</span> <span class="n">title</span> <span class="o">+</span> <span class="s2">&quot;_sopt_analysis.png&quot;</span><span class="p">)</span>
+
+    <span class="c1">#Optimization  convergence:</span>
+    <span class="n">visualize_s_optimisation_convergence</span><span class="p">(</span><span class="n">s_opt_data</span><span class="o">=</span><span class="n">sopt_data</span><span class="p">,</span> <span class="n">out_path</span><span class="o">=</span><span class="n">out_dir</span> <span class="o">+</span> <span class="s2">&quot;/&quot;</span> <span class="o">+</span> <span class="n">title</span> <span class="o">+</span> <span class="s2">&quot;_sopt_efficiency.png&quot;</span><span class="p">,</span> <span class="n">convergens_radius</span><span class="o">=</span><span class="n">rt_convergence</span><span class="p">)</span>
+
+    <span class="c1">#Optimization Distribution</span>
+    <span class="n">visualize_s_optimisation_sampling_optimization</span><span class="p">(</span><span class="n">s_opt_data</span><span class="o">=</span><span class="n">sopt_data</span><span class="p">,</span> <span class="n">out_path</span><span class="o">=</span><span class="n">out_dir</span> <span class="o">+</span> <span class="s2">&quot;/&quot;</span> <span class="o">+</span> <span class="n">title</span> <span class="o">+</span> <span class="s2">&quot;_sopt_sampling_optimumDev.png&quot;</span><span class="p">)</span>
+
+    <span class="c1">#Final storing</span>
+    <span class="c1">##serialization</span>
+    <span class="n">final_analysis_out_path</span> <span class="o">=</span> <span class="n">out_dir</span> <span class="o">+</span> <span class="s2">&quot;/&quot;</span><span class="o">+</span><span class="n">title</span><span class="o">+</span><span class="s2">&quot;_final_soptimization_analysis.obj&quot;</span>
+    <span class="n">pickle</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">sopt_it_stats</span><span class="p">,</span> <span class="nb">open</span><span class="p">(</span><span class="n">final_analysis_out_path</span><span class="p">,</span> <span class="s2">&quot;wb&quot;</span><span class="p">))</span>
+
+    <span class="c1">##Human readable:</span>
+    <span class="n">final_analysis_out_csv_path</span> <span class="o">=</span> <span class="n">out_dir</span> <span class="o">+</span> <span class="s2">&quot;/&quot;</span><span class="o">+</span><span class="n">title</span><span class="o">+</span><span class="s2">&quot;_final_soptimization_analysis.csv&quot;</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">sopt_data</span><span class="p">)</span><span class="o">.</span><span class="n">T</span>
+    <span class="n">df</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">path_or_buf</span><span class="o">=</span><span class="n">final_analysis_out_csv_path</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span><span class="p">)</span></div>
+
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2020, Benjamin Ries, Salome Rieder, Candide Champion. Project structure based on the Computational Molecular Science Python Cookiecutter version 1.3.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

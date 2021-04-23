@@ -1,0 +1,19 @@
+reeds.data package
+==================
+
+Subpackages
+-----------
+
+.. toctree::
+   :maxdepth: 4
+
+   reeds.data.ene_ana_libs
+   reeds.data.imd_templates
+
+Module contents
+---------------
+
+.. automodule:: reeds.data
+   :members:
+   :undoc-members:
+   :show-inheritance:

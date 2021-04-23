@@ -1,0 +1,615 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>reeds.modules package &mdash; REEDS  documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="reeds.tests package" href="reeds.tests.html" />
+    <link rel="prev" title="reeds.function_libs.visualization package" href="reeds.function_libs.visualization.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> REEDS
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../introduction.html">REEDS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Examples/index.html">Examples</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">reeds</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="reeds.html">reeds package</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="reeds.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="reeds.data.html">reeds.data package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="reeds.function_libs.html">reeds.function_libs package</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">reeds.modules package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="reeds.tests.html">reeds.tests package</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="reeds.html#submodules">Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="reeds.html#module-reeds.reeds">reeds.reeds module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="reeds.html#module-reeds">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">REEDS</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="modules.html">reeds</a> &raquo;</li>
+        
+          <li><a href="reeds.html">reeds package</a> &raquo;</li>
+        
+      <li>reeds.modules package</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="../_sources/_source/reeds.modules.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  
+<style>
+/* CSS overrides for sphinx_rtd_theme */
+
+/* 24px margin */
+.nbinput.nblast.container,
+.nboutput.nblast.container {
+    margin-bottom: 19px;  /* padding has already 5px */
+}
+
+/* ... except between code cells! */
+.nblast.container + .nbinput.container {
+    margin-top: -19px;
+}
+
+.admonition > p:before {
+    margin-right: 4px;  /* make room for the exclamation icon */
+}
+
+/* Fix math alignment, see https://github.com/rtfd/sphinx_rtd_theme/pull/686 */
+.math {
+    text-align: unset;
+}
+</style>
+<div class="section" id="reeds-modules-package">
+<h1>reeds.modules package<a class="headerlink" href="#reeds-modules-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-reeds.modules.do_MD_production">
+<span id="reeds-modules-do-md-production-module"></span><h2>reeds.modules.do_MD_production module<a class="headerlink" href="#module-reeds.modules.do_MD_production" title="Permalink to this headline">¶</a></h2>
+<p>SCRIPT:            Do single Ligand MD
+Description:</p>
+<blockquote>
+<div><p>This script is exectuing an gromos simulation for a single ligand in a water box</p>
+</div></blockquote>
+<p>Author: Benjamin Schroeder</p>
+<dl class="py function">
+<dt id="reeds.modules.do_MD_production.do">
+<code class="sig-prename descclassname"><span class="pre">reeds.modules.do_MD_production.</span></code><code class="sig-name descname"><span class="pre">do</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">out_root_dir</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">in_simSystem</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">pygromos.euler_submissions.FileManager.Simulation_System.System</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">in_template_imd</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">in_gromosXX_bin_dir</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">in_gromosPP_bin_dir</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">in_ene_ana_lib_path</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nmpi</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nomp</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">submit</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">simulation_runs</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">duration</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">'04:00'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">write_free_energy_traj</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">equilibration_runs</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/reeds/modules/do_MD_production.html#do"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reeds.modules.do_MD_production.do" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function is building a gromos MD-simulation on Euler</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>out_root_dir</strong> (<em>str</em>) – out_root_dir used for output of this script</p></li>
+<li><p><strong>in_simSystem</strong> (<em>fM.System</em>) – this is the system obj. containing all paths to all system relevant Files.</p></li>
+<li><p><strong>in_template_imd</strong> (<em>str</em>) – imd file path</p></li>
+<li><p><strong>in_gromosXX_bin_dir</strong> (<em>str</em>) – path to gromosXX binary dir</p></li>
+<li><p><strong>in_gromosPP_bin_dir</strong> (<em>str</em>) – path to gromosPP binary dir</p></li>
+<li><p><strong>in_ene_ana_lib_path</strong> (<em>str</em>) – path to in_ene_ana_lib,that can read the reeds system.</p></li>
+<li><p><strong>nmpi</strong> (<em>int, optional</em>) – number of nmpi threads for replicas</p></li>
+<li><p><strong>nomp</strong> (<em>int, optional</em>) – number of nomp threads for replicas</p></li>
+<li><p><strong>submit</strong> (<em>bool, optional</em>) – should the folder and Files just be builded or also the sopt_job be submitted to the queue?</p></li>
+<li><p><strong>simulation_runs</strong> (<em>int, optional</em>) – how many simulation runs shall be queued?</p></li>
+<li><p><strong>duration</strong> (<em>str, optional</em>) – job duration in the queue</p></li>
+<li><p><strong>write_free_energy_traj</strong> (<em>bool, optional</em>) – output_free energy traj</p></li>
+<li><p><strong>equilibration_runs</strong> (<em>int, optional</em>) – how many runs are equilibration?</p></li>
+<li><p><strong>verbose</strong> (<em>bool, optional</em>) – I can be very talkative, you know…</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>returns last job_id</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="module-reeds.modules.do_RE_EDS_eoffEstimation">
+<span id="reeds-modules-do-re-eds-eoffestimation-module"></span><h2>reeds.modules.do_RE_EDS_eoffEstimation module<a class="headerlink" href="#module-reeds.modules.do_RE_EDS_eoffEstimation" title="Permalink to this headline">¶</a></h2>
+<p>SCRIPT:            Do Estimation Energy Offsets
+Description:</p>
+<blockquote>
+<div><p>This script Executes 3 simulation steps of reads (each 400ps). First one is used as equilibration.
+The rest is then used with the Energy Offset Estimator, to calculate the Eoffs. (Folder to continue with sopt is found in analysis/next)</p>
+</div></blockquote>
+<p>Author: Benjamin Schroeder</p>
+<dl class="py function">
+<dt id="reeds.modules.do_RE_EDS_eoffEstimation.do">
+<code class="sig-prename descclassname"><span class="pre">reeds.modules.do_RE_EDS_eoffEstimation.</span></code><code class="sig-name descname"><span class="pre">do</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">out_root_dir</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">in_simSystem</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">pygromos.euler_submissions.FileManager.Simulation_System.System</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">in_ene_ana_lib</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">in_template_imd_path</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">'/home/bschroed/Documents/code/reeds/reeds/data/imd_templates/new_Reeds_MD.imd'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">optimized_states</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">'/home/bschroed/Documents/code/reeds/docs/sphinx_project/a_optimizedState/analysis/next'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sval_file</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gromosXX_bin_dir</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gromosPP_bin_dir</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exclude_residues</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">list</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nmpi_per_replica</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_simulation_runs</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_equilibration_runs</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">equilibration_trial_num</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pot_tresh</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">float</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">queueing_sys</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">object</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">work_dir</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">submit</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">duration_per_job</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">'24:00'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">initialize_first_run</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reinitialize</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">do_not_doubly_submit_to_queue</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">single_bath</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/reeds/modules/do_RE_EDS_eoffEstimation.html#do"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reeds.modules.do_RE_EDS_eoffEstimation.do" title="Permalink to this definition">¶</a></dt>
+<dd><p>do Energy Offsets estimation</p>
+<blockquote>
+<div><p>This  function is triggering the work for the scheduling of Energy Offset estimation on Euler (currently).
+It autmatically builds folders into the out_root_dir, collecting input Files, a simulation folder,
+for which it triggers simulations and a analysis folder, in which the automatic analysis will be performed.</p>
+</div></blockquote>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>out_root_dir</strong> – out_root_dir used for output of this script</p></li>
+<li><p><strong>simSystem</strong> – this is the system obj. containing all paths to all system relevant Files.</p></li>
+<li><p><strong>in_ene_ana_lib</strong> – path to in_ene_ana_lib,that can read the reeds system.</p></li>
+<li><p><strong>in_template_imd_path</strong> – imd file</p></li>
+<li><p><strong>ssm_approach</strong> – the Starting State Mixing Approach.</p></li>
+<li><p><strong>gromosXX_bin_dir</strong> – path to gromosXX binary dir</p></li>
+<li><p><strong>gromosPP_bin_dir</strong> – path to gromosPP binary dir</p></li>
+<li><p><strong>exclude_residues</strong> – for cofactors etc.</p></li>
+<li><p><strong>nmpi_per_replica</strong> – number of nmpis per replica &#64; at the moment, due to gromos, only 1 possible! &#64;</p></li>
+<li><p><strong>num_simulation_runs</strong> – how many simulation stepsd</p></li>
+<li><p><strong>num_equilibration_runs</strong> – how many runs of equilibration?</p></li>
+<li><p><strong>equilibration_trial_num</strong> – how many long shall the equil time be? equil?</p></li>
+<li><p><strong>s_num</strong> – number of s_values( soptional)</p></li>
+<li><p><strong>s_range</strong> – start end end of desired s_distribution (optional)</p></li>
+<li><p><strong>pot_tresh</strong> – set the potential threshold for the analysis</p></li>
+<li><p><strong>queueing_sys</strong> – Not implemented yet!</p></li>
+<li><p><strong>submit</strong> – should the folder and Files just be builded or also the sopt_job be submitted to the queue?</p></li>
+<li><p><strong>work_dir</strong> – define where the workdir is. Default is on the computing node.</p></li>
+<li><p><strong>duration_per_job</strong> – duration of one simulation step in the queue</p></li>
+<li><p><strong>initialize_first_run</strong> (<em>bool, optional</em>) – should the velocities of the first run be reinitialized?</p></li>
+<li><p><strong>reinitialize</strong> (<em>bool, optional</em>) – should the velocities be reinitialized for all runs?</p></li>
+<li><p><strong>do_not_doubly_submit_to_queue</strong> (<em>bool, optional</em>) – Check if there is already a job with this name, do not submit if true.</p></li>
+<li><p><strong>single_bath</strong> (<em>bool, optional</em>) – only use a single MULTIBATH (i.e. NBATHS = 1)</p></li>
+<li><p><strong>verbose</strong> – I can be very talkative, you know…</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>returns the last queue submitted job ID or 0 if nothing was submitted or &lt;0 if error occured</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="reeds-modules-do-re-eds-findeachstatelowerbound-module">
+<h2>reeds.modules.do_RE_EDS_findEachStateLowerBound module<a class="headerlink" href="#reeds-modules-do-re-eds-findeachstatelowerbound-module" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-reeds.modules.do_RE_EDS_findLowerBound">
+<span id="reeds-modules-do-re-eds-findlowerbound-module"></span><h2>reeds.modules.do_RE_EDS_findLowerBound module<a class="headerlink" href="#module-reeds.modules.do_RE_EDS_findLowerBound" title="Permalink to this headline">¶</a></h2>
+<dl class="py function">
+<dt id="reeds.modules.do_RE_EDS_findLowerBound.do">
+<code class="sig-prename descclassname"><span class="pre">reeds.modules.do_RE_EDS_findLowerBound.</span></code><code class="sig-name descname"><span class="pre">do</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">out_root_dir</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">in_simSystem</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">pygromos.euler_submissions.FileManager.Simulation_System.System</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pot_tresh</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">float</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">template_imd</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">'/home/bschroed/Documents/code/reeds/reeds/data/imd_templates/eds_md.imd'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gromosXX_bin</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gromosPP_bin</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ene_ana_lib</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">'/home/bschroed/Documents/code/reeds/reeds/data/ene_ana_libs/new_ene_ana_REEDS_9state.md++.lib'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">submit</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exclude_residues</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">list</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">simulation_steps</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">100000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">job_duration</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">'4:00'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">memory</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">single_bath</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">int</span><a class="reference internal" href="../_modules/reeds/modules/do_RE_EDS_findLowerBound.html#do"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reeds.modules.do_RE_EDS_findLowerBound.do" title="Permalink to this definition">¶</a></dt>
+<dd><dl>
+<dt>Find lower S-bound for EDS System</dt><dd><ul>
+<li><p>Description:</p>
+<blockquote>
+<div><p>This script tries to find the lower s-bound of an EDS system, that is possible to be simulated ab initio and where undersampling occurs.
+Therefore a job_array will executed, that runs seperate EDS simulations with different s_values.</p>
+<p>In the output folder (“root_path_to_out_dir/analysis/”), you should find an s_values.csv and multiple coordinate (.cnf) Files.
+These Files were generated as  result of successfull finished simulations from this script.
+This output will be automatically used by do_RE_EDS_eoffEstimation.py(provide: “root_path_to_out_dir/analysis/”)</p>
+</div></blockquote>
+</li>
+<li><dl class="simple">
+<dt>Useage:</dt><dd><ul class="simple">
+<li><dl class="simple">
+<dt>via commandline</dt><dd><p>use: python do_RE_EDS_generateOptimizedStates.py -h to get input help.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>via python</dt><dd><p>for getting the input right see main part under the function.</p>
+</dd>
+</dl>
+</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><p>Author: Benjamin Schroeder</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>out_root_dir</strong> – path to the root output dir, in which the script directories wild be build into</p></li>
+<li><p><strong>in_simSystem</strong> – System obj. that contains information about the System-Files (cnf, top,…)</p></li>
+<li><p><strong>template_imd</strong> – gives the path to the template_RE_EDS_project parameter file (.imd), that is adapted to fit the system.</p></li>
+<li><p><strong>pot_tresh</strong> (<em>float, optional</em>) – potential threshold deciding if state was sampled or not - used in analysis</p></li>
+<li><p><strong>gromosXX_bin</strong> (<em>str, optional</em>) – path to gromosXX binary dir</p></li>
+<li><p><strong>gromosPP_bin</strong> (<em>str, optional</em>) – path to gromosPP binary dir</p></li>
+<li><p><strong>ene_ana_lib</strong> (<em>str, optional</em>) – path to in_ene_ana_lib,that can read the reeds system.</p></li>
+<li><p><strong>submit</strong> (<em>bool, optional</em>) – Flag, if the generated sopt_job should be submitted to lsf queue.</p></li>
+<li><p><strong>exclude_residues</strong> (<em>str, optional</em>) – for cofactors, so that they are not considered as eds states</p></li>
+<li><p><strong>simulation_steps</strong> (<em>int, optional</em>) – how many steps per simulations?</p></li>
+<li><p><strong>single_bath</strong> (<em>bool, optional</em>) – only use a single MULTIBATH (i.e. NBATHS = 1)</p></li>
+<li><p><strong>job_duration</strong> (<em>str, optional</em>) – duration of one simulation step in the queue</p></li>
+<li><p><strong>verbose</strong> (<em>bool, optional</em>) – Let me tell you a story….</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>returns 0 on successful script execution.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="reeds-modules-do-re-eds-generateoptimizedstates-module">
+<h2>reeds.modules.do_RE_EDS_generateOptimizedStates module<a class="headerlink" href="#reeds-modules-do-re-eds-generateoptimizedstates-module" title="Permalink to this headline">¶</a></h2>
+<dl>
+<dt>Description:</dt><dd><p>This script executes simulations, that optimize the input EDS system in each state seperatley.
+The number of simulations is dependent on the ligands (endstates) of the system.
+Each simulation is biased towards one state via the Energy Offsets.
+After simulating the potentials energies get analysed and plotted.
+You should see, that in each simulation only one state is dominating the system. (e.g.: Check root_path_to_out_dir/analysis/sampling_undersampling.png)</p>
+<p>This output will be automatically used by do_RE_EDS_eoffEstimation.py(provide: “root_path_to_out_dir/simulation/”)</p>
+<p>As input template_RE_EDS_project file the file: …/reeds/gromos_files/imd_templates/eds_md.imd</p>
+<dl class="simple">
+<dt>Further optimisations suggestions, if you can not generate the optimized states:</dt><dd><ul class="simple">
+<li><p>use coordinates of this System in an a undersampling -&gt; allows easier transitions</p></li>
+<li><p>increase the absolute values of the EOFFs in .imd file -&gt; “”</p></li>
+<li><p>increase simulation duration, to get the desired transition</p></li>
+</ul>
+</dd>
+</dl>
+<p>Todo: enable protein useage in system (Problem with parameter file adaption. - protein should be one energygroup)</p>
+</dd>
+<dt>Useage:</dt><dd><blockquote>
+<div><ul class="simple">
+<li><dl class="simple">
+<dt>via commandline</dt><dd><p>use: python do_RE_EDS_generateOptimizedStates.py -h to get input help.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>via python</dt><dd><p>for getting the input right see main part under the function.</p>
+</dd>
+</dl>
+</li>
+</ul>
+</div></blockquote>
+<p>Author: Benjamin Schroeder</p>
+</dd>
+</dl>
+<dl class="py function">
+<dt id="reeds.modules.do_RE_EDS_generateOptimizedStates.do">
+<code class="sig-prename descclassname"><span class="pre">reeds.modules.do_RE_EDS_generateOptimizedStates.</span></code><code class="sig-name descname"><span class="pre">do</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">out_root_dir</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">in_simSystem</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">pygromos.euler_submissions.FileManager.Simulation_System.System</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">in_imd_template_path</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">'/home/bschroed/Documents/code/reeds/reeds/data/imd_templates/eds_md.imd'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">in_gromosXX_bin_dir</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">in_gromosPP_bin_dir</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ene_ana_lib</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">'/home/bschroed/Documents/code/reeds/reeds/data/ene_ana_libs/new_ene_ana_REEDS_9state.md++.lib'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">simulation_steps</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">1000000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exclude_residues</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">list</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cpus_per_job</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">4</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">submit</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">solvent_keyword</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">'SOLV'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">single_bath</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">memory</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">job_duration</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">'8:00'</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">int</span><a class="reference internal" href="../_modules/reeds/modules/do_RE_EDS_generateOptimizedStates.html#do"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reeds.modules.do_RE_EDS_generateOptimizedStates.do" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate Optimized structures with EDS</p>
+<blockquote>
+<div><p>This script executes simulations, that optimize the input EDS system in each state seperatley.
+The number of simulations is dependent on the ligands (endstates) of the system.
+Each simulation is biased towards one state via the Energy Offsets.
+After simulating the potentials energies get analysed and plotted.
+You should see, that in each simulation only one state is dominating the system. (e.g.: Check root_path_to_out_dir/analysis/sampling_undersampling.png)</p>
+<p>This output will be automatically used by do_RE_EDS_eoffEstimation.py(provide: “root_path_to_out_dir/simulation/”)</p>
+<p>As input template_RE_EDS_project file the file: …/reeds/gromos_files/imd_templates/eds_md.imd</p>
+<dl class="simple">
+<dt>Further optimisations suggestions, if you can not generate the optimized states:</dt><dd><ul class="simple">
+<li><p>use coordinates of this System in an a undersampling -&gt; allows easier transitions</p></li>
+<li><p>increase the absolute values of the EOFFs in .imd file -&gt; “”</p></li>
+<li><p>increase simulation duration, to get the desired transition</p></li>
+</ul>
+</dd>
+</dl>
+</div></blockquote>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>out_root_dir</strong> (<em>str</em>) – path to the root output dir, in which the script directories wild be build into</p></li>
+<li><p><strong>system</strong> (<em>pygromos.PipelineManager.Simulation_System</em>) – System obj. that contains information about the System-Files (cnf, top,…0)</p></li>
+<li><p><strong>in_imd_template_path</strong> (<em>str, optional</em>) – gives the path to the template_RE_EDS_project parameter file (.imd), that is adapted to fit the system.</p></li>
+<li><p><strong>in_gromosXX_bin_dir</strong> (<em>str, optional</em>) – Flag, if the generated sopt_job should be submitted to lsf queue.</p></li>
+<li><p><strong>in_gromosPP_bin_dir</strong> (<em>str, optional</em>) – How many cpus shall be used per simulation?</p></li>
+<li><p><strong>ene_ana_lib</strong> (<em>str, optional</em>) – ene ana lib for the analysis</p></li>
+<li><p><strong>simulation_steps</strong> (<em>int, optional</em>) – how many simulation steps, shall be carried out?</p></li>
+<li><p><strong>exclude_residues</strong> (<em>List[str], optional</em>) – Which non protein residues shall be ignored and not treated as eds-state(cofactors)</p></li>
+<li><p><strong>job_duration</strong> (<em>str, optional</em>) – Duration of each submitted job in the queue (depends on imd setting)</p></li>
+<li><p><strong>cpus_per_job</strong> (<em>int, optional</em>) – how many mpi cores per job, shall be used?</p></li>
+<li><p><strong>single_bath</strong> (<em>bool, optional</em>) – use a single bath for all atoms? (i.e. NBATHS = 1) (default False)</p></li>
+<li><p><strong>submit</strong> (<em>bool, optional</em>) – should the prepared scripts be executed? (or even queued)</p></li>
+<li><p><strong>verbose</strong> (<em>bool, optional</em>) – verbosity of the code</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>returnCode</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="module-reeds.modules.do_RE_EDS_production">
+<span id="reeds-modules-do-re-eds-production-module"></span><h2>reeds.modules.do_RE_EDS_production module<a class="headerlink" href="#module-reeds.modules.do_RE_EDS_production" title="Permalink to this headline">¶</a></h2>
+<dl class="py function">
+<dt id="reeds.modules.do_RE_EDS_production.do">
+<code class="sig-prename descclassname"><span class="pre">reeds.modules.do_RE_EDS_production.</span></code><code class="sig-name descname"><span class="pre">do</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">out_root_dir</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">in_simSystem</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">pygromos.euler_submissions.FileManager.Simulation_System.System</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">in_template_imd</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gromosXX_bin_dir</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gromosPP_bin_dir</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">in_ene_ana_lib_path</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">'/home/bschroed/Documents/code/reeds/reeds/data/ene_ana_libs/new_ene_ana_REEDS_9state.md++.lib'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nmpi_per_replica</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">submit</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_simulation_runs</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">duration_per_job</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">'24:00'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_equilibration_runs</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pot_tresh</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">float</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">do_not_doubly_submit_to_queue</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">initialize_first_run</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reinitialize</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/reeds/modules/do_RE_EDS_production.html#do"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reeds.modules.do_RE_EDS_production.do" title="Permalink to this definition">¶</a></dt>
+<dd><p>RE-EDS Production run</p>
+<blockquote>
+<div><p>SCRIPT:            Do REEDS Production
+This function starts the production phase of the RE-EDS approach. It holds all parameters constant and samples the system.
+Finally it calculates the relative Free energies.
+Author: Benjamin Ries</p>
+</div></blockquote>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>out_root_dir</strong> (<em>str</em>) – this is the output directory</p></li>
+<li><p><strong>in_simSystem</strong> (<em>fm.System</em>) – input system</p></li>
+<li><p><strong>in_template_imd</strong> (<em>str</em>) – input parameter file</p></li>
+<li><p><strong>gromosXX_bin_dir</strong> (<em>str, optional</em>) – binaries for gromosXX(default: from shell)</p></li>
+<li><p><strong>gromosPP_bin_dir</strong> (<em>str, optional</em>) – binaries for gromosPP(default: from shell)</p></li>
+<li><p><strong>in_ene_ana_lib_path</strong> (<em>str, optional</em>) – path to ene_ana_lib(default: somelib)</p></li>
+<li><p><strong>nmpi_per_replica</strong> (<em>int, optional</em>) – how many cores per replica?</p></li>
+<li><p><strong>submit</strong> (<em>bool, optional</em>) – shall the jobs be submitted to the queue?</p></li>
+<li><p><strong>num_simulation_runs</strong> (<em>int, optional</em>) – number of repetitions of the imd.</p></li>
+<li><p><strong>num_equilibration_runs</strong> (<em>int, optional</em>) – number of equilibrations.</p></li>
+<li><p><strong>duration_per_job</strong> (<em>str, optional</em>) – how long shall each job take?</p></li>
+<li><p><strong>do_not_doubly_submit_to_queue</strong> (<em>bool, optional</em>) – Check if there is already a job with this name, do not submit if true.</p></li>
+<li><p><strong>initialize_first_run</strong> (<em>bool, optional</em>) – should the velocities of the first run be reinitialized?</p></li>
+<li><p><strong>reinitialize</strong> (<em>bool, optional</em>) – should the velocities be reinitialized for all runs?</p></li>
+<li><p><strong>verbose</strong> (<em>bool, optional</em>) – Scream!</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>last submitted</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="module-reeds.modules.do_RE_EDS_sOptimisation">
+<span id="reeds-modules-do-re-eds-soptimisation-module"></span><h2>reeds.modules.do_RE_EDS_sOptimisation module<a class="headerlink" href="#module-reeds.modules.do_RE_EDS_sOptimisation" title="Permalink to this headline">¶</a></h2>
+<p>SCRIPT:            Do S-optimisation
+Description:</p>
+<blockquote>
+<div><p>This script executes multiple simuatlions. The scripts runs mutliple iterations of s-distribution runs.
+In each iteration x simulations a 400 ps are exectued an afterwards the s-distribution get optimised by NLRTO.
+here it runs continous
+TODOS: make adapt imd file more genearl</p>
+</div></blockquote>
+<p>Author: bschroed</p>
+<dl class="py function">
+<dt id="reeds.modules.do_RE_EDS_sOptimisation.do">
+<code class="sig-prename descclassname"><span class="pre">reeds.modules.do_RE_EDS_sOptimisation.</span></code><code class="sig-name descname"><span class="pre">do</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="pre">out_root_dir:</span> <span class="pre">str</span></em>, <em class="sig-param"><span class="pre">in_simSystem:</span> <span class="pre">pygromos.euler_submissions.FileManager.Simulation_System.System</span></em>, <em class="sig-param"><span class="pre">in_template_imd:</span> <span class="pre">Optional[str]</span> <span class="pre">=</span> <span class="pre">None</span></em>, <em class="sig-param"><span class="pre">soptIterations:</span> <span class="pre">int</span> <span class="pre">=</span> <span class="pre">4</span></em>, <em class="sig-param"><span class="pre">add_replicas:</span> <span class="pre">int</span> <span class="pre">=</span> <span class="pre">4</span></em>, <em class="sig-param"><span class="pre">adding_new_sReplicas_Scheme:</span> <span class="pre">reeds.function_libs.utils.structures.adding_Scheme_new_Replicas</span> <span class="pre">=</span> <span class="pre">&lt;adding_Scheme_new_Replicas.from_below:</span> <span class="pre">2&gt;</span></em>, <em class="sig-param"><span class="pre">noncontinous:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">False</span></em>, <em class="sig-param"><span class="pre">equil_runs:</span> <span class="pre">Optional[int]</span> <span class="pre">=</span> <span class="pre">None</span></em>, <em class="sig-param"><span class="pre">steps_between_trials:</span> <span class="pre">int</span> <span class="pre">=</span> <span class="pre">20</span></em>, <em class="sig-param"><span class="pre">trials_per_run:</span> <span class="pre">int</span> <span class="pre">=</span> <span class="pre">12500</span></em>, <em class="sig-param"><span class="pre">non_ligand_residues:</span> <span class="pre">list</span> <span class="pre">=</span> <span class="pre">[]</span></em>, <em class="sig-param"><span class="pre">in_gromosXX_bin_dir:</span> <span class="pre">Optional[str]</span> <span class="pre">=</span> <span class="pre">None</span></em>, <em class="sig-param"><span class="pre">in_gromosPP_bin_dir:</span> <span class="pre">Optional[str]</span> <span class="pre">=</span> <span class="pre">None</span></em>, <em class="sig-param"><span class="pre">in_ene_ana_lib_path:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">'/home/bschroed/Documents/code/reeds/reeds/data/ene_ana_libs/new_ene_ana_REEDS_9state.md++.lib'</span></em>, <em class="sig-param"><span class="pre">nmpi_per_replica:</span> <span class="pre">int</span> <span class="pre">=</span> <span class="pre">1</span></em>, <em class="sig-param"><span class="pre">submit:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">True</span></em>, <em class="sig-param"><span class="pre">duration_per_job:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">'24:00'</span></em>, <em class="sig-param"><span class="pre">pot_tresh:</span> <span class="pre">float</span> <span class="pre">=</span> <span class="pre">0.0</span></em>, <em class="sig-param"><span class="pre">queueing_system:</span> <span class="pre">pygromos.euler_submissions.Submission_Systems._SubmissionSystem</span> <span class="pre">=</span> <span class="pre">&lt;class</span> <span class="pre">'pygromos.euler_submissions.Submission_Systems.LSF'&gt;</span></em>, <em class="sig-param"><span class="pre">do_not_doubly_submit_to_queue:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">True</span></em>, <em class="sig-param"><span class="pre">initialize_first_run:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">True</span></em>, <em class="sig-param"><span class="pre">reinitialize:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">False</span></em>, <em class="sig-param"><span class="pre">verbose:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/reeds/modules/do_RE_EDS_sOptimisation.html#do"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reeds.modules.do_RE_EDS_sOptimisation.do" title="Permalink to this definition">¶</a></dt>
+<dd><blockquote>
+<div><p>SCRIPT:            Do S-optimisation
+Description:</p>
+<blockquote>
+<div><p>This script executes multiple simuatlions. The scripts runs mutliple iterations of s-distribution runs.
+In each iteration x simulations a 400 ps are exectued an afterwards the s-distribution get optimised by NLRTO.
+here it runs continous</p>
+</div></blockquote>
+<p>Author: bschroed</p>
+</div></blockquote>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>out_root_dir</strong> (<em>str</em>) – out_root_dir used for output of this script</p></li>
+<li><p><strong>in_simSystem</strong> (<em>pygromos.PipelineManager.Simulation_System</em>) – this is the system obj. containing all paths to all system relevant Files.</p></li>
+<li><p><strong>in_template_imd</strong> (<em>str</em>) – path to the imd file to simulate</p></li>
+<li><p><strong>soptIterations</strong> (<em>int, optional</em>) – How many optimization iterations do you want to perform?</p></li>
+<li><p><strong>add_replicas</strong> (<em>int, optional</em>) – How many replicas do you want to add per otpimization run?</p></li>
+<li><p><strong>adding_new_sReplicas_Scheme</strong> (<em>reeds.function_libs.utils.structures.adding_Scheme_new_Replicas</em>) – How shall new coordinate files be added to the system?</p></li>
+<li><p><strong>noncontinous</strong> (<em>bool, optional</em>) – Shall I use the output coordinates of the last sopt for the next sopt(False), or shall I always use the same starting coordinates per s-Optimization Iteration? (True)</p></li>
+<li><p><strong>equil_runs</strong> (<em>int, optional</em>) – How often do you want to run prequilibration, before each run ? give int times 50ps</p></li>
+<li><p><strong>steps_between_trials</strong> (<em>int, optional</em>) – How many steps shall be executed between the trials?</p></li>
+<li><p><strong>trials_per_run</strong> (<em>int, optional</em>) – How many exchange trials shall be exectued per run?</p></li>
+<li><p><strong>non_ligand_residues</strong> (<em>List[str], optional</em>) – list of molecules (except solv and protein) that should not be considered as EDS-State.</p></li>
+<li><p><strong>in_gromosXX_bin_dir</strong> (<em>str, optional</em>) – path to gromosXX_bin binary dir</p></li>
+<li><p><strong>in_gromosPP_bin_dir</strong> (<em>str, optional</em>) – path to gromosPP_bin binary dir</p></li>
+<li><p><strong>in_ene_ana_lib_path</strong> (<em>str, optional</em>) – path to in_ene_ana_lib,that can read the reeds system.</p></li>
+<li><p><strong>nmpi_per_replica</strong> (<em>int, optional</em>) – number of nmpis per replica &#64; at the moment, due to gromos, only 1 possible! &#64;</p></li>
+<li><p><strong>submit</strong> (<em>bool, optional</em>) – should the folder and Files just be builded or also the sopt_job be submitted to the queue?</p></li>
+<li><p><strong>queueing_system</strong> (<em>Submission_System, optional</em>) – &#64;Development -  not Implemented yet but this shall allow different queueing systems or even a dummy queueing sys.</p></li>
+<li><p><strong>duration_per_job</strong> (<em>str, optional</em>) – duration of each job in the queue</p></li>
+<li><p><strong>initialize_first_run</strong> (<em>bool, optional</em>) – should the velocities of the first run be reinitialized?</p></li>
+<li><p><strong>reinitialize</strong> (<em>bool, optional</em>) – should the velocities be reinitialized for all runs?</p></li>
+<li><p><strong>do_not_doubly_submit_to_queue</strong> (<em>bool, optional</em>) – Check if there is already a job with this name, do not submit if true.</p></li>
+<li><p><strong>verbose</strong> (<em>bool, optional</em>) – I can be very talkative! :)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>last submitted job ID; is -1 if Error, 0 if not submitted</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="module-reeds.modules">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-reeds.modules" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+        <a href="reeds.tests.html" class="btn btn-neutral float-right" title="reeds.tests package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="reeds.function_libs.visualization.html" class="btn btn-neutral float-left" title="reeds.function_libs.visualization package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2020, Benjamin Ries, Salome Rieder, Candide Champion. Project structure based on the Computational Molecular Science Python Cookiecutter version 1.3.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

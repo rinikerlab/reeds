@@ -1,0 +1,385 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>reeds.function_libs.pipeline.worker_scripts.analysis_workers.RE_EDS_state_optimization_analysis &mdash; REEDS  documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../../../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../../../../_static/pygments.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../../../../" src="../../../../../../_static/documentation_options.js"></script>
+        <script src="../../../../../../_static/jquery.js"></script>
+        <script src="../../../../../../_static/underscore.js"></script>
+        <script src="../../../../../../_static/doctools.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    
+    <script type="text/javascript" src="../../../../../../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../../../../index.html" class="icon icon-home"> REEDS
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../introduction.html">REEDS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../Examples/index.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../_source/modules.html">reeds</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../../../index.html">REEDS</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../../../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../../../../../index.html">Module code</a> &raquo;</li>
+        
+      <li>reeds.function_libs.pipeline.worker_scripts.analysis_workers.RE_EDS_state_optimization_analysis</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for reeds.function_libs.pipeline.worker_scripts.analysis_workers.RE_EDS_state_optimization_analysis</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/python env</span>
+<span class="kn">import</span> <span class="nn">glob</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">warnings</span>
+
+<span class="kn">from</span> <span class="nn">pygromos.files</span> <span class="kn">import</span> <span class="n">imd</span>
+<span class="kn">from</span> <span class="nn">pygromos.utils</span> <span class="kn">import</span> <span class="n">bash</span>
+
+<span class="kn">import</span> <span class="nn">reeds.function_libs.visualization.pot_energy_plots</span>
+<span class="kn">from</span> <span class="nn">reeds.data</span> <span class="kn">import</span> <span class="n">ene_ana_libs</span>
+<span class="kn">from</span> <span class="nn">reeds.function_libs.file_management</span> <span class="kn">import</span> <span class="n">file_management</span> <span class="k">as</span> <span class="n">fM</span>
+<span class="kn">from</span> <span class="nn">reeds.function_libs.analysis.sampling</span> <span class="kn">import</span> <span class="n">get_all_physical_occurence_potential_threshold_distribution_based</span>
+
+
+<div class="viewcode-block" id="do"><a class="viewcode-back" href="../../../../../../_source/reeds.function_libs.pipeline.worker_scripts.analysis_workers.html#reeds.function_libs.pipeline.worker_scripts.analysis_workers.RE_EDS_state_optimization_analysis.do">[docs]</a><span class="k">def</span> <span class="nf">do</span><span class="p">(</span><span class="n">in_simulation_dir</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">in_topology_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">in_imd_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+       <span class="n">out_analysis_dir</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+       <span class="n">pot_tresh</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">200</span><span class="p">,</span>
+       <span class="n">gromosPP_bin</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+       <span class="n">in_ene_ana_lib</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">ene_ana_libs</span><span class="o">.</span><span class="n">ene_ana_lib_path</span><span class="p">,</span>
+       <span class="n">verbose</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        This analysis_worker is analyzing step a_state optimization.</span>
+
+<span class="sd">        Features:</span>
+<span class="sd">        - concatenation an d compressoin of simulated data</span>
+<span class="sd">        - analysis of potential energies</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    in_simulation_dir : str</span>
+<span class="sd">        path to gromos simulation folder.</span>
+<span class="sd">    in_topology_path</span>
+<span class="sd">        path to gromos topology</span>
+<span class="sd">    in_imd_path</span>
+<span class="sd">        path to gromos parameter</span>
+<span class="sd">    out_analysis_dir</span>
+<span class="sd">        output analysis path</span>
+<span class="sd">    pot_tresh</span>
+<span class="sd">        potential threshold for undersampling</span>
+<span class="sd">    gromosPP_bin</span>
+<span class="sd">        path to gromos binary dir</span>
+<span class="sd">    in_ene_ana_lib</span>
+<span class="sd">        path to ene_ana library</span>
+<span class="sd">    verbose</span>
+<span class="sd">        DummDiDummDiDu</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">control_dict</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;fileManagment&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;cp_cnf&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+            <span class="s2">&quot;cat_trc&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+            <span class="s2">&quot;convert_trcs&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+            <span class="s2">&quot;ene_ana&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+            <span class="s2">&quot;cat_tre&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="p">},</span>
+        <span class="s2">&quot;plots&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="s2">&quot;compress&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="s2">&quot;plot_timeseries&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="s2">&quot;plot_grid_timeseries&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="s2">&quot;plot_ref_timeseries&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="s2">&quot;plot_ref_distrib&quot;</span><span class="p">:</span> <span class="kc">True</span>
+    <span class="p">}</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="n">verbose</span><span class="p">):</span> <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;START opt_structure ana&quot;</span><span class="p">)</span>
+    <span class="c1"># generate</span>
+    <span class="n">bash</span><span class="o">.</span><span class="n">make_folder</span><span class="p">(</span><span class="n">out_analysis_dir</span><span class="p">,</span> <span class="s2">&quot;-p&quot;</span><span class="p">)</span>
+
+    <span class="c1"># gen e dat</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">in_imd_path</span><span class="p">)</span>
+    <span class="n">imd_file</span> <span class="o">=</span> <span class="n">imd</span><span class="o">.</span><span class="n">Imd</span><span class="p">(</span><span class="n">in_imd_path</span> <span class="o">+</span> <span class="s2">&quot;_1.imd&quot;</span><span class="p">)</span>
+    <span class="n">numstates</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">imd_file</span><span class="o">.</span><span class="n">EDS</span><span class="o">.</span><span class="n">NUMSTATES</span><span class="p">)</span>
+    <span class="n">s_values</span> <span class="o">=</span> <span class="p">[</span><span class="mf">1.0</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">numstates</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)]</span>
+
+    <span class="c1"># organize siulation Files:</span>
+    <span class="n">coord_dir</span> <span class="o">=</span> <span class="n">out_analysis_dir</span> <span class="o">+</span> <span class="s2">&quot;/data&quot;</span>
+    <span class="n">out_prefix</span> <span class="o">=</span> <span class="s2">&quot;REEDS_state_optimisation&quot;</span>
+    <span class="n">bash</span><span class="o">.</span><span class="n">make_folder</span><span class="p">(</span><span class="n">coord_dir</span><span class="p">)</span>
+
+    <span class="c1"># if we&#39;re using Stochastic Dynamics, use solutemp2 for ene_ana instead of solvtemp2</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">imd_file</span><span class="o">.</span><span class="n">MULTIBATH</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">imd_file</span><span class="o">.</span><span class="n">STOCHDYN</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">):</span>
+        <span class="n">additional_properties</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;solutemp2&quot;</span><span class="p">,</span> <span class="s2">&quot;totdisres&quot;</span><span class="p">)</span>
+        <span class="n">boundary_conditions</span> <span class="o">=</span> <span class="s2">&quot;v&quot;</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">additional_properties</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;solvtemp2&quot;</span><span class="p">,</span> <span class="s2">&quot;totdisres&quot;</span><span class="p">)</span>
+        <span class="n">boundary_conditions</span> <span class="o">=</span> <span class="s2">&quot;r&quot;</span>
+
+    <span class="n">fM</span><span class="o">.</span><span class="n">project_concatenation</span><span class="p">(</span><span class="n">in_folder</span><span class="o">=</span><span class="n">in_simulation_dir</span><span class="p">,</span> <span class="n">in_topology_path</span><span class="o">=</span><span class="n">in_topology_path</span><span class="p">,</span>
+                             <span class="n">additional_properties</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;eR&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="p">[</span><span class="s2">&quot;e&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">numstates</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)],</span>
+                             <span class="n">in_imd</span><span class="o">=</span><span class="n">in_imd_path</span> <span class="o">+</span> <span class="s2">&quot;_1.imd&quot;</span><span class="p">,</span> <span class="n">num_replicas</span><span class="o">=</span><span class="n">numstates</span><span class="p">,</span>
+                             <span class="n">control_dict</span><span class="o">=</span><span class="n">control_dict</span><span class="p">[</span><span class="s2">&quot;fileManagment&quot;</span><span class="p">],</span> <span class="n">gromosPP_bin_dir</span><span class="o">=</span><span class="n">gromosPP_bin</span><span class="p">,</span>
+                             <span class="n">out_folder</span><span class="o">=</span><span class="n">coord_dir</span><span class="p">,</span> <span class="n">in_ene_ana_lib_path</span><span class="o">=</span><span class="n">in_ene_ana_lib</span><span class="p">,</span>
+                             <span class="n">out_file_prefix</span><span class="o">=</span><span class="n">out_prefix</span><span class="p">,</span> <span class="n">boundary_conditions</span><span class="o">=</span><span class="n">boundary_conditions</span><span class="p">)</span>
+
+    <span class="n">ene_trajs</span> <span class="o">=</span> <span class="n">fM</span><span class="o">.</span><span class="n">parse_csv_energy_trajectories</span><span class="p">(</span><span class="n">in_folder</span><span class="o">=</span><span class="n">coord_dir</span><span class="p">,</span> <span class="n">ene_trajs_prefix</span><span class="o">=</span><span class="n">out_prefix</span> <span class="o">+</span> <span class="s2">&quot;_energies&quot;</span><span class="p">)</span>
+
+    <span class="c1"># do sampling_plot</span>
+    <span class="n">out_analysis_plot_dir</span> <span class="o">=</span> <span class="n">out_analysis_dir</span> <span class="o">+</span> <span class="s2">&quot;/plots&quot;</span>
+    <span class="n">bash</span><span class="o">.</span><span class="n">make_folder</span><span class="p">(</span><span class="n">out_analysis_plot_dir</span><span class="p">,</span> <span class="s2">&quot;-p&quot;</span><span class="p">)</span>
+
+    <span class="c1"># candide: had to uncomment this, because the addition of functionality here led to a bug when used</span>
+    <span class="c1"># in the analysis of step A. bug from call to: undersampling_occurence_potential_threshold_distribution_based</span>
+
+    <span class="c1">#ana.sampling_analysis(out_path=out_analysis_plot_dir, ene_traj_csvs=ene_trajs, s_values=s_values,</span>
+    <span class="c1">#                      pot_tresh=pot_tresh)</span>
+
+    <span class="c1"># Plot of all of the potential energy distributions in a single plot:</span>
+    <span class="n">reeds</span><span class="o">.</span><span class="n">function_libs</span><span class="o">.</span><span class="n">visualization</span><span class="o">.</span><span class="n">pot_energy_plots</span><span class="o">.</span><span class="n">plot_optimized_states_potential_energies</span><span class="p">(</span><span class="n">outfile</span><span class="o">=</span><span class="n">out_analysis_plot_dir</span> <span class="o">+</span> <span class="s2">&quot;/optimized_states_potential_energies.png&quot;</span><span class="p">,</span>
+                                                                                                <span class="n">ene_trajs</span><span class="o">=</span><span class="n">ene_trajs</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">control_dict</span><span class="p">[</span><span class="s2">&quot;plot_ref_timeseries&quot;</span><span class="p">]:</span>
+        <span class="n">outfile</span> <span class="o">=</span> <span class="n">out_analysis_plot_dir</span> <span class="o">+</span> <span class="s2">&quot;/optimized_states_ref_potential_ene_timeseries.png&quot;</span>
+        <span class="n">reeds</span><span class="o">.</span><span class="n">function_libs</span><span class="o">.</span><span class="n">visualization</span><span class="o">.</span><span class="n">pot_energy_plots</span><span class="o">.</span><span class="n">plot_ref_pot_ene_timeseries</span><span class="p">(</span><span class="n">ene_trajs</span><span class="p">,</span> <span class="n">outfile</span><span class="p">,</span> <span class="n">s_values</span><span class="o">=</span><span class="p">[],</span> <span class="n">optimized_state</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">control_dict</span><span class="p">[</span><span class="s2">&quot;plot_ref_distrib&quot;</span><span class="p">]:</span>
+        <span class="n">outfile</span> <span class="o">=</span> <span class="n">out_analysis_plot_dir</span> <span class="o">+</span> <span class="s2">&quot;/optimized_states_ref_potential_ene_distrib.png&quot;</span>
+        <span class="n">reeds</span><span class="o">.</span><span class="n">function_libs</span><span class="o">.</span><span class="n">visualization</span><span class="o">.</span><span class="n">pot_energy_plots</span><span class="o">.</span><span class="n">plot_ref_pot_energy_distribution</span><span class="p">(</span><span class="n">ene_trajs</span><span class="p">,</span> <span class="n">outfile</span><span class="p">,</span> <span class="n">s_values</span><span class="o">=</span><span class="p">[],</span> <span class="n">optimized_state</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span>
+
+    <span class="c1"># do visualisation pot energies</span>
+
+    <span class="n">num_states</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">ene_trajs</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">ene_traj</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">ene_trajs</span><span class="p">):</span>
+        <span class="n">singleStates</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;e&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">num_states</span><span class="o">+</span><span class="mi">1</span><span class="p">)]</span>
+
+        <span class="k">if</span> <span class="n">control_dict</span><span class="p">[</span><span class="s2">&quot;plot_timeseries&quot;</span><span class="p">]:</span>
+            <span class="n">reeds</span><span class="o">.</span><span class="n">function_libs</span><span class="o">.</span><span class="n">visualization</span><span class="o">.</span><span class="n">pot_energy_plots</span><span class="o">.</span><span class="n">plot_potential_timeseries</span><span class="p">(</span><span class="n">time</span> <span class="o">=</span> <span class="n">ene_traj</span><span class="o">.</span><span class="n">time</span><span class="p">,</span> <span class="n">potentials</span> <span class="o">=</span> <span class="n">ene_traj</span><span class="p">[</span><span class="n">singleStates</span><span class="p">],</span>
+                                                                                         <span class="n">y_range</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="mi">1000</span><span class="p">,</span> <span class="mi">1000</span><span class="p">),</span> <span class="n">title</span> <span class="o">=</span> <span class="s2">&quot;EDS_stateV_scatter&quot;</span><span class="p">,</span>
+                                                                                         <span class="n">out_path</span> <span class="o">=</span> <span class="n">out_analysis_plot_dir</span> <span class="o">+</span> <span class="s2">&quot;/edsState_potential_timeseries_&quot;</span>
+                                                     <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">ene_traj</span><span class="o">.</span><span class="n">s</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;.png&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">control_dict</span><span class="p">[</span><span class="s2">&quot;plot_grid_timeseries&quot;</span><span class="p">]:</span>
+            <span class="n">out_path</span> <span class="o">=</span> <span class="n">out_analysis_plot_dir</span> <span class="o">+</span> <span class="s2">&quot;/edsState_potential_timeseries_stageGrid_&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">ene_traj</span><span class="o">.</span><span class="n">s</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;.png&quot;</span>
+            <span class="n">title</span> <span class="o">=</span> <span class="s1">&#39;Optimized State potential energy timeseries - System biased to state &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+            <span class="n">reeds</span><span class="o">.</span><span class="n">function_libs</span><span class="o">.</span><span class="n">visualization</span><span class="o">.</span><span class="n">pot_energy_plots</span><span class="o">.</span><span class="n">plot_sampling_grid</span><span class="p">(</span><span class="n">traj_data</span> <span class="o">=</span> <span class="n">ene_traj</span><span class="p">,</span> <span class="n">y_range</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="mi">1000</span><span class="p">,</span> <span class="mi">1000</span><span class="p">),</span>
+                                                                                  <span class="n">out_path</span> <span class="o">=</span> <span class="n">out_path</span><span class="p">,</span> <span class="n">title</span> <span class="o">=</span> <span class="n">title</span><span class="p">)</span>
+
+
+    <span class="c1"># generate</span>
+    <span class="n">next_dir</span> <span class="o">=</span> <span class="n">bash</span><span class="o">.</span><span class="n">make_folder</span><span class="p">(</span><span class="n">out_analysis_dir</span><span class="o">+</span><span class="s2">&quot;/next&quot;</span><span class="p">,)</span>
+
+    <span class="c1">##move cnfs to next</span>
+    <span class="n">bash</span><span class="o">.</span><span class="n">copy_file</span><span class="p">(</span><span class="n">coord_dir</span> <span class="o">+</span> <span class="s2">&quot;/*.cnf&quot;</span><span class="p">,</span> <span class="n">next_dir</span><span class="p">)</span>
+
+    <span class="c1">## write pot_treshholds to next</span>
+    <span class="n">physical_state_occurrence_treshold</span> <span class="o">=</span> <span class="n">get_all_physical_occurence_potential_threshold_distribution_based</span><span class="p">(</span><span class="n">ene_trajs</span><span class="p">)</span>
+
+    <span class="c1">##write_pot_tresh:</span>
+    <span class="n">out_file</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">next_dir</span> <span class="o">+</span> <span class="s2">&quot;/state_occurence_physical_pot_thresh.csv&quot;</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span>
+    <span class="n">out_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">physical_state_occurrence_treshold</span><span class="p">)))</span>
+    <span class="n">out_file</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+
+    <span class="c1"># compress out_trc/out_tre Files</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">control_dict</span><span class="p">[</span><span class="s2">&quot;compress&quot;</span><span class="p">]):</span>
+        <span class="n">trx_files</span> <span class="o">=</span> <span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="n">coord_dir</span> <span class="o">+</span> <span class="s2">&quot;/*.tr?&quot;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">trx</span> <span class="ow">in</span> <span class="n">trx_files</span><span class="p">:</span>
+            <span class="n">bash</span><span class="o">.</span><span class="n">compress_tar</span><span class="p">(</span><span class="n">in_path</span><span class="o">=</span><span class="n">trx</span><span class="p">,</span> <span class="n">gunzip_compression</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="p">(</span><span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">in_simulation_dir</span> <span class="o">+</span> <span class="s2">&quot;.tar.gz&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">in_simulation_dir</span><span class="p">)):</span>
+            <span class="n">tar_sim_dir</span> <span class="o">=</span> <span class="n">bash</span><span class="o">.</span><span class="n">compress_tar</span><span class="p">(</span><span class="n">in_path</span><span class="o">=</span><span class="n">in_simulation_dir</span><span class="p">,</span> <span class="n">gunzip_compression</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">bash</span><span class="o">.</span><span class="n">wait_for_fileSystem</span><span class="p">(</span><span class="n">tar_sim_dir</span><span class="p">)</span>
+            <span class="n">bash</span><span class="o">.</span><span class="n">remove_file</span><span class="p">(</span><span class="n">in_simulation_dir</span><span class="p">,</span> <span class="n">additional_options</span><span class="o">=</span><span class="s2">&quot;-r&quot;</span><span class="p">)</span>
+
+    <span class="nb">print</span> <span class="p">(</span><span class="s1">&#39;</span><span class="se">\n\n</span><span class="s1">Analysis of the Optimized States completed successfully !&#39;</span><span class="p">)</span></div>
+
+
+
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">states</span> <span class="o">=</span> <span class="mi">2</span>
+    <span class="n">base_dir</span> <span class="o">=</span> <span class="s2">&quot;/home/bschroed/Projects/REEDS/systems/BRD4/water/2_ligands/test_ana_optstr&quot;</span>
+    <span class="n">sim_dir</span> <span class="o">=</span> <span class="n">base_dir</span> <span class="o">+</span> <span class="s2">&quot;/simulation&quot;</span>
+    <span class="n">gromos_path</span> <span class="o">=</span> <span class="s2">&quot;/home/bschroed/gromos/reeds_gromos_bschroed_AmberFF_CG/gromosPP/bin&quot;</span>
+    <span class="n">ene_ana_lib</span> <span class="o">=</span> <span class="s2">&quot;/home/bschroed/code/reeds/gromos_files/ene_ana_libs/ene_ana_REEDS_7state.md++.lib&quot;</span>
+    <span class="n">tre_prefix</span> <span class="o">=</span> <span class="s2">&quot;2_ligs_4MR3_3U5L_work&quot;</span>
+    <span class="n">ana_dir</span> <span class="o">=</span> <span class="n">base_dir</span> <span class="o">+</span> <span class="s2">&quot;/analysis&quot;</span>
+
+    <span class="n">do</span><span class="p">(</span><span class="n">out_analysis_dir</span><span class="o">=</span><span class="n">base_dir</span> <span class="o">+</span> <span class="s2">&quot;/analysis&quot;</span><span class="p">,</span> <span class="n">in_simulation_dir</span><span class="o">=</span><span class="n">sim_dir</span><span class="p">,</span> <span class="n">in_ene_ana_lib</span><span class="o">=</span><span class="n">ene_ana_lib</span><span class="p">,</span>
+       <span class="n">gromosPP_bin</span><span class="o">=</span><span class="n">gromos_path</span><span class="p">,</span> <span class="n">numstates</span><span class="o">=</span><span class="n">states</span><span class="p">)</span>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2020, Benjamin Ries, Salome Rieder, Candide Champion. Project structure based on the Computational Molecular Science Python Cookiecutter version 1.3.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

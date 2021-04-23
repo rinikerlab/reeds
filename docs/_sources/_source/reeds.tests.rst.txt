@@ -1,0 +1,32 @@
+reeds.tests package
+===================
+
+Subpackages
+-----------
+
+.. toctree::
+   :maxdepth: 4
+
+   reeds.tests.REEDS_eoff
+   reeds.tests.REEDS_sopt
+   reeds.tests.pipeline_test
+
+Submodules
+----------
+
+reeds.tests.test\_reeds module
+------------------------------
+
+.. automodule:: reeds.tests.test_reeds
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+
+Module contents
+---------------
+
+.. automodule:: reeds.tests
+   :members:
+   :undoc-members:
+   :show-inheritance:
