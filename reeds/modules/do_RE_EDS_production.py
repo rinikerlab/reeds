@@ -23,7 +23,7 @@ def do(out_root_dir: str, in_simSystem: fM.System, in_template_imd: str,
        nmpi_per_replica: int = 1,
        submit: bool = True,
        num_simulation_runs: int = 10, duration_per_job: str = "24:00",
-       num_equilibration_runs: int = 0, pot_tresh: float = 0.0, 
+       num_equilibration_runs: int = 0
        do_not_doubly_submit_to_queue: bool = True,
        initialize_first_run: bool = True, reinitialize: bool = False,
        verbose: bool = False):
@@ -163,7 +163,6 @@ int
             "gromos_path": gromosPP_bin_dir,
             "in_ene_ana_lib": in_ene_ana_lib_path,
             "n_processors": 5,
-            "pot_tresh": pot_tresh,
             "frac_tresh": [0.9],
             "dfmult_all_replicas": False,
             "verbose": True,
