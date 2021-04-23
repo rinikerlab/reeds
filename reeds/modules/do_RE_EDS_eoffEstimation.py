@@ -126,8 +126,6 @@ int
         bash.make_folder(coord_dir)
     
         # Modify the imd file to use the s-values generated previosuly
-
-
         sval_file_path = lower_s_bound_dir+"/s_vals.csv"
         state_undersampling_pot_tresh_path = lower_s_bound_dir+"/state_occurence_pot_thresh.csv"
         if not os.path.exists(sval_file_path) :

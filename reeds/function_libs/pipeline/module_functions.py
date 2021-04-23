@@ -362,13 +362,13 @@ def adapt_imd_template_eoff(system: fM.System, imd_out_path: str, imd_path: str,
 """
     SOPTIMIZATION - Scheduling
 """
-def build_sopt_step_dir(iteration: int, iteration_folder_prefix: str,
+def build_sopt_step_dir(iteration: int, iteration_folder_prefix: str,pot_tresh: List[float] ,
                         soptimization_options, in_simSystem: fM.System,
                         num_equilibration_runs: int, imd_name_prefix: str,
                         in_ene_ana_lib_path: str, in_gromosPP_bin_dir: str,
                         in_gromosXX_bin_dir: str, ligands, last_data_folder: str, nmpi_per_replica: int,
                         duration_per_job: str, num_simulation_runs: int,
-                        pot_tresh: float = 0.0, old_sopt_job: sopt_job = False, verbose: bool = False) -> sopt_job:
+                         old_sopt_job: sopt_job = False, verbose: bool = False) -> sopt_job:
     """
         This function is setting up the folder structure of an s-optimization iteration, copies some files and builds an settings object of the sopt-iteration.
 

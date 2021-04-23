@@ -16,7 +16,7 @@ import os
 import sys
 import traceback
 from collections import OrderedDict
-from typing import Iterable
+from typing import Iterable, List
 
 import reeds
 import reeds.function_libs.pipeline.module_functions
@@ -39,12 +39,14 @@ def do(out_root_dir: str, in_simSystem: fM.System, in_template_imd: str = None,
        soptIterations: int = 4, add_replicas: int = 4,
        adding_new_sReplicas_Scheme: adding_Scheme_new_Replicas = adding_Scheme_new_Replicas.from_below,
        noncontinous: bool = False,
+       optimized_states: str = os.path.abspath("a_optimizedState/analysis/next"),
+       state_physical_occurrence_potential_threshold:List[float]=None,
        equil_runs: int = None, steps_between_trials: int = 20, trials_per_run: int = 12500,
        non_ligand_residues: list = [],
        in_gromosXX_bin_dir: str = None, in_gromosPP_bin_dir: str = None,
        in_ene_ana_lib_path: str = ene_ana_libs.ene_ana_lib_path,
        nmpi_per_replica: int = 1, submit: bool = True, duration_per_job: str = "24:00",
-       pot_tresh: float = 0.0, queueing_system: _SubmissionSystem = LSF,
+       queueing_system: _SubmissionSystem = LSF,
        do_not_doubly_submit_to_queue: bool = True,
        initialize_first_run: bool = True, reinitialize: bool = False,
        verbose: bool = True):
@@ -164,7 +166,7 @@ int
         imd_file = imd.Imd(imd_path_last)
         # get number of s-vals from imd:
         num_svals = int(imd_file.REPLICA_EDS.NRES)
-
+        num_states = int(imd_file.REPLICA_EDS.NUMSTATES)
         # set new step number between trials and new number of trials if necessary
         imd_file.STEP.NSTLIM = steps_between_trials
         imd_file.edit_REEDS(NRETRIAL=trials_per_run)
@@ -176,6 +178,15 @@ int
         iteration_folder_prefix = out_root_dir + "/sopt"
         bash.make_folder(out_root_dir)
 
+        state_undersampling_pot_tresh_path = optimized_states+"/state_occurence_pot_thresh.csv"
+        if(state_physical_occurrence_potential_threshold is None and os.path.exists(state_undersampling_pot_tresh_path)):
+            if not os.path.exists(state_undersampling_pot_tresh_path) :
+                raise IOError("COULD NOT FIND state_occurence_pot_thresh.CSV in : ", state_undersampling_pot_tresh_path, "\n")
+            else:
+                tmp = open(state_undersampling_pot_tresh_path, "r")
+                state_physical_occurrence_potential_threshold =  list(map(float, " ".join(tmp.readlines()).split()))
+        elif(state_physical_occurrence_potential_threshold is None):
+            state_physical_occurrence_potential_threshold = [0 for x in range(num_states)]
 
 
 
@@ -201,16 +212,13 @@ int
     cur_svals = num_svals
 
     ## Prepare final analysis:
-    #### Temporary fix for automatic potential thresholds.
-    if(isinstance(pot_tresh, (float, int))):
-       pot_tresh = [pot_tresh for i in range(ligands.number)]
 
     ana_out_dir = out_root_dir + "/analysis"
     job_name = in_simSystem.name + "_final_sOptimization"
     analysis_vars = OrderedDict({
         "sopt_root_dir": out_root_dir,
         "title": in_simSystem.name,
-        "pot_tresh": pot_tresh,
+        "pot_tresh": state_physical_occurrence_potential_threshold,
         "out_dir": ana_out_dir
     })
 
@@ -252,7 +260,7 @@ int
                                                      ligands=ligands, old_sopt_job=iteration_sopt_job,
                                                      last_data_folder=last_data_folder,
                                                      nmpi_per_replica=nmpi_per_replica,
-                                                     pot_tresh=pot_tresh, duration_per_job=duration_per_job,
+                                                     pot_tresh=state_physical_occurrence_potential_threshold, duration_per_job=duration_per_job,
                                                      num_simulation_runs=repetitions)
 
         except Exception as err:
