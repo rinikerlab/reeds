@@ -62,6 +62,7 @@ Make sure you have the required python packages from devtools/conda-envs/full_en
     conda env create -f devtools/conda-envs/full_env.yaml
 
 If you want to update the code of the PyGromos submodule, you can do this:
+
     git submodule init
     git submodule update
 
@@ -71,23 +72,6 @@ Please if your writing code for this repository, first develop it on an own bran
      git checkout mybranch  #switch to your branch
      git merge main   #for adding new features from main to your branch
 
-Try to write test cases for your implemented features in /scritps/test. (there are already examples)
-So it is easier to maintain the code and add additional features.
-
-If you find a bug or any thing else, please raise an Issue.
-
-required packages:
-    - numpydoc
-    - mdtraj
-    - matplotlib
-    - numpy
-    - pandas
-    - scipy
-    - rdkit
-    
-
-If you find a bug or have an idea for a cool new feature, you are welcom to raise an Issue at the git page. :)
-P.s.: I can recommend Pycharm from dstar, for exploring the repository.
 
 ## Copyright
 
