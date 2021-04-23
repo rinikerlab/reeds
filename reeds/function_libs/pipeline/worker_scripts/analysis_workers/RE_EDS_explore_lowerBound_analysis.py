@@ -148,20 +148,20 @@ def do(out_analysis_dir: str, system_name: str,
     if control_dict["pot_ene_by_state"]:
         for i in range(num_states):
             outfile = out_analysis_plot_dir + '/' + system_name + '_pot_ene_state_' + str(i+1) + '.png'
-            reeds.function_libs.visualization.pot_energy_plots.plot_energy_distribution_by_state(ene_trajs, outfile, i + 1, s_values)
+            reeds.function_libs.visualization.pot_energy_plots.plot_energy_distribution_by_state(energy_trajs=ene_trajs, outfile=outfile, state_num=i + 1, s_values=s_values)
     
     if control_dict["pot_ene_by_replica"]:
         for i in range(len(ene_trajs)):
             outfile = out_analysis_plot_dir + '/' + system_name + '_pot_ene_replica_' + str(i+1) + '.png'
-            reeds.function_libs.visualization.pot_energy_plots.plot_energy_distribution_by_replica(ene_trajs[i], outfile, i + 1, s_values[i])
+            reeds.function_libs.visualization.pot_energy_plots.plot_energy_distribution_by_replica(traj_data=ene_trajs[i], outfile_path=outfile, replica_num=i + 1, s_value=s_values[i])
     
     if control_dict["plot_ref_timeseries"]:
         outfile = out_analysis_plot_dir + '/' + system_name + '_ref_pot_ene_timeseries.png'
-        reeds.function_libs.visualization.pot_energy_plots.plot_ref_pot_ene_timeseries(ene_trajs, outfile, s_values)
+        reeds.function_libs.visualization.pot_energy_plots.plot_ref_pot_ene_timeseries(ene_trajs=ene_trajs, outfile=outfile, s_values=s_values)
 
     if control_dict["plot_ref_distrib"]:
         outfile = out_analysis_plot_dir + '/' + system_name + '_ref_pot_ene_distrib.png'
-        reeds.function_libs.visualization.pot_energy_plots.plot_ref_pot_energy_distribution(ene_trajs, outfile, s_values)
+        reeds.function_libs.visualization.pot_energy_plots.plot_ref_pot_energy_distribution(energy_trajs=ene_trajs, outfile=outfile, s_values=s_values)
 
     # plot the potential energy timeseries as a grid:
     if control_dict["plot_pot_ene_timeseries"]:
