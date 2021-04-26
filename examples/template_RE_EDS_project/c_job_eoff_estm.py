@@ -34,7 +34,7 @@ last_jobID = eoffEstm.do(out_root_dir=out_eoff_dir, in_simSystem=system,
                          in_template_imd_path = in_template_reeds_imd,
                          in_ene_ana_lib=ene_ana_lib,
                          gromosXX_bin_dir=gromosXX_bin, gromosPP_bin_dir=gromosPP_bin,
-                         undersampling_frac_thresh=undersampling_frac_thresh,
+                         undersampling_fraction_threshold=undersampling_frac_thresh,
                          optimized_states = opt_states,
                          submit=True,
                          )
