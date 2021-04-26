@@ -66,7 +66,8 @@ thermcycle_dF_convergence = ["orange", "blue", "dark green", "purple"]
 #### ACTIVE STYLE:  ###
 active_gradient_map = gradient_green_map
 active_qualitative_map = candide_colors
-active_qualitative_map_mligs = lambda num_ligs: cycler('color', plt.cm.jet(np.linspace(0,1,num_ligs)))
+active_qualitative_map_mligs = lambda num_ligs: plt.cm.jet(np.linspace(0,1,num_ligs))
+active_qualitative_cycler_mligs = lambda num_ligs: cycler('color', plt.cm.jet(np.linspace(0,1,num_ligs)))
 active_gradient_list = gradient_green_list
 active_qualitative_list_small = qualitative_tab_map_small
 active_qualitative_list = qualitative_tab_list
