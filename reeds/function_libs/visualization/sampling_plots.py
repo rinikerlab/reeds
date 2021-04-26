@@ -71,7 +71,7 @@ def plot_sampling_convergence(ene_trajs, opt_trajs, outfile, title = None, trim_
     ax = plt.subplot(111)
     
     # General plotting options:
-    colors = ps.candide_colors
+    colors = ps.active_qualitative_map
     if title is None: title = 'Sampling convergence in the simulation (s = 1)'
     ax.set_title(title)
     

@@ -16,7 +16,7 @@ import os
 import sys
 import traceback
 from collections import OrderedDict
-from typing import Iterable
+from typing import Iterable, List
 
 import reeds
 import reeds.function_libs.pipeline.module_functions
@@ -39,12 +39,17 @@ def do(out_root_dir: str, in_simSystem: fM.System, in_template_imd: str = None,
        soptIterations: int = 4, add_replicas: int = 4,
        adding_new_sReplicas_Scheme: adding_Scheme_new_Replicas = adding_Scheme_new_Replicas.from_below,
        noncontinous: bool = False,
+       optimized_states_dir: str = os.path.abspath("a_optimizedState/analysis/next"),
+       lower_bound_dir: str = os.path.abspath("b_lowerBound/analysis/next"),
+       state_physical_occurrence_potential_threshold:List[float]=None,
+       state_undersampling_occurrence_potential_threshold: List[float]=None,
+       undersampling_fraction_threshold:float=0.9,
        equil_runs: int = None, steps_between_trials: int = 20, trials_per_run: int = 12500,
        non_ligand_residues: list = [],
        in_gromosXX_bin_dir: str = None, in_gromosPP_bin_dir: str = None,
        in_ene_ana_lib_path: str = ene_ana_libs.ene_ana_lib_path,
        nmpi_per_replica: int = 1, submit: bool = True, duration_per_job: str = "24:00",
-       pot_tresh: float = 0.0, queueing_system: _SubmissionSystem = LSF,
+       queueing_system: _SubmissionSystem = LSF,
        do_not_doubly_submit_to_queue: bool = True,
        initialize_first_run: bool = True, reinitialize: bool = False,
        verbose: bool = True):
@@ -73,6 +78,12 @@ adding_new_sReplicas_Scheme : reeds.function_libs.utils.structures.adding_Scheme
     How shall new coordinate files be added to the system?
 noncontinous : bool, optional
     Shall I use the output coordinates of the last sopt for the next sopt(False), or shall I always use the same starting coordinates per s-Optimization Iteration? (True)
+state_physical_occurrence_potential_threshold : List[float], optional
+    potential thresholds for physical sampling (default: read in from step a)
+state_undersampling_occurrence_potential_threshold : List[float], optional
+    potential thresholds for occurrence sampling (default: read in from step b)
+undersampling_fraction_threshold : float, optional
+    fraction threshold for physical/occurrence sampling (default: 0.9)
 equil_runs : int, optional
     How often do you want to run prequilibration, before each run ? give int times 50ps
 steps_between_trials : int, optional
@@ -164,7 +175,7 @@ int
         imd_file = imd.Imd(imd_path_last)
         # get number of s-vals from imd:
         num_svals = int(imd_file.REPLICA_EDS.NRES)
-
+        num_states = int(imd_file.REPLICA_EDS.NUMSTATES)
         # set new step number between trials and new number of trials if necessary
         imd_file.STEP.NSTLIM = steps_between_trials
         imd_file.edit_REEDS(NRETRIAL=trials_per_run)
@@ -176,7 +187,25 @@ int
         iteration_folder_prefix = out_root_dir + "/sopt"
         bash.make_folder(out_root_dir)
 
+        state_undersampling_pot_tresh_path = optimized_states_dir + "/state_occurence_pot_thresh.csv"
+        if(state_physical_occurrence_potential_threshold is None and os.path.exists(state_undersampling_pot_tresh_path)):
+            if not os.path.exists(state_undersampling_pot_tresh_path) :
+                raise IOError("COULD NOT FIND state_occurence_pot_thresh.CSV in : ", state_undersampling_pot_tresh_path, "\n")
+            else:
+                tmp = open(state_undersampling_pot_tresh_path, "r")
+                state_physical_occurrence_potential_threshold =  list(map(float, " ".join(tmp.readlines()).split()))
+        elif(state_physical_occurrence_potential_threshold is None):
+            state_physical_occurrence_potential_threshold = [0 for x in range(num_states)]
 
+        state_undersampling_pot_tresh_path = lower_bound_dir + "/state_occurence_pot_thresh.csv"
+        if(state_undersampling_occurrence_potential_threshold is None and os.path.exists(state_undersampling_pot_tresh_path)):
+            if not os.path.exists(state_undersampling_pot_tresh_path) :
+                raise IOError("COULD NOT FIND state_occurence_pot_thresh.CSV in : ", state_undersampling_pot_tresh_path, "\n")
+            else:
+                tmp = open(state_undersampling_pot_tresh_path, "r")
+                state_undersampling_occurrence_potential_threshold =  list(map(float, " ".join(tmp.readlines()).split()))
+        elif(state_undersampling_occurrence_potential_threshold is None):
+            state_undersampling_occurrence_potential_threshold = [0 for x in range(num_states)]
 
 
     except Exception as err:
@@ -201,16 +230,13 @@ int
     cur_svals = num_svals
 
     ## Prepare final analysis:
-    #### Temporary fix for automatic potential thresholds.
-    if(isinstance(pot_tresh, (float, int))):
-       pot_tresh = [pot_tresh for i in range(ligands.number)]
 
     ana_out_dir = out_root_dir + "/analysis"
     job_name = in_simSystem.name + "_final_sOptimization"
     analysis_vars = OrderedDict({
         "sopt_root_dir": out_root_dir,
         "title": in_simSystem.name,
-        "pot_tresh": pot_tresh,
+        "state_physical_occurrence_potential_threshold": state_physical_occurrence_potential_threshold,
         "out_dir": ana_out_dir
     })
 
@@ -218,8 +244,6 @@ int
                                                                                                    target_function=RE_EDS_soptimization_final.do,
                                                                                                    variable_dict=analysis_vars)
     bash.execute("chmod +x " + in_final_analysis_script_path)  # make executables
-
-
     # generate each iteration folder && submission
     for iteration in range(1, soptIterations + 1):
         print("\n\nITERATION: " + str(iteration))
@@ -247,12 +271,15 @@ int
                                                      num_equilibration_runs=equil_runs,
                                                      imd_name_prefix=imd_name_prefix, in_simSystem=simSystem,
                                                      in_ene_ana_lib_path=in_ene_ana_lib_path,
+                                                     state_undersampling_pot_tresh=state_undersampling_occurrence_potential_threshold,
+                                                     state_physical_pot_tresh=state_physical_occurrence_potential_threshold,
+                                                     undersampling_frac_thresh=undersampling_fraction_threshold,
                                                      in_gromosPP_bin_dir=in_gromosPP_bin_dir,
                                                      in_gromosXX_bin_dir=in_gromosXX_bin_dir,
                                                      ligands=ligands, old_sopt_job=iteration_sopt_job,
                                                      last_data_folder=last_data_folder,
                                                      nmpi_per_replica=nmpi_per_replica,
-                                                     pot_tresh=pot_tresh, duration_per_job=duration_per_job,
+                                                     pot_tresh=state_physical_occurrence_potential_threshold, duration_per_job=duration_per_job,
                                                      num_simulation_runs=repetitions)
 
         except Exception as err:

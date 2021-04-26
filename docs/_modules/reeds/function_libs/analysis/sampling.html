@@ -357,8 +357,7 @@
 
 
 <div class="viewcode-block" id="calculate_sampling_distributions"><a class="viewcode-back" href="../../../../_source/reeds.function_libs.analysis.html#reeds.function_libs.analysis.sampling.calculate_sampling_distributions">[docs]</a><span class="k">def</span> <span class="nf">calculate_sampling_distributions</span><span class="p">(</span><span class="n">ene_traj_csvs</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">],</span>
-                                     <span class="n">potential_treshold</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span>
-                                     <span class="n">undersampling_occurence_sampling_tresh</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.75</span><span class="p">)</span><span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">]]]:</span>
+                                     <span class="n">potential_treshold</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">])</span><span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">]]]:</span>
     <span class="sd">&quot;&quot;&quot;calculate_sampling_distributions</span>
 <span class="sd">    This function is using the dominating state sampling and occurrence state sampling definition, to calculate</span>
 <span class="sd">    for both definitions the sampling distributions including each stat.</span>
@@ -397,26 +396,20 @@
             <span class="n">occurrence_sampling_frac</span> <span class="o">=</span> <span class="n">replica</span><span class="p">[</span><span class="n">replica</span><span class="p">[</span><span class="n">state</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">potential_treshold</span><span class="p">[</span><span class="n">ind</span><span class="p">]]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">/</span> <span class="n">total_number_steps</span>
             <span class="n">occurrence_state_sampling</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="nb">int</span><span class="p">(</span><span class="n">state</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;e&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)):</span> <span class="n">occurrence_sampling_frac</span><span class="p">})</span>
 
-        <span class="c1"># undersampling?</span>
-        <span class="n">undersampling_criterium</span> <span class="o">=</span> <span class="kc">True</span> <span class="k">if</span> <span class="p">(</span>
-            <span class="nb">all</span><span class="p">([</span><span class="n">occ</span> <span class="o">&gt;=</span> <span class="n">undersampling_occurence_sampling_tresh</span> <span class="k">for</span> <span class="n">occ</span> <span class="ow">in</span>
-                 <span class="n">occurrence_state_sampling</span><span class="o">.</span><span class="n">values</span><span class="p">()]))</span> <span class="k">else</span> <span class="kc">False</span>
-
         <span class="c1"># update results</span>
         <span class="n">replica_sampling_dist</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="nb">int</span><span class="p">(</span><span class="n">replica</span><span class="o">.</span><span class="n">s</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;s&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)):</span> <span class="p">{</span><span class="s2">&quot;dominating_state&quot;</span><span class="p">:</span> <span class="n">dominating_state_sampling</span><span class="p">,</span>
-                                                                        <span class="s2">&quot;occurence_state&quot;</span><span class="p">:</span> <span class="n">occurrence_state_sampling</span><span class="p">,</span>
-                                                                        <span class="s2">&quot;undersampling&quot;</span><span class="p">:</span> <span class="n">undersampling_criterium</span><span class="p">}})</span>
+                                                                        <span class="s2">&quot;occurence_state&quot;</span><span class="p">:</span> <span class="n">occurrence_state_sampling</span><span class="p">}})</span>
 
     <span class="k">return</span> <span class="n">replica_sampling_dist</span></div>
 
 
 <div class="viewcode-block" id="sampling_analysis"><a class="viewcode-back" href="../../../../_source/reeds.function_libs.analysis.html#reeds.function_libs.analysis.sampling.sampling_analysis">[docs]</a><span class="k">def</span> <span class="nf">sampling_analysis</span><span class="p">(</span><span class="n">ene_traj_csvs</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">],</span>
+                      <span class="n">state_potential_treshold</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span>
                       <span class="n">s_values</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span>
-                      <span class="n">pot_tresh</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span>
                       <span class="n">out_path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
                       <span class="n">xmax</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
                       <span class="n">do_plot</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
-                      <span class="n">verbose</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="p">(</span><span class="nb">dict</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+                      <span class="n">verbose</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">_usample_run</span><span class="p">:</span><span class="nb">bool</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="p">(</span><span class="nb">dict</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;sampling_analysis</span>
 <span class="sd">    This function is analysing the samplings</span>
 
@@ -428,7 +421,7 @@
 <span class="sd">        contains the energy data</span>
 <span class="sd">    s_values :  List[float]</span>
 <span class="sd">        list of s_values</span>
-<span class="sd">    pot_tresh : List[float]</span>
+<span class="sd">    state_potential_treshold : List[float]</span>
 <span class="sd">        potential energy thresholds, for considering a state as sampled</span>
 <span class="sd">    xmax :  bool, optional</span>
 <span class="sd">        additionally output a plot only with a smaller x_range. (0-&gt;xmax) (default False)</span>
@@ -448,10 +441,9 @@
     <span class="c1"># read all Vy_sx_files!</span>
     <span class="kn">from</span> <span class="nn">reeds.function_libs.visualization.utils</span> <span class="kn">import</span> <span class="n">nice_s_vals</span>
     <span class="k">if</span> <span class="p">(</span><span class="n">verbose</span><span class="p">):</span> <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n\n</span><span class="s2"> Potential Threshold</span><span class="se">\n\n</span><span class="s2">&quot;</span><span class="p">)</span>
-    <span class="n">potential_treshold</span> <span class="o">=</span> <span class="n">undersampling_occurence_potential_threshold_distribution_based</span><span class="p">(</span><span class="n">ene_traj_csvs</span><span class="o">=</span><span class="n">ene_traj_csvs</span><span class="p">)</span>
 
     <span class="c1">##glob vars</span>
-    <span class="n">num_states</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">potential_treshold</span><span class="p">)</span>
+    <span class="n">num_states</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">state_potential_treshold</span><span class="p">)</span>
     <span class="n">select_states</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;e&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">num_states</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)]</span>
     <span class="n">s_vals_nice</span> <span class="o">=</span> <span class="n">nice_s_vals</span><span class="p">(</span><span class="n">s_values</span><span class="p">)</span>
 
@@ -464,19 +456,19 @@
         <span class="n">occurrence_sampling_replica</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">state</span> <span class="ow">in</span> <span class="n">select_states</span><span class="p">:</span>
             <span class="n">occurrence_sampling_state_replica</span> <span class="o">=</span> <span class="n">replica</span><span class="o">.</span><span class="n">index</span><span class="p">[</span>
-                <span class="n">replica</span><span class="p">[</span><span class="n">state</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">potential_treshold</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">state</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;e&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">))</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]]</span>
+                <span class="n">replica</span><span class="p">[</span><span class="n">state</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">state_potential_treshold</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">state</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;e&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">))</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]]</span>
             <span class="n">occurrence_sampling_replica</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">occurrence_sampling_state_replica</span><span class="p">)</span>
 
         <span class="n">data</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;occurrence_t&quot;</span><span class="p">:</span> <span class="n">occurrence_sampling_replica</span><span class="p">,</span> <span class="s2">&quot;dominating_state&quot;</span><span class="p">:</span> <span class="n">dominating_state_sampling</span><span class="p">}</span>
 
         <span class="k">if</span> <span class="p">(</span><span class="n">do_plot</span><span class="p">):</span>
             <span class="n">reeds</span><span class="o">.</span><span class="n">function_libs</span><span class="o">.</span><span class="n">visualization</span><span class="o">.</span><span class="n">sampling_plots</span><span class="o">.</span><span class="n">plot_t_statepres</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span>
-                                                                              <span class="n">title</span><span class="o">=</span><span class="s2">&quot;s=&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">s_vals_nice</span><span class="p">[</span><span class="n">ind</span><span class="p">])</span> <span class="o">+</span> <span class="s2">&quot;, with V_</span><span class="si">{tresh}</span><span class="s2">=&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">pot_tresh</span><span class="p">),</span>
+                                                                              <span class="n">title</span><span class="o">=</span><span class="s2">&quot;s=&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">s_vals_nice</span><span class="p">[</span><span class="n">ind</span><span class="p">]),</span>
                                                                               <span class="n">out_path</span><span class="o">=</span><span class="n">out_path</span> <span class="o">+</span> <span class="s2">&quot;/sampling_timeseries_s&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">ind</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;.png&quot;</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="p">(</span><span class="n">xmax</span><span class="p">):</span>
             <span class="n">reeds</span><span class="o">.</span><span class="n">function_libs</span><span class="o">.</span><span class="n">visualization</span><span class="o">.</span><span class="n">sampling_plots</span><span class="o">.</span><span class="n">plot_t_statepres</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span>
-                                                                              <span class="n">title</span><span class="o">=</span><span class="s2">&quot;s=&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">s_vals_nice</span><span class="p">[</span><span class="n">ind</span><span class="p">])</span> <span class="o">+</span> <span class="s2">&quot;, with V_</span><span class="si">{tresh}</span><span class="s2">=&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">pot_tresh</span><span class="p">),</span>
+                                                                              <span class="n">title</span><span class="o">=</span><span class="s2">&quot;s=&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">s_vals_nice</span><span class="p">[</span><span class="n">ind</span><span class="p">])</span> <span class="o">+</span> <span class="s2">&quot;, with V_</span><span class="si">{tresh}</span><span class="s2">=&quot;</span><span class="p">,</span>
                                                                               <span class="n">out_path</span><span class="o">=</span><span class="n">out_path</span> <span class="o">+</span> <span class="s2">&quot;/sampling_timeseries_s&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">ind</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;_upto_&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span>
                                      <span class="n">xmax</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;.png&quot;</span><span class="p">,</span>
                                                                               <span class="n">xlim</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="n">xmax</span><span class="p">])</span>
@@ -484,37 +476,102 @@
     <span class="c1"># SamplingMatrix by kays</span>
     <span class="k">if</span> <span class="p">(</span><span class="n">verbose</span><span class="p">):</span> <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n\n</span><span class="s2"> Calculate Sampling Distributions</span><span class="se">\n\n</span><span class="s2">&quot;</span><span class="p">)</span>
     <span class="n">replica_sampling_distributions</span> <span class="o">=</span> <span class="n">calculate_sampling_distributions</span><span class="p">(</span><span class="n">ene_traj_csvs</span><span class="o">=</span><span class="n">ene_traj_csvs</span><span class="p">,</span>
-                                                                      <span class="n">potential_treshold</span><span class="o">=</span><span class="n">potential_treshold</span><span class="p">,</span>
-                                                                      <span class="n">undersampling_occurence_sampling_tresh</span><span class="o">=</span><span class="mf">0.75</span><span class="p">)</span>
+                                                                      <span class="n">potential_treshold</span><span class="o">=</span><span class="n">state_potential_treshold</span><span class="p">)</span>
     <span class="k">if</span> <span class="p">(</span><span class="n">do_plot</span><span class="p">):</span>
         <span class="k">if</span> <span class="p">(</span><span class="n">verbose</span><span class="p">):</span> <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n\n</span><span class="s2"> Sampling Histograms</span><span class="se">\n\n</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">ind</span><span class="p">,</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">replica_sampling_distributions</span><span class="p">):</span>
             <span class="n">reeds</span><span class="o">.</span><span class="n">function_libs</span><span class="o">.</span><span class="n">visualization</span><span class="o">.</span><span class="n">sampling_plots</span><span class="o">.</span><span class="n">plot_stateOccurence_hist</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">replica_sampling_distributions</span><span class="p">[</span><span class="n">x</span><span class="p">],</span>
-                                                                                      <span class="n">title</span><span class="o">=</span><span class="s2">&quot;s=&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">s_vals_nice</span><span class="p">[</span><span class="n">ind</span><span class="p">])</span> <span class="o">+</span> <span class="s2">&quot;, V_</span><span class="si">{tresh}</span><span class="s2">=&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">pot_tresh</span><span class="p">),</span>
+                                                                                      <span class="n">title</span><span class="o">=</span><span class="s2">&quot;s=&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">s_vals_nice</span><span class="p">[</span><span class="n">ind</span><span class="p">])</span> <span class="o">+</span> <span class="s2">&quot;, V_</span><span class="si">{tresh}</span><span class="s2">=&quot;</span><span class="p">,</span>
                                                                                       <span class="n">out_path</span><span class="o">=</span><span class="n">out_path</span> <span class="o">+</span> <span class="s2">&quot;/sampling_hist_&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;.png&quot;</span><span class="p">)</span>
-
-    <span class="k">if</span> <span class="p">(</span><span class="n">do_plot</span><span class="p">):</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">do_plot</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">_usample_run</span><span class="p">):</span>
         <span class="k">if</span> <span class="p">(</span><span class="n">verbose</span><span class="p">):</span> <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n\n</span><span class="s2"> Sampling Matrix</span><span class="se">\n\n</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="n">reeds</span><span class="o">.</span><span class="n">function_libs</span><span class="o">.</span><span class="n">visualization</span><span class="o">.</span><span class="n">sampling_plots</span><span class="o">.</span><span class="n">plot_stateOccurence_matrix</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">replica_sampling_distributions</span><span class="p">,</span> <span class="n">out_dir</span><span class="o">=</span><span class="n">out_path</span><span class="p">,</span> <span class="n">s_values</span><span class="o">=</span><span class="n">s_vals_nice</span><span class="p">,</span>
-                                                                                    <span class="n">place_undersampling_threshold</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">title_suffix</span><span class="o">=</span><span class="s2">&quot;V_</span><span class="si">{tresh}</span><span class="s2">=&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">pot_tresh</span><span class="p">))</span>
+                                                                                    <span class="n">place_undersampling_threshold</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">title_suffix</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+
+    <span class="n">final_results</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;potentialThreshold&quot;</span><span class="p">:</span> <span class="n">state_potential_treshold</span><span class="p">,</span>
+                     <span class="s2">&quot;samplingDistributions&quot;</span><span class="p">:</span> <span class="n">replica_sampling_distributions</span><span class="p">,</span>
+                    <span class="p">}</span>
+
+    <span class="k">return</span> <span class="n">final_results</span><span class="p">,</span> <span class="n">out_path</span></div>
+
+
+<div class="viewcode-block" id="detect_undersampling"><a class="viewcode-back" href="../../../../_source/reeds.function_libs.analysis.html#reeds.function_libs.analysis.sampling.detect_undersampling">[docs]</a><span class="k">def</span> <span class="nf">detect_undersampling</span><span class="p">(</span><span class="n">ene_traj_csvs</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">],</span>
+                      <span class="n">state_potential_treshold</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span>
+                      <span class="n">s_values</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span>
+                      <span class="n">out_path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                      <span class="n">undersampling_occurence_sampling_tresh</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.9</span><span class="p">,</span>
+                      <span class="n">xmax</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+                      <span class="n">do_plot</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+                      <span class="n">verbose</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="p">(</span><span class="nb">dict</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;sampling_analysis</span>
+<span class="sd">    This function is analysing the samplings</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    out_path :  str</span>
+<span class="sd">        path out for the plotfiles</span>
+<span class="sd">    ene_traj_csvs : List[pd.DataFrame]</span>
+<span class="sd">        contains the energy data</span>
+<span class="sd">    s_values :  List[float]</span>
+<span class="sd">        list of s_values</span>
+<span class="sd">    state_potential_treshold : List[float]</span>
+<span class="sd">        potential energy thresholds, for considering a state as sampled</span>
+<span class="sd">    xmax :  bool, optional</span>
+<span class="sd">        additionally output a plot only with a smaller x_range. (0-&gt;xmax) (default False)</span>
+<span class="sd">    do_plot: bool, opptional</span>
+<span class="sd">        create additional plots (default True)</span>
+<span class="sd">    verbose: bool, optional</span>
+<span class="sd">        story time :) (default False)</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    str</span>
+<span class="sd">        out_path</span>
+<span class="sd">    dict</span>
+<span class="sd">      returns a dictionary containing the information of undersampling start, undersampling_potential thresholds and the different sampling type fractions. (physical sampling occurence not included!)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># read all Vy_sx_files!</span>
+    <span class="kn">from</span> <span class="nn">reeds.function_libs.visualization.utils</span> <span class="kn">import</span> <span class="n">nice_s_vals</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">verbose</span><span class="p">):</span> <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n\n</span><span class="s2"> Potential Threshold</span><span class="se">\n\n</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="c1">##glob vars</span>
+    <span class="n">sampling_stat</span><span class="p">,</span> <span class="n">out_path</span> <span class="o">=</span> <span class="n">sampling_analysis</span><span class="p">(</span><span class="n">ene_traj_csvs</span><span class="o">=</span><span class="n">ene_traj_csvs</span><span class="p">,</span>
+                      <span class="n">state_potential_treshold</span><span class="o">=</span><span class="n">state_potential_treshold</span><span class="p">,</span>
+                      <span class="n">s_values</span><span class="o">=</span><span class="n">s_values</span><span class="p">,</span>
+                      <span class="n">out_path</span><span class="o">=</span><span class="n">out_path</span><span class="p">,</span>
+                      <span class="n">xmax</span><span class="o">=</span> <span class="n">xmax</span><span class="p">,</span>
+                      <span class="n">do_plot</span> <span class="o">=</span><span class="n">do_plot</span><span class="p">,</span>
+                      <span class="n">verbose</span> <span class="o">=</span> <span class="n">verbose</span><span class="p">,</span><span class="n">_usample_run</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
     <span class="c1">##get undersampling id:</span>
     <span class="n">found_undersampling</span> <span class="o">=</span> <span class="kc">False</span>
     <span class="n">undersampling_idx</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">replica_sampling_distributions</span> <span class="o">=</span> <span class="n">sampling_stat</span><span class="p">[</span><span class="s2">&quot;samplingDistributions&quot;</span><span class="p">]</span>
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">replica_sampling_distributions</span><span class="p">:</span>
-        <span class="k">if</span> <span class="p">(</span><span class="n">replica_sampling_distributions</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s2">&quot;undersampling&quot;</span><span class="p">]):</span>
-            <span class="n">found_undersampling</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="c1"># undersampling?</span>
+        <span class="n">undersampling_criterium</span> <span class="o">=</span> <span class="kc">True</span> <span class="k">if</span> <span class="p">(</span><span class="nb">all</span><span class="p">([</span><span class="n">occ</span> <span class="o">&gt;=</span> <span class="n">undersampling_occurence_sampling_tresh</span> <span class="k">for</span> <span class="n">occ</span> <span class="ow">in</span> <span class="n">replica_sampling_distributions</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s2">&quot;occurence_state&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">()]))</span> <span class="k">else</span> <span class="kc">False</span>
+        <span class="n">sampling_stat</span><span class="p">[</span><span class="s2">&quot;samplingDistributions&quot;</span><span class="p">][</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s2">&quot;undersampling&quot;</span><span class="p">:</span><span class="n">undersampling_criterium</span><span class="p">})</span>
+
+        <span class="k">if</span> <span class="p">(</span><span class="n">undersampling_criterium</span><span class="p">):</span>
             <span class="n">undersampling_idx</span> <span class="o">=</span> <span class="n">i</span>
             <span class="k">break</span>
 
     <span class="k">if</span> <span class="p">(</span><span class="ow">not</span> <span class="n">found_undersampling</span><span class="p">):</span>
         <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;Could not find undersampling!&quot;</span><span class="p">)</span>
 
-    <span class="n">final_results</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;undersamplingThreshold&quot;</span><span class="p">:</span> <span class="n">undersampling_idx</span><span class="p">,</span>
-                     <span class="s2">&quot;potentialThreshold&quot;</span><span class="p">:</span> <span class="n">potential_treshold</span><span class="p">,</span>
-                     <span class="s2">&quot;samplingDistributions&quot;</span><span class="p">:</span> <span class="n">replica_sampling_distributions</span><span class="p">,</span> 
-                    <span class="p">}</span>
-    <span class="k">return</span> <span class="n">final_results</span><span class="p">,</span> <span class="n">out_path</span></div>
+    <span class="k">if</span> <span class="p">(</span><span class="n">do_plot</span><span class="p">):</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">verbose</span><span class="p">):</span> <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n\n</span><span class="s2"> Sampling Matrix</span><span class="se">\n\n</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">s_vals_nice</span> <span class="o">=</span> <span class="n">nice_s_vals</span><span class="p">(</span><span class="n">s_values</span><span class="p">)</span>
+        <span class="n">reeds</span><span class="o">.</span><span class="n">function_libs</span><span class="o">.</span><span class="n">visualization</span><span class="o">.</span><span class="n">sampling_plots</span><span class="o">.</span><span class="n">plot_stateOccurence_matrix</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">replica_sampling_distributions</span><span class="p">,</span> <span class="n">out_dir</span><span class="o">=</span><span class="n">out_path</span><span class="p">,</span> <span class="n">s_values</span><span class="o">=</span><span class="n">s_vals_nice</span><span class="p">,</span>
+                                                                                    <span class="n">place_undersampling_threshold</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">title_suffix</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+
+    <span class="n">sampling_stat</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s2">&quot;undersamplingThreshold&quot;</span><span class="p">:</span> <span class="n">undersampling_idx</span><span class="p">})</span>
+    <span class="n">sampling_stat</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s2">&quot;state_undersampling_potTresh&quot;</span><span class="p">:</span> <span class="n">state_potential_treshold</span><span class="p">,</span>
+                          <span class="s2">&quot;undersampling_occurence_sampling_tresh&quot;</span><span class="p">:</span> <span class="n">undersampling_occurence_sampling_tresh</span><span class="p">})</span>
+
+
+    <span class="k">return</span> <span class="n">sampling_stat</span><span class="p">,</span> <span class="n">out_path</span></div>
 </pre></div>
 
            </div>

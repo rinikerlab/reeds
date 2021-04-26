@@ -36,13 +36,15 @@ alpha_val = 1
 # coloring
 qualitative_tab_list = ["brown", "orange", "olive", "green", "blue", "cyan", "purple", "pink", "red"]
 qualitative_90s_list = ["navy", "blue", "royalblue", "darkgreen", "forestgreen", "firebrick", "salmon"]
+candide_colors = ['#082F6D', '#EF9F26', '#006347', '#AC0123', '#56187D',
+                  '#BBDAF6', '#E6CD69', '#97D0A7', 'lightcoral']
+
 gradient_kays_list = ['gold', 'orange', 'darkorange', 'tomato', 'orangered', 'red', 'crimson']
 gradient_blue_list = ["deepskyblue", "skyblue", "steelblue", "cornflowerblue", "royalblue", "mediumblue",
                       "midgnightblue"]
 gradient_green_list = ["chartreuse", "lawngreen", "limegreen", "forestgreen", "seagreen", "green", "darkgreen"]
 
-candide_colors = ['#082F6D', '#EF9F26', '#006347', '#AC0123', '#56187D',
-                  '#BBDAF6', '#E6CD69', '#97D0A7', 'lightcoral']
+
 
 # maps:
 gradient_centered = cm.get_cmap("gist_earth_r")
@@ -56,9 +58,11 @@ qualitative_tab_map_small = cm.get_cmap("Dark2")
 qualitative_tab_map = cm.get_cmap("tab20b")
 qualitative_dark_map = cm.get_cmap("Dark2")
 
+thermcycle_dF_convergence = ["orange", "blue", "dark green", "purple"]
+
 #### ACTIVE STYLE:  ###
 active_gradient_map = gradient_green_map
-active_qualitative_map = qualitative_tab_map
+active_qualitative_map = candide_colors
 active_gradient_list = gradient_green_list
 active_qualitative_list_small = qualitative_tab_map_small
 active_qualitative_list = qualitative_tab_list

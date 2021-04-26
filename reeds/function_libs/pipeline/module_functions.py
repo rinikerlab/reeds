@@ -10,7 +10,6 @@ from pygromos.euler_submissions import FileManager as fM
 from pygromos.files import imd, coord
 from pygromos.files.coord import cnf as cnf_cls
 from pygromos.utils import amino_acids as aa, bash
-from reeds.function_libs.pipeline import generate_euler_job_files as gjs
 from reeds.function_libs.pipeline.jobScheduling_scripts import RE_EDS_simulation_scheduler
 from reeds.function_libs.pipeline.worker_scripts.analysis_workers import RE_EDS_general_analysis, \
     RE_EDS_general_analysis as reeds_analysis
@@ -362,13 +361,14 @@ def adapt_imd_template_eoff(system: fM.System, imd_out_path: str, imd_path: str,
 """
     SOPTIMIZATION - Scheduling
 """
-def build_sopt_step_dir(iteration: int, iteration_folder_prefix: str,
+def build_sopt_step_dir(iteration: int, iteration_folder_prefix: str,pot_tresh: List[float] ,
                         soptimization_options, in_simSystem: fM.System,
+                        state_undersampling_pot_tresh:List[float], state_physical_pot_tresh:List[float], undersampling_frac_thresh:float,
                         num_equilibration_runs: int, imd_name_prefix: str,
                         in_ene_ana_lib_path: str, in_gromosPP_bin_dir: str,
                         in_gromosXX_bin_dir: str, ligands, last_data_folder: str, nmpi_per_replica: int,
                         duration_per_job: str, num_simulation_runs: int,
-                        pot_tresh: float = 0.0, old_sopt_job: sopt_job = False, verbose: bool = False) -> sopt_job:
+                         old_sopt_job: sopt_job = False, verbose: bool = False) -> sopt_job:
     """
         This function is setting up the folder structure of an s-optimization iteration, copies some files and builds an settings object of the sopt-iteration.
 
@@ -392,7 +392,6 @@ def build_sopt_step_dir(iteration: int, iteration_folder_prefix: str,
         path to gromosPP binary dir
     in_gromosXX_bin_dir : str
         path to gromosXX binary dir
-    ligands : ?
 
     last_data_folder : str
         data folder from previous rund
@@ -493,8 +492,9 @@ def build_sopt_step_dir(iteration: int, iteration_folder_prefix: str,
         "gromos_path": in_gromosPP_bin_dir,
         "in_ene_ana_lib": in_ene_ana_lib_path,
         "n_processors": 5,
-        "pot_tresh": pot_tresh,
-        "frac_tresh": [0.1],
+        "state_undersampling_occurrence_potential_threshold": state_undersampling_pot_tresh,
+        "state_physical_occurrence_potential_threshold": state_physical_pot_tresh,
+        "undersampling_frac_thresh": undersampling_frac_thresh,
         "verbose": True,
         "add_s_vals": soptimization_options.add_replicas,
         "control_dict": control_dict,

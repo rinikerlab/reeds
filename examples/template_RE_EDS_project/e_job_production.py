@@ -7,7 +7,8 @@ sys.path.append(os.getcwd())
 from global_definitions import fM, bash
 from global_definitions import name, root_dir
 from global_definitions import gromosXX_bin, gromosPP_bin, ene_ana_lib
-from global_definitions import in_top_file, in_pert_file, in_disres_file, in_template_reeds_imd
+from global_definitions import in_top_file, in_pert_file, in_disres_file
+from global_definitions import undersampling_frac_thresh
 
         
 #STEP Specifics
@@ -30,5 +31,6 @@ print(system)
 last_jobID = production.do(out_root_dir=out_production_dir, in_simSystem=system, in_template_imd=in_template_reeds_imd,
                            gromosXX_bin_dir = gromosXX_bin, gromosPP_bin_dir = gromosPP_bin,
                            in_ene_ana_lib_path=ene_ana_lib,
+                           undersampling_fraction_threshold=undersampling_frac_thresh,
                            num_simulation_runs=25)
 

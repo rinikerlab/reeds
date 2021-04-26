@@ -26,7 +26,8 @@ in_top_file =     input_folder+"/PNMT_9lig_water.top"
 in_pert_file =    input_folder+"/PNMT_9lig_water.ptp"
 in_disres_file =  input_folder+"/PNMT_9lig_water_disres.dat"
 
-
+##global Parameters
+undersampling_frac_thresh= 0.9
 
 
 

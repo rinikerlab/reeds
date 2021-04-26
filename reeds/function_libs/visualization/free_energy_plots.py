@@ -115,7 +115,7 @@ def plot_thermcycle_dF_convergence(dF_time : Dict,
     rows = len(dF_time) // cols if (len(dF_time) % cols == 0) else len(dF_time) // cols + 1
 
     fig, axes = plt.subplots(nrows=rows, ncols=cols)
-    colors = ["orange", "blue", "dark green", "purple"]
+    colors = ps.thermcycle_dF_convergence
     max_y = 200
     min_y = -500
     for ind, (name, simulation) in enumerate(dF_time.items()):

@@ -19,6 +19,7 @@ from typing import List
 #
 
 def estimate_energy_offsets(ene_trajs: List[pd.DataFrame], initial_offsets: List[float],
+                            sampling_stat:dict,
                             s_values: List[float], out_path: str, temp: float = 298.0,
                             trim_beg: float = 0.1, undersampling_idx: int = None,
                             plot_results: bool = True, calc_clara: bool = False) -> (np.array, np.array):
@@ -80,37 +81,35 @@ def estimate_energy_offsets(ene_trajs: List[pd.DataFrame], initial_offsets: List
         if calc_clara:
             (all_eoffs_clara[i], converged, steps) = calc_offsets_clara_eqn(ene_trajs[i], temp, num_states, initial_offsets, trim_beg)
 
-    f.writelines(format_as_jnb_table("Energy offsets predicted for each replica", s_values, all_eoffs, 2))
+    f.writelines(format_as_jnb_table("Energy offsets predicted for each replica\n", s_values, all_eoffs, 2))
     if calc_clara:
-        f.writelines(format_as_jnb_table("Energy offsets predicted for each replica - Clara's eqn", s_values, all_eoffs_clara, 2))
-
-    # Plot the data: 
-    if plot_results:
-        plot_offsets_vs_s(all_eoffs, s_values=s_values,out_path = out_path + "/eoffs_vs_s.png")
+        f.writelines(format_as_jnb_table("Energy offsets predicted for each replica - Clara's eqn\n", s_values, all_eoffs_clara, 2))
 
     # Analyse the data in the replicas
-    tables = analyse_replicas(ene_trajs, num_states, s_values)
+    tables = analyse_replicas(ene_trajs=ene_trajs, num_states=num_states, s_values=s_values, sampling_stat=sampling_stat)
     f.writelines(tables)
     
     # Take the average from the undersampling replicas    
-    means = None
-    stdevs = None 
-    
-    if undersampling_idx is None: 
+    if undersampling_idx is None:
             f.writelines('\nDid not find any undersampling replicas.')
             raise Exception("Could not determine new offsets, as no undersampling detected!")
     else: 
         undersampling_eoffs = all_eoffs[undersampling_idx:]
         results = 'Undersampling found at replica ' + str(undersampling_idx+1) \
                   + ' with s = ' + str(s_values[undersampling_idx]) + '\n\n' 
-        results += 'New energy offset for each state:\n'
+        results += 'New energy offset for each state:\n\n'
         means   = undersampling_eoffs.mean(axis=0)
         stdevs  = undersampling_eoffs.std(axis=0)
         for i in range(num_states):
             results += 'state ' + str(i+1) + ' : ' + str(round(means[i], 2)) \
-                    + ' +-  ' + str(round(stdevs[i], 2)) + '\n'
+                    + ' +-  ' + str(round(stdevs[i], 2)) + '\n\n'
         f.writelines(results)
     f.close()
+
+    # Plot the data: 
+    if plot_results:
+        plot_offsets_vs_s(energy_offsets = all_eoffs, mean_undersampling_eoffs = means, s_values=s_values,out_path = out_path + "/eoffs_vs_s.png")
+
     return (means, all_eoffs)
 
 
@@ -240,7 +239,7 @@ def calc_offsets_clara_eqn(energy_trajectory, temp:float, num_states:int, initia
 # Functions analysing the replicas
 #
 
-def analyse_replicas(ene_trajs: pd.DataFrame, num_states:int, s_values:List[float]) -> str:
+def analyse_replicas(ene_trajs: pd.DataFrame, sampling_stat:dict, num_states:int, s_values:List[float]) -> str:
     """
     This function determines which of the replicas can be considered to be undersampling
     replicas, and a few other properties of the potential distributions.     
@@ -262,8 +261,8 @@ def analyse_replicas(ene_trajs: pd.DataFrame, num_states:int, s_values:List[floa
 
     select_states = ['e' + str(i) for i in range(1, num_states+1)]
     num_replicas = len(ene_trajs)
-    
-    pot_tresh = find_pot_tresh(ene_trajs)
+    tot_len = ene_trajs[0].shape[0]
+    print("TOTLEN: ", tot_len)
 
     # Calculate the minimum energy counts. 
     min_counts = np.zeros([num_replicas, num_states])
@@ -272,22 +271,33 @@ def analyse_replicas(ene_trajs: pd.DataFrame, num_states:int, s_values:List[floa
         for lowest_state in traj[select_states].idxmin(axis=1).replace("e", "", regex=True):
             min_counts[i][(int(lowest_state)-1)] += 1
 
-    title = "Minimum potential energy count per replica"
+    title = "Minimum potential energy count per replica\n"
     min_table = format_as_jnb_table(title, s_values, min_counts, 0)
 
     # Find the counts of energies below the thresholds:
     below_thresh_counts = np.zeros([num_replicas, num_states])
 
+    state_undersampling_potential_threshold = sampling_stat["state_undersampling_potTresh"]
     for i, traj in enumerate(ene_trajs):
         for j, state in enumerate(select_states):
             v = np.array(traj[state])
-            below_thresh_counts[i][j] = np.size(v[v < pot_tresh[j]])
+            below_thresh_counts[i][j] = np.size(v[v < state_undersampling_potential_threshold[j]])
 
     title = "Count of potential energies below the threshold per replica\n"
-    title += "thresholds used: " + str(pot_tresh)
+    title += "potential thresholds used: " + str(state_undersampling_potential_threshold)+"\n"
     tresh_table = format_as_jnb_table(title, s_values, below_thresh_counts, 0)
 
-    return (min_table + '\n' + tresh_table + '\n')
+    state_undersampling_potential_threshold = sampling_stat["undersampling_occurence_sampling_tresh"]
+    occ_sampling = np.zeros([num_replicas, num_states])
+    for i, traj in enumerate(ene_trajs):
+        for j, state in enumerate(select_states):
+            occ_sampling[i][j] = np.round(below_thresh_counts[i][j]/tot_len,2)
+
+    title = "Fractions of undersampling occurrence sampling\n"
+    title += "fraction treshold: " + str(state_undersampling_potential_threshold)+"\n"
+    frac_table = format_as_jnb_table(title, s_values, occ_sampling, 0)
+
+    return (min_table + '\n' + tresh_table + '\n'+frac_table+"\n")
 
 
 #

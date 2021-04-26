@@ -70,7 +70,7 @@ def analyse_sopt_iteration(repdat_path: str, out_dir: str, title: str, pot_tresh
         state_pots = row.state_potentials
 
         for ind, state in enumerate(state_pots):
-            if (state_pots[state] < pot_tresh[state]):
+            if (state_pots[state] < pot_tresh[int(state.replace("Vr", ""))-1]):
                 occurrence_counts[state] += 1
 
         id_ene = {val: key for key, val in state_pots.items()}
@@ -126,7 +126,7 @@ def analyse_sopt_iteration(repdat_path: str, out_dir: str, title: str, pot_tresh
     return sopt_it
 
 
-def do(sopt_root_dir: str, pot_tresh:Union[List, float]=0, title="", out_dir: str = None, rt_convergence=100):
+def do(sopt_root_dir: str, state_physical_occurrence_potential_threshold:Union[List, float]=0, title="", out_dir: str = None, rt_convergence=100):
     """
         This function does the final analysis of an s-optimization. It analyses the outcome of the full s-optimization iterations.
         Features:
@@ -140,7 +140,7 @@ def do(sopt_root_dir: str, pot_tresh:Union[List, float]=0, title="", out_dir: st
     ----------
     sopt_root_dir : str
         directory containing all s-optimization iterations
-    pot_tresh : Union[float, List[float]], optional
+    state_physical_occurrence_potential_threshold : Union[float, List[float]], optional
         potential energy threshold, determining undersampling (default: 0)
     title : str, optional
         title of run (default: "")
@@ -178,7 +178,7 @@ def do(sopt_root_dir: str, pot_tresh:Union[List, float]=0, title="", out_dir: st
             print("\nCalculate statistics for iteration: ", iteration)
             repdat_files.update({iteration: repdat[0]})
             sopt_it_stats = analyse_sopt_iteration(repdat_path=repdat_files[iteration], out_dir=out_dir,
-                                                   title="s-opt " + str(iteration), pot_tresh=pot_tresh)
+                                                   title="s-opt " + str(iteration), pot_tresh=state_physical_occurrence_potential_threshold)
 
             pickle.dump(obj=sopt_it_stats, file=open(out_iteration_file_path, "wb"))
             sopt_data.update({iteration_folder: sopt_it_stats})

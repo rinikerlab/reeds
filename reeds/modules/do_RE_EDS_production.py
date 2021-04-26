@@ -3,6 +3,7 @@ import copy
 import os
 import sys
 import traceback
+from typing import List
 from collections import OrderedDict
 
 import reeds.function_libs.pipeline.module_functions
@@ -22,6 +23,11 @@ def do(out_root_dir: str, in_simSystem: fM.System, in_template_imd: str,
        in_ene_ana_lib_path: str = ene_ana_libs.ene_ana_lib_path,
        nmpi_per_replica: int = 1,
        submit: bool = True,
+       optimized_states_dir: str = os.path.abspath("a_optimizedState/analysis/next"),
+       lower_bound_dir: str = os.path.abspath("b_lowerBound/analysis/next"),
+       state_physical_occurrence_potential_threshold: List[float] = None,
+       state_undersampling_occurrence_potential_threshold: List[float] = None,
+       undersampling_fraction_threshold: float = 0.9,
        num_simulation_runs: int = 10, duration_per_job: str = "24:00",
        num_equilibration_runs: int = 0, pot_tresh: float = 0.0, 
        do_not_doubly_submit_to_queue: bool = True,
@@ -57,6 +63,12 @@ num_simulation_runs : int, optional
     number of repetitions of the imd.
 num_equilibration_runs : int, optional
     number of equilibrations.
+state_physical_occurrence_potential_threshold : List[float], optional
+    potential thresholds for physical sampling (default: read in from step a)
+state_undersampling_occurrence_potential_threshold : List[float], optional
+    potential thresholds for occurrence sampling (default: read in from step b)
+undersampling_fraction_threshold : float, optional
+    fraction threshold for physical/occurrence sampling (default: 0.9)
 duration_per_job : str, optional
     how long shall each job take?
 do_not_doubly_submit_to_queue : bool, optional
@@ -96,7 +108,6 @@ int
     try:
 
         # Get System Information
-        
         # Generate appropriate imd file from the template
         
         print("Writing imd_templates")
@@ -112,7 +123,8 @@ int
         imd_file = imd.Imd(in_template_imd)
         s_1_ammount = list(map(float, imd_file.REPLICA_EDS.RES)).count(1.0)
         imd_file.edit_REEDS(SVALS=imd_file.REPLICA_EDS.RES[s_1_ammount-1:])
-        numsvals = int(imd_file.REPLICA_EDS.NRES)
+        num_states = int(imd_file.REPLICA_EDS.NUMSTATES)
+        num_svals = int(imd_file.REPLICA_EDS.NRES)
         imd_file.write(in_imd_path)
 
         # Copy coordinates to path/to/input/coord
@@ -129,12 +141,34 @@ int
         setattr(in_simSystem, "coordinates", new_coords) # this was the previous code
         setattr(simSystem, "coordinates", new_coords)
 
+
+        state_undersampling_pot_tresh_path = optimized_states_dir + "/state_occurence_pot_thresh.csv"
+        if(state_physical_occurrence_potential_threshold is None and os.path.exists(state_undersampling_pot_tresh_path)):
+            if not os.path.exists(state_undersampling_pot_tresh_path) :
+                raise IOError("COULD NOT FIND state_occurence_pot_thresh.CSV in : ", state_undersampling_pot_tresh_path, "\n")
+            else:
+                tmp = open(state_undersampling_pot_tresh_path, "r")
+                state_physical_occurrence_potential_threshold =  list(map(float, " ".join(tmp.readlines()).split()))
+        elif(state_physical_occurrence_potential_threshold is None):
+            state_physical_occurrence_potential_threshold = [0 for x in range(num_states)]
+
+        state_undersampling_pot_tresh_path = lower_bound_dir + "/state_occurence_pot_thresh.csv"
+        if(state_undersampling_occurrence_potential_threshold is None and os.path.exists(state_undersampling_pot_tresh_path)):
+            if not os.path.exists(state_undersampling_pot_tresh_path) :
+                raise IOError("COULD NOT FIND state_occurence_pot_thresh.CSV in : ", state_undersampling_pot_tresh_path, "\n")
+            else:
+                tmp = open(state_undersampling_pot_tresh_path, "r")
+                state_undersampling_occurrence_potential_threshold =  list(map(float, " ".join(tmp.readlines()).split()))
+        elif(state_undersampling_occurrence_potential_threshold is None):
+            state_undersampling_occurrence_potential_threshold = [0 for x in range(num_states)]
+
+
         # fix for euler!
-        if (numsvals > 30):
+        if (num_svals > 30):
             workdir = out_root_dir + "/scratch"
         else:
             workdir = None
-        nmpi = nmpi_per_replica * numsvals
+        nmpi = nmpi_per_replica * num_svals
 
         # GENERATE array scripts
         control_dict = {
@@ -151,7 +185,7 @@ int
 
         # Generate execution Scripts
         if (verbose): print("generating Scripts in output dir")
-        if (verbose): print("SVALS: ", numsvals, " nmpi_per_rep: ", nmpi_per_replica, "   nmpi", nmpi)
+        if (verbose): print("SVALS: ", num_svals, " nmpi_per_rep: ", nmpi_per_replica, "   nmpi", nmpi)
 
         ##Build analysis_script
         if (verbose): print("Analysis Script")
@@ -163,8 +197,9 @@ int
             "gromos_path": gromosPP_bin_dir,
             "in_ene_ana_lib": in_ene_ana_lib_path,
             "n_processors": 5,
-            "pot_tresh": pot_tresh,
-            "frac_tresh": [0.9],
+            "state_undersampling_occurrence_potential_threshold": state_undersampling_occurrence_potential_threshold,
+            "state_physical_occurrence_potential_threshold": state_physical_occurrence_potential_threshold,
+            "undersampling_frac_thresh": undersampling_fraction_threshold,
             "dfmult_all_replicas": False,
             "verbose": True,
             "grom_file_prefix": simSystem.name,

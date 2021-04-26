@@ -12,7 +12,7 @@ import reeds.function_libs.visualization.pot_energy_plots
 from reeds.function_libs.file_management import file_management as fM
 import reeds.function_libs.utils.s_log_dist as s_log_dist
 
-np.set_printoptions(suppress=True)
+np.set_printoptions(suppress=True,formatter={'float_kind':'{:0.7f}'.format})
 from reeds.data import ene_ana_libs
 
 def do(out_analysis_dir: str, system_name: str,
@@ -69,6 +69,21 @@ def do(out_analysis_dir: str, system_name: str,
         "plot_ref_distrib": True
         }
 
+    control_dict = {
+        "cp_cnf": False,
+        "cat_trc": False,
+        "convert_trcs": False,
+        "remove_gromosTRC": False,
+        "cat_tre": False,
+        "ene_ana": False,
+        "cat_repdat": False,
+        "pot_ene_by_replica": False,
+        "pot_ene_by_state": False,
+        "plot_pot_ene_timeseries": False,
+        "plot_ref_timeseries": False,
+        "plot_ref_distrib": False
+        }
+
     if (verbose): print("out: ", out_analysis_dir)
     bash.make_folder(out_analysis_dir)
 
@@ -112,7 +127,7 @@ def do(out_analysis_dir: str, system_name: str,
                                      additional_properties=["eR"] + ["e" + str(i) for i in range(1, num_states + 1)],
                                      in_imd=in_imd_path + "_1.imd", num_replicas=len(s_values[:succsessful_sim_count]),
                                      control_dict=control_dict, out_folder=data_dir, in_ene_ana_lib_path=in_ene_ana_lib,
-                                     out_file_prefix=out_prefix, nofinal=True, gromosPP_bin_dir=gromosPP_bin)
+                                     out_file_prefix=out_prefix, gromosPP_bin_dir=gromosPP_bin)
 
     elif (os.path.exists(data_dir) and os.path.exists(in_simulation_dir + ".tar.gz")):
         cnfs = glob.glob(data_dir + "/*.cnf")
@@ -128,26 +143,25 @@ def do(out_analysis_dir: str, system_name: str,
     ene_trajs = fM.parse_csv_energy_trajectories(data_dir, out_prefix)  # gather potentials
     sampling_analysis_results, out_plot_dirs = reeds.function_libs.analysis.sampling.sampling_analysis(out_path = out_analysis_plot_dir,
                                                                                                        ene_traj_csvs = ene_trajs,
-                                                                                                       s_values = s_values[:succsessful_sim_count],
-                                                                                                       pot_tresh = undersampling_pot_tresh)
+                                                                                                       s_values = s_values[:succsessful_sim_count])
     # Plotting the different potential energy distributions
     if control_dict["pot_ene_by_state"]:
         for i in range(num_states):
             outfile = out_analysis_plot_dir + '/' + system_name + '_pot_ene_state_' + str(i+1) + '.png'
-            reeds.function_libs.visualization.pot_energy_plots.plot_energy_distribution_by_state(ene_trajs, outfile, i + 1, s_values)
+            reeds.function_libs.visualization.pot_energy_plots.plot_energy_distribution_by_state(energy_trajs=ene_trajs, outfile=outfile, state_num=i + 1, s_values=s_values)
     
     if control_dict["pot_ene_by_replica"]:
         for i in range(len(ene_trajs)):
             outfile = out_analysis_plot_dir + '/' + system_name + '_pot_ene_replica_' + str(i+1) + '.png'
-            reeds.function_libs.visualization.pot_energy_plots.plot_energy_distribution_by_replica(ene_trajs[i], outfile, i + 1, s_values[i])
+            reeds.function_libs.visualization.pot_energy_plots.plot_energy_distribution_by_replica(traj_data=ene_trajs[i], outfile_path=outfile, replica_num=i + 1, s_value=s_values[i])
     
     if control_dict["plot_ref_timeseries"]:
         outfile = out_analysis_plot_dir + '/' + system_name + '_ref_pot_ene_timeseries.png'
-        reeds.function_libs.visualization.pot_energy_plots.plot_ref_pot_ene_timeseries(ene_trajs, outfile, s_values)
+        reeds.function_libs.visualization.pot_energy_plots.plot_ref_pot_ene_timeseries(ene_trajs=ene_trajs, outfile=outfile, s_values=s_values)
 
     if control_dict["plot_ref_distrib"]:
         outfile = out_analysis_plot_dir + '/' + system_name + '_ref_pot_ene_distrib.png'
-        reeds.function_libs.visualization.pot_energy_plots.plot_ref_pot_energy_distribution(ene_trajs, outfile, s_values)
+        reeds.function_libs.visualization.pot_energy_plots.plot_ref_pot_energy_distribution(energy_trajs=ene_trajs, outfile=outfile, s_values=s_values)
 
     # plot the potential energy timeseries as a grid:
     if control_dict["plot_pot_ene_timeseries"]:
@@ -162,12 +176,10 @@ def do(out_analysis_dir: str, system_name: str,
     out_analysis_next_dir = out_analysis_dir + "/next"
     bash.make_folder(out_analysis_next_dir, "-p")
 
-    u_idx = sampling_analysis_results["undersamlingThreshold"]
-    
+    u_idx = sampling_analysis_results["undersamplingThreshold"]
     # Make the new s-distribution based on this 
     print("undersampling found after replica: " + str(u_idx) + ' with s = ' + str(s_values[u_idx]))    
-    print('New s distribution will place ' + str(num_states) + ' replicas between '
-	  ' s = ' + str(s_values[u_idx]) + ' and s = ' +str(s_values[u_idx+3]))
+    print('New s distribution will place ' + str(num_states) + ' replicas between  s = ' + str(s_values[u_idx]) + ' and s = ' +str(s_values[u_idx+3]))
  
     new_sdist = s_values[:u_idx-1]
     lower_sdist = s_log_dist.get_log_s_distribution_between(s_values[u_idx], s_values[u_idx+3], num_states)
@@ -184,6 +196,10 @@ def do(out_analysis_dir: str, system_name: str,
     out_file.write("\t".join(map(str, sampling_analysis_results["potentialThreshold"])))
     out_file.write("\n")
     out_file.close()
+
+    # Coordinates:
+    if(len(s_values) != len(cnfs)):
+        fM.adapt_cnfs_to_new_sDistribution(in_old_svals=s_values[:u_idx], in_new_svals=new_sdist, in_cnf_files=cnfs[:u_idx], out_cnf_dir=out_analysis_next_dir, cnf_prefix=system_name+"_lower_bound")
 
     # compress out_trc/out_tre Files & simulation dir
     trx_files = glob.glob(data_dir + "/*.tr?")
