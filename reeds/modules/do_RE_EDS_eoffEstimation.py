@@ -228,7 +228,7 @@ int
             "n_processors": 5,
             "state_undersampling_occurrence_potential_threshold": state_undersampling_occurrence_potential_threshold,
             "state_physical_occurrence_potential_threshold": state_physical_occurrence_potential_threshold,
-            "undersampling_frac_thresh": undersampling_frac_thresh,
+            "undersampling_frac_thresh": undersampling_fraction_threshold,
             "verbose": True,
             "grom_file_prefix": simSystem.name,
             "title_prefix": simSystem.name,
