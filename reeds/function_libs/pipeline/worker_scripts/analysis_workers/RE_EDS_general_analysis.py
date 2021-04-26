@@ -191,8 +191,8 @@ def do_Reeds_analysis(in_folder: str, out_folder: str, gromos_path: str,
         path to optimized eds_state folders (default: "../a_optimizedState/analysis/data")
     pot_tresh : float, optional
         potential energy treshold (default: 0)
-    undersampling_frac_thresh : int, optional
-        fraction threshold (default: 0.6)
+    undersampling_frac_thresh : float, optional
+        fraction threshold (default: 0.9)
     take_last_n : int, optional
         this parameter can be used to force the energy offset estimation to use a certain amount of replicas.  (default: None)
     add_s_vals : int, optional
