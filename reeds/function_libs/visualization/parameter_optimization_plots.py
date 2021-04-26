@@ -31,7 +31,7 @@ def plot_offsets_vs_s(energy_offsets, s_values: List, out_path: str, title: str 
     None
     """
 
-    colors = ps.candide_colors
+    colors = ps.active_qualitative_map
     num_states = len(energy_offsets.T)
     
     fig, (ax1, ax2) = plt.subplots(nrows=2, figsize=(7,6))
