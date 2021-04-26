@@ -47,9 +47,7 @@ def plot_offsets_vs_s(energy_offsets, mean_undersampling_eoffs: List, s_values: 
     # plot
     for i in range(num_states):
         eoffs = energy_offsets.T[i]
-        print(eoffs)
         eoffs_recentered = eoffs - mean_undersampling_eoffs[i]
-        print(eoffs_recentered)
 
         ax1.plot(x, np.flip(eoffs_recentered), lw = 1, ms = 3, marker = 'D', c = colors[i], 
                  label = 'state ' + str(i+1))
