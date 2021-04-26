@@ -312,7 +312,7 @@ def sampling_analysis(ene_traj_csvs: List[pd.DataFrame],
 
         if (xmax):
             reeds.function_libs.visualization.sampling_plots.plot_t_statepres(data=data,
-                                                                              title="s=" + str(s_vals_nice[ind]) + ", with V_{tresh}=",
+                                                                              title="s=" + str(s_vals_nice[ind]),
                                                                               out_path=out_path + "/sampling_timeseries_s" + str(ind + 1) + "_upto_" + str(
                                      xmax) + ".png",
                                                                               xlim=[0, xmax])
@@ -325,7 +325,7 @@ def sampling_analysis(ene_traj_csvs: List[pd.DataFrame],
         if (verbose): print("\n\n Sampling Histograms\n\n")
         for ind, x in enumerate(replica_sampling_distributions):
             reeds.function_libs.visualization.sampling_plots.plot_stateOccurence_hist(data=replica_sampling_distributions[x],
-                                                                                      title="s=" + str(s_vals_nice[ind]) + ", V_{tresh}=",
+                                                                                      title="s=" + str(s_vals_nice[ind]),
                                                                                       out_path=out_path + "/sampling_hist_" + str(x) + ".png")
     if (do_plot and not _usample_run):
         if (verbose): print("\n\n Sampling Matrix\n\n")
