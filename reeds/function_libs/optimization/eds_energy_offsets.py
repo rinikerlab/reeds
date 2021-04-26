@@ -108,7 +108,7 @@ def estimate_energy_offsets(ene_trajs: List[pd.DataFrame], initial_offsets: List
 
     # Plot the data: 
     if plot_results:
-        plot_offsets_vs_s(all_eoffs, mean_undersampling_eoffs = means, s_values=s_values,out_path = out_path + "/eoffs_vs_s.png")
+        plot_offsets_vs_s(energy_offsets = all_eoffs, mean_undersampling_eoffs = means, s_values=s_values,out_path = out_path + "/eoffs_vs_s.png")
 
     return (means, all_eoffs)
 
