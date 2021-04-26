@@ -5,7 +5,7 @@ from matplotlib import pyplot as plt
 
 from reeds.function_libs.visualization import plots_style as ps
 
-def plot_offsets_vs_s(energy_offsets, s_values: List, out_path: str, title: str = None, s_increment:int = 2):
+def plot_offsets_vs_s(energy_offsets, mean_undersampling_eoffs: List, s_values: List, out_path: str, title: str = None, s_increment:int = 2):
     """
     plot_offsets_vs_s creates a plot of the energy offsets predicted at each of the replicas.
     The plot contains two sub-plots, one of which shows the data recentered to the average
@@ -16,7 +16,10 @@ def plot_offsets_vs_s(energy_offsets, s_values: List, out_path: str, title: str 
     energy_offsets : numpy 2-D array
         matrix of energy offsets where each row corresponds to a replica
         and each column to a specific end-state.
-    s_values: List
+    mean_undersampling_eoffs: List[float]
+        contains the mean energy offsets for each statefrom the undersampling replicas
+        i.e. the energy offsets chosen for the simulation
+    s_values: List[float]
         list of s-values
     out_path : str
         output file path
@@ -44,11 +47,13 @@ def plot_offsets_vs_s(energy_offsets, s_values: List, out_path: str, title: str 
     # plot
     for i in range(num_states):
         eoffs = energy_offsets.T[i]
-        eoffs_recentered = eoffs - np.average(eoffs)
+        print(eoffs)
+        eoffs_recentered = eoffs - mean_undersampling_eoffs[i]
+        print(eoffs_recentered)
 
-        ax1.plot(x, eoffs_recentered, lw = 1, ms = 3, marker = 'D', c = colors[i], 
+        ax1.plot(x, np.flip(eoffs_recentered), lw = 1, ms = 3, marker = 'D', c = colors[i], 
                  label = 'state ' + str(i+1))
-        ax2.plot(x, eoffs, lw = 1, ms = 3, marker = 'D', c = colors[i])
+        ax2.plot(x, np.flip(eoffs), lw = 1, ms = 3, marker = 'D', c = colors[i])
     
     # Change box format to match legend 
     box1 = ax1.get_position()
@@ -72,7 +77,7 @@ def plot_offsets_vs_s(energy_offsets, s_values: List, out_path: str, title: str 
     
     ax2.set_xticks(x[::s_increment])
     
-    ax2.set_xticklabels(s_values[::s_increment], fontsize = 8)
+    ax2.set_xticklabels(np.flip(s_values[::s_increment]), fontsize = 8)
     plt.setp(ax2.get_xticklabels(), rotation=45, ha="right",
          rotation_mode="anchor")
     

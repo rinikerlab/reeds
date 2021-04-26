@@ -85,10 +85,6 @@ def estimate_energy_offsets(ene_trajs: List[pd.DataFrame], initial_offsets: List
     if calc_clara:
         f.writelines(format_as_jnb_table("Energy offsets predicted for each replica - Clara's eqn\n", s_values, all_eoffs_clara, 2))
 
-    # Plot the data: 
-    if plot_results:
-        plot_offsets_vs_s(all_eoffs, s_values=s_values,out_path = out_path + "/eoffs_vs_s.png")
-
     # Analyse the data in the replicas
     tables = analyse_replicas(ene_trajs=ene_trajs, num_states=num_states, s_values=s_values, sampling_stat=sampling_stat)
     f.writelines(tables)
@@ -109,6 +105,11 @@ def estimate_energy_offsets(ene_trajs: List[pd.DataFrame], initial_offsets: List
                     + ' +-  ' + str(round(stdevs[i], 2)) + '\n\n'
         f.writelines(results)
     f.close()
+
+    # Plot the data: 
+    if plot_results:
+        plot_offsets_vs_s(all_eoffs, mean_undersampling_eoffs = means, s_values=s_values,out_path = out_path + "/eoffs_vs_s.png")
+
     return (means, all_eoffs)
 
 
