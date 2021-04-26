@@ -74,6 +74,12 @@ num_simulation_runs
     how many simulation stepsd
 num_equilibration_runs
     how many runs of equilibration?
+state_physical_occurrence_potential_threshold : List[float], optional
+    potential thresholds for physical sampling (default: read in from step a)
+state_undersampling_occurrence_potential_threshold : List[float], optional
+    potential thresholds for occurrence sampling (default: read in from step b)
+undersampling_fraction_threshold : float, optional
+    fraction threshold for physical/occurrence sampling (default: 0.9)
 equilibration_trial_num
     how many long shall the equil time be? equil?
 s_num

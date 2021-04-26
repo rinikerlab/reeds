@@ -78,6 +78,12 @@ adding_new_sReplicas_Scheme : reeds.function_libs.utils.structures.adding_Scheme
     How shall new coordinate files be added to the system?
 noncontinous : bool, optional
     Shall I use the output coordinates of the last sopt for the next sopt(False), or shall I always use the same starting coordinates per s-Optimization Iteration? (True)
+state_physical_occurrence_potential_threshold : List[float], optional
+    potential thresholds for physical sampling (default: read in from step a)
+state_undersampling_occurrence_potential_threshold : List[float], optional
+    potential thresholds for occurrence sampling (default: read in from step b)
+undersampling_fraction_threshold : float, optional
+    fraction threshold for physical/occurrence sampling (default: 0.9)
 equil_runs : int, optional
     How often do you want to run prequilibration, before each run ? give int times 50ps
 steps_between_trials : int, optional

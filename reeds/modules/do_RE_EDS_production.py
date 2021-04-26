@@ -63,6 +63,12 @@ num_simulation_runs : int, optional
     number of repetitions of the imd.
 num_equilibration_runs : int, optional
     number of equilibrations.
+state_physical_occurrence_potential_threshold : List[float], optional
+    potential thresholds for physical sampling (default: read in from step a)
+state_undersampling_occurrence_potential_threshold : List[float], optional
+    potential thresholds for occurrence sampling (default: read in from step b)
+undersampling_fraction_threshold : float, optional
+    fraction threshold for physical/occurrence sampling (default: 0.9)
 duration_per_job : str, optional
     how long shall each job take?
 do_not_doubly_submit_to_queue : bool, optional
