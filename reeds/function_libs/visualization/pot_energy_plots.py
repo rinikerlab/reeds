@@ -224,7 +224,6 @@ def plot_energy_distribution_by_replica(traj_data : pd.DataFrame,
         fig.show()
     else:
         fig.savefig(outfile_path, facecolor='white')
-        fig.close()
 
     return outfile_path
 
