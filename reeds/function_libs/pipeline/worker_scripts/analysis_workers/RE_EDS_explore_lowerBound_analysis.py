@@ -116,7 +116,6 @@ def do(out_analysis_dir: str, system_name: str,
                                      in_imd=in_imd_path + "_1.imd", num_replicas=len(s_values[:succsessful_sim_count]),
                                      control_dict=control_dict, out_folder=data_dir, in_ene_ana_lib_path=in_ene_ana_lib,
                                      out_file_prefix=out_prefix, gromosPP_bin_dir=gromosPP_bin)
-        cnfs = glob.glob(data_dir + "/*.cnf")
 
     elif (os.path.exists(data_dir) and os.path.exists(in_simulation_dir + ".tar.gz")):
         cnfs = glob.glob(data_dir + "/*.cnf")
@@ -192,6 +191,7 @@ def do(out_analysis_dir: str, system_name: str,
     out_file.close()
 
     # Coordinates:
+    cnfs = glob.glob(data_dir + "/*.cnf")
     if(len(s_values) != len(cnfs)):
         fM.adapt_cnfs_to_new_sDistribution(in_old_svals=s_values[:u_idx], in_new_svals=new_sdist, in_cnf_files=cnfs[:u_idx], out_cnf_dir=out_analysis_next_dir, cnf_prefix=system_name+"_lower_bound")
 
