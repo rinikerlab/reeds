@@ -69,20 +69,6 @@ def do(out_analysis_dir: str, system_name: str,
         "plot_ref_distrib": True
         }
 
-    control_dict = {
-        "cp_cnf": False,
-        "cat_trc": False,
-        "convert_trcs": False,
-        "remove_gromosTRC": False,
-        "cat_tre": False,
-        "ene_ana": False,
-        "cat_repdat": False,
-        "pot_ene_by_replica": False,
-        "pot_ene_by_state": False,
-        "plot_pot_ene_timeseries": False,
-        "plot_ref_timeseries": False,
-        "plot_ref_distrib": False
-        }
 
     if (verbose): print("out: ", out_analysis_dir)
     bash.make_folder(out_analysis_dir)
