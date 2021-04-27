@@ -36,7 +36,6 @@ def plot_optimized_states_potential_energies(outfile:str,
     nrows = int(np.ceil(nstates/ncols))
 
     figsize = [5*ncols, 5*nrows]
-
     fig, axes = plt.subplots(ncols=ncols, nrows=nrows, figsize=figsize)
 
     fig.suptitle('Potential Energy Distribution for optimized States', fontsize = 20)
@@ -224,6 +223,7 @@ def plot_energy_distribution_by_replica(traj_data : pd.DataFrame,
         fig.show()
     else:
         fig.savefig(outfile_path, facecolor='white')
+        fig.close()
 
     return outfile_path
 
@@ -802,7 +802,7 @@ def plot_sampling_grid(traj_data: pd.DataFrame,
 
     # plot states
     for (i, ax) in zip(range(nstates),axes):
-        ax.scatter(traj_data["time"], traj_data['e' + str(i+1)], s=2, c = colors[i%len(colors)])
+        ax.scatter(traj_data["time"], traj_data['e' + str(i+1)], s=2, color = colors[i%len(colors)])
         ax.set_ylim(y_range)
         ax.set_title("State " + str(i+1), fontsize = 18)
 

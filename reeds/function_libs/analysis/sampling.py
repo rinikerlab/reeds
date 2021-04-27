@@ -132,7 +132,7 @@ def undersampling_occurence_potential_threshold_distribution_based(ene_traj_csvs
         pot_thresh_per_state = [0 for x in range(num_states)]
     return pot_thresh_per_state
 
-def physical_occurence_potential_threshold_distribution_based(ene_traj_csv: pd.DataFrame, equilibrate_dominationState:float=0.01, verbose:bool=False)->List[float]:
+def physical_occurence_potential_threshold_distribution_based(ene_traj_csv: pd.DataFrame, equilibrate_dominationState:float=0.01, verbose:bool=True)->List[float]:
     """physical_occurence_potential_threshold_distribution_based
     This function is estimating the pot_tresh for all states by testing if around the minimal energy 90% of the data is located in a threshold of  max_distance_kJ.
     The mean and std of the density region will result in pot_tresh = mean+3*std
