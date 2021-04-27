@@ -34,7 +34,7 @@ from reeds.function_libs.pipeline.worker_scripts.analysis_workers import RE_EDS_
 from reeds.function_libs.utils.structures import spacer
 
 
-def do(out_root_dir: str, in_simSystem: fM.System, pot_tresh: float = 0,
+def do(out_root_dir: str, in_simSystem: fM.System,
        template_imd: str = imd_templates.eds_md_path,
        gromosXX_bin: str = None, gromosPP_bin: str = None,
        ene_ana_lib: str = ene_ana_libs.ene_ana_lib_path,
@@ -144,7 +144,6 @@ int
         analysis_vars = {"out_analysis_dir": out_root_dir + "/analysis",
                          "in_topology_path": system.top.top_path,
                          "in_simulation_dir": sim_dir,
-                         "undersampling_pot_tresh": pot_tresh,
                          "in_imd_path": imd_template_path,
                          "gromosPP_bin": gromosPP_bin,
                          "in_ene_ana_lib": ene_ana_lib,
