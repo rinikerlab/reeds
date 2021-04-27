@@ -6,6 +6,8 @@ import numpy as np
 
 from pygromos.files import imd
 from pygromos.utils import bash
+from reeds.function_libs.analysis.sampling import undersampling_occurence_potential_threshold_distribution_based as find_undersampling_pot_tresh
+
 
 import reeds.function_libs.analysis.sampling
 import reeds.function_libs.visualization.pot_energy_plots
@@ -18,6 +20,7 @@ from reeds.data import ene_ana_libs
 
 def do(out_analysis_dir: str, system_name: str,
        in_simulation_dir: str, in_topology_path: str, in_imd_path: str,
+       undersampling_occurrence_fraction_threshold: float = 0.9,
        gromosPP_bin: str = None,
        in_ene_ana_lib: str = ene_ana_libs.ene_ana_lib_path,
        verbose: bool = True):
@@ -126,9 +129,14 @@ def do(out_analysis_dir: str, system_name: str,
     out_analysis_plot_dir = out_analysis_dir + "/plots"
     bash.make_folder(out_analysis_plot_dir, "-p")
     ene_trajs = fM.parse_csv_energy_trajectories(data_dir, out_prefix)  # gather potentials
-    sampling_analysis_results, out_plot_dirs = sampling_analysis(out_path = out_analysis_plot_dir,
-                                                               ene_traj_csvs = ene_trajs,
-                                                               s_values = s_values[:succsessful_sim_count])
+
+    state_undersampling_pot_treshold = find_undersampling_pot_tresh(ene_traj_csvs=ene_trajs, sampling_fraction_treshold = undersampling_occurrence_fraction_threshold)
+
+    sampling_analysis_results, out_plot_dirs = reeds.function_libs.analysis.sampling.detect_undersampling(out_path = out_analysis_plot_dir,
+                                                                                                       ene_traj_csvs = ene_trajs,
+                                                                                                       s_values = s_values[:succsessful_sim_count],
+                                                                                                       state_potential_treshold=state_undersampling_pot_treshold)
+
     # Plotting the different potential energy distributions
     if control_dict["pot_ene_by_state"]:
         for i in range(num_states):
@@ -161,6 +169,7 @@ def do(out_analysis_dir: str, system_name: str,
     out_analysis_next_dir = out_analysis_dir + "/next"
     bash.make_folder(out_analysis_next_dir, "-p")
 
+    print(sampling_analysis_results)
     u_idx = sampling_analysis_results["undersamplingThreshold"]
     # Make the new s-distribution based on this 
     print("undersampling found after replica: " + str(u_idx) + ' with s = ' + str(s_values[u_idx]))    
@@ -183,6 +192,7 @@ def do(out_analysis_dir: str, system_name: str,
     out_file.close()
 
     # Coordinates:
+    cnfs = glob.glob(data_dir + "/*.cnf")
     if(len(s_values) != len(cnfs)):
         fM.adapt_cnfs_to_new_sDistribution(in_old_svals=s_values[:u_idx], in_new_svals=new_sdist, in_cnf_files=cnfs[:u_idx], out_cnf_dir=out_analysis_next_dir, cnf_prefix=system_name+"_lower_bound")
 

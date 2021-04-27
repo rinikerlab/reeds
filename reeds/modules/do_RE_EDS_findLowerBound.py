@@ -34,7 +34,7 @@ from reeds.function_libs.pipeline.worker_scripts.analysis_workers import RE_EDS_
 from reeds.function_libs.utils.structures import spacer
 
 
-def do(out_root_dir: str, in_simSystem: fM.System,
+def do(out_root_dir: str, in_simSystem: fM.System, undersampling_occurrence_fraction: float = 0.9,
        template_imd: str = imd_templates.eds_md_path,
        gromosXX_bin: str = None, gromosPP_bin: str = None,
        ene_ana_lib: str = ene_ana_libs.ene_ana_lib_path,
@@ -66,7 +66,7 @@ in_simSystem
     System obj. that contains information about the System-Files (cnf, top,...)
 template_imd
     gives the path to the template_RE_EDS_project parameter file (.imd), that is adapted to fit the system.
-pot_tresh : float, optional
+undersampling_occurrence_fraction : float, optional
     potential threshold deciding if state was sampled or not - used in analysis
 gromosXX_bin : str, optional
     path to gromosXX binary dir
@@ -144,6 +144,7 @@ int
         analysis_vars = {"out_analysis_dir": out_root_dir + "/analysis",
                          "in_topology_path": system.top.top_path,
                          "in_simulation_dir": sim_dir,
+                         "undersampling_occurrence_fraction_threshold": undersampling_occurrence_fraction,
                          "in_imd_path": imd_template_path,
                          "gromosPP_bin": gromosPP_bin,
                          "in_ene_ana_lib": ene_ana_lib,
