@@ -19,7 +19,7 @@ from reeds.data import ene_ana_libs
 
 def do(out_analysis_dir: str, system_name: str,
        in_simulation_dir: str, in_topology_path: str, in_imd_path: str,
-       sampling_fraction_treshold: float = 0.9,
+       undersampling_occurrence_fraction_threshold: float = 0.9,
        gromosPP_bin: str = None,
        in_ene_ana_lib: str = ene_ana_libs.ene_ana_lib_path,
        verbose: bool = True):
@@ -130,9 +130,9 @@ def do(out_analysis_dir: str, system_name: str,
     bash.make_folder(out_analysis_plot_dir, "-p")
     ene_trajs = fM.parse_csv_energy_trajectories(data_dir, out_prefix)  # gather potentials
 
-    state_undersampling_pot_treshold = find_undersampling_pot_tresh(ene_traj_csvs=ene_trajs, sampling_fraction_treshold = sampling_fraction_treshold)
-    
-    sampling_analysis_results, out_plot_dirs = reeds.function_libs.analysis.sampling.sampling_analysis(out_path = out_analysis_plot_dir,
+    state_undersampling_pot_treshold = find_undersampling_pot_tresh(ene_traj_csvs=ene_trajs, sampling_fraction_treshold = undersampling_occurrence_fraction_threshold)
+
+    sampling_analysis_results, out_plot_dirs = reeds.function_libs.analysis.sampling.detect_undersampling(out_path = out_analysis_plot_dir,
                                                                                                        ene_traj_csvs = ene_trajs,
                                                                                                        s_values = s_values[:succsessful_sim_count],
                                                                                                        state_potential_treshold=state_undersampling_pot_treshold)
@@ -168,6 +168,7 @@ def do(out_analysis_dir: str, system_name: str,
     out_analysis_next_dir = out_analysis_dir + "/next"
     bash.make_folder(out_analysis_next_dir, "-p")
 
+    print(sampling_analysis_results)
     u_idx = sampling_analysis_results["undersamplingThreshold"]
     # Make the new s-distribution based on this 
     print("undersampling found after replica: " + str(u_idx) + ' with s = ' + str(s_values[u_idx]))    
