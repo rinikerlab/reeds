@@ -12,6 +12,7 @@ from reeds.function_libs.analysis.sampling import undersampling_occurence_potent
 import reeds.function_libs.analysis.sampling
 import reeds.function_libs.visualization.pot_energy_plots
 from reeds.function_libs.file_management import file_management as fM
+from reeds.function_libs.analysis.sampling import sampling_analysis
 import reeds.function_libs.utils.s_log_dist as s_log_dist
 
 np.set_printoptions(suppress=True,formatter={'float_kind':'{:0.7f}'.format})
@@ -70,7 +71,6 @@ def do(out_analysis_dir: str, system_name: str,
         "plot_ref_timeseries": True,
         "plot_ref_distrib": True
         }
-
 
     if (verbose): print("out: ", out_analysis_dir)
     bash.make_folder(out_analysis_dir)
@@ -136,6 +136,7 @@ def do(out_analysis_dir: str, system_name: str,
                                                                                                        ene_traj_csvs = ene_trajs,
                                                                                                        s_values = s_values[:succsessful_sim_count],
                                                                                                        state_potential_treshold=state_undersampling_pot_treshold)
+
     # Plotting the different potential energy distributions
     if control_dict["pot_ene_by_state"]:
         for i in range(num_states):
