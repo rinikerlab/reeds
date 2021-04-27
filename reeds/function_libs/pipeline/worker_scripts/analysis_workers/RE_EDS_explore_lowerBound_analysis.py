@@ -116,6 +116,7 @@ def do(out_analysis_dir: str, system_name: str,
                                      in_imd=in_imd_path + "_1.imd", num_replicas=len(s_values[:succsessful_sim_count]),
                                      control_dict=control_dict, out_folder=data_dir, in_ene_ana_lib_path=in_ene_ana_lib,
                                      out_file_prefix=out_prefix, gromosPP_bin_dir=gromosPP_bin)
+        cnfs = glob.glob(data_dir + "/*.cnf")
 
     elif (os.path.exists(data_dir) and os.path.exists(in_simulation_dir + ".tar.gz")):
         cnfs = glob.glob(data_dir + "/*.cnf")
