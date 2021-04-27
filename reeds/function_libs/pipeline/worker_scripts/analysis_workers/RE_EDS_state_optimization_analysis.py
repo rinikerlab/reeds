@@ -10,7 +10,7 @@ from pygromos.utils import bash
 import reeds.function_libs.visualization.pot_energy_plots
 from reeds.data import ene_ana_libs
 from reeds.function_libs.file_management import file_management as fM
-from reeds.function_libs.analysis.sampling import get_all_physical_occurence_potential_threshold_distribution_based
+from reeds.function_libs.analysis import sampling
 
 
 def do(in_simulation_dir: str, in_topology_path: str, in_imd_path: str,
@@ -101,11 +101,11 @@ def do(in_simulation_dir: str, in_topology_path: str, in_imd_path: str,
     out_analysis_plot_dir = out_analysis_dir + "/plots"
     bash.make_folder(out_analysis_plot_dir, "-p")
 
-    # candide: had to uncomment this, because the addition of functionality here led to a bug when used
-    # in the analysis of step A. bug from call to: undersampling_occurence_potential_threshold_distribution_based
+    ## write pot_treshholds to next
+    physical_state_occurrence_treshold = sampling.get_all_physical_occurence_potential_threshold_distribution_based(ene_trajs)
 
-    #ana.sampling_analysis(out_path=out_analysis_plot_dir, ene_traj_csvs=ene_trajs, s_values=s_values,
-    #                      pot_tresh=pot_tresh)
+    sampling.sampling_analysis(out_path=out_analysis_plot_dir, ene_traj_csvs=ene_trajs, s_values=s_values,
+                          pot_tresh=physical_state_occurrence_treshold)
 
     # Plot of all of the potential energy distributions in a single plot:
     reeds.function_libs.visualization.pot_energy_plots.plot_optimized_states_potential_energies(outfile=out_analysis_plot_dir + "/optimized_states_potential_energies.png",
@@ -144,8 +144,7 @@ def do(in_simulation_dir: str, in_topology_path: str, in_imd_path: str,
     ##move cnfs to next
     bash.copy_file(coord_dir + "/*.cnf", next_dir)
 
-    ## write pot_treshholds to next
-    physical_state_occurrence_treshold = get_all_physical_occurence_potential_threshold_distribution_based(ene_trajs)
+
 
     ##write_pot_tresh:
     out_file = open(next_dir + "/state_occurence_physical_pot_thresh.csv", "w")
