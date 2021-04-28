@@ -36,6 +36,10 @@ def plot_dF_conv(dF_timewise : dict,
     fig.tight_layout()
 
     last_dF = []
+    num_pairs = len(dF_timewise.items())
+    colors = ps.active_qualitative_cycler_mligs(num_pairs)
+    axes[0].set_prop_cycle(colors)
+    axes[1].set_prop_cycle(colors)
 
     for replica_ligands, data in dF_timewise.items():
         replica = replica_ligands.split("_")[:2]

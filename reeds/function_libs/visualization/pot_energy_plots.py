@@ -28,7 +28,7 @@ def plot_optimized_states_potential_energies(outfile:str,
 
     nstates = len(ene_trajs)
 
-    colors = ps.active_qualitative_map
+    colors = ps.active_qualitative_map_mligs(nstates)
 
     # Split the different states in subplots:
 
@@ -149,7 +149,7 @@ def plot_energy_distribution_by_replica(traj_data : pd.DataFrame,
     xlimits = [x_min, upper_threshold]
 
     # General plotting options:
-    colors = ps.active_qualitative_map
+    colors = ps.active_qualitative_map_mligs(nstates)
 
     ncols = 4 if nstates > 11 else 3
     nrows = int(np.ceil(nstates/ncols))
@@ -284,7 +284,7 @@ def plot_energy_distribution_by_state(energy_trajs : List[pd.DataFrame],
 
     # General plotting options:
 
-    colors = ps.active_qualitative_map
+    colors = ps.active_qualitative_map_mligs(nstates)
     color = colors[state_num-1%len(colors)]
 
     n_replicas = len(energy_trajs)
@@ -793,7 +793,7 @@ def plot_sampling_grid(traj_data: pd.DataFrame,
     fig, axes = plt.subplots(ncols=ncols, nrows=nrows, figsize=[20, 15], sharex=True, sharey=True)
     axes = axes.flat
 
-    colors = ps.active_qualitative_map
+    colors = ps.active_qualitative_map_mligs(nstates)
 
     # set main title to plot
     if title is None: title = 'Potential Energy Timeseries'
@@ -801,7 +801,7 @@ def plot_sampling_grid(traj_data: pd.DataFrame,
 
     # plot states
     for (i, ax) in zip(range(nstates),axes):
-        ax.scatter(traj_data["time"], traj_data['e' + str(i+1)], s=2, c = colors[i%len(colors)])
+        ax.scatter(traj_data["time"], traj_data['e' + str(i+1)], s=2, color = colors[i%len(colors)])
         ax.set_ylim(y_range)
         ax.set_title("State " + str(i+1), fontsize = 18)
 

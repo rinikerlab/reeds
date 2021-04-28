@@ -71,16 +71,18 @@ def plot_sampling_convergence(ene_trajs, opt_trajs, outfile, title = None, trim_
     ax = plt.subplot(111)
     
     # General plotting options:
-    colors = ps.active_qualitative_map
+    colors = ps.active_qualitative_cycler_mligs(num_states)
+
     if title is None: title = 'Sampling convergence in the simulation (s = 1)'
     ax.set_title(title)
+    ax.set_prop_cycle(colors)
     
     box = ax.get_position()
     ax.set_position([box.x0, box.y0, box.width * 0.8, box.height])
     
     # 4: Plot the sampling for each state
     for i in range(num_states):
-        ax.plot(time, percent_sampling.T[i], color = colors[i], label = 'state ' + str(i+1),
+        ax.plot(time, percent_sampling.T[i], label = 'state ' + str(i+1),
                 marker = "D", ms = 4, ls = '-', lw = 1)  
         
     ax.set_ylim(-3, np.max(percent_sampling)+3)

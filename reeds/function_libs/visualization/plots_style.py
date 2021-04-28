@@ -6,8 +6,11 @@ for example in reeds.function_libs.analysis.visualization
 
 """
 
+import matplotlib.pyplot as plt
+import numpy as np
 from matplotlib import cm
 from scipy import constants
+from cycler import cycler
 
 #is used for example in reeds.function_libs.analysis.visualization
 
@@ -63,6 +66,8 @@ thermcycle_dF_convergence = ["orange", "blue", "dark green", "purple"]
 #### ACTIVE STYLE:  ###
 active_gradient_map = gradient_green_map
 active_qualitative_map = candide_colors
+active_qualitative_map_mligs = lambda num_ligs: plt.cm.rainbow(np.linspace(0,1,num_ligs))
+active_qualitative_cycler_mligs = lambda num_ligs: cycler('color', plt.cm.rainbow(np.linspace(0,1,num_ligs)))
 active_gradient_list = gradient_green_list
 active_qualitative_list_small = qualitative_tab_map_small
 active_qualitative_list = qualitative_tab_list
