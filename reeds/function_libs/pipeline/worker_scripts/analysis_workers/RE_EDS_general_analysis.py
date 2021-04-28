@@ -465,6 +465,10 @@ def do_Reeds_analysis(in_folder: str, out_folder: str, gromos_path: str,
         if (verbose): print("Done\n")
 
     if (control_dict["phys_sampling"]["do"] and not state_physical_occurrence_potential_threshold is None):
+        # parsing_ene_traj_csvs 
+        if energy_trajectories is None:
+            energy_trajectories = parse_csv_energy_trajectories(concat_file_folder, ene_trajs_prefix)
+     
         out_dir = bash.make_folder(out_folder + "/state_sampling")
 
         (sampling_results, out_dir) = sampling_ana.sampling_analysis(out_path=out_dir,

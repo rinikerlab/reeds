@@ -45,7 +45,7 @@ def plot_replica_transitions(transition_dict: pd.DataFrame,
     num_replicas = len(np.unique(transition_dict.replicaID))
 
     if use_gradient_colorMap:
-        trace_color_dict = ps.active_qualitative_map(np.linspace(1, 0, num_replicas))
+        trace_color_dict = ps.active_qualitative_map_mligs(num_replicas)
         repnum = num_replicas
     else:
         trace_color_dict = ps.active_qualitative_map.colors[::-1]

@@ -34,11 +34,13 @@ def plot_offsets_vs_s(energy_offsets, mean_undersampling_eoffs: List, s_values: 
     None
     """
 
-    colors = ps.active_qualitative_map
     num_states = len(energy_offsets.T)
-    
+    colors = ps.active_qualitative_cycler_mligs(num_states)
+
     fig, (ax1, ax2) = plt.subplots(nrows=2, figsize=(7,6))
-    
+    ax1.set_prop_cycle(colors)
+    ax2.set_prop_cycle(colors)
+        
     if title is None: title = 'Energy Offsets predicted at all s-values'
     fig.suptitle(title)
 
@@ -49,9 +51,9 @@ def plot_offsets_vs_s(energy_offsets, mean_undersampling_eoffs: List, s_values: 
         eoffs = energy_offsets.T[i]
         eoffs_recentered = eoffs - mean_undersampling_eoffs[i]
 
-        ax1.plot(x, np.flip(eoffs_recentered), lw = 1, ms = 3, marker = 'D', c = colors[i], 
+        ax1.plot(x, np.flip(eoffs_recentered), lw = 1, ms = 3, marker = 'D', 
                  label = 'state ' + str(i+1))
-        ax2.plot(x, np.flip(eoffs), lw = 1, ms = 3, marker = 'D', c = colors[i])
+        ax2.plot(x, np.flip(eoffs), lw = 1, ms = 3, marker = 'D')
     
     # Change box format to match legend 
     box1 = ax1.get_position()

@@ -192,7 +192,7 @@ def prepare_system_state_data(transition_dataFrame: pd.DataFrame,
         cur_replica = transition_dataFrame.state_pot.index[0][0] # get current replica index from data frame
         num_states = len(transition_dataFrame.state_pot[cur_replica][0])
 
-        marker_color_dict =  ps.active_qualitative_map(np.linspace(0, 1, num_states + 1))
+        marker_color_dict =  ps.active_qualitative_map_mligs(num_states + 1)
         # marker plotting
         ##cluster_dtraj state data, to avoid to see only noise!
         cluster_counter = 0

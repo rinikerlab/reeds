@@ -211,7 +211,7 @@ def free_energy_convergence_analysis(ene_ana_trajs: List[pd.DataFrame],
             # Plotting
             if (verbose): print("Plotting")
             updated_keys = {str(replica_key) + "_" + str(key): value for key, value in
-                            dF_conv_all_replicas[replica_key].items() if (key.endswith("1"))}
+                            dF_conv_all_replicas[replica_key].items()}
             reeds.function_libs.visualization.free_energy_plots.plot_dF_conv(updated_keys, title="Free energy convergence",
                                                                              out_path=out_dir + "/" + out_prefix + "_" + str(replica_key), show_legend=True)
             json.dump(dF_conv_all_replicas, fp=open(out_dir + "/tmp_dF_" + str(s_index) + ".dat", "w"), indent=4)
