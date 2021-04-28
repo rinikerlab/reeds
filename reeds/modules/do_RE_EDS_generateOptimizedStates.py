@@ -51,6 +51,7 @@ def do(out_root_dir: str, in_simSystem: fM.System,
        simulation_steps: int = 1000000, exclude_residues: list = [],
        cpus_per_job: int = 4, submit: bool = True, verbose: bool = True,
        solvent_keyword: str = "SOLV",
+       vacuum_simulation:bool =False,
        single_bath: bool = False,
        memory: int = None, job_duration: str = "8:00") -> int:
     """      Generate Optimized structures with EDS
@@ -92,6 +93,8 @@ job_duration : str, optional
     Duration of each submitted job in the queue (depends on imd setting)
 cpus_per_job : int, optional
     how many mpi cores per job, shall be used?
+vacuum_simulation : bool, optional
+    this flag can be used for vacuum simulations
 single_bath : bool, optional
     use a single bath for all atoms? (i.e. NBATHS = 1) (default False)
 submit : bool, optional
@@ -165,6 +168,7 @@ int
                          "in_imd_path": imd_template_path,
                          "numstates": lig_num,
                          "gromosPP_bin": in_gromosPP_bin_dir,
+                         "vacuum_simulation": vacuum_simulation,
                          "in_ene_ana_lib": ene_ana_lib,
                          "in_topology": system.top.top_path
                          }

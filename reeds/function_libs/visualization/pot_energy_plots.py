@@ -9,7 +9,7 @@ from reeds.function_libs.visualization.utils import discard_high_energy_points
 
 
 def plot_optimized_states_potential_energies(outfile:str,
-                                             ene_trajs:pd.DataFrame):
+                                             ene_trajs:pd.DataFrame,):
     """plot_optimized_states_potential_energies
     Plots the potential energy distributions of all states in a single plot,
     where the data is represented as a histogram.

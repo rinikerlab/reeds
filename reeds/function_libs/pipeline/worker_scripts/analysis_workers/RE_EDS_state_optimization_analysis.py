@@ -15,7 +15,7 @@ from reeds.function_libs.analysis import sampling
 
 def do(in_simulation_dir: str, in_topology_path: str, in_imd_path: str,
        out_analysis_dir: str,
-       pot_tresh: int = 200,
+       vacuum_simulation:bool=False,
        gromosPP_bin: str = None,
        in_ene_ana_lib: str = ene_ana_libs.ene_ana_lib_path,
        verbose: bool = True):
@@ -102,7 +102,7 @@ def do(in_simulation_dir: str, in_topology_path: str, in_imd_path: str,
     bash.make_folder(out_analysis_plot_dir, "-p")
 
     ## write pot_treshholds to next
-    physical_state_occurrence_treshold = sampling.get_all_physical_occurence_potential_threshold_distribution_based(ene_trajs)
+    physical_state_occurrence_treshold = sampling.get_all_physical_occurence_potential_threshold_distribution_based(ene_trajs, _vacuum_simulation=vacuum_simulation)
 
     sampling.sampling_analysis(out_path=out_analysis_plot_dir, ene_traj_csvs=ene_trajs, s_values=s_values,
                                 state_potential_treshold=physical_state_occurrence_treshold)
