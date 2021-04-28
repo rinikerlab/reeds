@@ -132,7 +132,8 @@ def undersampling_occurence_potential_threshold_distribution_based(ene_traj_csvs
         pot_thresh_per_state = [0 for x in range(num_states)]
     return pot_thresh_per_state
 
-def physical_occurence_potential_threshold_distribution_based(ene_traj_csv: pd.DataFrame, equilibrate_dominationState:float=0.01, verbose:bool=True)->List[float]:
+def physical_occurence_potential_threshold_distribution_based(ene_traj_csv: pd.DataFrame, equilibrate_dominationState:float=0.01, _vacuum_simulation:bool=False,  verbose:bool=False)->List[float]:
+
     """physical_occurence_potential_threshold_distribution_based
     This function is estimating the pot_tresh for all states by testing if around the minimal energy 90% of the data is located in a threshold of  max_distance_kJ.
     The mean and std of the density region will result in pot_tresh = mean+3*std
@@ -144,6 +145,8 @@ def physical_occurence_potential_threshold_distribution_based(ene_traj_csv: pd.D
         a pandas dataframe containing the energy data of each state eX
     equilibrate_dominationState : int, optional
         equilibrate the domination state for this fraction
+    _vacuum_simulation=vacuum_simulation: bool, optional
+        this flag switches the algorithm to use all potential energies of a state, instead of only the domination sampling.
     verbose: bool, optional
         print fun
     Returns
@@ -160,7 +163,10 @@ def physical_occurence_potential_threshold_distribution_based(ene_traj_csv: pd.D
     pot_tresh = []
     for k, state in enumerate(state_names):
         #get only the sampling, in which the target state is dominating: pre-filter noise!
-        state_domination_sampling = data.where(data[state_names].min(axis=1) == data[state]).dropna()
+        if(_vacuum_simulation):
+            state_domination_sampling = data
+        else:
+            state_domination_sampling = data.where(data[state_names].min(axis=1) == data[state]).dropna()
         start_after_eq = int(np.round(equilibrate_dominationState*state_domination_sampling.shape[0]))
         state_domination_sampling = state_domination_sampling.iloc[start_after_eq:]
 
@@ -175,7 +181,7 @@ def physical_occurence_potential_threshold_distribution_based(ene_traj_csv: pd.D
     return pot_tresh
 
 
-def get_all_physical_occurence_potential_threshold_distribution_based(ene_trajs: List[pd.DataFrame])->List[float]:
+def get_all_physical_occurence_potential_threshold_distribution_based(ene_trajs: List[pd.DataFrame], _vacuum_simulation:bool=False,)->List[float]:
     """
         This function is used in the state optimization approach and gives the physical potential energy threshold for occurrence sampling back, that is estimated from the optimized EDS-System.
 
@@ -183,7 +189,8 @@ def get_all_physical_occurence_potential_threshold_distribution_based(ene_trajs:
     ----------
     ene_trajs: List[pd.DataFrame]
         energy trajectories from all end state optimizations
-
+    _vacuum_simulation=vacuum_simulation: bool, optional
+        this flag switches the algorithm to use all potential energies of a state, instead of only the domination sampling.
     Returns
     -------
     List[float]
@@ -192,7 +199,8 @@ def get_all_physical_occurence_potential_threshold_distribution_based(ene_trajs:
     opt_pot_tresh = []
     for key, traj in enumerate(ene_trajs):
         print(key)
-        pot_tresh_state = physical_occurence_potential_threshold_distribution_based(traj)
+        pot_tresh_state = physical_occurence_potential_threshold_distribution_based(traj, _vacuum_simulation=_vacuum_simulation)
+
         print(pot_tresh_state)
         if (np.isnan(pot_tresh_state[key])):
             warnings.warn("A state potential threshold was NaN -> This hints on that you did not sample the state as a dominating one! Please check your simulatigons!")
