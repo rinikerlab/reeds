@@ -468,10 +468,7 @@ def do_Reeds_analysis(in_folder: str, out_folder: str, gromos_path: str,
         # parsing_ene_traj_csvs 
         if energy_trajectories is None:
             energy_trajectories = parse_csv_energy_trajectories(concat_file_folder, ene_trajs_prefix)
-
-        if (not os.path.exists(concat_file_folder)):
-            raise IOError("could not find needed energies (contains all ene ana .dats) folder in:\n " + out_folder)
-            
+     
         out_dir = bash.make_folder(out_folder + "/state_sampling")
 
         (sampling_results, out_dir) = sampling_ana.sampling_analysis(out_path=out_dir,
