@@ -142,7 +142,7 @@ int
         setattr(simSystem, "coordinates", new_coords)
 
 
-        state_undersampling_pot_tresh_path = optimized_states_dir + "/state_occurence_pot_thresh.csv"
+        state_undersampling_pot_tresh_path = optimized_states_dir + "/state_occurence_physical_pot_thresh.csv"
         if(state_physical_occurrence_potential_threshold is None and os.path.exists(state_undersampling_pot_tresh_path)):
             if not os.path.exists(state_undersampling_pot_tresh_path) :
                 raise IOError("COULD NOT FIND state_occurence_pot_thresh.CSV in : ", state_undersampling_pot_tresh_path, "\n")
