@@ -247,7 +247,6 @@ def chain_submission(gromosXX_bin_dir: str, in_imd_path: str, simSystem:Simulati
 
                 clean_up_command += "sed -i 's/nan/0.0/g' *.trc\n"
                 clean_up_command += "sed -i 's/nan/0.0/g' *.cnf\n"
-                clean_up_command += "sed -i 's/nan/0.0/g' *.tre\n"
 
                 clean_up_command += "python " + str(clean_up.__file__) + "  -in_simulation_dir " + \
                                     str(tmp_outdir) + " -n_processes " + str(clean_up_processes)
