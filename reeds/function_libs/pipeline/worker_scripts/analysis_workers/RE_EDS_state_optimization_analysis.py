@@ -52,8 +52,8 @@ def do(in_simulation_dir: str, in_topology_path: str, in_imd_path: str,
     control_dict = {
         "fileManagment": {
             "cp_cnf": True,
-            "cat_trc": False,
-            "convert_trcs": False,
+            "cat_trc": True,
+            "convert_trcs": True,
             "ene_ana": True,
             "cat_tre": True,
         },
