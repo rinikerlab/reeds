@@ -11,9 +11,10 @@ import reeds.function_libs.analysis.free_energy
 import reeds.function_libs.analysis.parameter_optimization
 import reeds.function_libs.analysis.sampling as sampling_ana
 import reeds.function_libs.optimization.eds_energy_offsets as eds_energy_offsets
+import reeds.function_libs.analysis.replica_exchanges as repex
 
 import reeds.function_libs.visualization.pot_energy_plots
-import reeds.function_libs.visualization.re_plots
+import reeds.function_libs.visualization.re_plots as re_plots
 
 from reeds.function_libs.file_management import file_management
 from reeds.function_libs.file_management.file_management import parse_csv_energy_trajectories
@@ -411,7 +412,8 @@ def do_Reeds_analysis(in_folder: str, out_folder: str, gromos_path: str,
             # plot if states are sampled and minimal state
             print("\tplot sampling: ")
             (sampling_results, out_dir) = sampling_ana.detect_undersampling(out_path = out_dir, ene_traj_csvs = energy_trajectories,
-                                                                            s_values = s_values, state_potential_treshold= state_undersampling_occurrence_potential_threshold, undersampling_occurence_sampling_tresh=undersampling_frac_thresh)
+                                                                            s_values = s_values, state_potential_treshold= state_undersampling_occurrence_potential_threshold, 
+                                                                            undersampling_occurence_sampling_tresh=undersampling_frac_thresh)
 
         if (sub_control["calc_eoff"]):
             print("calc Eoff: ")
@@ -433,7 +435,12 @@ def do_Reeds_analysis(in_folder: str, out_folder: str, gromos_path: str,
         # get repdat file
         print(repdat_file_out_path)
         in_file = glob.glob(repdat_file_out_path)[0]
-        print("Found RepFILE: " + str(in_file))
+        print("Found repdat file: " + str(in_file))
+        
+        # Calculate the exchanges for this re-eds simulation
+        # Here we will have to tweak things to avoid reading the repdat multiple times
+        exchange_data = repdat.Repdat(in_file)
+        exchange_freq = repex.calculate_exchange_freq(exchange_data)
 
         if (sub_control["run_RTO"]):
             print("Start Sopt\n")
@@ -444,10 +451,10 @@ def do_Reeds_analysis(in_folder: str, out_folder: str, gromos_path: str,
                                                                                    state_weights=state_weights,
                                                                                    run_NLRTO=sub_control["run_NLRTO"], run_NGRTO=sub_control["run_NGRTO"],
                                                                                    verbose=verbose)
-
         if (sub_control["visualize_transitions"]):
             print("\t\tvisualize transitions")
             reeds.function_libs.analysis.parameter_optimization.get_s_optimization_transitions(out_dir=out_dir, rep_dat=in_file, title_prefix=title_prefix)
+            re_plots.plot_exchange_freq(s_values, exchange_freq, outfile = out_dir + '/exchange_frequencies.png')            
 
         if (sub_control["roundtrips"] and sub_control["run_RTO"]):
             print("\t\tshow roundtrips")
@@ -460,9 +467,8 @@ def do_Reeds_analysis(in_folder: str, out_folder: str, gromos_path: str,
 
             # plot
             if verbose: print("Plotting Histogramm")
-            reeds.function_libs.visualization.re_plots.plot_repPos_replica_histogramm(out_path=out_dir + "/replica_repex_pos.png", data=trans_dict,
-                                                                                      title=title_prefix,
-                                                                                      s_values=s_values)
+            re_plots.plot_repPos_replica_histogramm(out_path=out_dir + "/replica_repex_pos.png", 
+                                                    data=trans_dict, title=title_prefix, s_values=s_values)
 
         if (verbose): print("Done\n")
 
