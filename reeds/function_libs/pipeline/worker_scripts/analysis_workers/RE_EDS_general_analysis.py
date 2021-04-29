@@ -348,7 +348,9 @@ def do_Reeds_analysis(in_folder: str, out_folder: str, gromos_path: str,
             if sub_control["pot_ene_grid_timeseries"]:
                 out_path = plot_folder_path + '/' + title_prefix + '_pot_ene_timeseries_' + str(i+1) + '.png'
                 title = title_prefix + ' potential energy timeseries - s = ' + str(s_values[i])
-                reeds.function_libs.visualization.pot_energy_plots.plot_sampling_grid(traj_data = ene_traj, y_range=(-1000, 1000), out_path=out_path, title=title)
+                reeds.function_libs.visualization.pot_energy_plots.plot_sampling_grid(traj_data = ene_traj, y_range=(-1000, 1000), out_path=out_path, 
+                                                                                        title=title, sampling_thresholds = state_physical_occurrence_potential_threshold,
+                                                                                        undersampling_thresholds = state_undersampling_occurrence_potential_threshold)
 
         # Plots related to the reference potential energy (V_R)
 
