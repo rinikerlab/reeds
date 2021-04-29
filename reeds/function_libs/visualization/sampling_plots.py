@@ -118,11 +118,11 @@ def plot_t_statepres(data: dict,
     Returns
     -------
     None
-    """
+    """    
 
     # sort data:
     num_states = len(data["occurrence_t"])
-    x_ax = data["dominating_state"].index  # time axis
+    x_ax = data["time"]  # time axis
     ymin = np.array(data["dominating_state"], dtype=float)  # to get correct state (counted with 0)
 
     yunders = []
@@ -152,6 +152,8 @@ def plot_t_statepres(data: dict,
         xlim = xlim
     else:
         xlim = [0, x_ax[len(x_ax) - 1]]
+    print(x_ax)
+    print(xlim)
     ax.set_xlim(xlim)
 
     ##labels
