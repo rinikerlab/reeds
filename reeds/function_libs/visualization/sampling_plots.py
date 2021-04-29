@@ -152,8 +152,7 @@ def plot_t_statepres(data: dict,
         xlim = xlim
     else:
         xlim = [0, x_ax[len(x_ax) - 1]]
-    print(x_ax)
-    print(xlim)
+
     ax.set_xlim(xlim)
 
     ##labels
