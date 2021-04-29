@@ -303,6 +303,7 @@ def sampling_analysis(ene_traj_csvs: List[pd.DataFrame],
     if (verbose): print("\n\n Sampling Timeseries\n\n")
     for ind, replica in enumerate(ene_traj_csvs):
         if (verbose): print("\t replica " + replica.s)
+
         dominating_state_sampling = replica[select_states].idxmin(axis=1).replace("e", "", regex=True)
 
         occurrence_sampling_replica = []
@@ -311,7 +312,7 @@ def sampling_analysis(ene_traj_csvs: List[pd.DataFrame],
                 replica[state] < state_potential_treshold[int(state.replace("e", "")) - 1]]
             occurrence_sampling_replica.append(occurrence_sampling_state_replica)
 
-        data = {"occurrence_t": occurrence_sampling_replica, "dominating_state": dominating_state_sampling}
+        data = {"time": replica.time, "occurrence_t": occurrence_sampling_replica, "dominating_state": dominating_state_sampling}
 
         if (do_plot):
             reeds.function_libs.visualization.sampling_plots.plot_t_statepres(data=data,
