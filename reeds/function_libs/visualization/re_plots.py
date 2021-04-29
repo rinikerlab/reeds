@@ -373,9 +373,9 @@ def plot_exchange_freq(s_values:List[float], exchange_freq:List[float], outfile:
     exchange_freq = np.append(exchange_freq, 0)
 
     # Find a nice automatic way to deal with the size issues here.
-    size = 5 * len(s_values) / 13
+    size = 8 * len(s_values) / 13
 
-    fig, ax = plt.subplots(figsize = [size,5])
+    fig, ax = plt.subplots(figsize = [size,8])
     plt.grid(axis='y', lw = 1, ls = 'dashed')
     ax.set_axisbelow(True)
 
