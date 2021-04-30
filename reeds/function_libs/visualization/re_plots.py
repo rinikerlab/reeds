@@ -346,3 +346,67 @@ def plot_repPos_replica_histogramm(data: pd.DataFrame,
         return hist
     else:
         return fig,  hist
+
+def plot_exchange_freq(s_values:List[float], exchange_freq:List[float], outfile:str = None, title:str = None):
+    """
+    This function plots the frequency of exchange from the replica exchange data of a RE-EDS
+    simulation. This allows to visualize the potential regions of bottleneck.
+    
+    Parameters
+    ----------
+    s_values: List [float]
+        List of s-values for each of the replicas
+    exchange_freq: List [float]
+        Exchange frequencies obtained from calculate_exchange_freq(). Note the list has 
+        (N-1) elements, where N is the number of s-values.
+    outfile: str
+        path to which the plot is made. If None is given, the plot is displayed (jupyter compatible)
+    title: str
+        title to give the plot
+        
+    Returns
+    ----------
+    None
+    
+    """
+    x = np.arange(1, len(s_values)+1) + 0.5
+    exchange_freq = np.append(exchange_freq, 0)
+
+    # Find a nice automatic way to deal with the size issues here.
+    size = 8 * len(s_values) / 13
+
+    fig, ax = plt.subplots(figsize = [size,8])
+    plt.grid(axis='y', lw = 1, ls = 'dashed')
+    ax.set_axisbelow(True)
+
+    ax.bar(x, exchange_freq, width=0.45, color='firebrick', edgecolor = 'black', alpha = 0.7)
+
+    # Make the right labels
+    labels = []
+    for i in range(len(s_values)):
+        labels.append(str(s_values[i]))
+
+    ax.set_xticks(x-0.5)
+    ax.set_xticklabels(labels, fontsize = 10)
+    plt.setp(ax.get_xticklabels(), rotation=45, ha="right",
+         rotation_mode="anchor")
+
+    # Set the x and y-limits properly
+    ax.set_xlim(x[0]-1, x[len(x)-1])
+    ax.set_ylim(0, 1.1)
+
+    # Set the proper axis labels and title
+
+    if title is None: title = 'Exchange frequency in the RE-EDS simulation'
+    plt.title(title, fontsize = 14)
+
+    plt.xlabel('s-value', fontsize = 14)
+    plt.ylabel(r'$P_{exchange}$', fontsize = 14)
+
+    if (outfile is None):
+        plt.show()
+    else:
+        fig.savefig(outfile)
+        plt.close()
+
+    return None
