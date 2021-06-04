@@ -150,7 +150,7 @@ int
         elif(state_undersampling_occurrence_potential_threshold is None):
             raise IOError("COULD NOT FIND state_occurence_pot_thresh.CSV in : ", state_undersampling_pot_tresh_path, "\n")
 
-        state_physical_pot_tresh_path = optimized_states+"/state_occurence_pot_thresh.csv"
+        state_physical_pot_tresh_path = optimized_states+"/state_occurence_physical_pot_thresh.csv"
         if (state_physical_occurrence_potential_threshold is None and os.path.exists(state_physical_pot_tresh_path)):
             tmp = open(state_physical_pot_tresh_path, "r")
             state_physical_occurrence_potential_threshold = list(map(float, " ".join(tmp.readlines()).split()))
