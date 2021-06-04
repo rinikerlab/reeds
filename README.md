@@ -46,7 +46,7 @@ Using this repository, clone it (like the command below) into a directory on you
 
     git clone --recurse-submodules <repo url>
 
-Make sure you have the required python packages from devtools/conda-envs/full_env.yaml. You can install the provided env with Anacodna like:
+Make sure you have the required python packages from devtools/conda-envs/full_env.yaml. You can install the provided env with Anaconda like:
 
     conda env create -f devtools/conda-envs/full_env.yaml
 
@@ -55,7 +55,7 @@ If you want to update the code of the PyGromos submodule, you can do this:
     git submodule init
     git submodule update
 
-Please if your writing code for this repository, first develop it on an own branch.
+If you're writing code for this repository, please develop it on your own branch first.
 
      git branch mybranch    #generate your branch
      git checkout mybranch  #switch to your branch
