@@ -64,7 +64,7 @@ If you're writing code for this repository, please develop it on your own branch
 
 ## Copyright
 
-Copyright (c) 2020, Benjamin Ries, Salomé Rieder, Candide Champion
+Copyright (c) 2021, Benjamin Ries, Salomé Rieder, Candide Champion
 
 
 #### Acknowledgments
