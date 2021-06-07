@@ -24,8 +24,10 @@ jobs:
         python-version: [3.7]
 
     steps:
-    - uses: actions/checkout@v1
-
+    - uses: actions/checkout@v2
+      with:
+        submodules: recursive
+  
     - name: Additional info about the build
       shell: bash
       run: |
@@ -40,7 +42,7 @@ jobs:
         environment-file:  devtools/conda-envs/test_env.yaml
         channels: conda-forge,defaults
         
-        activate-environment: dev
+        activate-environment: test
         auto-update-conda: true
         auto-activate-base: false
         show-channel-urls: true
@@ -61,7 +63,7 @@ jobs:
 
       run: |
         conda activate test
-        pytest -v --cov=pygromos --cov-report=xml --color=yes reeds/tests/ #
+        pytest -v --cov=reeds --cov-report=xml --color=yes reeds/tests/ #
         
     - name: CodeCov
       uses: codecov/codecov-action@v1
