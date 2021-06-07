@@ -48,9 +48,11 @@ class test_Eoff_wrapper(unittest.TestCase):
 
         #find Files
         ene_ana_trajs = fM.parse_csv_energy_trajectories(in_folder=in_BRD4_7ligs, ene_trajs_prefix="energies_")
-        
+
+        sampling_stat = {"state_undersampling_potTresh":  [0,0,0,0,0,0,0],
+                         "undersampling_occurence_sampling_tresh": 0.9}
         new_eoffs, all_eoffs = eds_energy_offsets.estimate_energy_offsets(ene_ana_trajs, initial_offsets = init_Eoff, 
-                                                                          s_values = s_values, out_path = None, 
+                                                                          s_values = s_values, out_path = None,  sampling_stat=sampling_stat,
                                                                           temp = T, trim_beg = 0.0, undersampling_idx = 0, 
                                                                           plot_results = False, calc_clara = False
                                                                           )
@@ -102,8 +104,10 @@ class test_Eoff_wrapper(unittest.TestCase):
         #find Files
         ene_ana_trajs = fM.parse_csv_energy_trajectories(in_folder=in_PNMT_9ligs, ene_trajs_prefix="energies_")
 
+        sampling_stat = {"state_undersampling_potTresh":  [0,0,0,0,0,0,0,0,0],
+                         "undersampling_occurence_sampling_tresh": 0.9}
         new_eoffs, all_eoffs = eds_energy_offsets.estimate_energy_offsets(ene_ana_trajs, initial_offsets = init_Eoff,
-                                                                          s_values = s_values, out_path = None,
+                                                                          s_values = s_values, out_path = None, sampling_stat=sampling_stat,
                                                                           temp = T, trim_beg = 0.0, undersampling_idx = 0,
                                                                           plot_results = False, calc_clara = False
                                                                           )
