@@ -260,7 +260,7 @@ def sampling_analysis(ene_traj_csvs: List[pd.DataFrame],
                       s_values: List[float],
                       out_path: str = None,
                       xmax: bool = False,
-                      do_plot: bool = True,
+                      _visualize: bool = True,
                       verbose: bool = False, _usample_run:bool=False) -> (dict, str):
     """sampling_analysis
     This function is analysing the samplings
@@ -277,7 +277,7 @@ def sampling_analysis(ene_traj_csvs: List[pd.DataFrame],
         potential energy thresholds, for considering a state as sampled
     xmax :  bool, optional
         additionally output a plot only with a smaller x_range. (0->xmax) (default False)
-    do_plot: bool, opptional
+    _visualize: bool, opptional
         create additional plots (default True)
     verbose: bool, optional
         story time :) (default False)
@@ -314,7 +314,7 @@ def sampling_analysis(ene_traj_csvs: List[pd.DataFrame],
 
         data = {"time": replica.time, "occurrence_t": occurrence_sampling_replica, "dominating_state": dominating_state_sampling}
 
-        if (do_plot):
+        if (_visualize):
             reeds.function_libs.visualization.sampling_plots.plot_t_statepres(data=data,
                                                                               title="s=" + str(s_vals_nice[ind]),
                                                                               out_path=out_path + "/sampling_timeseries_s" + str(ind + 1) + ".png")
@@ -330,13 +330,13 @@ def sampling_analysis(ene_traj_csvs: List[pd.DataFrame],
     if (verbose): print("\n\n Calculate Sampling Distributions\n\n")
     replica_sampling_distributions = calculate_sampling_distributions(ene_traj_csvs=ene_traj_csvs,
                                                                       potential_treshold=state_potential_treshold)
-    if (do_plot):
+    if (_visualize):
         if (verbose): print("\n\n Sampling Histograms\n\n")
         for ind, x in enumerate(replica_sampling_distributions):
             reeds.function_libs.visualization.sampling_plots.plot_stateOccurence_hist(data=replica_sampling_distributions[x],
                                                                                       title="s=" + str(s_vals_nice[ind]),
                                                                                       out_path=out_path + "/sampling_hist_" + str(x) + ".png")
-    if (do_plot and not _usample_run):
+    if (_visualize and not _usample_run):
         if (verbose): print("\n\n Sampling Matrix\n\n")
         reeds.function_libs.visualization.sampling_plots.plot_stateOccurence_matrix(data=replica_sampling_distributions, out_dir=out_path, s_values=s_vals_nice,
                                                                                     place_undersampling_threshold=False, title_suffix="")
@@ -349,13 +349,13 @@ def sampling_analysis(ene_traj_csvs: List[pd.DataFrame],
 
 
 def detect_undersampling(ene_traj_csvs: List[pd.DataFrame],
-                      state_potential_treshold: List[float],
-                      s_values: List[float],
-                      out_path: str = None,
-                      undersampling_occurence_sampling_tresh: float = 0.9,
-                      xmax: bool = False,
-                      do_plot: bool = True,
-                      verbose: bool = False) -> (dict, str):
+                         state_potential_treshold: List[float],
+                         s_values: List[float],
+                         out_path: str = None,
+                         undersampling_occurence_sampling_tresh: float = 0.9,
+                         xmax: bool = False,
+                         _visualize: bool = True,
+                         verbose: bool = False) -> (dict, str):
     """sampling_analysis
     This function is analysing the samplings
 
@@ -371,7 +371,7 @@ def detect_undersampling(ene_traj_csvs: List[pd.DataFrame],
         potential energy thresholds, for considering a state as sampled
     xmax :  bool, optional
         additionally output a plot only with a smaller x_range. (0->xmax) (default False)
-    do_plot: bool, opptional
+    _visualize: bool, opptional
         create additional plots (default True)
     verbose: bool, optional
         story time :) (default False)
@@ -390,12 +390,12 @@ def detect_undersampling(ene_traj_csvs: List[pd.DataFrame],
 
     ##glob vars
     sampling_stat, out_path = sampling_analysis(ene_traj_csvs=ene_traj_csvs,
-                      state_potential_treshold=state_potential_treshold,
-                      s_values=s_values,
-                      out_path=out_path,
-                      xmax= xmax,
-                      do_plot =do_plot,
-                      verbose = verbose,_usample_run=True)
+                                                state_potential_treshold=state_potential_treshold,
+                                                s_values=s_values,
+                                                out_path=out_path,
+                                                xmax= xmax,
+                                                _visualize=_visualize,
+                                                verbose = verbose, _usample_run=True)
 
     ##get undersampling id:
     found_undersampling = False
@@ -413,10 +413,11 @@ def detect_undersampling(ene_traj_csvs: List[pd.DataFrame],
     if (not found_undersampling):
         warnings.warn("Could not find undersampling!")
 
-    if (do_plot):
+    if (_visualize):
         if (verbose): print("\n\n Sampling Matrix\n\n")
         s_vals_nice = nice_s_vals(s_values)
-        reeds.function_libs.visualization.sampling_plots.plot_stateOccurence_matrix(data=replica_sampling_distributions, out_dir=out_path, s_values=s_vals_nice,
+        if(_visualize):
+            reeds.function_libs.visualization.sampling_plots.plot_stateOccurence_matrix(data=replica_sampling_distributions, out_dir=out_path, s_values=s_vals_nice,
                                                                                     place_undersampling_threshold=True, title_suffix="")
 
     sampling_stat.update({"undersamplingThreshold": undersampling_idx})

@@ -122,4 +122,63 @@ class test_Eoff_wrapper(unittest.TestCase):
     
         
 
+    def test_undersampling_detection(self):
+        #params:
+        T = 298
+        s_values = list(map(float, "1  0.7  0.5  0.35  0.25  0.18  0.13  0.089  0.063  0.044  0.031  0.022  0.016  0.011  0.008  0.0057  0.004  0.0028  0.002  0.0014  0.001".split()))
+        s_val_num = len(s_values)
+        states_num = 9
+        init_Eoff = [0.0 for x in range(states_num)]
+        sampling_stat = {"state_undersampling_potTresh":  [0,0,0,0,0,0,0,0,0],
+                         "undersampling_occurence_sampling_tresh": 0.9}
 
+        #find Files
+        ene_ana_trajs = fM.parse_csv_energy_trajectories(in_folder=in_PNMT_9ligs, ene_trajs_prefix="energies_")
+
+        #sampling style
+        import reeds.function_libs.analysis.sampling as sampling_ana
+        (sampling_results, out_dir) = sampling_ana.detect_undersampling(out_path="",
+                                                                        ene_traj_csvs=ene_ana_trajs,
+                                                                        s_values=s_values,
+                                                                        state_potential_treshold=sampling_stat['state_undersampling_potTresh'],
+                                                                        _visualize=False,
+                                                                        undersampling_occurence_sampling_tresh=sampling_stat['undersampling_occurence_sampling_tresh'])
+
+        print(sampling_results)
+
+    def test_whole(self):
+        #params:
+        expected_res = np.array([0.,-3.14132494, -4.67494518, 6.79295467, -38.41314081, -333.98504042, -378.36301104, -10.06737494, -124.97849135])
+        T = 298
+        s_values = list(map(float, "1  0.7  0.5  0.35  0.25  0.18  0.13  0.089  0.063  0.044  0.031  0.022  0.016  0.011  0.008  0.0057  0.004  0.0028  0.002  0.0014  0.001".split()))
+        s_val_num = len(s_values)
+        states_num = 9
+        init_Eoff = [0.0 for x in range(states_num)]
+        sampling_stat = {"state_undersampling_potTresh":  [0,0,0,0,0,0,0,0,0],
+                         "undersampling_occurence_sampling_tresh": 0.9}
+
+        #find Files
+        ene_ana_trajs = fM.parse_csv_energy_trajectories(in_folder=in_PNMT_9ligs, ene_trajs_prefix="energies_")
+
+        #sampling style
+        import reeds.function_libs.analysis.sampling as sampling_ana
+        (sampling_results, out_dir) = sampling_ana.detect_undersampling(out_path="",
+                                                                        ene_traj_csvs=ene_ana_trajs,
+                                                                        s_values=s_values,
+                                                                        state_potential_treshold=sampling_stat['state_undersampling_potTresh'],
+                                                                        _visualize=False,
+                                                                        undersampling_occurence_sampling_tresh=sampling_stat['undersampling_occurence_sampling_tresh'])
+
+        print(sampling_results['undersamplingThreshold'])
+        new_eoffs, all_eoffs = eds_energy_offsets.estimate_energy_offsets(ene_trajs=ene_ana_trajs,
+                                                                          initial_offsets=init_Eoff,
+                                                                          sampling_stat=sampling_results,
+                                                                          s_values=s_values,
+                                                                          out_path=None, temp=T, trim_beg=0.,
+                                                                          undersampling_idx=sampling_results['undersamplingThreshold'],
+                                                                          plot_results=False, calc_clara=False)
+
+        print(new_eoffs)
+        # do the comparison with the previous data
+        equal_criteria = 0.1 # kJ/mol, results must not differ by more than this value
+        np.testing.assert_almost_equal(expected_res, new_eoffs,  decimal=3)

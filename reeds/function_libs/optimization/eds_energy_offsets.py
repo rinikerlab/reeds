@@ -285,14 +285,13 @@ def analyse_replicas(ene_trajs: pd.DataFrame, sampling_stat:dict, num_states:int
     title += "potential thresholds used: " + str(state_undersampling_potential_threshold)+"\n"
     tresh_table = format_as_jnb_table(title, s_values, below_thresh_counts, 0)
 
-    state_undersampling_potential_threshold = sampling_stat["undersampling_occurence_sampling_tresh"]
     occ_sampling = np.zeros([num_replicas, num_states])
     for i, traj in enumerate(ene_trajs):
         for j, state in enumerate(select_states):
             occ_sampling[i][j] = np.round(below_thresh_counts[i][j]/tot_len,2)
 
     title = "Fractions of undersampling occurrence sampling\n"
-    title += "fraction treshold: " + str(state_undersampling_potential_threshold)+"\n"
+    title += "fraction treshold: " + str(sampling_stat["undersampling_occurence_sampling_tresh"])+"\n"
     frac_table = format_as_jnb_table(title, s_values, occ_sampling, 0)
 
     return (min_table + '\n' + tresh_table + '\n'+frac_table+"\n")
