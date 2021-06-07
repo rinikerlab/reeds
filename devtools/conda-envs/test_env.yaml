@@ -12,6 +12,7 @@ dependencies:
   - codecov
 
     #Science
+  - mpmath
   - scikit-learn
   - scipy
   - numpy
