@@ -5,6 +5,7 @@ REEDS
 [![Documentation](https://img.shields.io/badge/Documentation-here-white.svg)](https://rinikerlab.github.io/reeds/)
 
 
+
 Replica Exchange - Enveloping Distribution Sampling (RE-EDS) is a method to calculate the relative free energy of multiple states in a system. It can be applied to calculate relative solvation free energies or relative binding free energies with [Gromos](http://gromos.net/). One advantage of this method is that no alchemical transition path from one end state to another end state is required thanks to Enveloping Distribution Sampling (EDS) by Christ et al. .  EDS allows to explore the end state graph during the simulation with multiple different alchemical transition paths.
 
 The enhanced sampling method Replica Exchange was added by Sidler et al. to speed up the sampling and ease the choice of parameters. Additionally, multiple modules were described by Sidler to allow an automatization of the pipeline. In this repository, we now combined these approaches to an automatic scheme for RE-EDS.
