@@ -1,4 +1,4 @@
-name: CI
+name: AutoTest
 
 on:
   push:
