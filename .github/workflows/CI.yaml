@@ -63,9 +63,6 @@ jobs:
 
       run: |
         conda activate test
-        cd reeds/submodules/pygromos
-        git pull
-        cd ../../../
         pytest -v --cov=reeds --cov-report=xml --color=yes reeds/tests/ #
         
     - name: CodeCov
