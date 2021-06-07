@@ -40,7 +40,7 @@ jobs:
         environment-file:  devtools/conda-envs/test_env.yaml
         channels: conda-forge,defaults
         
-        activate-environment: dev
+        activate-environment: test
         auto-update-conda: true
         auto-activate-base: false
         show-channel-urls: true
