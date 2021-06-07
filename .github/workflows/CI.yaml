@@ -32,6 +32,7 @@ jobs:
         uname -a
         df -h
         ulimit -a
+        git pull --recurse-submodules
 
 
     - uses: conda-incubator/setup-miniconda@v2
@@ -61,7 +62,7 @@ jobs:
 
       run: |
         conda activate test
-        pytest -v --cov=pygromos --cov-report=xml --color=yes reeds/tests/ #
+        pytest -v --cov=reeds --cov-report=xml --color=yes reeds/tests/ #
         
     - name: CodeCov
       uses: codecov/codecov-action@v1
