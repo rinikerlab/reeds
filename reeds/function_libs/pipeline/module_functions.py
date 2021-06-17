@@ -126,7 +126,7 @@ def adapt_imd_template_optimizedState(in_template_imd_path: str, out_imd_dir: st
 
 def adapt_imd_template_lowerBound(in_template_imd_path: str, out_imd_dir: str, cnf: coord.Cnf,
                                   non_ligand_residues: list = [], s_values: t.List[float] = None,
-                                  simulation_steps: int = 1000000,
+                                  simulation_steps: int = 1000000, solvent_keyword:str="SOLV",
                                   single_bath: bool = False)->(str, list, int):
     """
         This function prepares the imd. protocol file for a gromos simulation.
@@ -150,88 +150,82 @@ def adapt_imd_template_lowerBound(in_template_imd_path: str, out_imd_dir: str, c
 
     orig_residues = cnf.get_residues()
 
-    residues, ligands, protein, non_ligands = imd.Imd.clean_residue_list_for_imd(orig_residues,
-                                                                                 not_ligand_residues=non_ligand_residues)
+    ignore_residues = lambda res: res != solvent_keyword and res not in aa.three_letter_aa_lib and res != "prot" and (
+        not res in non_ligand_residues)
+    protein_residues = {res: val for res, val in orig_residues.items() if (res in aa.three_letter_aa_lib)}
+    n_atoms_prot = sum([sum(list(orig_residues[res].values())) for res in orig_residues if
+                        res in aa.three_letter_aa_lib])  # if protein is present!
+    prot_position = min([min(val) for res, val in protein_residues.items()]) if (n_atoms_prot > 0) else 0
 
-    #print("res")
-    #print(residues)
-    # print("lig")
-    # print(ligands)
-    # print("prot")
-    # print(protein)
-    #print("non_ligands")
-    #print(non_ligands)
+    # adapt resis
+    residues = {res: val for res, val in orig_residues.items() if (res not in aa.three_letter_aa_lib)}
 
-    ignore_residues = lambda \
-            res: res != "SOLV" and res not in aa.three_letter_aa_lib and res != "prot" and not res in non_ligand_residues
+    # get ligand parameters
+    lig_atoms = sum([sum(list(residues[res].values())) for res in residues if ignore_residues(res)])
+    lig_num = sum([1 for res in residues if ignore_residues(res)])
+    lig_names = [res for res in residues if ignore_residues(res)]
+    lig_position = min([min(residues[res]) for res in residues if ignore_residues(res)])
 
-    # Modify IMD
+    if (n_atoms_prot > 1):
+        print("protein_position:", prot_position)
+        residues.update({"prot": {prot_position: n_atoms_prot}})
+
+    if (not solvent_keyword in residues):
+        residues.update({solvent_keyword: 0})
+
     imd_file = imd.Imd(in_template_imd_path)
-
-    atoms_per_solv = 3
-    imd_file.SYSTEM.NSM = int(round(residues["SOLV"] / atoms_per_solv)) if ("SOLV" in residues) else 0
-
-    imd_file.STEP.step = simulation_steps
+    imd_file.SYSTEM.NSM = int(round(residues["SOLV"] / 3)) if ("SOLV" in residues) else 0
     imd_file.FORCE.adapt_energy_groups(residues)
+    imd_file.STEP.NSTLIM = simulation_steps
+    imd_file.STEP.NSTLIM = simulation_steps
 
-    if(single_bath):
-        solvent_bath = (ligands.number_of_atoms + protein.number_of_atoms + non_ligands.number_of_atoms + residues[
-                "SOLV"])
-        temp_baths = {solvent_bath : 1}
+    if (single_bath):
+        solvent_bath = (
+                lig_atoms + sum([sum(list(residues[x].values())) for x in non_ligand_residues]) +
+                residues[solvent_keyword])
+        temp_baths = {solvent_bath: 1}
 
     # hack for TIP3P explicit solvent
-    elif (len(non_ligand_residues) > 0 and not "prot" in residues):
+    elif (len(non_ligand_residues) > 0 and not ("prot" in residues or "protein" in residues)):
         solvent_bath = (
-                ligands.number_of_atoms + non_ligands.number_of_atoms)
-        temp_baths = {ligands.number_of_atoms: 1, solvent_bath: 2}
+                lig_atoms + sum([sum(list(residues[x].values())) for x in non_ligand_residues]) +
+                residues[solvent_keyword])
+        temp_baths = {lig_atoms: 1, solvent_bath: 2}
 
-    ##Define temperature baths
-    elif (protein.number_of_atoms > 0):
+    # Temperature baths
+    elif ("prot" in residues or "protein" in residues):
         temp_baths = {}
-        if (isinstance(non_ligands, type(None))):  # TODO: DIRTY HACK: in PNMT is Cofactor at end of the file.
-            solvent_bath = (ligands.number_of_atoms + protein.number_of_atoms + residues["SOLV"])
+        if (len(non_ligand_residues) < 0):  # TODO: DIRTY HACK: in PNMT is Cofactor at end of the file.
+            solvent_bath = (lig_atoms + n_atoms_prot + residues[solvent_keyword])
         else:
-            solvent_bath = (ligands.number_of_atoms + protein.number_of_atoms + non_ligands.number_of_atoms + residues[
-                "SOLV"])
+            solvent_bath = (
+                    lig_atoms + n_atoms_prot + sum([sum(list(residues[x].values())) for x in non_ligand_residues]) +
+                    residues[solvent_keyword])
 
-        if (max(ligands.positions) < protein.position):
-            temp_baths = {ligands.number_of_atoms: 1, (ligands.number_of_atoms + protein.number_of_atoms): 2,
-                          solvent_bath: 3}
+        if (lig_position < prot_position):
+            temp_baths = {lig_atoms: 1, (lig_atoms + n_atoms_prot): 2, solvent_bath: 3}
         else:
-            temp_baths = {protein.number_of_atoms: 1, (ligands.number_of_atoms + protein.number_of_atoms): 2,
-                          solvent_bath: 3}
+            temp_baths = {n_atoms_prot: 1, (lig_atoms + n_atoms_prot): 2, solvent_bath: 3}
     else:
-        temp_baths = {ligands.number_of_atoms: 1, (ligands.number_of_atoms + residues["SOLV"]): 2} if (
-                    "SOLV" in residues) else {ligands.number_of_atoms: 1}
-
-    if (non_ligands):
-        non_lig_atoms = non_ligands.number_of_atoms
-    else:
-        non_lig_atoms = 0
-
-    if (protein):
-        protein_number_of_atoms = protein.number_of_atoms
-    else:
-        protein_number_of_atoms = 0
-
-    all_atoms = ligands.number_of_atoms + protein_number_of_atoms + non_lig_atoms
-    if "SOLV" in residues:
-        all_atoms += residues["SOLV"]
+        temp_baths = {lig_atoms: 1, (lig_atoms + residues[solvent_keyword]): 2} if (solvent_keyword in residues) else {
+            lig_atoms: 1}
 
     if (not isinstance(imd_file.MULTIBATH, type(None))):
         imd_file.MULTIBATH.adapt_multibath(last_atoms_bath=temp_baths)
+
+
     imd_file.STEP.NSTLIM = simulation_steps
 
-    imd_template_path = out_imd_dir + "/opt_structs_" + "_".join(ligands.names)
+    imd_template_path = out_imd_dir + "/lower_bound_" + "_".join(lig_names)
 
     if (type(s_values) == type(None)):
         s_values = s_log_dist.get_log_s_distribution_between(start=1.0, end=0.00001)
 
     for ind, sval in enumerate(s_values):
-        imd_file.edit_EDS(NUMSTATES=ligands.number, S=sval, EIR=[0.0 for x in range(ligands.number)])
+        imd_file.edit_EDS(NUMSTATES=lig_num, S=sval, EIR=[0.0 for x in range(lig_num)])
         imd_file.write(imd_template_path + "_" + str(ind) + ".imd")
 
-    return imd_template_path, s_values, ligands.number
+    return imd_template_path, s_values, lig_num
 
 
 def adapt_imd_template_eoff(system: fM.System, imd_out_path: str, imd_path: str,
