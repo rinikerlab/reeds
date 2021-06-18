@@ -176,7 +176,7 @@ def do(out_analysis_dir: str, system_name: str,
     print('New s distribution will place ' + str(num_states) + ' replicas between  s = ' + str(s_values[u_idx]) + ' and s = ' +str(s_values[u_idx+3]))
  
     new_sdist = s_values[:u_idx-1]
-    lower_sdist = s_log_dist.get_log_s_distribution_between(s_values[u_idx], s_values[u_idx+3], num_states)
+    lower_sdist = s_log_dist.get_log_s_distribution_between(new_sdist[u_idx], new_sdist[u_idx+1], num_states)
     new_sdist.extend(lower_sdist)  
 
     # Write the s-values to a csv file
