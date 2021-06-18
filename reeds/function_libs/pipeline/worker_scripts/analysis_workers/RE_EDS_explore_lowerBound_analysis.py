@@ -192,7 +192,7 @@ def do(out_analysis_dir: str, system_name: str,
     out_file.close()
 
     # Coordinates:
-    cnfs = glob.glob(data_dir + "/*.cnf")
+    cnfs = list(sorted(glob.glob(data_dir + "/*.cnf"), key=lambda x: int(x.split("_", "")[-1].replace(".cnf", ""))))
     if(len(s_values) != len(cnfs)):
         print(cnfs)
         print(u_idx)
