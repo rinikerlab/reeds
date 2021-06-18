@@ -136,8 +136,7 @@ def do(out_analysis_dir: str, system_name: str,
                                                                                                        ene_traj_csvs = ene_trajs,
                                                                                                        s_values = s_values[:succsessful_sim_count],
                                                                                                        state_potential_treshold=state_undersampling_pot_treshold)
-    print(sampling_analysis_results)
-    exit()
+
     # Plotting the different potential energy distributions
     if control_dict["pot_ene_by_state"]:
         for i in range(num_states):
@@ -195,6 +194,8 @@ def do(out_analysis_dir: str, system_name: str,
     # Coordinates:
     cnfs = glob.glob(data_dir + "/*.cnf")
     if(len(s_values) != len(cnfs)):
+        print(cnfs)
+        print(u_idx)
         fM.adapt_cnfs_to_new_sDistribution(in_old_svals=s_values[:u_idx], in_new_svals=new_sdist, in_cnf_files=cnfs[:u_idx], out_cnf_dir=out_analysis_next_dir, cnf_prefix=system_name+"_lower_bound")
 
     # compress out_trc/out_tre Files & simulation dir
@@ -202,7 +203,7 @@ def do(out_analysis_dir: str, system_name: str,
     for trx in trx_files:
         bash.compress_gzip(in_path=trx)
 
-    if (not os.path.exists(in_simulation_dir + ".tar.gz") and os.path.exists(in_simulation_dir)):
+    if (not os.path.exists(in_simulation_dir + ".tar.gz") and os.path.exists(in_simulation_dir) and False):
         tar_sim_dir = bash.compress_tar(in_path=in_simulation_dir, gunzip_compression=True, )
         bash.wait_for_fileSystem(tar_sim_dir)
         bash.remove_file(in_simulation_dir, additional_options="-r")
