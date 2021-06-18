@@ -136,7 +136,8 @@ def do(out_analysis_dir: str, system_name: str,
                                                                                                        ene_traj_csvs = ene_trajs,
                                                                                                        s_values = s_values[:succsessful_sim_count],
                                                                                                        state_potential_treshold=state_undersampling_pot_treshold)
-
+    print(sampling_analysis_results)
+    exit()
     # Plotting the different potential energy distributions
     if control_dict["pot_ene_by_state"]:
         for i in range(num_states):
