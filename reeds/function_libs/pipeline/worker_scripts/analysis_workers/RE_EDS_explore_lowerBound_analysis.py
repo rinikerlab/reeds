@@ -21,7 +21,7 @@ from reeds.data import ene_ana_libs
 def do(out_analysis_dir: str, system_name: str,
        in_simulation_dir: str, in_topology_path: str, in_imd_path: str,
        undersampling_occurrence_fraction_threshold: float = 0.9,
-       gromosPP_bin: str = None,
+       gromosPP_bin: str = None, final_number_of_replicas : int= None,
        in_ene_ana_lib: str = ene_ana_libs.ene_ana_lib_path,
        verbose: bool = True):
     """
@@ -174,10 +174,18 @@ def do(out_analysis_dir: str, system_name: str,
     # Make the new s-distribution based on this 
     print("undersampling found after replica: " + str(u_idx) + ' with s = ' + str(s_values[u_idx]))    
     print('New s distribution will place ' + str(num_states) + ' replicas between  s = ' + str(s_values[u_idx]) + ' and s = ' +str(s_values[u_idx+3]))
- 
-    new_sdist = s_values[:u_idx-1]
-    lower_sdist = s_log_dist.get_log_s_distribution_between(new_sdist[u_idx], new_sdist[u_idx+1], num_states)
-    new_sdist.extend(lower_sdist)  
+
+    if(u_idx== len(s_values)):
+        u_idx -= 1
+
+    if(not final_number_of_replicas is None):
+        new_sdist = s_log_dist.get_log_s_distribution_between(s_values[0],s_values[u_idx-1], final_number_of_replicas-num_states)
+        lower_sdist = s_log_dist.get_log_s_distribution_between(new_sdist[u_idx], new_sdist[u_idx+1], num_states)
+        new_sdist.extend(lower_sdist)
+    else:
+        new_sdist = s_values[:u_idx-1]
+        lower_sdist = s_log_dist.get_log_s_distribution_between(new_sdist[u_idx], new_sdist[u_idx+1], num_states)
+        new_sdist.extend(lower_sdist)
 
     # Write the s-values to a csv file
     out_file = open(out_analysis_next_dir + "/s_vals.csv", "w")
