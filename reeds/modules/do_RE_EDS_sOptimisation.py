@@ -51,7 +51,7 @@ def do(out_root_dir: str, in_simSystem: fM.System, in_template_imd: str = None,
        nmpi_per_replica: int = 1, submit: bool = True, duration_per_job: str = "24:00",
        queueing_system: _SubmissionSystem = LSF,
        do_not_doubly_submit_to_queue: bool = True,
-       initialize_first_run: bool = True, reinitialize: bool = False,
+       initialize_first_run: bool = True, reinitialize: bool = False, randomize: bool=False,
        verbose: bool = True):
     """
     SCRIPT:            Do S-optimisation
@@ -179,6 +179,7 @@ int
         # set new step number between trials and new number of trials if necessary
         imd_file.STEP.NSTLIM = steps_between_trials
         imd_file.edit_REEDS(NRETRIAL=trials_per_run)
+        if(randomize): imd_file.randomize_seed()
         imd_path_last = imd_file.write(sopt_input + "/repex_sopt_template.imd")
 
         # Setup s-optimization

@@ -231,7 +231,7 @@ def adapt_imd_template_lowerBound(in_template_imd_path: str, out_imd_dir: str, c
 def adapt_imd_template_eoff(system: fM.System, imd_out_path: str, imd_path: str,
                             old_svals: List[float] = None, s_num: int = None, s_range: Tuple[float, float] = None,
                             non_ligand_residues: list = [],
-                            single_bath: bool = False,
+                            single_bath: bool = False, randomize:bool=False,
                             verbose: bool = False) -> imd.Imd:
     """
             This function is preparing the imd_template in gromos_files for the REEDS SYSTEM>
@@ -345,6 +345,7 @@ def adapt_imd_template_eoff(system: fM.System, imd_out_path: str, imd_path: str,
         imd_file.MULTIBATH.adapt_multibath(last_atoms_bath=temp_baths)  # adapt bath last atom nums
     if (verbose): print("svals " + str(len(svals)) + ": " + str(svals))
     imd_file.edit_REEDS(NATOM=all_atoms, NUMSTATES=ligands.number, SVALS=svals, EIR=0.0)  # build REEDS Block
+    if(randomize): imd_file.randomize_seed()
     imd_out_path = imd_file.write(imd_out_path)
     if (verbose): print(imd_file.REPLICA_EDS)
     if verbose: print("Wrote out new imd to -> " + imd_out_path)
