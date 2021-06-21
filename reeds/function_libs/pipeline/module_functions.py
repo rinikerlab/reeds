@@ -232,7 +232,7 @@ def adapt_imd_template_eoff(system: fM.System, imd_out_path: str, imd_path: str,
                             old_svals: List[float] = None, s_num: int = None, s_range: Tuple[float, float] = None,
                             non_ligand_residues: list = [],
                             single_bath: bool = False, randomize:bool=False,
-                            verbose: bool = False) -> imd.Imd:
+                            verbose: bool = True) -> imd.Imd:
     """
             This function is preparing the imd_template in gromos_files for the REEDS SYSTEM>
 
@@ -295,7 +295,7 @@ def adapt_imd_template_eoff(system: fM.System, imd_out_path: str, imd_path: str,
         temp_baths = {solvent_bath: 1}
 
     # hack for TIP3P explicit solvent
-    elif (len(non_ligand_residues) > 0 and not "prot" in residues):
+    elif (len(non_ligand_residues) > 0 and protein.number_of_atoms == 0):
         solvent_bath = (
                 ligands.number_of_atoms + non_ligands.number_of_atoms)
         temp_baths = {ligands.number_of_atoms: 1, solvent_bath: 2}
@@ -340,6 +340,7 @@ def adapt_imd_template_eoff(system: fM.System, imd_out_path: str, imd_path: str,
     imd_file.SYSTEM.NSM = int(round(residues["SOLV"] / atoms_per_solv)) if ("SOLV" in residues) else 0
 
     # imd_file.SYSTEM.NSM = int(round(residues["SOLV"] / 3))  # only for water solvent valid!@ needs res num
+    print("TEMPBATHS: ",temp_baths)
     imd_file.FORCE.adapt_energy_groups(residues)  # adapt force groups
     if (not isinstance(imd_file.MULTIBATH, type(None))):
         imd_file.MULTIBATH.adapt_multibath(last_atoms_bath=temp_baths)  # adapt bath last atom nums
