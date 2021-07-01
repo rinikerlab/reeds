@@ -74,6 +74,16 @@ def work(out_dir: str, in_coord: str, in_imd_path: str, in_topo_path: str, in_pe
         # get file outprefix
         out_prefix = os.path.splitext(os.path.basename(imd_path))[0]
 
+        #TODO: This is a stupid workaround as Euler tends to place nans in the euler angles, that should not be there!
+        from pygromos.files.coord import cnf
+        import math
+        import glob
+        for in_cnf_tmp in glob.glob(os.path.dirname(in_coord)+"/*.cnf"):
+            cnf_file = cnf.Cnf(in_cnf_tmp)
+            if(hasattr(cnf_file, "GENBOX") and any([math.isnan(x) for x in cnf_file.GENBOX.euler])):
+                cnf_file.GENBOX._euler = [0.0, 0.0, 0.0]
+                cnf_file.write(in_cnf_tmp)
+
         try:
             key_args = {"in_topo_path": in_topo_path,
                         "in_coord_path" : in_coord,

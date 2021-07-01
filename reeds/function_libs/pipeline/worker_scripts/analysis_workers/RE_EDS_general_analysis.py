@@ -408,13 +408,12 @@ def do_Reeds_analysis(in_folder: str, out_folder: str, gromos_path: str,
         if (not os.path.exists(concat_file_folder)):
             raise IOError("could not find needed energies (contains all ene ana .dats) folder in:\n " + out_folder)
         
-        if (sub_control["sampling_plot"]):
-            # plot if states are sampled and minimal state
-            print("\tplot sampling: ")
-            (sampling_results, out_dir) = sampling_ana.detect_undersampling(out_path = out_dir, ene_traj_csvs = energy_trajectories,
+        # plot if states are sampled and minimal state
+        #print("\tplot sampling: ")
+           
+        (sampling_results, out_dir) = sampling_ana.detect_undersampling(out_path = out_dir, ene_traj_csvs = energy_trajectories,_visualize=sub_control["sampling_plot"], 
                                                                             s_values = s_values, state_potential_treshold= state_undersampling_occurrence_potential_threshold, 
                                                                             undersampling_occurence_sampling_tresh=undersampling_frac_thresh)
-
         if (sub_control["calc_eoff"]):
             print("calc Eoff: ")
             # WARNING ASSUMPTION THAT ALL EOFF VECTORS ARE THE SAME!
@@ -422,10 +421,11 @@ def do_Reeds_analysis(in_folder: str, out_folder: str, gromos_path: str,
             print("\tS_values(" + str(len(s_values)) + "): ", s_values)
             print("\tsytsemTemp: ", temp)
             # set trim_beg to 0.1 when analysing non equilibrated data
+
             new_eoffs, all_eoffs = eds_energy_offsets.estimate_energy_offsets(ene_trajs = energy_trajectories, initial_offsets = Eoff[0], sampling_stat=sampling_results, s_values = s_values,
                                                                               out_path = out_dir, temp = temp, trim_beg = 0., undersampling_idx = sampling_results['undersamplingThreshold'],
                                                                               plot_results = True, calc_clara = False)
-        
+            print("ENERGY OFF: ", new_eoffs, all_eoffs) 
         if (verbose): print("Done\n")
 
     if (control_dict["sopt"]["do"]):

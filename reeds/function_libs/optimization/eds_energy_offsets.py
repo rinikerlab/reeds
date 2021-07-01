@@ -94,10 +94,11 @@ def estimate_energy_offsets(ene_trajs: List[pd.DataFrame], initial_offsets: List
     else: 
         undersampling_eoffs = all_eoffs[undersampling_idx:]
         results = 'Undersampling found at replica ' + str(undersampling_idx+1) \
-                  + ' with s = ' + str(s_values[undersampling_idx]) + '\n\n' 
+                  + ' with s = ' + str(s_values[undersampling_idx-1]) + '\n\n' 
         results += 'New energy offset for each state:\n\n'
         means   = undersampling_eoffs.mean(axis=0)
         stdevs  = undersampling_eoffs.std(axis=0)
+
         for i in range(num_states):
             results += 'state ' + str(i+1) + ' : ' + str(round(means[i], 2)) \
                     + ' +-  ' + str(round(stdevs[i], 2)) + '\n\n'
@@ -292,7 +293,7 @@ def analyse_replicas(ene_trajs: pd.DataFrame, sampling_stat:dict, num_states:int
 
     title = "Fractions of undersampling occurrence sampling\n"
     title += "fraction treshold: " + str(sampling_stat["undersampling_occurence_sampling_tresh"])+"\n"
-    frac_table = format_as_jnb_table(title, s_values, occ_sampling, 0)
+    frac_table = format_as_jnb_table(title, s_values, occ_sampling, 2)
 
     return (min_table + '\n' + tresh_table + '\n'+frac_table+"\n")
 
