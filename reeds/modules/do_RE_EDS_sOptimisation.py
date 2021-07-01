@@ -50,6 +50,7 @@ def do(out_root_dir: str, in_simSystem: fM.System, in_template_imd: str = None,
        in_ene_ana_lib_path: str = ene_ana_libs.ene_ana_lib_path,
        nmpi_per_replica: int = 1, submit: bool = True, duration_per_job: str = "24:00",
        queueing_system: _SubmissionSystem = LSF,
+       run_NLRTO:bool=True, run_NGRTO:bool=False,
        do_not_doubly_submit_to_queue: bool = True,
        initialize_first_run: bool = True, reinitialize: bool = False, randomize: bool=False,
        verbose: bool = True):
@@ -126,6 +127,8 @@ int
     #################
     # Prepare general stuff
     #################
+    if(run_NGRTO and run_NLRTO or (not run_NGRTO and not run_NLRTO)):
+        raise Exception("Please specify either NLRTO or NGRTO!")
     try:
         simSystem = copy.deepcopy(in_simSystem)
         sopt_input = out_root_dir + "/input"
@@ -280,6 +283,7 @@ int
                                                      ligands=ligands, old_sopt_job=iteration_sopt_job,
                                                      last_data_folder=last_data_folder,
                                                      nmpi_per_replica=nmpi_per_replica,
+                                                     run_NRLTO=run_NLRTO,run_NGRTO=run_NGRTO,
                                                      pot_tresh=state_physical_occurrence_potential_threshold, duration_per_job=duration_per_job,
                                                      num_simulation_runs=repetitions)
 
