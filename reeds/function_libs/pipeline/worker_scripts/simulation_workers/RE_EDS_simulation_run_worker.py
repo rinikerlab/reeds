@@ -2,7 +2,6 @@ import argparse
 import os
 import sys
 import traceback
-import time
 
 import reeds 
 from pygromos.gromos import gromosXX as mdGromosXX
