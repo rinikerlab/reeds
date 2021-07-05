@@ -223,7 +223,7 @@ int
             
         # fix for euler!
         if (len(svals) > 15):
-            work_dir = out_root_dir + "/scratch"
+            work_dir = out_root_dir + "/local_scratch"
         else:
             work_dir = None
 
