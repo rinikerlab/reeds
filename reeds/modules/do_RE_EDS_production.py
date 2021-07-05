@@ -164,8 +164,8 @@ int
 
 
         # fix for euler!
-        if (num_svals > 30):
-            workdir = out_root_dir + "/scratch"
+        if (num_svals > 15):
+            workdir = out_root_dir + "/local_scratch"
         else:
             workdir = None
         nmpi = nmpi_per_replica * num_svals
