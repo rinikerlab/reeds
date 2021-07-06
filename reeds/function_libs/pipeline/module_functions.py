@@ -448,7 +448,7 @@ def build_sopt_step_dir(iteration: int, iteration_folder_prefix: str,pot_tresh: 
 
     # PARAMS:
     ## fix for euler! - write out to workdir not on node. - so no data is lost in transfer
-    if (soptimization_options.current_num_svals > 30):
+    if (soptimization_options.current_num_svals > 15):
         workdir = iteration_folder + "/scratch"
     else:
         workdir = None

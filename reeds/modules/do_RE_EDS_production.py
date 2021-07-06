@@ -164,7 +164,7 @@ int
 
 
         # fix for euler!
-        if (num_svals > 30):
+        if (num_svals > 15):
             workdir = out_root_dir + "/scratch"
         else:
             workdir = None
