@@ -30,7 +30,7 @@ def do(out_root_dir: str, in_simSystem: fM.System, in_template_imd: str,
        undersampling_fraction_threshold: float = 0.9,
        num_simulation_runs: int = 10, duration_per_job: str = "24:00",
        num_equilibration_runs: int = 0,
-       do_not_doubly_submit_to_queue: bool = True,
+       do_not_doubly_submit_to_queue: bool = True, randomize : bool = False,
        initialize_first_run: bool = True, reinitialize: bool = False,
        verbose: bool = False):
     """RE-EDS Production run
@@ -125,6 +125,8 @@ int
         imd_file.edit_REEDS(SVALS=imd_file.REPLICA_EDS.RES[s_1_ammount-1:])
         num_states = int(imd_file.REPLICA_EDS.NUMSTATES)
         num_svals = int(imd_file.REPLICA_EDS.NRES)
+        if(randomize):
+            imd_file.randomize()
         imd_file.write(in_imd_path)
 
         # Copy coordinates to path/to/input/coord
