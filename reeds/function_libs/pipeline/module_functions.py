@@ -303,7 +303,9 @@ def adapt_imd_template_eoff(system: fM.System, imd_out_path: str, imd_path: str,
     ##Define temperature baths
     elif (protein.number_of_atoms > 0):
         temp_baths = {}
-        if (isinstance(non_ligands, type(None))):  # TODO: DIRTY HACK: in PNMT is Cofactor at end of the file.
+        if(len(non_ligand_residues) > 0):
+            solvent_bath = (ligands.number_of_atoms + protein.number_of_atoms + non_ligands.number_of_atoms)
+        elif (isinstance(non_ligands, type(None))):  # TODO: DIRTY HACK: in PNMT is Cofactor at end of the file.
             solvent_bath = (ligands.number_of_atoms + protein.number_of_atoms + residues["SOLV"])
         else:
             solvent_bath = (ligands.number_of_atoms + protein.number_of_atoms + non_ligands.number_of_atoms + residues[
@@ -448,8 +450,8 @@ def build_sopt_step_dir(iteration: int, iteration_folder_prefix: str,pot_tresh: 
 
     # PARAMS:
     ## fix for euler! - write out to workdir not on node. - so no data is lost in transfer
-    if (soptimization_options.current_num_svals > 30):
-        workdir = iteration_folder + "/scratch"
+    if (soptimization_options.current_num_svals > 15):
+        workdir = iteration_folder + "/local_scratch"
     else:
         workdir = None
 
