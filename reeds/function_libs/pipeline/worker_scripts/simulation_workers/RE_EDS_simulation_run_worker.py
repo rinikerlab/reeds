@@ -115,7 +115,7 @@ def work(out_dir: str, in_coord: str, in_imd_path: str, in_topo_path: str, in_pe
             os.system("mv " + work_dir + "/*  " + out_dir)
             # bash.move_file(in_file_path=work_dir+"/*", out_file_path=out_dir, verbose=True)
 
-        # post simulation cleanup
+        # post simulation cleanup -> for now, don't delete directory because it can lead to data loss during copying
         #if not (isinstance(work_dir, type(None)) and work_dir == "None" and "TMPDIR" in os.environ):
         #    bash.remove_folder(work_dir, verbose=True)
 
