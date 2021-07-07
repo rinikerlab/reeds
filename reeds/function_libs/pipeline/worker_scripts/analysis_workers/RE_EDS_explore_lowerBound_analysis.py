@@ -176,11 +176,11 @@ def do(out_analysis_dir: str, system_name: str,
     print('New s distribution will place ' + str(num_states) + ' replicas between  s = ' + str(s_values[u_idx]) + ' and s = ' +str(s_values[u_idx+3]))
 
     if(not final_number_of_replicas is None):
-        new_sdist = list(s_log_dist.get_log_s_distribution_between(s_values[0],s_values[u_idx-1], final_number_of_replicas-num_states))
+        new_sdist = list(s_log_dist.get_log_s_distribution_between(s_values[0],s_values[u_idx-2], final_number_of_replicas-num_states))
         lower_sdist = list(s_log_dist.get_log_s_distribution_between(s_values[u_idx-1], s_values[u_idx], num_states))
         new_sdist.extend(lower_sdist)
     else:
-        new_sdist = s_values[:u_idx-1]
+        new_sdist = s_values[:u_idx-2]
         lower_sdist = s_log_dist.get_log_s_distribution_between(s_values[u_idx-1], s_values[u_idx], num_states)
         new_sdist.extend(lower_sdist)
 
