@@ -366,6 +366,7 @@ def build_sopt_step_dir(iteration: int, iteration_folder_prefix: str,pot_tresh: 
                         in_ene_ana_lib_path: str, in_gromosPP_bin_dir: str,
                         in_gromosXX_bin_dir: str, ligands, last_data_folder: str, nmpi_per_replica: int,
                         duration_per_job: str, num_simulation_runs: int, run_NRLTO:bool=True, run_NGRTO: bool=False,
+                        optimized_states_dir:str = "../../a_optimizedState/analysis/next",
                          old_sopt_job: sopt_job = False, verbose: bool = False) -> sopt_job:
     """
         This function is setting up the folder structure of an s-optimization iteration, copies some files and builds an settings object of the sopt-iteration.
@@ -390,7 +391,8 @@ def build_sopt_step_dir(iteration: int, iteration_folder_prefix: str,pot_tresh: 
         path to gromosPP binary dir
     in_gromosXX_bin_dir : str
         path to gromosXX binary dir
-
+    optimized_states_dir : str, optional
+        path to the optimized state results
     last_data_folder : str
         data folder from previous rund
     nmpi_per_replica : int
@@ -485,7 +487,7 @@ def build_sopt_step_dir(iteration: int, iteration_folder_prefix: str,pot_tresh: 
         "in_folder": sim_dir,
         "in_imd": final_in_imd_path,
         "topology": in_simSystem.top.top_path,
-        "optimized_eds_state_folder": "../1_opt_struct/analysis/sim_data",
+        "optimized_eds_state_folder": optimized_states_dir,
         "out_folder": analysis_dir,
         "gromos_path": in_gromosPP_bin_dir,
         "in_ene_ana_lib": in_ene_ana_lib_path,
