@@ -227,6 +227,13 @@ int
         else:
             work_dir = None
 
+
+        # fix for euler!
+        if (len(svals) > 15):
+            work_dir = out_root_dir + "/scratch"
+        else:
+            work_dir = None
+
         ##Build analysis_script
         if (verbose): print("Analysis Script")
         analysis_vars = OrderedDict({
