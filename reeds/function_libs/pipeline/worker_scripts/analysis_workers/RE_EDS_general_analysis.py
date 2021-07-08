@@ -511,7 +511,6 @@ def do_Reeds_analysis(in_folder: str, out_folder: str, gromos_path: str,
 
         # add ne w cnf s for the new S-distribution
         print("generating new Cnfs for new s_dist")
-
         if (sub_control["eoff_to_sopt"]):  # if the s_dist should be converted from eoff to sopt
             new_sval = [s_values, [], []]
             new_sval[1] = [1.0 for x in range(num_states)] + list(
@@ -525,8 +524,11 @@ def do_Reeds_analysis(in_folder: str, out_folder: str, gromos_path: str,
         input_cnfs = os.path.dirname(in_imd) + "/coord"
         print("svals", svals)
             
+        print("nsvals:")
+        print(len(svals[0]), len(svals[1]), len(svals[2]))
         # Put the proper cnfs in place        
-        sopt_type_switch = 2 if(svals[1] is None ) else 1
+        sopt_type_switch = 2 if(svals[1] is None or len(svals[1]) == 0 ) else 1
+        print("Switch", sopt_type_switch)
         if (sub_control["eoff_to_sopt"]):
             if (not os.path.isdir(optimized_eds_state_folder)):
                 raise IOError("Could not find optimized state output dir: " + optimized_eds_state_folder)
