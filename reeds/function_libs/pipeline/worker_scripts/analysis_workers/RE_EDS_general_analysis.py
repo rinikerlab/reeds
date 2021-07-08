@@ -527,6 +527,7 @@ def do_Reeds_analysis(in_folder: str, out_folder: str, gromos_path: str,
             
         # Put the proper cnfs in place        
         sopt_type_switch = 2 if(svals[1] is None ) else 1
+
         if (sub_control["eoff_to_sopt"]):
             if (not os.path.isdir(optimized_eds_state_folder)):
                 raise IOError("Could not find optimized state output dir: " + optimized_eds_state_folder)
@@ -546,8 +547,17 @@ def do_Reeds_analysis(in_folder: str, out_folder: str, gromos_path: str,
                                             in_current_sim_cnf_dir=input_cnfs,
                                             in_old_svals=s_values, in_new_svals=svals[sopt_type_switch],
                                             out_next_cnfs_dir=next_dir)
+        elif (len(svals[0]) < len(svals[sopt_type_switch]) and sopt_type_switch==2):
+            if verbose: print("copy coordinates for GRTO")
+            cnfs = list(sorted(glob.glob(concat_file_folder+"/*.cnf"), key=lambda x: int(x.split("_")[-1].split(".")[0])))
+            for i, cnf in enumerate(cnfs):
+                bash.copy_file(cnf, next_dir+"/"+title_prefix+"_"+str(i+1)+".cnf")
 
-        elif (len(svals[0]) < len(svals[sopt_type_switch])):
+            for addI in range(1, add_s_vals+1):
+                bash.copy_file(cnfs[-1], next_dir+"/"+title_prefix+"_"+str(len(cnfs)+addI)+".cnf")
+
+
+        elif (len(svals[0]) < len(svals[sopt_type_switch])  and sopt_type_switch==2):
             if verbose: print("reduce coordinate Files:")
             file_management.add_cnf_sopt_LRTOlike(in_dir=concat_file_folder, out_dir=next_dir, in_old_svals=s_values,
                                                   cnf_prefix=title_prefix,
