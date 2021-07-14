@@ -558,7 +558,7 @@ def do_Reeds_analysis(in_folder: str, out_folder: str, gromos_path: str,
                 bash.copy_file(cnfs[-1], next_dir+"/"+title_prefix+"_"+str(len(cnfs)+addI)+".cnf")
 
 
-        elif (len(svals[0]) < len(svals[sopt_type_switch])  and sopt_type_switch==2):
+        elif (len(svals[0]) < len(svals[sopt_type_switch])  and sopt_type_switch==1):
             if verbose: print("reduce coordinate Files:")
             file_management.add_cnf_sopt_LRTOlike(in_dir=concat_file_folder, out_dir=next_dir, in_old_svals=s_values,
                                                   cnf_prefix=title_prefix,
