@@ -80,7 +80,7 @@ def work(out_dir: str, in_coord: str, in_imd_path: str, in_topo_path: str, in_pe
         import glob
         for in_cnf_tmp in glob.glob(os.path.dirname(in_coord)+"/*.cnf"):
             cnf_file = cnf.Cnf(in_cnf_tmp)
-            if(hasattr(cnf_file, "GENBOX") and any([math.isnan(x) for x in cnf_file.GENBOX.euler])):
+            if(hasattr(cnf_file, "GENBOX") and any([math.isnan(x) for x in cnf_file.GENBOX._euler])):
                 cnf_file.GENBOX._euler = [0.0, 0.0, 0.0]
                 cnf_file.write(in_cnf_tmp)
 
