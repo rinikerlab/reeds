@@ -153,9 +153,10 @@ def execute_module_via_bash(module_doc: str, execute_function: callable,
 
     top = fM.Topology(top_path=in_topo_path, disres_path=in_disres_path, pertubation_path=in_perttopo_path)
     system = fM.System(top=top, coordinates=in_coord_path, name=in_system_name)
+    args.update({"in_simSystem":system})
 
     # do everything in here :)
-    ret = execute_function(in_simSystem=system, **args)
+    ret = execute_function(**args)
 
     # if error ocurred ret is smaller 0
     if (ret < 0):

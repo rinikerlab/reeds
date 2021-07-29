@@ -68,7 +68,7 @@ def multi_lig_dfmult(num_replicas: int,
 
                     results = []
                     format_list = []
-                    for l2 in state:
+                    for _ in state:
                         results.append("mean")
                         results.append("err")
                         format_list.extend([str_format + " " + str_format])
@@ -402,7 +402,7 @@ def gen_results_string(results_dict: dict) -> str:
                 # column description line
                 results = []
                 format_list = []
-                for l2 in l2_ordered_states:
+                for _ in l2_ordered_states:
                     results.append("mean")
                     results.append("err")
                     format_list.extend([str_format + " " + str_format])

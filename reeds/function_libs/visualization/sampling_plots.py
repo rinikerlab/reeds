@@ -148,9 +148,7 @@ def plot_t_statepres(data: dict,
 
     ##define limits
     ax.set_ylim(0.25, num_states + 0.5)
-    if (xlim):
-        xlim = xlim
-    else:
+    if (not xlim):
         xlim = [0, x_ax[len(x_ax) - 1]]
 
     ax.set_xlim(xlim)

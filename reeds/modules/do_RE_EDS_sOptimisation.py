@@ -352,4 +352,8 @@ int
     # MAIN Execution from BASH if __name__ == "__main__":
     from reeds.function_libs.utils.argument_parser import execute_module_via_bash
     print(spacer + "\t\tRE-EDS S-OPTIMIZATION \n" + spacer + "\n")
-    execute_module_via_bash(__doc__, do)
+    requiers_gromos_files = [("in_top_path", "input topology .top file."),
+                             ("in_coord_path", "input coordinate .cn file."),
+                             ("in_perttop_path", "input pertubation topology .ptp file."),
+                             ("in_disres_path", "input distance restraint .dat file.")]
+    execute_module_via_bash(__doc__, do, requiers_gromos_files)

@@ -512,7 +512,6 @@ def build_sopt_step_dir(iteration: int, iteration_folder_prefix: str,pot_tresh: 
     gromosXX_bin_dir = in_gromosXX_bin_dir
     jobname = in_simSystem.name
     in_imd_path = pre_in_imd_path
-    nmpi = nmpi
     out_dir_path = sim_dir
 
     schedule_jobs_script_path = write_job_script(out_script_path=iteration_folder + "/schedule_sopt_jobs.py",

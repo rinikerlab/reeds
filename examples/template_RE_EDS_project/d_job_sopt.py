@@ -30,7 +30,7 @@ soptIterations = 4
 add_replicas = 4
 
 last_jobID = sOptimization.do(out_root_dir=out_sopt_dir,in_simSystem=system,
-                              gromosXX_bin_dir = gromosXX_bin, gromosPP_bin_dir = gromosPP_bin,
+                              in_gromosXX_bin_dir= gromosXX_bin, in_gromosPP_bin_dir= gromosPP_bin,
                               in_ene_ana_lib_path=ene_ana_lib,
                               undersampling_fraction_threshold=undersampling_frac_thresh,
                               soptIterations = soptIterations,

@@ -301,8 +301,8 @@ def calculate_sampling_distributions(ene_traj_csvs: List[pd.DataFrame], eoffs: L
 
         # occurence samplng
         occurrence_state_sampling = {}
-        for ind, state in enumerate(states):
-            occurrence_sampling_frac = replica[replica[state] < potential_treshold[ind]].shape[0] / total_number_steps
+        for indState, state in enumerate(states):
+            occurrence_sampling_frac = replica[replica[state] < potential_treshold[indState]].shape[0] / total_number_steps
             occurrence_state_sampling.update({int(state.replace("e", "")): occurrence_sampling_frac})
 
         # update results

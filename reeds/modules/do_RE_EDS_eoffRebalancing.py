@@ -18,7 +18,6 @@ from collections import OrderedDict
 from typing import Iterable, List
 
 import reeds
-import reeds.function_libs.pipeline.module_functions
 from pygromos.euler_submissions import FileManager as fM
 from pygromos.euler_submissions.Submission_Systems import LSF
 # todo! make the queueing system exchangeable
@@ -27,10 +26,9 @@ from pygromos.files import imd
 from pygromos.files.coord import cnf as cnf_cls
 from pygromos.utils import bash
 from reeds.data import ene_ana_libs
-from reeds.function_libs.pipeline import generate_euler_job_files as gjs
 from reeds.function_libs.pipeline.module_functions import submit_job_sopt, build_sopt_step_dir
 from reeds.function_libs.pipeline.worker_scripts.analysis_workers import RE_EDS_soptimization_final
-from reeds.function_libs.utils.structures import adding_Scheme_new_Replicas, soptimization_params
+from reeds.function_libs.utils.structures import soptimization_params
 from reeds.function_libs.utils.structures import spacer
 
 
@@ -336,7 +334,12 @@ int
 
     return job_id
 
-    # MAIN Execution from BASH if __name__ == "__main__":
+# MAIN Execution from BASH
+if __name__ == "__main__":
     from reeds.function_libs.utils.argument_parser import execute_module_via_bash
     print(spacer + "\t\tRE-EDS S-OPTIMIZATION \n" + spacer + "\n")
-    execute_module_via_bash(__doc__, do)
+    requiers_gromos_files = [("in_top_path", "input topology .top file."),
+                             ("in_coord_path", "input coordinate .cn file."),
+                             ("in_perttop_path", "input pertubation topology .ptp file."),
+                             ("in_disres_path", "input distance restraint .dat file.")]
+    execute_module_via_bash(__doc__, do, requiers_gromos_files)

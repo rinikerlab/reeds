@@ -43,7 +43,6 @@ def analyse_sopt_iteration(repdat_path: str, out_dir: str, title: str, pot_tresh
     repdat_file = repdat.Repdat(repdat_path)
 
     s_values = repdat_file.system.s
-    eoffs = repdat_file.system.state_eir
     trans_dict = repdat_file.get_replica_traces()
     repOff = s_values.count(1)-1
 

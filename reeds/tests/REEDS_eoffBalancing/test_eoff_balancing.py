@@ -1,10 +1,7 @@
 import unittest
-import os
 from reeds.function_libs.optimization import eds_eoff_rebalancing
-from reeds.function_libs.file_management import file_management as fM
 
 import numpy as np
-from numpy import testing
 
 
 class test_Eoff_rebalancing(unittest.TestCase):
@@ -685,7 +682,7 @@ class test_Eoff_rebalancing(unittest.TestCase):
         ddEoff = eds_eoff_rebalancing.calculate_Eoff_Correction(samplingDists=samplingDists, _shift_eoff_zero=False, _nstates=5,
                                                                 verbose=True)
 
-        testing.assert_almost_equal(actual=ddEoff, desired=expected_res, decimal=5)
+        np.testing.assert_almost_equal(actual=ddEoff, desired=expected_res, decimal=5)
 
     def test_eoff_correctionF_twoSided(self):
         # params:
@@ -720,7 +717,7 @@ class test_Eoff_rebalancing(unittest.TestCase):
                                                                 double_sided_widthFactor=0.8,  _nstates=5,
                                                                 _shift_eoff_zero=False, verbose=True)
 
-        testing.assert_almost_equal(actual=ddEoff, desired=expected_res, decimal=5)
+        np.testing.assert_almost_equal(actual=ddEoff, desired=expected_res, decimal=5)
 
     def test_eoff_correctionF_oneSided_learningFactor(self):
         # params:
@@ -732,7 +729,7 @@ class test_Eoff_rebalancing(unittest.TestCase):
         for lf in learningFactors:
             ddEoff = eds_eoff_rebalancing.calculate_Eoff_Correction(samplingDists=samplingDists, learningFactor=lf,
                                                                     _shift_eoff_zero=False, verbose=True)
-            testing.assert_almost_equal(actual=ddEoff, desired=expected_res * lf, decimal=5)
+            np.testing.assert_almost_equal(actual=ddEoff, desired=expected_res * lf, decimal=5)
 
 
     def test_eoff_rebalancing_directCounting_s1Only(self):
@@ -784,7 +781,7 @@ class test_Eoff_rebalancing(unittest.TestCase):
         new_eoffs = eds_eoff_rebalancing.rebalance_eoffs_directCounting(old_eoffs=old_eoffs,
                                                             sampling_stat=sampling_stat,
                                                             correct_for_s1_only=True)
-        testing.assert_almost_equal(actual=new_eoffs, desired=expected_eoffs, decimal=5)
+        np.testing.assert_almost_equal(actual=new_eoffs, desired=expected_eoffs, decimal=5)
 
     def test_eoff_rebalancing_directCounting_allS(self):
         expected_eoffs = np.array([[0.0, 11.201609269389472, -4.405816282465172, -51.48788211898036, -70.27581628246517],
@@ -836,4 +833,4 @@ class test_Eoff_rebalancing(unittest.TestCase):
                                                             sampling_stat=sampling_stat,
                                                             correct_for_s1_only=False)
         print(list(map(list, new_eoffs)))
-        testing.assert_almost_equal(actual=new_eoffs, desired=expected_eoffs, decimal=5)
+        np.testing.assert_almost_equal(actual=new_eoffs, desired=expected_eoffs, decimal=5)
