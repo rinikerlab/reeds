@@ -14,7 +14,8 @@ from reeds.function_libs.pipeline.jobScheduling_scripts import RE_EDS_simulation
 from reeds.function_libs.pipeline.worker_scripts.analysis_workers import RE_EDS_general_analysis, \
     RE_EDS_general_analysis as reeds_analysis
 from reeds.function_libs.utils import s_log_dist
-from reeds.function_libs.utils.structures import sopt_job, spacer
+from reeds.function_libs.utils.structures import optimization_job, spacer
+from reeds.function_libs.utils.structures import optimization_params
 
 """
 IMD template adaptations
@@ -357,17 +358,18 @@ def adapt_imd_template_eoff(system: fM.System, imd_out_path: str, imd_path: str,
 
 
 """
-    SOPTIMIZATION - Scheduling
+    OPTIMIZATION - Scheduling
 """
-def build_sopt_step_dir(iteration: int, iteration_folder_prefix: str,pot_tresh: List[float] ,
-                        soptimization_options, in_simSystem: fM.System,
-                        state_undersampling_pot_tresh:List[float], state_physical_pot_tresh:List[float], undersampling_frac_thresh:float,
-                        num_equilibration_runs: int, imd_name_prefix: str,
-                        in_ene_ana_lib_path: str, in_gromosPP_bin_dir: str,
-                        in_gromosXX_bin_dir: str, ligands, last_data_folder: str, nmpi_per_replica: int,
-                        duration_per_job: str, num_simulation_runs: int, run_NRLTO:bool=True, run_NGRTO: bool=False,
-                        optimized_states_dir:str = "../../a_optimizedState/analysis/next",
-                         old_sopt_job: sopt_job = False, verbose: bool = False) -> sopt_job:
+def build_optimization_step_dir(iteration: int,  iteration_folder_prefix: str, pot_tresh: List[float],
+                                optimization_options:optimization_params, in_simSystem: fM.System,
+                                state_undersampling_pot_tresh:List[float], state_physical_pot_tresh:List[float], undersampling_frac_thresh:float,
+                                num_equilibration_runs: int, imd_name_prefix: str,
+                                in_ene_ana_lib_path: str, in_gromosPP_bin_dir: str,
+                                in_gromosXX_bin_dir: str, ligands, last_data_folder: str, nmpi_per_replica: int,
+                                duration_per_job: str, num_simulation_runs: int,
+                                run_NRLTO:bool=True, run_NGRTO: bool=False, run_eoffRB:bool = False,
+                                optimized_states_dir:str = "../../a_optimizedState/analysis/next",
+                                old_sopt_job: optimization_job = False, verbose: bool = False) -> optimization_job:
     """
         This function is setting up the folder structure of an s-optimization iteration, copies some files and builds an settings object of the sopt-iteration.
 
@@ -377,7 +379,7 @@ def build_sopt_step_dir(iteration: int, iteration_folder_prefix: str,pot_tresh: 
         iteration of the s-optimization
     iteration_folder_prefix : str
         prefix name of the folders
-    soptimization_options : ?
+    optimization_options : ?
         settings for the s-optimization
     in_simSystem : fM.System
         system obj, containing all required paths
@@ -452,16 +454,16 @@ def build_sopt_step_dir(iteration: int, iteration_folder_prefix: str,pot_tresh: 
 
     # PARAMS:
     ## fix for euler! - write out to workdir not on node. - so no data is lost in transfer
-    if (soptimization_options.current_num_svals > 15):
+    if (optimization_options.current_num_svals > 15):
         workdir = iteration_folder + "/local_scratch"
     else:
         workdir = None
 
-    nmpi = int(soptimization_options.current_num_svals) * int(nmpi_per_replica)  # How many MPIcores needed?s
+    nmpi = int(optimization_options.current_num_svals) * int(nmpi_per_replica)  # How many MPIcores needed?s
 
     ##which analysis functions to execute
     control_dict = {  # this dictionary is controlling the post  Simulation analysis procedure!
-        "sopt": {"do": True,
+        "sopt": {"do": run_NRLTO or run_NGRTO,
                  "sub": {
                      "run_RTO": True,
                      "run_NLRTO": run_NRLTO,
@@ -470,6 +472,13 @@ def build_sopt_step_dir(iteration: int, iteration_folder_prefix: str,pot_tresh: 
                      "roundtrips": True,
                      "generate_replica trace": True}
                  },
+        "eoffset": {"do": True,
+                    "sub": {
+                        "eoff_estimation": not run_eoffRB,
+                        "sampling_plot": False,
+                        "eoffsetRebalancing": run_eoffRB,
+                        }
+                    },
         "prepare_input_folder": {"do": True,
                                  "sub": {
                                      "eoff_to_sopt": False,
@@ -492,11 +501,15 @@ def build_sopt_step_dir(iteration: int, iteration_folder_prefix: str,pot_tresh: 
         "gromos_path": in_gromosPP_bin_dir,
         "in_ene_ana_lib": in_ene_ana_lib_path,
         "n_processors": 5,
-        "state_undersampling_occurrence_potential_threshold": state_undersampling_pot_tresh,
         "state_physical_occurrence_potential_threshold": state_physical_pot_tresh,
+        'eoffRebalancing_learningFactor': optimization_options.learningFactor,
+        'eoffRebalancing_pseudocount': optimization_options.pseudocount,
+        'eoffRebalancing_doubleSided': optimization_options.doubleSided,
+        'eoffRebalancing_doubleSidedWidth': optimization_options.doubleSidedWidth,
+        "state_undersampling_occurrence_potential_threshold": state_undersampling_pot_tresh,
         "undersampling_frac_thresh": undersampling_frac_thresh,
         "verbose": True,
-        "add_s_vals": soptimization_options.add_replicas,
+        "add_s_vals": optimization_options.add_replicas,
         "control_dict": control_dict,
         "title_prefix": in_simSystem.name,
         "grom_file_prefix": in_simSystem.name,
@@ -514,7 +527,7 @@ def build_sopt_step_dir(iteration: int, iteration_folder_prefix: str,pot_tresh: 
     in_imd_path = pre_in_imd_path
     out_dir_path = sim_dir
 
-    schedule_jobs_script_path = write_job_script(out_script_path=iteration_folder + "/schedule_sopt_jobs.py",
+    schedule_jobs_script_path = write_job_script(out_script_path=iteration_folder + "/schedule_optimization_jobs.py",
                                                  target_function=RE_EDS_simulation_scheduler.do,
                                                  variable_dict=locals())
 
@@ -522,24 +535,24 @@ def build_sopt_step_dir(iteration: int, iteration_folder_prefix: str,pot_tresh: 
     check_simulation_files = sim_dir + "/*" + str(num_simulation_runs + num_equilibration_runs) + "/*cnf"
     check_analysis_files = analysis_dir + "/next/*.cnf"
 
-    iteration_sopt_job = sopt_job(iteration=iteration, job_file_path=schedule_jobs_script_path,
-                                  job_analysis_path=in_analysis_script_path,
-                                  check_simulation_files=check_simulation_files,
-                                  check_analysis_files=check_analysis_files,
-                                  sim_system=copy.deepcopy(in_simSystem), nmpi=nmpi,
-                                  num_simulation_runs=num_simulation_runs,
-                                  num_equilibration_runs=num_equilibration_runs,
-                                  workdir=workdir, in_imd_path=pre_in_imd_path, out_folder=sim_dir,
-                                  last_coord_in=last_coord_in)
+    last_iteration_job = optimization_job(iteration=iteration, job_file_path=schedule_jobs_script_path,
+                                          job_analysis_path=in_analysis_script_path,
+                                          check_simulation_files=check_simulation_files,
+                                          check_analysis_files=check_analysis_files,
+                                          sim_system=copy.deepcopy(in_simSystem), nmpi=nmpi,
+                                          num_simulation_runs=num_simulation_runs,
+                                          num_equilibration_runs=num_equilibration_runs,
+                                          workdir=workdir, in_imd_path=pre_in_imd_path, out_folder=sim_dir,
+                                          last_coord_in=last_coord_in)
 
-    return iteration_sopt_job
+    return last_iteration_job
 
 
-def submit_job_sopt(sopt_iteration_job: sopt_job, duration_per_job: str, submit: bool = True,
-                    stdout_prefix: str = "\n\t\t",
-                    gromosXX_bin_dir: str = None, do_not_doubly_submit_to_queue: bool = True,
-                    previous_job_id: int = None, initialize_first_run: bool = True,
-                    reinitialize: bool = False, verbose: bool = False) -> Union[int, None]:
+def submit_iteration_job(last_iteration_job: optimization_job, duration_per_job: str, submit: bool = True,
+                         stdout_prefix: str = "\n\t\t",
+                         gromosXX_bin_dir: str = None, do_not_doubly_submit_to_queue: bool = True,
+                         previous_job_id: int = None, initialize_first_run: bool = True,
+                         reinitialize: bool = False, verbose: bool = False) -> Union[int, None]:
     """
 
         This function is doing the little bit more sophisticated part of submitting safely the sopt scripts.
@@ -547,7 +560,7 @@ def submit_job_sopt(sopt_iteration_job: sopt_job, duration_per_job: str, submit:
 
     Parameters
     ----------
-    sopt_iteration_job : sopt_job - NamedTuple("sopt_Job", [("iteration", int),("job_file_path", str), ("job_analysis_path",str), ("check_simulation_files",str), ("check_analysis_files",str)])
+    last_iteration_job : sopt_job - NamedTuple("sopt_Job", [("iteration", int),("job_file_path", str), ("job_analysis_path",str), ("check_simulation_files",str), ("check_analysis_files",str)])
         this namedtuple contains both executable script paths and the regular expressions for their checkFiles.
     duration_per_job : str
         job duration for a single simulation step in format "HHH:MM"
@@ -579,52 +592,52 @@ def submit_job_sopt(sopt_iteration_job: sopt_job, duration_per_job: str, submit:
         if system call fails
     """
     # job_file_path Submission:
-    check_simulation_files = glob.glob(sopt_iteration_job.check_simulation_files)
-    check_analysis_files = glob.glob(sopt_iteration_job.check_analysis_files)
+    check_simulation_files = glob.glob(last_iteration_job.check_simulation_files)
+    check_analysis_files = glob.glob(last_iteration_job.check_analysis_files)
 
     if (len(check_simulation_files) > 0 or len(
             check_analysis_files) > 0):  # check if control Files are present(sim already done?)
         if not (len(check_analysis_files) > 0) and submit:  # if analysis is meassing do>:
             if (verbose): print(stdout_prefix + "SKIP JOB (inModule), as I found: \n\t",
-                                sopt_iteration_job.check_simulation_files)
+                                last_iteration_job.check_simulation_files)
             if (verbose): print(stdout_prefix + "RUNNING MISSING ANALYSIS NOW:")
-            bash.execute(sopt_iteration_job.job_analysis_path)
+            bash.execute(last_iteration_job.job_analysis_path)
         else:
             if (verbose): print(stdout_prefix + "SKIP SUBMITTING JOB AND ANALYSIS!(inModule) Found Check Files!\n\t",
-                                sopt_iteration_job.check_simulation_files,
-                                "\n\t", sopt_iteration_job.check_analysis_files)
+                                last_iteration_job.check_simulation_files,
+                                "\n\t", last_iteration_job.check_analysis_files)
             return None
 
     elif submit:  # if no checkfiles present, submit job to the queue
-        print(spacer + stdout_prefix + "\n\tSUBMITTING:  SOPT " + str(sopt_iteration_job.iteration) + "\n" + spacer)
+        print(spacer + stdout_prefix + "\n\tSUBMITTING:  Iteration " + str(last_iteration_job.iteration) + "\n" + spacer)
         if verbose: print(stdout_prefix + "JOB:")
 
         orig_path = os.getcwd()
-        job_dir = os.path.dirname(sopt_iteration_job.job_file_path)
-        sim_system = sopt_iteration_job.sim_system
+        job_dir = os.path.dirname(last_iteration_job.job_file_path)
+        sim_system = last_iteration_job.sim_system
 
-        if (verbose): print("EQ: ", sopt_iteration_job.num_equilibration_runs)
+        if (verbose): print("EQ: ", last_iteration_job.num_equilibration_runs)
 
         # INITIAL COMMAND
         cmd = ""
         print("SETTING INITIAL CMD")
         in_imd_path = job_dir + "/input/" + sim_system.name + "*.imd"
-        if (not os.path.exists(in_imd_path) and sopt_iteration_job.in_imd_path != in_imd_path.replace("*", "")):
-            cmd = "cp " + sopt_iteration_job.in_imd_path + " " + in_imd_path.replace("*",
+        if (not os.path.exists(in_imd_path) and last_iteration_job.in_imd_path != in_imd_path.replace("*", "")):
+            cmd = "cp " + last_iteration_job.in_imd_path + " " + in_imd_path.replace("*",
                                                                                      "") + " && cp " + os.path.dirname(
-                sopt_iteration_job.in_imd_path) + "/*cnf " + job_dir + "/input/coord"
+                last_iteration_job.in_imd_path) + "/*cnf " + job_dir + "/input/coord"
 
         os.chdir(job_dir)
         job_id = RE_EDS_simulation_scheduler.do(in_simSystem=sim_system, in_imd_path=in_imd_path,
                                                 previous_job_ID=previous_job_id,
                                                 gromosXX_bin_dir=gromosXX_bin_dir,
-                                                out_dir_path=sopt_iteration_job.out_folder, jobname=sim_system.name,
-                                                nmpi=sopt_iteration_job.nmpi,
+                                                out_dir_path=last_iteration_job.out_folder, jobname=sim_system.name,
+                                                nmpi=last_iteration_job.nmpi,
                                                 duration_per_job=duration_per_job, initial_command=cmd,
-                                                num_simulation_runs=sopt_iteration_job.num_simulation_runs,
-                                                work_dir=sopt_iteration_job.workdir,
-                                                num_equilibration_runs=sopt_iteration_job.num_equilibration_runs,
-                                                in_analysis_script_path=sopt_iteration_job.job_analysis_path,
+                                                num_simulation_runs=last_iteration_job.num_simulation_runs,
+                                                work_dir=last_iteration_job.workdir,
+                                                num_equilibration_runs=last_iteration_job.num_equilibration_runs,
+                                                in_analysis_script_path=last_iteration_job.job_analysis_path,
                                                 do_not_doubly_submit_to_queue=do_not_doubly_submit_to_queue,
                                                 initialize_first_run=initialize_first_run,
                                                 reinitialize=reinitialize,
@@ -644,7 +657,9 @@ def submit_job_sopt(sopt_iteration_job: sopt_job, duration_per_job: str, submit:
         print(stdout_prefix + "SKIP SUBMITTING! \n\tDUE to --noSubmit option")
         return 0
 
-
+"""
+    General Functions
+"""
 def write_job_script(out_script_path: str, target_function: callable, variable_dict: dict, python_cmd: str = "python3",
                       no_reeds_control_dict: bool = False, verbose: bool = False) -> str:
     """

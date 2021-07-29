@@ -6,7 +6,7 @@ from scipy import constants as const
 def rebalance_eoffs_directCounting(old_eoffs: np.array, sampling_stat: Dict[int, Dict[str, Dict[int, float]]],
                                    temperature: float = 298, pseudo_count: float = None, learningFactor: float = 1,
                                    sampling_type: str = "max_contributing_state",
-                                   double_sided: bool = False, double_sided_widthFactor: float = 0.8,
+                                   double_sided: bool = False, double_sided_widthFactor: float = None,
                                    correct_for_s1_only: bool = True, verbose: bool = True) -> np.array:
     """
     This function uses a direct counting approach for (RE-)EDS in order to improve the sampling weights of the min-state sampling ratios.
@@ -100,7 +100,7 @@ def rebalance_eoffs_directCounting(old_eoffs: np.array, sampling_stat: Dict[int,
 
 def calculate_Eoff_Correction(samplingDists: np.array,
                               temperature: float = 298, learningFactor: float = 1,  pseudo_count: float = None,
-                              double_sided: bool = False, double_sided_widthFactor: float = 0.8,
+                              double_sided: bool = False, double_sided_widthFactor: float = None,
                               _shift_eoff_zero: bool = True, _nstates:int =None,
                               verbose: bool = False) -> np.array:
     """
@@ -139,7 +139,8 @@ def calculate_Eoff_Correction(samplingDists: np.array,
     double_sided : bool, optional
         this option allows switching to a double sided correction scheme.
     double_sided_widthFactor : float, optional
-        this factor defines the location of the upper bound, where the correction function is reaching infinity. (still the maximal correction factor is capped by an inverse pseudocount, default: 0.8)
+        this factor defines the location of the upper bound, where the correction function is reaching infinity. (still the maximal correction factor is capped by an inverse pseudocount, default: None)
+        if None, the width is estimated as 0ptimal sampling+2*optimal sampling.
     _shift_eoff_zero : bool, optional
         shift the eoffs such that eoffset of state 1 is 0. This makes it easier to compare the eoffs with the final ddG.However purely cosmetic. (default: True)
     _nstates : int, optional
@@ -170,6 +171,9 @@ def calculate_Eoff_Correction(samplingDists: np.array,
         if (verbose):
             print("\tApproach: Two-Sided")
             print("\t\t maxOversampling: ", double_sided_widthFactor)
+
+        if(double_sided_widthFactor is None):
+            double_sided_widthFactor = optimal_sampling+2*optimal_sampling
         max_pseudocount = (double_sided_widthFactor - pseudo_count)
         offset_correction = ((1 / beta) * np.log(
             (double_sided_widthFactor - optimal_sampling) / optimal_sampling))  # generates offset for too large

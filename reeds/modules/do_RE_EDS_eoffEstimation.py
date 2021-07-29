@@ -203,7 +203,9 @@ int
             "eoffset": {"do": True,
                 "sub": {
                     "calc_eoff": True,
-                    "sampling_plot": True, }
+                    "sampling_plot": True,
+                    "eoffsetRebalancing": False,
+                }
                  },
             "prepare_input_folder": {"do": True,
                  "sub": {

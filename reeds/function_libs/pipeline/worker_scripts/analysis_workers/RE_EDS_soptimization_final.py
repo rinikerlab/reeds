@@ -16,7 +16,7 @@ from reeds.function_libs.visualization.parameter_optimization_plots import visua
     visualize_s_optimisation_convergence, visualize_s_optimisation_sampling_optimization
 
 
-def analyse_sopt_iteration(repdat_path: str, out_dir: str, title: str, pot_tresh=0) -> dict:
+def analyse_optimization_iteration(repdat_path: str, out_dir: str, title: str, pot_tresh=0) -> dict:
     """
         analysis of a single optimization iteration.
         - analyse sampling, round trips, round trip time
@@ -128,7 +128,8 @@ def samplingAnalysisFromRepdat(pot_tresh, repOff, repdat_file):
     return maxContributing_counts, max_pos, min_pos, occurrence_counts
 
 
-def do(sopt_root_dir: str, state_physical_occurrence_potential_threshold:Union[List, float]=0, title="", out_dir: str = None, rt_convergence=100):
+def do(project_dir: str, optimization_name:str,
+       state_physical_occurrence_potential_threshold:Union[List, float]=0, title="", out_dir: str = None, rt_convergence=100):
     """
         This function does the final analysis of an s-optimization. It analyses the outcome of the full s-optimization iterations.
         Features:
@@ -140,7 +141,7 @@ def do(sopt_root_dir: str, state_physical_occurrence_potential_threshold:Union[L
 
     Parameters
     ----------
-    sopt_root_dir : str
+    project_dir : str
         directory containing all s-optimization iterations
     state_physical_occurrence_potential_threshold : Union[float, List[float]], optional
         potential energy threshold, determining undersampling (default: 0)
@@ -152,11 +153,11 @@ def do(sopt_root_dir: str, state_physical_occurrence_potential_threshold:Union[L
         roundtrip time convergence criterium  in ps(default: 10ps)
 
     """
-    sopt_dirs = [x for x in os.listdir(sopt_root_dir) if ("sopt" in x and os.path.isdir(sopt_root_dir+"/"+x))]
+    sopt_dirs = [x for x in os.listdir(project_dir) if (optimization_name in x and os.path.isdir(project_dir + "/" + x))]
 
     # sopt out_dir
     if (isinstance(out_dir, type(None))):
-        out_dir = sopt_root_dir + "/analysis"
+        out_dir = project_dir + "/analysis"
 
     out_dir = bash.make_folder(out_dir)
 
@@ -168,7 +169,7 @@ def do(sopt_root_dir: str, state_physical_occurrence_potential_threshold:Union[L
     for iteration_folder in sorted(sopt_dirs):
         iteration = int(iteration_folder.replace("sopt", ""))
         print( iteration, end="\t")
-        repdat = glob.glob(sopt_root_dir + "/" + iteration_folder + "/analysis/data/*repdat*")
+        repdat = glob.glob(project_dir + "/" + iteration_folder + "/analysis/data/*repdat*")
         out_iteration_file_path = out_dir + "/" + iteration_folder + "_ana_data.npy"
 
         if (os.path.exists(out_iteration_file_path)):
@@ -179,8 +180,8 @@ def do(sopt_root_dir: str, state_physical_occurrence_potential_threshold:Union[L
         elif (len(repdat) == 1):
             print("\nCalculate statistics for iteration: ", iteration)
             repdat_files.update({iteration: repdat[0]})
-            sopt_it_stats = analyse_sopt_iteration(repdat_path=repdat_files[iteration], out_dir=out_dir,
-                                                   title="s-opt " + str(iteration), pot_tresh=state_physical_occurrence_potential_threshold)
+            sopt_it_stats = analyse_optimization_iteration(repdat_path=repdat_files[iteration], out_dir=out_dir,
+                                                           title="s-opt " + str(iteration), pot_tresh=state_physical_occurrence_potential_threshold)
 
             pickle.dump(obj=sopt_it_stats, file=open(out_iteration_file_path, "wb"))
             sopt_data.update({iteration_folder: sopt_it_stats})
@@ -199,21 +200,21 @@ def do(sopt_root_dir: str, state_physical_occurrence_potential_threshold:Union[L
     print(sopt_data)
 
     #overview
-    visualization_s_optimization_summary(s_opt_data=sopt_data, out_path=out_dir + "/" + title + "_sopt_analysis.png")
+    visualization_s_optimization_summary(s_opt_data=sopt_data, out_path=out_dir + "/" + title + "_"+optimization_name+"_analysis.png")
 
     #Optimization  convergence:
-    visualize_s_optimisation_convergence(s_opt_data=sopt_data, out_path=out_dir + "/" + title + "_sopt_efficiency.png", convergens_radius=rt_convergence)
+    visualize_s_optimisation_convergence(s_opt_data=sopt_data, out_path=out_dir + "/" + title + "_"+optimization_name+"_efficiency.png", convergens_radius=rt_convergence)
 
     #Optimization Distribution
-    visualize_s_optimisation_sampling_optimization(s_opt_data=sopt_data, out_path=out_dir + "/" + title + "_sopt_sampling_optimumDev.png")
+    visualize_s_optimisation_sampling_optimization(s_opt_data=sopt_data, out_path=out_dir + "/" + title + "_"+optimization_name+"_sampling_optimumDev.png")
 
     #Final storing
     ##serialization
-    final_analysis_out_path = out_dir + "/"+title+"_final_soptimization_analysis.obj"
+    final_analysis_out_path = out_dir + "/"+title+"_final_"+optimization_name+"_analysis.obj"
     pickle.dump(sopt_it_stats, open(final_analysis_out_path, "wb"))
 
     ##Human readable:
-    final_analysis_out_csv_path = out_dir + "/"+title+"_final_soptimization_analysis.csv"
+    final_analysis_out_csv_path = out_dir + "/"+title+"_final_"+optimization_name+"_analysis.csv"
     df = pd.DataFrame(sopt_data).T
     df.to_csv(path_or_buf=final_analysis_out_csv_path, sep="\t")
 
