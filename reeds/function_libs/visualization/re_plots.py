@@ -311,7 +311,7 @@ def plot_repPos_replica_histogramm(data: pd.DataFrame,
     x = np.concatenate(x)
     y = np.concatenate(y)
 
-    fig, ax = plt.subplots(ncols=1, figsize=ps.figsize)
+    fig, ax = plt.subplots(ncols=1, figsize=ps.figsize_doubleColumn)
     hist = np.histogram2d(x=x, y=y, bins=(len(np.unique(x)), len(np.unique(y))))
 
     total_steps = np.sum(hist[0], axis=0)

@@ -1603,6 +1603,7 @@ def adapt_cnfs_to_new_sDistribution(in_old_svals: list,
                                     in_cnf_files: List[str],
                                     out_cnf_dir: str,
                                     cnf_prefix: str = "REEDS_EOFF_run",
+                                    cnf_offset: int =None,
                                     verbose: bool = True) -> list:
     """adapt_cnfs_to_new_sDistribution
     this function should map coordinate files, belonging to an old s-distribution in an optimal way to a new s-distribution.
@@ -1620,6 +1621,8 @@ def adapt_cnfs_to_new_sDistribution(in_old_svals: list,
         path to output directory for cnf files
     cnf_prefix : str, optional
         prefix for output cnf files (default "REEDS_EOFF_run")
+    cnf_offset : int, optional
+        if there is an offset for the cnfs.
     verbose : bool, optional
         verbose output (default True)
 
@@ -1657,6 +1660,8 @@ def adapt_cnfs_to_new_sDistribution(in_old_svals: list,
                                    out_next_cnfs_dir=out_cnf_dir, run_prefix=cnf_prefix, s1_repetitions=s1_repetitions)
     elif (len(in_old_svals) < len(in_new_svals)):
         print("too many")
+        if(not cnf_offset is None):
+            in_cnfs = in_cnfs[:cnf_offset]
         out_cnfs = map_cnfs_to_svalues(in_old_cnf_files=in_cnfs, out_dir=out_cnf_dir, in_old_svals=in_old_svals,
                                        in_new_svals=in_new_svals,
                                        cnf_prefix=cnf_prefix)
@@ -1760,14 +1765,14 @@ def map_cnfs_to_svalues(in_old_cnf_files: List[str],
     ----------
     in_old_cnf_files : List[str]
         path to old cnf files
-    out_dir : str
-        path to output directory
     in_old_svals : list
         list of old s-values
     in_new_svals : list
         list of new s-values
     cnf_prefix : str, optional
         prefix for output cnf files (default "run")
+    out_prefix : int, optional
+        is there an offset for the present cnfs?
     replica_add_scheme : add_scheme, optional
         enum for addition scheme from class adding_Scheme_new_Replicas (default from_bothSides)
     verbose : bool, optional

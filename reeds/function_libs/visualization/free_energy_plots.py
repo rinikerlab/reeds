@@ -50,9 +50,8 @@ def plot_dF_conv(dF_timewise : dict,
         dF = [x["mean"] for x in data.values()]
         err = [x["err"] for x in data.values()]
 
-        # recenter to 0, from the average values of the last 5 elements.
-        avg = np.average(dF[-5:])
-        dF_recentered = [i - avg for i in dF]
+        # recenter to 0, from the values of the last 5 elements.
+        dF_recentered = [i - dF[-1] for i in dF]
 
         last_dF.append(dF[-1])
 
