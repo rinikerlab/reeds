@@ -122,11 +122,11 @@ int
         # Remove multi s=1 (so there is only 1)
         imd_file = imd.Imd(in_template_imd)
         s_1_ammount = list(map(float, imd_file.REPLICA_EDS.RES)).count(1.0)
-        imd_file.edit_REEDS(SVALS=imd_file.REPLICA_EDS.RES[s_1_ammount-1:])
+        imd_file.edit_REEDS(SVALS=imd_file.REPLICA_EDS.RES[s_1_ammount-1:], EIR=imd_file.REPLICA_EDS.EIR[s_1_ammount-1:])
         num_states = int(imd_file.REPLICA_EDS.NUMSTATES)
         num_svals = int(imd_file.REPLICA_EDS.NRES)
         if(randomize):
-            imd_file.randomize()
+            imd_file.randomize_seed()
         imd_file.write(in_imd_path)
 
         # Copy coordinates to path/to/input/coord
