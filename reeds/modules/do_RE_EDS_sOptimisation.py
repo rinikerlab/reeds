@@ -44,14 +44,15 @@ def do(out_root_dir: str, in_simSystem: fM.System, in_template_imd: str = None,
        state_physical_occurrence_potential_threshold:List[float]=None,
        state_undersampling_occurrence_potential_threshold: List[float]=None,
        undersampling_fraction_threshold:float=0.9,
-       equil_runs: int = None, steps_between_trials: int = 20, trials_per_run: int = 12500,
+       equil_runs: int = 0, steps_between_trials: int = 20, trials_per_run: int = 12500,
        non_ligand_residues: list = [],
        in_gromosXX_bin_dir: str = None, in_gromosPP_bin_dir: str = None,
        in_ene_ana_lib_path: str = ene_ana_libs.ene_ana_lib_path,
        nmpi_per_replica: int = 1, submit: bool = True, duration_per_job: str = "24:00",
        queueing_system: _SubmissionSystem = LSF,
+       run_NLRTO:bool=True, run_NGRTO:bool=False,
        do_not_doubly_submit_to_queue: bool = True,
-       initialize_first_run: bool = True, reinitialize: bool = False,
+       initialize_first_run: bool = True, reinitialize: bool = False, randomize: bool=False,
        verbose: bool = True):
     """
     SCRIPT:            Do S-optimisation
@@ -126,6 +127,8 @@ int
     #################
     # Prepare general stuff
     #################
+    if(run_NGRTO and run_NLRTO or (not run_NGRTO and not run_NLRTO)):
+        raise Exception("Please specify either NLRTO or NGRTO!")
     try:
         simSystem = copy.deepcopy(in_simSystem)
         sopt_input = out_root_dir + "/input"
@@ -179,6 +182,7 @@ int
         # set new step number between trials and new number of trials if necessary
         imd_file.STEP.NSTLIM = steps_between_trials
         imd_file.edit_REEDS(NRETRIAL=trials_per_run)
+        if(randomize): imd_file.randomize_seed()
         imd_path_last = imd_file.write(sopt_input + "/repex_sopt_template.imd")
 
         # Setup s-optimization
@@ -279,6 +283,7 @@ int
                                                      ligands=ligands, old_sopt_job=iteration_sopt_job,
                                                      last_data_folder=last_data_folder,
                                                      nmpi_per_replica=nmpi_per_replica,
+                                                     run_NRLTO=run_NLRTO,run_NGRTO=run_NGRTO,
                                                      pot_tresh=state_physical_occurrence_potential_threshold, duration_per_job=duration_per_job,
                                                      num_simulation_runs=repetitions)
 

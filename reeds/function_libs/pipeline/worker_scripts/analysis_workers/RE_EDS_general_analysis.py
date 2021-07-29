@@ -408,13 +408,10 @@ def do_Reeds_analysis(in_folder: str, out_folder: str, gromos_path: str,
         if (not os.path.exists(concat_file_folder)):
             raise IOError("could not find needed energies (contains all ene ana .dats) folder in:\n " + out_folder)
         
-        if (sub_control["sampling_plot"]):
-            # plot if states are sampled and minimal state
-            print("\tplot sampling: ")
-            (sampling_results, out_dir) = sampling_ana.detect_undersampling(out_path = out_dir, ene_traj_csvs = energy_trajectories,
-                                                                            s_values = s_values, eoffs=Eoff, state_potential_treshold= state_undersampling_occurrence_potential_threshold,
+        # plot if states are sampled and minimal state
+        (sampling_results, out_dir) = sampling_ana.detect_undersampling(out_path = out_dir, ene_traj_csvs = energy_trajectories,_visualize=sub_control["sampling_plot"], 
+                                                                            s_values = s_values, state_potential_treshold= state_undersampling_occurrence_potential_threshold, 
                                                                             undersampling_occurence_sampling_tresh=undersampling_frac_thresh)
-
         if (sub_control["calc_eoff"]):
             print("calc Eoff: ")
             # WARNING ASSUMPTION THAT ALL EOFF VECTORS ARE THE SAME!
@@ -422,10 +419,11 @@ def do_Reeds_analysis(in_folder: str, out_folder: str, gromos_path: str,
             print("\tS_values(" + str(len(s_values)) + "): ", s_values)
             print("\tsytsemTemp: ", temp)
             # set trim_beg to 0.1 when analysing non equilibrated data
+
             new_eoffs, all_eoffs = eds_energy_offsets.estimate_energy_offsets(ene_trajs = energy_trajectories, initial_offsets = Eoff[0], sampling_stat=sampling_results, s_values = s_values,
                                                                               out_path = out_dir, temp = temp, trim_beg = 0., undersampling_idx = sampling_results['undersamplingThreshold'],
                                                                               plot_results = True, calc_clara = False)
-        
+            print("ENERGY OFF: ", new_eoffs, all_eoffs) 
         if (verbose): print("Done\n")
 
     if (control_dict["sopt"]["do"]):
@@ -514,12 +512,12 @@ def do_Reeds_analysis(in_folder: str, out_folder: str, gromos_path: str,
 
         # add ne w cnf s for the new S-distribution
         print("generating new Cnfs for new s_dist")
-
         if (sub_control["eoff_to_sopt"]):  # if the s_dist should be converted from eoff to sopt
-            new_sval = [s_values, []]
+            new_sval = [s_values, [], []]
             new_sval[1] = [1.0 for x in range(num_states)] + list(
                 sdist.get_log_s_distribution_between(start=1.0, end=min(s_values), num=len(s_values) - 4))[
                                                              1:]  # todo: hardcoded make clever and do automatic!
+            new_sval[2] = new_sval[1]
             svals = new_sval
 
         print('new_s(' + str(len(svals)) + ") ", svals)
@@ -527,32 +525,45 @@ def do_Reeds_analysis(in_folder: str, out_folder: str, gromos_path: str,
         input_cnfs = os.path.dirname(in_imd) + "/coord"
         print("svals", svals)
             
+        print("nsvals:")
+        print(len(svals[0]), len(svals[1]), len(svals[2]))
         # Put the proper cnfs in place        
- 
+        sopt_type_switch = 2 if(svals[1] is None or len(svals[1]) == 0 ) else 1
+        print("Switch", sopt_type_switch)
         if (sub_control["eoff_to_sopt"]):
             if (not os.path.isdir(optimized_eds_state_folder)):
                 raise IOError("Could not find optimized state output dir: " + optimized_eds_state_folder)
             
             opt_state_cnfs = sorted(glob.glob(optimized_eds_state_folder+'/*.cnf'), 
                                     key=lambda x: int(x.split("_")[-1].replace(".cnf", "")))
-            for i in range(1, len(svals[1])+1):
+            for i in range(1, len(svals[sopt_type_switch])+1):
                 bash.copy_file(opt_state_cnfs[(i-1)%num_states], next_dir + '/sopt_run_' + str(i) + '.cnf')
 
-        elif (len(list(set(svals[0]))) > len(list(set(svals[1])))):
+        elif (len(list(set(svals[0]))) > len(list(set(svals[sopt_type_switch])))):
             if verbose: print("reduce coordinate Files:")
             
             if (not os.path.isdir(optimized_eds_state_folder)):
                 raise IOError("Could not find optimized state output dir: " + optimized_eds_state_folder)
+
             file_management.reduce_cnf_eoff(in_num_states=num_states, in_opt_struct_cnf_dir=optimized_eds_state_folder,
                                             in_current_sim_cnf_dir=input_cnfs,
-                                            in_old_svals=s_values, in_new_svals=svals[1],
+                                            in_old_svals=s_values, in_new_svals=svals[sopt_type_switch],
                                             out_next_cnfs_dir=next_dir)
+        elif (len(svals[0]) < len(svals[sopt_type_switch]) and sopt_type_switch==2):
+            if verbose: print("copy coordinates for GRTO")
+            cnfs = list(sorted(glob.glob(concat_file_folder+"/*.cnf"), key=lambda x: int(x.split("_")[-1].split(".")[0])))
+            for i, cnf in enumerate(cnfs):
+                bash.copy_file(cnf, next_dir+"/"+title_prefix+"_"+str(i+1)+".cnf")
 
-        elif (len(svals[0]) < len(svals[1])):
+            for addI in range(1, add_s_vals+1):
+                bash.copy_file(cnfs[-1], next_dir+"/"+title_prefix+"_"+str(len(cnfs)+addI)+".cnf")
+
+
+        elif (len(svals[0]) < len(svals[sopt_type_switch])  and sopt_type_switch==1):
             if verbose: print("reduce coordinate Files:")
             file_management.add_cnf_sopt_LRTOlike(in_dir=concat_file_folder, out_dir=next_dir, in_old_svals=s_values,
                                                   cnf_prefix=title_prefix,
-                                                  in_new_svals=svals[1], replica_add_scheme=adding_new_sReplicas_Scheme,
+                                                  in_new_svals=svals[sopt_type_switch], replica_add_scheme=adding_new_sReplicas_Scheme,
                                                   verbose=verbose)
 
         else:
@@ -571,7 +582,7 @@ def do_Reeds_analysis(in_folder: str, out_folder: str, gromos_path: str,
 
         ##New S-Values?=
         if (sub_control["write_s"] and control_dict["sopt"]["sub"]["run_RTO"]) or sub_control["eoff_to_sopt"]:
-            imd_file.edit_REEDS(SVALS=svals[1])
+            imd_file.edit_REEDS(SVALS=svals[sopt_type_switch])
         elif (sub_control["write_s"] and not control_dict["sopt"]["sub"]["run_RTO"]):
             warnings.warn("Could not set s-values to imd, as not calculated in this run!")
 

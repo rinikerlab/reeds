@@ -117,7 +117,7 @@ class _RTOptimizer():
             message += "|s        | n_up    |  " + "|\t".join(
                 ["n_down_state_" + str(i) for i in range(1, 1 + len(self.statistic.n_down[0]))]) + "|\n"
             message += "|---\t|---\t" + "|---\t" * len(self.statistic.n_down[0]) + "|\n"
-            for i in range(len(self.statistic.n_up)):
+            for i in range(len(self.statistic.s_values)):
                 n_dwon_text = ['{:8d}'.format(val) for val in self.statistic.n_down[i]]
                 message += '|\t{:f} | {:7d} |'.format(self.statistic.s_values[i], self.statistic.n_up[i]) + '|\t'.join(
                     n_dwon_text) + "|\n"

@@ -21,7 +21,7 @@ from reeds.data import ene_ana_libs
 def do(out_analysis_dir: str, system_name: str,
        in_simulation_dir: str, in_topology_path: str, in_imd_path: str,
        undersampling_occurrence_fraction_threshold: float = 0.9,
-       gromosPP_bin: str = None,
+       gromosPP_bin: str = None, final_number_of_replicas : int= None,
        in_ene_ana_lib: str = ene_ana_libs.ene_ana_lib_path,
        verbose: bool = True):
     """
@@ -174,10 +174,15 @@ def do(out_analysis_dir: str, system_name: str,
     # Make the new s-distribution based on this 
     print("undersampling found after replica: " + str(u_idx) + ' with s = ' + str(s_values[u_idx]))    
     print('New s distribution will place ' + str(num_states) + ' replicas between  s = ' + str(s_values[u_idx]) + ' and s = ' +str(s_values[u_idx+3]))
- 
-    new_sdist = s_values[:u_idx-1]
-    lower_sdist = s_log_dist.get_log_s_distribution_between(s_values[u_idx], s_values[u_idx+3], num_states)
-    new_sdist.extend(lower_sdist)  
+
+    if(not final_number_of_replicas is None):
+        new_sdist = list(s_log_dist.get_log_s_distribution_between(s_values[0],s_values[u_idx-2], final_number_of_replicas-num_states))
+        lower_sdist = list(s_log_dist.get_log_s_distribution_between(s_values[u_idx-1], s_values[u_idx], num_states))
+        new_sdist.extend(lower_sdist)
+    else:
+        new_sdist = s_values[:u_idx-2]
+        lower_sdist = s_log_dist.get_log_s_distribution_between(s_values[u_idx-1], s_values[u_idx], num_states)
+        new_sdist.extend(lower_sdist)
 
     # Write the s-values to a csv file
     out_file = open(out_analysis_next_dir + "/s_vals.csv", "w")
@@ -192,7 +197,7 @@ def do(out_analysis_dir: str, system_name: str,
     out_file.close()
 
     # Coordinates:
-    cnfs = glob.glob(data_dir + "/*.cnf")
+    cnfs = list(sorted(glob.glob(data_dir + "/*.cnf"), key=lambda x: int(x.split("_")[-1].replace(".cnf", ""))))
     if(len(s_values) != len(cnfs)):
         fM.adapt_cnfs_to_new_sDistribution(in_old_svals=s_values[:u_idx], in_new_svals=new_sdist, in_cnf_files=cnfs[:u_idx], out_cnf_dir=out_analysis_next_dir, cnf_prefix=system_name+"_lower_bound")
 
@@ -201,7 +206,7 @@ def do(out_analysis_dir: str, system_name: str,
     for trx in trx_files:
         bash.compress_gzip(in_path=trx)
 
-    if (not os.path.exists(in_simulation_dir + ".tar.gz") and os.path.exists(in_simulation_dir)):
+    if (not os.path.exists(in_simulation_dir + ".tar.gz") and os.path.exists(in_simulation_dir) and False):
         tar_sim_dir = bash.compress_tar(in_path=in_simulation_dir, gunzip_compression=True, )
         bash.wait_for_fileSystem(tar_sim_dir)
         bash.remove_file(in_simulation_dir, additional_options="-r")
