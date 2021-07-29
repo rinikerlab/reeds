@@ -43,6 +43,7 @@ def analyse_sopt_iteration(repdat_path: str, out_dir: str, title: str, pot_tresh
     repdat_file = repdat.Repdat(repdat_path)
 
     s_values = repdat_file.system.s
+    eoffs = repdat_file.system.state_eir
     trans_dict = repdat_file.get_replica_traces()
     repOff = s_values.count(1)-1
 
@@ -50,35 +51,10 @@ def analyse_sopt_iteration(repdat_path: str, out_dir: str, title: str, pot_tresh
     sopt_it = {}
 
     # state Sampling
-    states = repdat_file.DATA.state_potentials.iloc[0].keys()
-    occurrence_counts = {state: 0 for state in states}
-    domination_counts = {state: 0 for state in states}
-    print("cols: ", repdat_file.DATA.columns)
-    all_pos = list(sorted(np.unique(repdat_file.DATA.ID)))
-    min_pos, max_pos = (all_pos[repOff], all_pos[-1])
-    print("extremePos: ", min_pos, max_pos)
-    replica1 = repdat_file.DATA.loc[repdat_file.DATA.ID == 1]
-
-
-    if (isinstance(pot_tresh, float)):
-        pot_tresh = {x:pot_tresh for x in replica1.iloc[0].state_potentials}
-    elif(isinstance(pot_tresh, float)):
-        pot_tresh = {x:y for x,y in zip(sorted(replica1.iloc[0].state_potentials), pot_tresh)}
-    print("potTresh", pot_tresh)
-
-    for rowID, row in replica1.iterrows():
-        state_pots = row.state_potentials
-
-        for ind, state in enumerate(state_pots):
-            if (state_pots[state] < pot_tresh[int(state.replace("Vr", ""))-1]):
-                occurrence_counts[state] += 1
-
-        id_ene = {val: key for key, val in state_pots.items()}
-        min_state = id_ene[min(id_ene)]
-        domination_counts[min_state] +=1
+    domination_counts, max_pos, min_pos, occurrence_counts = samplingAnalysisFromRepdat(pot_tresh, repOff, repdat_file)
 
     sopt_it.update({"state_occurence_sampling": occurrence_counts})
-    sopt_it.update({"state_domination_sampling": domination_counts})
+    sopt_it.update({"state_maxContributing_sampling": domination_counts})
 
     del repdat_file
 
@@ -96,10 +72,7 @@ def analyse_sopt_iteration(repdat_path: str, out_dir: str, title: str, pot_tresh
     sopt_it.update({"stats_per_replica": stats})
     sopt_it.update({"s_values": s_values[repOff:]})
 
-    sopt_it.update({"state_domination_sampling": domination_counts})
-
-
-    sorted_dominating_state_samping =   np.array([sopt_it["state_domination_sampling"][x] for x in sorted( sopt_it["state_domination_sampling"], key=lambda x: int(x.replace("Vr","")) )])
+    sorted_dominating_state_samping =   np.array([sopt_it["state_maxContributing_sampling"][x] for x in sorted( sopt_it["state_maxContributing_sampling"], key=lambda x: int(x.replace("Vr","")) )])
     print(sorted_dominating_state_samping)
 
     optimal_samp =1/len(sorted_dominating_state_samping)*100
@@ -124,6 +97,36 @@ def analyse_sopt_iteration(repdat_path: str, out_dir: str, title: str, pot_tresh
 
     del trans_dict
     return sopt_it
+
+
+def samplingAnalysisFromRepdat(pot_tresh, repOff, repdat_file):
+    states = repdat_file.DATA.state_potentials.iloc[0].keys()
+    eoffs = repdat_file.system.state_eir
+    occurrence_counts = {state: 0 for state in states}
+    maxContributing_counts = {state: 0 for state in states}
+
+    print("cols: ", repdat_file.DATA.columns)
+    all_pos = list(sorted(np.unique(repdat_file.DATA.ID)))
+    min_pos, max_pos = (all_pos[repOff], all_pos[-1])
+    print("extremePos: ", min_pos, max_pos)
+    replica1 = repdat_file.DATA.loc[repdat_file.DATA.ID == 1]
+    if (isinstance(pot_tresh, float)):
+        pot_tresh = {x: pot_tresh for x in replica1.iloc[0].state_potentials}
+    elif (isinstance(pot_tresh, float)):
+        pot_tresh = {x: y for x, y in zip(sorted(replica1.iloc[0].state_potentials), pot_tresh)}
+    print("potTresh", pot_tresh)
+    for rowID, row in replica1.iterrows():
+        state_pots = row.state_potentials
+
+        for ind, state in enumerate(state_pots):
+            if (state_pots[state] < pot_tresh[int(state.replace("Vr", "")) - 1]):
+                occurrence_counts[state] += 1
+
+        eoff = eoffs[rowID]
+        id_ene = {val: key-eoff[key-1] for key, val in state_pots.items()}
+        min_state = id_ene[min(id_ene)]
+        maxContributing_counts[min_state] += 1
+    return maxContributing_counts, max_pos, min_pos, occurrence_counts
 
 
 def do(sopt_root_dir: str, state_physical_occurrence_potential_threshold:Union[List, float]=0, title="", out_dir: str = None, rt_convergence=100):

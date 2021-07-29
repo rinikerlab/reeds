@@ -237,9 +237,9 @@ def calculate_sampling_distributions(ene_traj_csvs: List[pd.DataFrame],
         total_number_steps = replica.shape[0]
 
         # Domination sampling
-        dominating_state_sampling = {x: 0 for x in range(1, 1 + num_states)}
+        minV_state_sampling = {x: 0 for x in range(1, 1 + num_states)}
         min_state, counts = np.unique(replica[states].idxmin(axis=1), return_counts=True)
-        dominating_state_sampling.update(
+        minV_state_sampling.update(
             {int(key.replace("e", "")): val / total_number_steps for key, val in zip(min_state, counts)})
 
         # occurence samplng
@@ -249,7 +249,7 @@ def calculate_sampling_distributions(ene_traj_csvs: List[pd.DataFrame],
             occurrence_state_sampling.update({int(state.replace("e", "")): occurrence_sampling_frac})
 
         # update results
-        replica_sampling_dist.update({int(replica.s.replace("s", "")): {"dominating_state": dominating_state_sampling,
+        replica_sampling_dist.update({int(replica.s.replace("s", "")): {"minV_state": minV_state_sampling,
                                                                         "occurence_state": occurrence_state_sampling}})
 
     return replica_sampling_dist
@@ -276,7 +276,7 @@ def calculate_sampling_distributions(ene_traj_csvs: List[pd.DataFrame], eoffs: L
     Returns
     -------
     Dict[int, Dict[str, Dict[int, float]]]
-        the dictionary contains for all replicas, the occurrence/dominating sampling fractions of each state  and undersamplin classification
+        the dictionary contains for all replicas, the occurrence/minState/maxContribution sampling fractions of each state  and undersamplin classification
     """
 
     replica_sampling_dist = {}
@@ -306,7 +306,7 @@ def calculate_sampling_distributions(ene_traj_csvs: List[pd.DataFrame], eoffs: L
             occurrence_state_sampling.update({int(state.replace("e", "")): occurrence_sampling_frac})
 
         # update results
-        replica_sampling_dist.update({int(replica.s.replace("s", "")): {"dominating_state": minV_state_sampling,
+        replica_sampling_dist.update({int(replica.s.replace("s", "")): {"minV_state": minV_state_sampling,
                                                                         "max_contributing_state": max_contributing_state_sampling,
                                                                         "occurence_state": occurrence_state_sampling}})
 
@@ -360,12 +360,16 @@ def sampling_analysis(ene_traj_csvs: List[pd.DataFrame],
 
     # show_presence of undersampling
     if (verbose): print("\n\n Sampling Timeseries\n\n")
+    if(eoffs[0] is not list or eoffs[0] is not np.array ):  #only 1D eoff vector given!
+        eoffs = [eoffs for x in range(len(ene_traj_csvs))]
+
     for ind, replica in enumerate(ene_traj_csvs):
         if (verbose): print("\t replica " + replica.s)
 
-        dominating_state_sampling = replica[select_states].idxmin(axis=1).replace("e", "", regex=True)
+        minV_state_sampling = replica[select_states].idxmin(axis=1).replace("e", "", regex=True)
 
         # Corr
+        print(ind)
         max_contributing_sampling = (replica[select_states] - eoffs[ind]).idxmin(axis=1).replace("e", "", regex=True)
 
         occurrence_sampling_replica = []
@@ -374,7 +378,7 @@ def sampling_analysis(ene_traj_csvs: List[pd.DataFrame],
                 replica[state] < state_potential_treshold[int(state.replace("e", "")) - 1]]
             occurrence_sampling_replica.append(occurrence_sampling_state_replica)
 
-        data = {"time": replica.time, "occurrence_t": occurrence_sampling_replica, "dominating_state": dominating_state_sampling, "maxContrib_state":max_contributing_sampling}
+        data = {"time": replica.time, "occurrence_t": occurrence_sampling_replica, "minV_state": minV_state_sampling, "maxContrib_state":max_contributing_sampling}
 
         if (_visualize):
             reeds.function_libs.visualization.sampling_plots.plot_t_statepres(data=data,
@@ -389,7 +393,7 @@ def sampling_analysis(ene_traj_csvs: List[pd.DataFrame],
 
     # SamplingMatrix by kays
     if (verbose): print("\n\n Calculate Sampling Distributions\n\n")
-    replica_sampling_distributions = calculate_sampling_distributions(ene_traj_csvs=ene_traj_csvs,
+    replica_sampling_distributions = calculate_sampling_distributions(ene_traj_csvs=ene_traj_csvs, eoffs=eoffs,
                                                                       potential_treshold=state_potential_treshold)
 
     if (_visualize):

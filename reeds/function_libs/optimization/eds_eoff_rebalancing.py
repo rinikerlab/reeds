@@ -6,7 +6,7 @@ from scipy import constants as const
 
 def rebalance_eoffs_directCounting(old_eoffs: np.array, sampling_stat: Dict[int, Dict[str, Dict[int, float]]],
                                    temperature: float = 298, pseudo_count: float = None, learningFactor: float = 1,
-                                   sampling_type: str = "dominating_state",
+                                   sampling_type: str = "max_contributing_state",
                                    double_sided: bool = False, double_sided_widthFactor: float = 0.8,
                                    correct_for_s1_only: bool = True, verbose: bool = True) -> np.array:
     """
