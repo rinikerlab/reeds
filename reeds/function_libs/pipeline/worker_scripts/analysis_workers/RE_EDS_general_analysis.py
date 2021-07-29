@@ -412,7 +412,7 @@ def do_Reeds_analysis(in_folder: str, out_folder: str, gromos_path: str,
             # plot if states are sampled and minimal state
             print("\tplot sampling: ")
             (sampling_results, out_dir) = sampling_ana.detect_undersampling(out_path = out_dir, ene_traj_csvs = energy_trajectories,
-                                                                            s_values = s_values, state_potential_treshold= state_undersampling_occurrence_potential_threshold, 
+                                                                            s_values = s_values, eoffs=Eoff, state_potential_treshold= state_undersampling_occurrence_potential_threshold,
                                                                             undersampling_occurence_sampling_tresh=undersampling_frac_thresh)
 
         if (sub_control["calc_eoff"]):
@@ -481,6 +481,7 @@ def do_Reeds_analysis(in_folder: str, out_folder: str, gromos_path: str,
 
         (sampling_results, out_dir) = sampling_ana.sampling_analysis(out_path=out_dir,
                                                                      ene_traj_csvs=energy_trajectories,
+                                                                     eoffs=Eoff,
                                                                      s_values=s_values,
                                                                      state_potential_treshold=state_physical_occurrence_potential_threshold)
     elif(control_dict["phys_sampling"]["do"]):

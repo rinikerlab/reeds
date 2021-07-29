@@ -255,8 +255,65 @@ def calculate_sampling_distributions(ene_traj_csvs: List[pd.DataFrame],
     return replica_sampling_dist
 
 
+def calculate_sampling_distributions(ene_traj_csvs: List[pd.DataFrame], eoffs: List[List[float]],
+                                     potential_treshold: List[float]) -> Dict[int, Dict[str, Dict[int, float]]]:
+    """calculate_sampling_distributions
+    This function is using the dominating state sampling and occurrence state sampling definition, to calculate
+    for both definitions the sampling distributions including each stat.
+    Further each replica, having an occurrence sampling >= undersampling_occurence_sampling_tresh for each state is categorized as undersampling.
+
+    Parameters
+    ----------
+    ene_traj_csvs: List[pd.Dataframe]
+        a list of pandas dataframes containing the energy data of each state eX
+    potential_treshold: List[float]
+        a list of potential thresholds for undersampling
+    eoffs : List[List[float]]
+        energy offsets for each replica
+    undersampling_occurence_sampling_tresh: float, optional
+        threshold for the fraction of the energies which has to be below the threshold (default 0.75)
+
+    Returns
+    -------
+    Dict[int, Dict[str, Dict[int, float]]]
+        the dictionary contains for all replicas, the occurrence/dominating sampling fractions of each state  and undersamplin classification
+    """
+
+    replica_sampling_dist = {}
+    num_states = sum([1 for i in ene_traj_csvs[0].columns if (i.startswith("e") and not i == "eR")])
+    states = ["e" + str(s) for s in range(1, 1 + num_states)]
+    for ind, replica in enumerate(ene_traj_csvs):
+        total_number_steps = replica.shape[0]
+
+        # Domination sampling
+        minV_state_sampling = {x: 0 for x in range(1, 1 + num_states)}
+        min_state, counts = np.unique(replica[states].idxmin(axis=1), return_counts=True)
+        minV_state_sampling.update(
+            {int(key.replace("e", "")): val / total_number_steps for key, val in zip(min_state, counts)})
+
+        # Corr
+        max_contributing_state_sampling = {x: 0 for x in range(1, 1 + num_states)}
+        contrib_corr = replica[states] - eoffs[ind]
+        contrib_corr = contrib_corr.idxmin(axis=1).replace("e", "", regex=True)
+        min_state, counts = np.unique(contrib_corr, return_counts=True)
+        max_contributing_state_sampling.update(
+            {int(key): val / total_number_steps for key, val in zip(min_state, counts)})
+
+        # occurence samplng
+        occurrence_state_sampling = {}
+        for ind, state in enumerate(states):
+            occurrence_sampling_frac = replica[replica[state] < potential_treshold[ind]].shape[0] / total_number_steps
+            occurrence_state_sampling.update({int(state.replace("e", "")): occurrence_sampling_frac})
+
+        # update results
+        replica_sampling_dist.update({int(replica.s.replace("s", "")): {"dominating_state": minV_state_sampling,
+                                                                        "max_contributing_state": max_contributing_state_sampling,
+                                                                        "occurence_state": occurrence_state_sampling}})
+
+    return replica_sampling_dist
+
 def sampling_analysis(ene_traj_csvs: List[pd.DataFrame],
-                      state_potential_treshold: List[float],
+                      state_potential_treshold: List[float], eoffs: List[List[float]],
                       s_values: List[float],
                       out_path: str = None,
                       xmax: bool = False,
@@ -275,6 +332,8 @@ def sampling_analysis(ene_traj_csvs: List[pd.DataFrame],
         list of s_values
     state_potential_treshold : List[float]
         potential energy thresholds, for considering a state as sampled
+    eoffs : List[List[float]]
+        energy offsets for each replica
     xmax :  bool, optional
         additionally output a plot only with a smaller x_range. (0->xmax) (default False)
     _visualize: bool, opptional
@@ -306,13 +365,16 @@ def sampling_analysis(ene_traj_csvs: List[pd.DataFrame],
 
         dominating_state_sampling = replica[select_states].idxmin(axis=1).replace("e", "", regex=True)
 
+        # Corr
+        max_contributing_sampling = (replica[select_states] - eoffs[ind]).idxmin(axis=1).replace("e", "", regex=True)
+
         occurrence_sampling_replica = []
         for state in select_states:
             occurrence_sampling_state_replica = replica.index[
                 replica[state] < state_potential_treshold[int(state.replace("e", "")) - 1]]
             occurrence_sampling_replica.append(occurrence_sampling_state_replica)
 
-        data = {"time": replica.time, "occurrence_t": occurrence_sampling_replica, "dominating_state": dominating_state_sampling}
+        data = {"time": replica.time, "occurrence_t": occurrence_sampling_replica, "dominating_state": dominating_state_sampling, "maxContrib_state":max_contributing_sampling}
 
         if (_visualize):
             reeds.function_libs.visualization.sampling_plots.plot_t_statepres(data=data,
@@ -322,14 +384,14 @@ def sampling_analysis(ene_traj_csvs: List[pd.DataFrame],
         if (xmax):
             reeds.function_libs.visualization.sampling_plots.plot_t_statepres(data=data,
                                                                               title="s=" + str(s_vals_nice[ind]),
-                                                                              out_path=out_path + "/sampling_timeseries_s" + str(ind + 1) + "_upto_" + str(
-                                     xmax) + ".png",
+                                                                              out_path=out_path + "/sampling_timeseries_s" + str(ind + 1) + "_upto_" + str(xmax) + ".png",
                                                                               xlim=[0, xmax])
 
     # SamplingMatrix by kays
     if (verbose): print("\n\n Calculate Sampling Distributions\n\n")
     replica_sampling_distributions = calculate_sampling_distributions(ene_traj_csvs=ene_traj_csvs,
                                                                       potential_treshold=state_potential_treshold)
+
     if (_visualize):
         if (verbose): print("\n\n Sampling Histograms\n\n")
         for ind, x in enumerate(replica_sampling_distributions):
@@ -348,9 +410,10 @@ def sampling_analysis(ene_traj_csvs: List[pd.DataFrame],
     return final_results, out_path
 
 
+
 def detect_undersampling(ene_traj_csvs: List[pd.DataFrame],
                          state_potential_treshold: List[float],
-                         s_values: List[float],
+                         s_values: List[float], eoffs: List[List[float]],
                          out_path: str = None,
                          undersampling_occurence_sampling_tresh: float = 0.9,
                          xmax: bool = False,
@@ -391,7 +454,7 @@ def detect_undersampling(ene_traj_csvs: List[pd.DataFrame],
     ##glob vars
     sampling_stat, out_path = sampling_analysis(ene_traj_csvs=ene_traj_csvs,
                                                 state_potential_treshold=state_potential_treshold,
-                                                s_values=s_values,
+                                                s_values=s_values, eoffs=eoffs,
                                                 out_path=out_path,
                                                 xmax= xmax,
                                                 _visualize=_visualize,

@@ -123,7 +123,7 @@ def plot_t_statepres(data: dict,
     # sort data:
     num_states = len(data["occurrence_t"])
     x_ax = data["time"]  # time axis
-    ymin = np.array(data["dominating_state"], dtype=float)  # to get correct state (counted with 0)
+    ymin = np.array(data["maxContrib_state"], dtype=float)  # to get correct state (counted with 0)
 
     yunders = []
     for state in range(num_states):
@@ -144,7 +144,7 @@ def plot_t_statepres(data: dict,
         else:
             ax.scatter(xy["x"], xy["y"], alpha=0.5, c="blue", s=2, lw=0, marker=".", edgecolors=None)
 
-    ax.scatter(x_ax, ymin, label="minstate", alpha=0.7, c="red", lw=0.0, s=5, marker=".", edgecolors=None)
+    ax.scatter(x_ax, ymin, label="maxContrib", alpha=0.7, c="red", lw=0.0, s=5, marker=".", edgecolors=None)
 
     ##define limits
     ax.set_ylim(0.25, num_states + 0.5)
@@ -219,7 +219,7 @@ def plot_stateOccurence_hist(data: dict,
                     '{}'.format(label), ha=ha[xpos], va='bottom')
 
     # histogramm
-    bins_dom = list(data['dominating_state'].values())
+    bins_dom = list(data['max_contributing_state'].values())
     bins_und = list(data['occurence_state'].values())
     labels = list(data['occurence_state'].keys())
 
@@ -232,7 +232,7 @@ def plot_stateOccurence_hist(data: dict,
     sampled = ax.bar(x=labels, height=bins_und, width=width, label="occurrence", color="C0")
     autolabel(sampled, xpos='left')
 
-    sampled = ax.bar(x=labels, height=bins_dom, width=width, label="dominating", color="C3")
+    sampled = ax.bar(x=labels, height=bins_dom, width=width, label="maxContributing", color="C3")
     autolabel(sampled, xpos='right')
 
     ax.set_xticks(range(0, len(labels) + 1))
@@ -279,7 +279,7 @@ def plot_stateOccurence_matrix(data: dict,
         [np.array([data[replica]["occurence_state"][key] for key in sorted(data[replica]["occurence_state"])])
          for replica in sorted(data)]).T
     domination_sampling_matrix = np.array(
-        [np.array([data[replica]["dominating_state"][key] for key in sorted(data[replica]["dominating_state"])])
+        [np.array([data[replica]["maxContrib_state"][key] for key in sorted(data[replica]["maxContrib_state"])])
          for replica in sorted(data)]).T
 
     # Plot occurence:
