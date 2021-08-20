@@ -401,6 +401,22 @@ def do_Reeds_analysis(in_folder: str, out_folder: str, gromos_path: str,
             if (verbose): print("DONE\n")
         # del energy_trajectories -- remove if memory without this is fine
 
+    if (control_dict["phys_sampling"]["do"] and not state_physical_occurrence_potential_threshold is None):
+        # parsing_ene_traj_csvs 
+        if energy_trajectories is None:
+            energy_trajectories = parse_csv_energy_trajectories(concat_file_folder, ene_trajs_prefix)
+     
+        out_dir = bash.make_folder(out_folder + "/state_sampling")
+
+        (sampling_results, out_dir) = sampling_ana.sampling_analysis(out_path=out_dir,
+                                                                     ene_traj_csvs=energy_trajectories,
+                                                                     eoffs=Eoff,
+                                                                     s_values=s_values,
+                                                                     state_potential_treshold=state_physical_occurrence_potential_threshold)
+    elif(control_dict["phys_sampling"]["do"]):
+        warnings.warn("DID NOT do physical sampling analysis, as state_physical_occurrence_potential_threshold was None!")
+
+
     if (control_dict["eoffset"]["do"]):
         print("Start Eoffset")
         sub_control = control_dict["eoffset"]["sub"]
@@ -415,7 +431,8 @@ def do_Reeds_analysis(in_folder: str, out_folder: str, gromos_path: str,
         
         # plot if states are sampled and minimal state
         (sampling_results, out_dir) = sampling_ana.detect_undersampling(out_path = out_dir, ene_traj_csvs = energy_trajectories,_visualize=sub_control["sampling_plot"], 
-                                                                            s_values = s_values, state_potential_treshold= state_undersampling_occurrence_potential_threshold, 
+                                                                            s_values = s_values, eoffs=Eoff, 
+                                                                            state_potential_treshold= state_undersampling_occurrence_potential_threshold, 
                                                                             undersampling_occurence_sampling_tresh=undersampling_frac_thresh)
         if(sub_control["eoff_estimation"] and sub_control["eoffsetRebalancing"]):
             raise Exception("can not have eoff_estimation and eoff Rebalancing turned on at the same time!")
@@ -461,6 +478,7 @@ def do_Reeds_analysis(in_folder: str, out_folder: str, gromos_path: str,
                                                                                    state_weights=state_weights,
                                                                                    run_NLRTO=sub_control["run_NLRTO"], run_NGRTO=sub_control["run_NGRTO"],
                                                                                    verbose=verbose)
+
         if (sub_control["visualize_transitions"]):
             print("\t\tvisualize transitions")
             parameter_optimization.get_s_optimization_transitions(out_dir=out_dir, rep_dat=in_file, title_prefix=title_prefix)
@@ -481,22 +499,7 @@ def do_Reeds_analysis(in_folder: str, out_folder: str, gromos_path: str,
                                                     data=trans_dict, title=title_prefix, s_values=s_values)
 
         if (verbose): print("Done\n")
-
-    if (control_dict["phys_sampling"]["do"] and not state_physical_occurrence_potential_threshold is None):
-        # parsing_ene_traj_csvs 
-        if energy_trajectories is None:
-            energy_trajectories = parse_csv_energy_trajectories(concat_file_folder, ene_trajs_prefix)
-     
-        out_dir = bash.make_folder(out_folder + "/state_sampling")
-
-        (sampling_results, out_dir) = sampling_ana.sampling_analysis(out_path=out_dir,
-                                                                     ene_traj_csvs=energy_trajectories,
-                                                                     eoffs=Eoff,
-                                                                     s_values=s_values,
-                                                                     state_potential_treshold=state_physical_occurrence_potential_threshold)
-    elif(control_dict["phys_sampling"]["do"]):
-        warnings.warn("DID NOT do physical sampling analysis, as state_physical_occurrence_potential_threshold was None!")
-
+    
     if (control_dict["dfmult"]["do"]):
         print("Start Dfmult")
 
@@ -536,13 +539,24 @@ def do_Reeds_analysis(in_folder: str, out_folder: str, gromos_path: str,
         print("svalues var", s_values)
         input_cnfs = os.path.dirname(in_imd) + "/coord"
         print("svals", svals)
-            
-        print("nsvals:")
-        print(len(svals[0]), len(svals[1]), len(svals[2]))
-        # Put the proper cnfs in place        
-        sopt_type_switch = 2 if(svals[1] is None or len(svals[1]) == 0 ) else 1
+           
+        #CLEAN!
+        #print("nsvals:")
+        #print(len(svals[0]), len(svals[1]), len(svals[2]))
+        # Pu the proper cnfs in place        
+        if(len(svals)==0):
+            sopt_type_switch = 0
+        else:    
+            sopt_type_switch = 2 if(svals[1] is None or len(svals[1]) == 0 ) else 1
         print("Switch", sopt_type_switch)
-        if (sub_control["eoff_to_sopt"]):
+        if(len(svals)==0):
+            svals = {0:s_values}
+            sopt_type_switch = 0
+            if verbose: print("same ammount of s_vals -> simply copying output:")
+            bash.copy_file(concat_file_folder + "/*cnf", next_dir)
+
+
+        elif (sub_control["eoff_to_sopt"]):
             if (not os.path.isdir(optimized_eds_state_folder)):
                 raise IOError("Could not find optimized state output dir: " + optimized_eds_state_folder)
             
@@ -588,6 +602,7 @@ def do_Reeds_analysis(in_folder: str, out_folder: str, gromos_path: str,
 
         ##New EnergyOffsets?
         if sub_control["write_eoff"] and control_dict["eoffset"]:
+            print(new_eoffs.shape)
             imd_file.edit_REEDS(EIR=np.round(new_eoffs, 2))
         elif (sub_control["write_eoff"] and not control_dict["Eoff"]["sub"]["eoff_estimation"]):
             warnings.warn("Could not set Eoffs to imd, as not calculated in this run!")

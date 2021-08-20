@@ -21,7 +21,7 @@ def do_optimization(out_root_dir: str, in_simSystem: fM.System, optimization_nam
                     iterations: int = 4,
                     eoffEstimation_undersampling_fraction_threshold: float = 0.9,
                     sOpt_add_replicas: int = 4, sOpt_adding_new_sReplicas_Scheme: adding_Scheme_new_Replicas = adding_Scheme_new_Replicas.from_below,
-                    run_NLRTO: bool = True, run_NGRTO: bool = False,
+                    run_NLRTO: bool = True, run_NGRTO: bool = False, run_eoffRB: bool=False,
                     eoffRB_learningFactors:List[float]=None, eoffRB_pseudocount:float=None,
                     eoffRB_doubleSided:bool=False, eoffRB_doubleSidedWidth:Union[float, None]=None,
                     non_ligand_residues: list = [],
@@ -197,7 +197,7 @@ def do_optimization(out_root_dir: str, in_simSystem: fM.System, optimization_nam
                                                              ligands=ligands, old_sopt_job=iteration_sopt_job,
                                                              last_data_folder=last_data_folder,
                                                              nmpi_per_replica=nmpi_per_replica,
-                                                             run_NRLTO=run_NLRTO, run_NGRTO=run_NGRTO,
+                                                             run_NLRTO=run_NLRTO, run_NGRTO=run_NGRTO, run_eoffRB=run_eoffRB,
                                                              pot_tresh=state_physical_occurrence_potential_threshold,
                                                              duration_per_job=duration_per_job,
                                                              num_simulation_runs=repetitions)

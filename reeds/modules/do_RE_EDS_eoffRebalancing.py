@@ -125,7 +125,7 @@ int
                             iterations=iterations,
                             eoffEstimation_undersampling_fraction_threshold=undersampling_fraction_threshold,
                             sOpt_add_replicas= add_replicas, sOpt_adding_new_sReplicas_Scheme= adding_new_sReplicas_Scheme,
-                            run_NLRTO = run_NLRTO, run_NGRTO = run_NGRTO,
+                            run_NLRTO = run_NLRTO, run_NGRTO = run_NGRTO, run_eoffRB=True,
                             eoffRB_learningFactors = learningFactors, eoffRB_pseudocount = pseudocount,
                             eoffRB_doubleSided = doubleSided, eoffRB_doubleSidedWidth = doubleSidedWidth,
                             non_ligand_residues = non_ligand_residues,

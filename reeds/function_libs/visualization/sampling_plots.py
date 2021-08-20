@@ -273,11 +273,12 @@ def plot_stateOccurence_matrix(data: dict,
     """
     states_num = len(data[list(data.keys())[0]]["occurence_state"])
 
+    print(data[1].keys())
     occurrence_sampling_matrix = np.array(
         [np.array([data[replica]["occurence_state"][key] for key in sorted(data[replica]["occurence_state"])])
          for replica in sorted(data)]).T
     domination_sampling_matrix = np.array(
-        [np.array([data[replica]["maxContrib_state"][key] for key in sorted(data[replica]["maxContrib_state"])])
+        [np.array([data[replica]["max_contributing_state"][key] for key in sorted(data[replica]["max_contributing_state"])])
          for replica in sorted(data)]).T
 
     # Plot occurence:

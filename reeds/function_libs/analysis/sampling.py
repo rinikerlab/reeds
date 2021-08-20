@@ -1,5 +1,5 @@
 import warnings
-from typing import List, Dict
+from typing import List, Dict, Iterable
 
 import numpy as np
 import pandas as pd
@@ -360,7 +360,8 @@ def sampling_analysis(ene_traj_csvs: List[pd.DataFrame],
 
     # show_presence of undersampling
     if (verbose): print("\n\n Sampling Timeseries\n\n")
-    if(eoffs[0] is not list or eoffs[0] is not np.array ):  #only 1D eoff vector given!
+    if(isinstance(eoffs[0], (Iterable, np.array, np.ndarray)) and type(eoffs[0]) is type(not np.array([]))): #only 1D eoff vector given!
+        print("VECTOR!")
         eoffs = [eoffs for x in range(len(ene_traj_csvs))]
 
     for ind, replica in enumerate(ene_traj_csvs):
@@ -369,8 +370,8 @@ def sampling_analysis(ene_traj_csvs: List[pd.DataFrame],
         minV_state_sampling = replica[select_states].idxmin(axis=1).replace("e", "", regex=True)
 
         # Corr
-        print(ind)
-        max_contributing_sampling = (replica[select_states] - eoffs[ind]).idxmin(axis=1).replace("e", "", regex=True)
+        eoffs_rep = np.array(eoffs[ind])
+        max_contributing_sampling = (replica[select_states] - eoffs_rep).idxmin(axis=1).replace("e", "", regex=True)
 
         occurrence_sampling_replica = []
         for state in select_states:

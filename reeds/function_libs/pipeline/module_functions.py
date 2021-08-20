@@ -367,7 +367,7 @@ def build_optimization_step_dir(iteration: int,  iteration_folder_prefix: str, p
                                 in_ene_ana_lib_path: str, in_gromosPP_bin_dir: str,
                                 in_gromosXX_bin_dir: str, ligands, last_data_folder: str, nmpi_per_replica: int,
                                 duration_per_job: str, num_simulation_runs: int,
-                                run_NRLTO:bool=True, run_NGRTO: bool=False, run_eoffRB:bool = False,
+                                run_NLRTO:bool=True, run_NGRTO: bool=False, run_eoffRB:bool = False,
                                 optimized_states_dir:str = "../../a_optimizedState/analysis/next",
                                 old_sopt_job: optimization_job = False, verbose: bool = False) -> optimization_job:
     """
@@ -463,10 +463,10 @@ def build_optimization_step_dir(iteration: int,  iteration_folder_prefix: str, p
 
     ##which analysis functions to execute
     control_dict = {  # this dictionary is controlling the post  Simulation analysis procedure!
-        "sopt": {"do": run_NRLTO or run_NGRTO,
+        "sopt": {"do": run_NLRTO or run_NGRTO,
                  "sub": {
                      "run_RTO": True,
-                     "run_NLRTO": run_NRLTO,
+                     "run_NLRTO": run_NLRTO,
                      "run_NGRTO": run_NGRTO,
                      "visualize_transitions": True,
                      "roundtrips": True,
@@ -482,8 +482,8 @@ def build_optimization_step_dir(iteration: int,  iteration_folder_prefix: str, p
         "prepare_input_folder": {"do": True,
                                  "sub": {
                                      "eoff_to_sopt": False,
-                                     "write_eoff": False,
-                                     "write_s": True
+                                     "write_eoff": run_eoffRB,
+                                     "write_s": run_NLRTO or run_NGRTO
                                  },
                                  }
     }
