@@ -126,7 +126,7 @@ int
     pseudocount = None
     doubleSided = False
     doubleSidedWidth = None,
-
+    eoffRB_correctionPerReplica = False
 
     job_id = do_optimization(out_root_dir=out_root_dir, in_simSystem=in_simSystem, optimization_name=optimization_name, in_template_imd=in_template_imd,
                             iterations=soptIterations,
@@ -135,6 +135,7 @@ int
                             run_NLRTO = run_NLRTO, run_NGRTO = run_NGRTO,
                             eoffRB_learningFactors = learningFactors, eoffRB_pseudocount = pseudocount,
                             eoffRB_doubleSided = doubleSided, eoffRB_doubleSidedWidth = doubleSidedWidth,
+                             eoffRB_correctionPerReplica=eoffRB_correctionPerReplica,
                             non_ligand_residues = non_ligand_residues,
                             state_physical_occurrence_potential_threshold=state_physical_occurrence_potential_threshold,
                             state_undersampling_occurrence_potential_threshold=state_undersampling_occurrence_potential_threshold,

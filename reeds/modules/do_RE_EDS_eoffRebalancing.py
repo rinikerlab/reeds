@@ -27,16 +27,21 @@ from reeds.modules._do_RE_EDS_Optimization import do_optimization
 
 def do(out_root_dir: str, in_simSystem: fM.System, in_template_imd: str = None,
        iterations: int = 4,
-       learningFactors : List[float]= None, pseudocount: float=None,
+
+       learningFactors : List[float]= None, pseudocount: float=None, individualCorrection: bool=False,
        doubleSided:bool=False, doubleSidedWidth=None,
+
        noncontinous: bool = False,
        optimized_states_dir: str = os.path.abspath("a_optimizedState/analysis/next"),
        lower_bound_dir: str = os.path.abspath("b_lowerBound/analysis/next"),
-       state_physical_occurrence_potential_threshold:List[float]=None,
+
+       state_physical_occurrence_potential_threshold: List[float]=None,
        state_undersampling_occurrence_potential_threshold: List[float]=None,
-       undersampling_fraction_threshold:float=0.9,
+       undersampling_fraction_threshold: float=0.9,
+
        equil_runs: int = None, steps_between_trials: int = 20, trials_per_run: int = 12500,
        non_ligand_residues: list = [],
+
        in_gromosXX_bin_dir: str = None, in_gromosPP_bin_dir: str = None,
        in_ene_ana_lib_path: str = ene_ana_libs.ene_ana_lib_path,
        nmpi_per_replica: int = 1, submit: bool = True, duration_per_job: str = "24:00",
@@ -128,6 +133,7 @@ int
                             run_NLRTO = run_NLRTO, run_NGRTO = run_NGRTO,
                             eoffRB_learningFactors = learningFactors, eoffRB_pseudocount = pseudocount,
                             eoffRB_doubleSided = doubleSided, eoffRB_doubleSidedWidth = doubleSidedWidth,
+                            eoffRB_correctionPerReplica=individualCorrection,
                             non_ligand_residues = non_ligand_residues,
                             state_physical_occurrence_potential_threshold=state_physical_occurrence_potential_threshold,
                             state_undersampling_occurrence_potential_threshold=state_undersampling_occurrence_potential_threshold,
