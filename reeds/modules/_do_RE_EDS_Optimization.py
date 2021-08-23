@@ -246,7 +246,7 @@ def do_optimization(out_root_dir: str, in_simSystem: fM.System, optimization_nam
                 root_dir = os.getcwd()
                 os.chdir(os.path.dirname(ana_out_dir))
                 job_id_final_ana = job_submission_system.submit_to_queue(command=in_final_analysis_script_path,
-                                                                         jobName=job_name + "_sopt" + str(iteration),
+                                                                         jobName=job_name + "_opt" + str(iteration),
                                                                          outLog=ana_out_dir + "/" + job_name + ".out",
                                                                          errLog=ana_out_dir + "/" + job_name + ".err",
                                                                          maxStorage=5000, queue_after_jobID=job_id,

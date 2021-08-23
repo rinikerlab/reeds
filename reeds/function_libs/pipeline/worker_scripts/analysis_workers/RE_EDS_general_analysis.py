@@ -552,8 +552,9 @@ def do_Reeds_analysis(in_folder: str, out_folder: str, gromos_path: str,
         if(len(svals)==0):
             svals = {0:s_values}
             sopt_type_switch = 0
-            if verbose: print("same ammount of s_vals -> simply copying output:")
-            bash.copy_file(concat_file_folder + "/*cnf", next_dir)
+            cnfs = list(sorted(glob.glob(concat_file_folder+"/*.cnf"), key=lambda x: int(x.split("_")[-1].split(".")[0])))
+            for i, cnf in enumerate(cnfs):
+                bash.copy_file(cnf, next_dir+"/"+title_prefix+"_"+str(i+1)+".cnf")
 
 
         elif (sub_control["eoff_to_sopt"]):
@@ -603,7 +604,7 @@ def do_Reeds_analysis(in_folder: str, out_folder: str, gromos_path: str,
         ##New EnergyOffsets?
         if sub_control["write_eoff"] and control_dict["eoffset"]:
             print(new_eoffs.shape)
-            imd_file.edit_REEDS(EIR=np.round(new_eoffs, 2))
+            imd_file.edit_REEDS(EIR=np.round(new_eoffs, 4))
         elif (sub_control["write_eoff"] and not control_dict["Eoff"]["sub"]["eoff_estimation"]):
             warnings.warn("Could not set Eoffs to imd, as not calculated in this run!")
 
