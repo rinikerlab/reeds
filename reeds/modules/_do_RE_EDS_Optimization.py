@@ -24,6 +24,7 @@ def do_optimization(out_root_dir: str, in_simSystem: fM.System, optimization_nam
                     run_NLRTO: bool = True, run_NGRTO: bool = False, run_eoffRB: bool=False,
                     eoffRB_learningFactors:List[float]=None, eoffRB_pseudocount:float=None,
                     eoffRB_doubleSided:bool=False, eoffRB_doubleSidedWidth:Union[float, None]=None,
+                    eoffRB_correctionPerReplica: bool=False,
                     non_ligand_residues: list = [],
                     state_physical_occurrence_potential_threshold:List[float]=None,
                     state_undersampling_occurrence_potential_threshold: List[float]=None,
@@ -172,6 +173,7 @@ def do_optimization(out_root_dir: str, in_simSystem: fM.System, optimization_nam
         optimization_options = optimization_params(learningFactor=eoffRB_learningFactors[iteration - 1],
                                                    pseudocount=eoffRB_pseudocount,
                                                    doubleSided=eoffRB_doubleSided, doubleSidedWidth=eoffRB_doubleSidedWidth,
+                                                   eoffRB_correctionPerReplica=eoffRB_correctionPerReplica,
                                                    add_replicas=0, adding_new_sReplicas_Scheme=sOpt_adding_new_sReplicas_Scheme,
                                                    current_num_svals=cur_svals)
         # increase cur_svals by add_replicas so it can be used to define soptimization_options in the next iteration
