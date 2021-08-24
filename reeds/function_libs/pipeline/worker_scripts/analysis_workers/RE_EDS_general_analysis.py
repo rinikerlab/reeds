@@ -606,9 +606,6 @@ def do_Reeds_analysis(in_folder: str, out_folder: str, gromos_path: str,
 
         ##New EnergyOffsets
         if sub_control["write_eoff"] and control_dict["eoffset"]["do"]:
-
-
-            imd_file.REPLICA_EDS.EIR = eoffs
             imd_file.edit_REEDS(EIR=new_eoffs)
 
         elif (sub_control["write_eoff"] and not control_dict["Eoff"]["sub"]["eoff_estimation"]):
