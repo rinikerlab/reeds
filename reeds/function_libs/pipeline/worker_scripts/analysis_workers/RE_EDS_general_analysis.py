@@ -603,10 +603,13 @@ def do_Reeds_analysis(in_folder: str, out_folder: str, gromos_path: str,
         print("write out imd file ")
         imd_file = imd.Imd(in_imd)
 
-        ##New EnergyOffsets?
+        ##New EnergyOffsets
         if sub_control["write_eoff"] and control_dict["eoffset"]:
             print(new_eoffs.shape)
-            imd_file.edit_REEDS(EIR=np.round(new_eoffs, 4))
+            if(len(s_values) == new_eoffs):
+                new_eoffs = new_eoffs.T
+            eoffs = list(map(lambda x: list(map(str, x)), np.round(new_eoffs, 4)))
+            imd_file.REPLICA_EDS.EIR = eoffs
         elif (sub_control["write_eoff"] and not control_dict["Eoff"]["sub"]["eoff_estimation"]):
             warnings.warn("Could not set Eoffs to imd, as not calculated in this run!")
 
