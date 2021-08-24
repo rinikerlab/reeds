@@ -437,6 +437,7 @@ def do_Reeds_analysis(in_folder: str, out_folder: str, gromos_path: str,
                                                                             undersampling_occurence_sampling_tresh=undersampling_frac_thresh)
         if(sub_control["eoff_estimation"] and sub_control["eoffsetRebalancing"]):
             raise Exception("can not have eoff_estimation and eoff Rebalancing turned on at the same time!")
+
         elif (sub_control["eoff_estimation"]):
             print("calc Eoff: ")
             # WARNING ASSUMPTION THAT ALL EOFF VECTORS ARE THE SAME!
@@ -604,14 +605,17 @@ def do_Reeds_analysis(in_folder: str, out_folder: str, gromos_path: str,
         imd_file = imd.Imd(in_imd)
 
         ##New EnergyOffsets
-        if sub_control["write_eoff"] and control_dict["eoffset"]:
+        if sub_control["write_eoff"] and control_dict["eoffset"]["do"]:
             print(new_eoffs.shape)
             if(len(s_values) == len(new_eoffs)):
                 new_eoffs = new_eoffs.T
+
             if(new_eoffs[0] is Number):
-                eoffs = [new_eoffs for _ in range(len(s_values))]
+                print(new_eoffs)
+                eoffs = [list(map(str, new_eoffs)) for _ in range(len(s_values))]
             else:
                 eoffs = list(map(lambda x: list(map(str, x)), np.round(new_eoffs, 4)))
+
             imd_file.REPLICA_EDS.EIR = eoffs
         elif (sub_control["write_eoff"] and not control_dict["Eoff"]["sub"]["eoff_estimation"]):
             warnings.warn("Could not set Eoffs to imd, as not calculated in this run!")
