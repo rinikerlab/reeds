@@ -26,7 +26,7 @@ template_control_dict = OrderedDict({  # this dictionary is controlling the post
     "concat": {"do": True,
                "sub": {
                    "cp_cnf": True,
-                   "cat_trc": True,
+                   "cat_trc": False,
                    "cat_tre": False,
                    "ene_ana": True,
                    "convert_trcs": False,

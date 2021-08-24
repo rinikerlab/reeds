@@ -92,15 +92,26 @@ END
 REPLICA_EDS 
 # 	 REEDS 
  	 1 	  
-# 	 NRES 	 NUMSTATES 
- 	 13 	 2 	  
+# 	NRES 	 NUMSTATES  NEOFF
+ 	  	13 	 2 	  13
 # 	 RES(1 ... NRES) 
  	 1.0 	 0.562 	 0.316 	 0.178 	 0.1 	 0.0562 	 0.0316 	 0.0178 	 0.01 	 0.00562 	 0.00316 	 0.00178 	 0.001 	  
 # 	 EIR(NUMSTATES x NRES) 
- 	 0.0 	 0.0 	 0.0 	 0.0 	 0.0 	 0.0 	 0.0 	 0.0 	 0.0 	 0.0 	 0.0 	 0.0 	 0.0 
- 	 0.0 	 0.0 	 0.0 	 0.0 	 0.0 	 0.0 	 0.0 	 0.0 	 0.0 	 0.0 	 0.0 	 0.0 	 0.0 	  
-# 	 NRETRIAL 	 NREQUIL 	 CONT 	 EDS_STAT_OUT 
- 	 10 	 0 	 1 	 1 	  
+ 	 0.0 	 0.0
+ 	 0.0 	 0.0
+ 	 0.0 	 0.0
+ 	 0.0 	 0.0
+ 	 0.0 	 0.0
+ 	 0.0 	 0.0
+ 	 0.0 	 0.0
+ 	 0.0 	 0.0
+ 	 0.0 	 0.0
+ 	 0.0 	 0.0
+ 	 0.0 	 0.0
+ 	 0.0 	 0.0
+ 	 0.0 	 0.0
+# 	 NRETRIAL 	 NREQUIL 	 CONT 	 EDS_STAT_OUT  PERIODIC
+ 	 10 	 0 	 1 	 1 	  0
 END
 STEP 
 # 	 NSTLIM 	 T 	 DT 

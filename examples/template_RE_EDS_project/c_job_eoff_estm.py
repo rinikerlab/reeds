@@ -14,9 +14,9 @@ from global_definitions import in_top_file, in_pert_file, in_disres_file, in_tem
 from global_definitions import undersampling_frac_thresh
 
 #STEP specifics
-out_eoff_dir = root_dir + "/c_energy_offsets"
-sval_file = root_dir + "/b_lowerBound/analysis/next/s_vals.csv"
 in_name = name + "_energy_offsets"
+sval_file = root_dir + "/b_lowerBound/analysis/next/s_vals.csv"
+out_eoff_dir = root_dir + "/c_"+in_name
 
 ##make folder
 out_eoff_dir = bash.make_folder(out_eoff_dir)

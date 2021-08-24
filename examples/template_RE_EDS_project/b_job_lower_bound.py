@@ -10,8 +10,8 @@ from global_definitions import gromosXX_bin, gromosPP_bin, ene_ana_lib
 from global_definitions import in_top_file, in_cnf_file, in_pert_file, in_disres_file, in_template_md_imd
 
 #Step specifics
-out_lowerBound_dir = root_dir+"/b_lowerBound"
 in_name = name+"_find_lower_bound"
+out_lowerBound_dir = root_dir+"/b_"+in_name
 
 ##make folder
 out_lowerBound_dir = bash.make_folder(out_lowerBound_dir)

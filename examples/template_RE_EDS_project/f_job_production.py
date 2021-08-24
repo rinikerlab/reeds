@@ -12,9 +12,9 @@ from global_definitions import undersampling_frac_thresh
 
         
 #STEP Specifics
-out_production_dir = root_dir+"/e_production"
-next_production_dir = root_dir+"/d_sopt/soptX/analysis/next" #CHANGE HERE
 in_name = name+"_production"
+next_production_dir = root_dir+"/d_sopt/soptX/analysis/next" #CHANGE HERE
+out_production_dir = root_dir+"/f_"+in_name
  
 ##make folder
 out_production_dir = bash.make_folder(out_production_dir)

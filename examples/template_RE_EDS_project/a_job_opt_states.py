@@ -12,8 +12,8 @@ from global_definitions import in_top_file, in_cnf_file, in_pert_file, in_disres
 
 
 #Step Specifics
-out_gOptStates_dir = root_dir+"/a_optimizedState"
 in_name = name+"_optimize_single_state"
+out_gOptStates_dir = root_dir+"/a_"+in_name
 
 ##make folder
 out_gOptStates_dir = bash.make_folder(out_gOptStates_dir)

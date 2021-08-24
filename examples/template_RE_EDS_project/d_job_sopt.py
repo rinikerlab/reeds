@@ -12,9 +12,9 @@ from global_definitions import undersampling_frac_thresh
 
 
 #spefici parts
-out_sopt_dir = root_dir+"/d_sopt"
-next_sopt_dir = root_dir+"/c_eoff/analysis/next"
 in_name = name+"_sopt"
+next_sopt_dir = root_dir+"/c_eoff/analysis/next"
+out_sopt_dir = root_dir+"/d_"+in_name
 
 ##make folder
 out_sopt_dir = bash.make_folder(out_sopt_dir)
