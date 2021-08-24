@@ -48,7 +48,7 @@ template_control_dict = OrderedDict({  # this dictionary is controlling the post
                 "sub": {
                     "eoff_estimation": True,
                     "sampling_plot": True,
-                    "eoffsetRebalancing": False,
+                    "eoffset_rebalancing": False,
                 }
                 },
     "sopt": {"do": True,
@@ -435,7 +435,7 @@ def do_Reeds_analysis(in_folder: str, out_folder: str, gromos_path: str,
                                                                             s_values = s_values, eoffs=Eoff, 
                                                                             state_potential_treshold= state_undersampling_occurrence_potential_threshold, 
                                                                             undersampling_occurence_sampling_tresh=undersampling_frac_thresh)
-        if(sub_control["eoff_estimation"] and sub_control["eoffsetRebalancing"]):
+        if(sub_control["eoff_estimation"] and sub_control["eoffset_rebalancing"]):
             raise Exception("can not have eoff_estimation and eoff Rebalancing turned on at the same time!")
 
         elif (sub_control["eoff_estimation"]):
@@ -450,7 +450,7 @@ def do_Reeds_analysis(in_folder: str, out_folder: str, gromos_path: str,
                                                                               out_path = out_dir, temp = temp, trim_beg = 0., undersampling_idx = sampling_results['undersamplingThreshold'],
                                                                               plot_results = True, calc_clara = False)
             print("ENERGY OFF: ", new_eoffs, all_eoffs) 
-        elif(sub_control["eoffsetRebalancing"]):
+        elif(sub_control["eoffset_rebalancing"]):
             new_eoffs = rebalance_eoffs_directCounting(sampling_stat=sampling_results['samplingDistributions'], old_eoffs=Eoff,
                                                        learningFactor=eoffRebalancing_learningFactor, pseudo_count=eoffRebalancing_pseudocount,
                                                        double_sided=eoffRebalancing_doubleSided, double_sided_widthFactor= eoffRebalancing_doubleSidedWidth,

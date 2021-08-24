@@ -476,7 +476,7 @@ def build_optimization_step_dir(iteration: int,  iteration_folder_prefix: str, p
                     "sub": {
                         "eoff_estimation": not run_eoffRB,
                         "sampling_plot": False,
-                        "eoffsetRebalancing": run_eoffRB,
+                        "eoffset_rebalancing": run_eoffRB,
                         }
                     },
         "prepare_input_folder": {"do": True,
