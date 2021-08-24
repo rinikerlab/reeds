@@ -1,6 +1,6 @@
 import os, glob, warnings
 import numpy as np
-
+from numbers import Number
 from collections import OrderedDict
 from typing import Union, Dict, List
 
@@ -608,7 +608,10 @@ def do_Reeds_analysis(in_folder: str, out_folder: str, gromos_path: str,
             print(new_eoffs.shape)
             if(len(s_values) == len(new_eoffs)):
                 new_eoffs = new_eoffs.T
-            eoffs = list(map(lambda x: list(map(str, x)), np.round(new_eoffs, 4)))
+            if(new_eoffs[0] is Number):
+                eoffs = [new_eoffs for _ in range(len(s_values))]
+            else:
+                eoffs = list(map(lambda x: list(map(str, x)), np.round(new_eoffs, 4)))
             imd_file.REPLICA_EDS.EIR = eoffs
         elif (sub_control["write_eoff"] and not control_dict["Eoff"]["sub"]["eoff_estimation"]):
             warnings.warn("Could not set Eoffs to imd, as not calculated in this run!")
