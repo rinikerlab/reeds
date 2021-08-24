@@ -610,7 +610,7 @@ def do_Reeds_analysis(in_folder: str, out_folder: str, gromos_path: str,
             if(len(s_values) == len(new_eoffs)):
                 new_eoffs = new_eoffs.T
 
-            if(new_eoffs[0] is Number):
+            if(isinstance(new_eoffs[0], Number)):
                 print(new_eoffs)
                 eoffs = [list(map(str, new_eoffs)) for _ in range(len(s_values))]
             else:
