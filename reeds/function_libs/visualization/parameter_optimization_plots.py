@@ -157,11 +157,13 @@ def visualization_s_optimization_summary(s_opt_data: dict,
         y_RTd.append(roundTripTimeavg)
 
         x_svalues.extend(opti["s_values"])
-        y_svalues.extend([int(it.replace('sopt', "")) for x in range(len(opti["s_values"]))])
-
-        bar_heights.append([opti["state_domination_sampling"][state] for state in opti["state_domination_sampling"]])
+        y_svalues.extend([int(it.replace('sopt', "").replace("eoffRB", "")) for x in range(len(opti["s_values"]))])
+        
+        print(opti)
+        exit()
+        bar_heights.append([opti["state_domination_sampling"][state] for state in opti["state_maxContributing_sampling"]])
         bar_x.append(np.array(
-            [int(state.replace("V", "").replace("r", "").replace("i", "")) for state in opti["state_domination_sampling"]]))
+            [int(state.replace("V", "").replace("r", "").replace("i", "")) for state in opti["state_maxContributing_sampling"]]))
 
     y_RTd = np.array(y_RTd) * 20 * 0.002
     fig, ((ax1, ax2), (ax3, ax4)) = plt.subplots(ncols=2, nrows=2, figsize=ps.figsize_doubleColumn)

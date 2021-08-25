@@ -120,9 +120,9 @@ def samplingAnalysisFromRepdat(pot_tresh, repOff, repdat_file):
         for ind, state in enumerate(state_pots):
             if (state_pots[state] < pot_tresh[int(state.replace("Vr", "")) - 1]):
                 occurrence_counts[state] += 1
-
-        eoff = eoffs[rowID]
-        id_ene = {val: key-eoff[key-1] for key, val in state_pots.items()}
+        eoff = np.array(list(eoffs.values())).T
+        eoff = eoff[0]
+        id_ene = {val-eoff[int(key.replace("Vr", ""))-1]: key for key, val in state_pots.items()}
         min_state = id_ene[min(id_ene)]
         maxContributing_counts[min_state] += 1
     return maxContributing_counts, max_pos, min_pos, occurrence_counts
@@ -167,7 +167,13 @@ def do(project_dir: str, optimization_name:str,
     converged = False
     print(sopt_dirs)
     for iteration_folder in sorted(sopt_dirs):
-        iteration = int(iteration_folder.replace("sopt", ""))
+        if("sopt" in iteration_folder):
+            iteration = int(iteration_folder.replace("sopt", ""))
+        elif("eoffRB" in iteration_folder):
+            iteration = int(iteration_folder.replace("eoffRB", ""))
+        else:
+            raise Exception("OHOH!")
+
         print( iteration, end="\t")
         repdat = glob.glob(project_dir + "/" + iteration_folder + "/analysis/data/*repdat*")
         out_iteration_file_path = out_dir + "/" + iteration_folder + "_ana_data.npy"
@@ -189,7 +195,8 @@ def do(project_dir: str, optimization_name:str,
             continue
         # round trip time efficiency
         if (iteration > 1):
-            sopt_it_stats.update({"avg_rountrip_duration_optimization_efficiency": sopt_data["sopt"+str(iteration- 1)]["avg_rountrip_durations"] -sopt_it_stats["avg_rountrip_durations"]})
+            prefix = "sopt" if("sopt" in list(sopt_data.keys())[0]) else "eoffRB"
+            sopt_it_stats.update({"avg_rountrip_duration_optimization_efficiency": sopt_data[prefix+str(iteration- 1)]["avg_rountrip_durations"] -sopt_it_stats["avg_rountrip_durations"]})
 
         #assign convergence in an conserative fasion.
         sopt_it_stats.update({"converged": converged})
