@@ -133,7 +133,8 @@ def do(out_analysis_dir: str, system_name: str,
     state_undersampling_pot_treshold = find_undersampling_pot_tresh(ene_traj_csvs=ene_trajs, sampling_fraction_treshold = undersampling_occurrence_fraction_threshold)
 
     sampling_analysis_results, out_plot_dirs = reeds.function_libs.analysis.sampling.detect_undersampling(out_path = out_analysis_plot_dir,
-                                                                                                       ene_traj_csvs = ene_trajs,
+                                                                                                       ene_traj_csvs = ene_trajs, eoffs= [0 for _ in 
+                                                                                                       range(num_states)],
                                                                                                        s_values = s_values[:succsessful_sim_count],
                                                                                                        state_potential_treshold=state_undersampling_pot_treshold)
 

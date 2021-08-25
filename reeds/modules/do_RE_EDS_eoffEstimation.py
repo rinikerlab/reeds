@@ -202,7 +202,7 @@ int
         control_dict = {
             "eoffset": {"do": True,
                 "sub": {
-                    "calc_eoff": True,
+                    "eoff_estimation": True,
                     "sampling_plot": True,
                     "eoffsetRebalancing": False,
                 }

@@ -1,5 +1,6 @@
 import warnings
 from typing import List, Dict, Iterable
+from numbers import Number
 
 import numpy as np
 import pandas as pd
@@ -360,8 +361,7 @@ def sampling_analysis(ene_traj_csvs: List[pd.DataFrame],
 
     # show_presence of undersampling
     if (verbose): print("\n\n Sampling Timeseries\n\n")
-    if(isinstance(eoffs[0], (Iterable, np.array, np.ndarray)) and type(eoffs[0]) is type(not np.array([]))): #only 1D eoff vector given!
-        print("VECTOR!")
+    if(isinstance(eoffs[0], Number)): #only 1D eoff vector given!
         eoffs = [eoffs for x in range(len(ene_traj_csvs))]
 
     for ind, replica in enumerate(ene_traj_csvs):
