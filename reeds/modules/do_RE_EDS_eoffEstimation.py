@@ -204,7 +204,7 @@ int
                 "sub": {
                     "eoff_estimation": True,
                     "sampling_plot": True,
-                    "eoffsetRebalancing": False,
+                    "eoffset_rebalancing": False,
                 }
                  },
             "prepare_input_folder": {"do": True,
