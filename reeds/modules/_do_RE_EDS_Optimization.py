@@ -174,7 +174,7 @@ def do_optimization(out_root_dir: str, in_simSystem: fM.System, optimization_nam
                                                    pseudocount=eoffRB_pseudocount,
                                                    doubleSided=eoffRB_doubleSided, doubleSidedWidth=eoffRB_doubleSidedWidth,
                                                    eoffRB_correctionPerReplica=eoffRB_correctionPerReplica,
-                                                   add_replicas=0, adding_new_sReplicas_Scheme=sOpt_adding_new_sReplicas_Scheme,
+                                                   add_replicas=sOpt_add_replicas, adding_new_sReplicas_Scheme=sOpt_adding_new_sReplicas_Scheme,
                                                    current_num_svals=cur_svals)
         # increase cur_svals by add_replicas so it can be used to define soptimization_options in the next iteration
         cur_svals = cur_svals + sOpt_add_replicas
