@@ -30,7 +30,9 @@ nmpi_per_replica = 6
 iterations=4
 learningFactors = None
 individualCorrection = False
-pseudocount = (1/5)/10
+num_states = 5
+intensity_factor = 10
+pseudocount = (1/num_states)/intensity_factor
 
 
 last_jobID = eoffRB.do(out_root_dir=out_sopt_dir,in_simSystem=system,
