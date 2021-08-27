@@ -238,7 +238,7 @@ def do_optimization(out_root_dir: str, in_simSystem: fM.System, optimization_nam
             print()
             traceback.print_exception(*sys.exc_info())
             raise Exception("ERROR during job job-submissoin")
-        if(run_eoffRB):
+        if(run_eoffRB and not run_NLRTO and not run_NGRTO):
           repetitions=1
         else:
           repetitions = repetitions + 1 if (repetitions < 3) else 3  # limit the simulation time accumulation to 1.2ns
