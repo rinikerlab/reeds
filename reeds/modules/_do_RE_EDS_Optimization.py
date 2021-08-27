@@ -238,8 +238,11 @@ def do_optimization(out_root_dir: str, in_simSystem: fM.System, optimization_nam
             print()
             traceback.print_exception(*sys.exc_info())
             raise Exception("ERROR during job job-submissoin")
-
-        repetitions = repetitions + 1 if (repetitions < 3) else 3  # limit the simulation time accumulation to 1.2ns
+        if(run_eoffRB):
+          repetitions=1
+        else:
+          repetitions = repetitions + 1 if (repetitions < 3) else 3  # limit the simulation time accumulation to 1.2ns
+          
         if (iteration > 1):
             try:  # JOB SUBMISSION
                 if (verbose): print("Final Analysis Script")
