@@ -7,6 +7,8 @@ from global_definitions import name, root_dir
 from global_definitions import gromosXX_bin, gromosPP_bin, ene_ana_lib
 from global_definitions import in_top_file, in_pert_file, in_disres_file
 from global_definitions import undersampling_frac_thresh
+from global_definitions import job_duration, nmpi_per_replica
+from global_definitions import eoffRB_iterations, learningFactors, individualCorrection, pseudocount
 
 from reeds.modules import do_RE_EDS_eoffRebalancing as eoffRB
 
@@ -26,26 +28,11 @@ coords = glob.glob(next_sopt_dir+"/*cnf")
 system =fM.System(coordinates=coords,name=in_name,    top=topology)
 print(system)
 
-
-#Additional Options
-## Simulation Params
-job_duration="24:00"
-nmpi_per_replica = 6
-iterations = 4
-
-## EoffRB - Params
-learningFactors = None
-individualCorrection = False
-### Pseudocount
-num_states = 5
-intensity_factor = 10
-pseudocount = (1/num_states)/intensity_factor
-
-
+#DO:
 last_jobID = eoffRB.do(out_root_dir=out_sopt_dir,in_simSystem=system,
     in_ene_ana_lib_path=ene_ana_lib, in_gromosPP_bin_dir=gromosPP_bin, in_gromosXX_bin_dir=gromosXX_bin,
-    mpi_per_replica=nmpi_per_replica, duration_per_job = job_duration,
-    iterations=iterations, learningFactors=learningFactors, individualCorrection=individualCorrection,
+    nmpi_per_replica=nmpi_per_replica, duration_per_job = job_duration,
+    iterations=eoffRB_iterations, learningFactors=learningFactors, individualCorrection=individualCorrection, pseudocount=pseudocount,
     undersampling_fraction_threshold=undersampling_frac_thresh, verbose= True)
 
 
