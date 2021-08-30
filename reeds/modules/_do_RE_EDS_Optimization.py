@@ -5,7 +5,6 @@ import traceback
 from collections import OrderedDict
 from typing import List, Iterable
 
-import reeds
 from pygromos.euler_submissions import FileManager as fM
 from pygromos.euler_submissions.Submission_Systems import _SubmissionSystem, LSF
 from pygromos.files import imd

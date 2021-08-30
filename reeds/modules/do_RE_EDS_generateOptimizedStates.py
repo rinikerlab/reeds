@@ -49,7 +49,7 @@ def do(out_root_dir: str, in_simSystem: fM.System,
        in_gromosPP_bin_dir: str = None,
        ene_ana_lib: str = ene_ana_libs.ene_ana_lib_path,
        simulation_steps: int = 1000000, exclude_residues: list = [],
-       cpus_per_job: int = 4, submit: bool = True, verbose: bool = True,
+       nmpi_per_replica: int = 4, submit: bool = True, verbose: bool = True,
        solvent_keyword: str = "SOLV",
        vacuum_simulation:bool =False,
        single_bath: bool = False,
@@ -91,7 +91,7 @@ exclude_residues : List[str], optional
     Which non protein residues shall be ignored and not treated as eds-state(cofactors)
 job_duration : str, optional
     Duration of each submitted job in the queue (depends on imd setting)
-cpus_per_job : int, optional
+nmpi_per_replica : int, optional
     how many mpi cores per job, shall be used?
 vacuum_simulation : bool, optional
     this flag can be used for vacuum simulations
@@ -157,7 +157,7 @@ int
         worker_script = gen_Euler_LSF_jobarray.build_worker_script_multImds(
             out_script_path=input_dir + "/worker_scripts.sh", out_dir=sim_dir,
             job_name=system.name + "_work", in_system=system,
-            in_imd_prefix=imd_template_path, cores=cpus_per_job, gromosXX_bin=in_gromosXX_bin_dir)
+            in_imd_prefix=imd_template_path, cores=nmpi_per_replica, gromosXX_bin=in_gromosXX_bin_dir)
 
         ## build: analysis_script
         out_script_path = out_root_dir + "/analysis.py"
@@ -182,7 +182,7 @@ int
                                                                  run_script=worker_script,
                                                                  analysis_script=in_analysis_script_path,
                                                                  array_length=lig_num,
-                                                                 array_name=system.name, cpu_per_job=cpus_per_job,
+                                                                 array_name=system.name, cpu_per_job=nmpi_per_replica,
                                                                  memory=memory)
         ###bash make job_array script executable
         bash.execute("chmod +x " + job_array_script + " " + in_analysis_script_path)

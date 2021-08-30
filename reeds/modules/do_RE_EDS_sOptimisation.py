@@ -26,7 +26,7 @@ from reeds.modules._do_RE_EDS_Optimization import do_optimization
 
 
 def do(out_root_dir: str, in_simSystem: fM.System, in_template_imd: str = None,
-       soptIterations: int = 4, add_replicas: int = 4,
+       iterations: int = 4, add_replicas: int = 4,
        adding_new_sReplicas_Scheme: adding_Scheme_new_Replicas = adding_Scheme_new_Replicas.from_below,
        noncontinous: bool = False,
        optimized_states_dir: str = os.path.abspath("a_optimizedState/analysis/next"),
@@ -61,7 +61,7 @@ in_simSystem : pygromos.PipelineManager.Simulation_System
 in_template_imd : str
     path to the imd file to simulate
 
-soptIterations : int, optional
+iterations : int, optional
     How many optimization iterations do you want to perform?
 add_replicas : int, optional
     How many replicas do you want to add per otpimization run?
@@ -122,30 +122,30 @@ int
     if(run_NGRTO and run_NLRTO or (not run_NGRTO and not run_NLRTO)):
         raise Exception("Please specify either NLRTO or NGRTO!")
     optimization_name = "sopt"
-    learningFactors = [1 for _ in range(soptIterations)]
+    learningFactors = [1 for _ in range(iterations)]
     pseudocount = None
     eoffRB_correctionPerReplica = False
 
     job_id = do_optimization(out_root_dir=out_root_dir, in_simSystem=in_simSystem, optimization_name=optimization_name, in_template_imd=in_template_imd,
-                            iterations=soptIterations,
-                            eoffEstimation_undersampling_fraction_threshold=undersampling_fraction_threshold,
-                            sOpt_add_replicas= add_replicas, sOpt_adding_new_sReplicas_Scheme= adding_new_sReplicas_Scheme,
-                            run_NLRTO = run_NLRTO, run_NGRTO = run_NGRTO,
-                            eoffRB_learningFactors = learningFactors, eoffRB_pseudocount = pseudocount,
-                            eoffRB_correctionPerReplica=eoffRB_correctionPerReplica,
-                            non_ligand_residues = non_ligand_residues,
-                            state_physical_occurrence_potential_threshold=state_physical_occurrence_potential_threshold,
-                            state_undersampling_occurrence_potential_threshold=state_undersampling_occurrence_potential_threshold,
-                            equil_runs=equil_runs, steps_between_trials=steps_between_trials, trials_per_run=trials_per_run,
-                            optimized_states_dir=optimized_states_dir,
-                            lower_bound_dir=lower_bound_dir,
-                            in_gromosXX_bin_dir=in_gromosXX_bin_dir, in_gromosPP_bin_dir=in_gromosPP_bin_dir,
-                            in_ene_ana_lib_path=in_ene_ana_lib_path,
-                            nmpi_per_replica=nmpi_per_replica, submit=submit, duration_per_job=duration_per_job,
-                            queueing_system=queueing_system,
-                            do_not_doubly_submit_to_queue=do_not_doubly_submit_to_queue,
-                            initialize_first_run=initialize_first_run, reinitialize=reinitialize, randomize=randomize, noncontinous=noncontinous,
-                            verbose=verbose)
+                             iterations=iterations,
+                             eoffEstimation_undersampling_fraction_threshold=undersampling_fraction_threshold,
+                             sOpt_add_replicas= add_replicas, sOpt_adding_new_sReplicas_Scheme= adding_new_sReplicas_Scheme,
+                             run_NLRTO = run_NLRTO, run_NGRTO = run_NGRTO,
+                             eoffRB_learningFactors = learningFactors, eoffRB_pseudocount = pseudocount,
+                             eoffRB_correctionPerReplica=eoffRB_correctionPerReplica,
+                             non_ligand_residues = non_ligand_residues,
+                             state_physical_occurrence_potential_threshold=state_physical_occurrence_potential_threshold,
+                             state_undersampling_occurrence_potential_threshold=state_undersampling_occurrence_potential_threshold,
+                             equil_runs=equil_runs, steps_between_trials=steps_between_trials, trials_per_run=trials_per_run,
+                             optimized_states_dir=optimized_states_dir,
+                             lower_bound_dir=lower_bound_dir,
+                             in_gromosXX_bin_dir=in_gromosXX_bin_dir, in_gromosPP_bin_dir=in_gromosPP_bin_dir,
+                             in_ene_ana_lib_path=in_ene_ana_lib_path,
+                             nmpi_per_replica=nmpi_per_replica, submit=submit, duration_per_job=duration_per_job,
+                             queueing_system=queueing_system,
+                             do_not_doubly_submit_to_queue=do_not_doubly_submit_to_queue,
+                             initialize_first_run=initialize_first_run, reinitialize=reinitialize, randomize=randomize, noncontinous=noncontinous,
+                             verbose=verbose)
 
     return job_id
 
