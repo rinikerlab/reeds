@@ -19,5 +19,5 @@ optimization_job = namedtuple("sopt_Job", ["iteration", "job_file_path", "job_an
                                    "check_analysis_files", "sim_system",
                                    "nmpi", "num_simulation_runs", "num_equilibration_runs", "workdir", "in_imd_path",
                                    "out_folder", "last_coord_in"])
-optimization_params = namedtuple("optimization", ["learningFactor", "pseudocount", "doubleSided", "doubleSidedWidth", "eoffRB_correctionPerReplica", "add_replicas", "adding_new_sReplicas_Scheme", "current_num_svals"])
+optimization_params = namedtuple("optimization", ["learningFactor", "pseudocount", "eoffRB_correctionPerReplica", "add_replicas", "adding_new_sReplicas_Scheme", "current_num_svals"])
 additional_argparse_argument: namedtuple = namedtuple("specialArgument", ['name', 'type', 'required', 'desc'])
