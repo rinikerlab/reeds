@@ -11,7 +11,7 @@ from pygromos.files import imd
 from pygromos.files.coord import cnf as cnf_cls
 from pygromos.utils import bash
 from reeds.data import ene_ana_libs
-from reeds.function_libs.pipeline.module_functions import build_optimization_step_dir, submit_iteration_job
+from reeds.function_libs.pipeline.module_functions import build_optimization_step_dir, submit_iteration_job, write_job_script
 from reeds.function_libs.pipeline.worker_scripts.analysis_workers import RE_EDS_optimization_final
 from reeds.function_libs.utils.structures import adding_Scheme_new_Replicas, optimization_params
 
@@ -154,7 +154,7 @@ def do_optimization(out_root_dir: str, in_simSystem: fM.System, optimization_nam
         "optimization_name": optimization_name,
         "out_dir": ana_out_dir
     })
-    in_final_analysis_script_path = reeds.function_libs.pipeline.module_functions.write_job_script(
+    in_final_analysis_script_path = write_job_script(
         out_script_path=out_root_dir + "/job_final_analysis.py",
         target_function=RE_EDS_optimization_final.do,
         variable_dict=analysis_vars)
