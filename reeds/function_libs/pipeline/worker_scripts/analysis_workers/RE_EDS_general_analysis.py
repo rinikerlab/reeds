@@ -1,6 +1,5 @@
 import os, glob, warnings
 import numpy as np
-from numbers import Number
 from collections import OrderedDict
 from typing import Union, Dict, List
 

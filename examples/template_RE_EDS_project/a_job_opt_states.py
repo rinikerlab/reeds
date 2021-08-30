@@ -24,5 +24,6 @@ system = fM.System(coordinates=in_cnf_file, name=in_name, top=topology_state_opt
 print(system)
 
 #DO:
-optimizeStates.do(in_simSystem=system,in_imd_template_path=in_template_md_imd, out_root_dir=out_gOptStates_dir,in_gromosXX_bin_dir=gromosXX_bin, in_gromosPP_bin_dir=gromosPP_bin)
+optimizeStates.do(in_simSystem=system,in_imd_template_path=in_template_md_imd, out_root_dir=out_gOptStates_dir,
+                  in_gromosXX_bin_dir=gromosXX_bin, in_gromosPP_bin_dir=gromosPP_bin, ene_ana_lib=ene_ana_lib)
 

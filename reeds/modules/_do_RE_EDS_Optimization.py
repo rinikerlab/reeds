@@ -3,7 +3,7 @@ import os
 import sys
 import traceback
 from collections import OrderedDict
-from typing import List, Iterable, Union
+from typing import List, Iterable
 
 import reeds
 from pygromos.euler_submissions import FileManager as fM
@@ -248,7 +248,7 @@ def do_optimization(out_root_dir: str, in_simSystem: fM.System, optimization_nam
                 job_submission_system = queueing_system()
                 root_dir = os.getcwd()
                 os.chdir(os.path.dirname(ana_out_dir))
-                job_id_final_ana = job_submission_system.submit_to_queue(command=in_final_analysis_script_path,
+                _ = job_submission_system.submit_to_queue(command=in_final_analysis_script_path,
                                                                          jobName=job_name + "_opt" + str(iteration),
                                                                          outLog=ana_out_dir + "/" + job_name + ".out",
                                                                          errLog=ana_out_dir + "/" + job_name + ".err",

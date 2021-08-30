@@ -36,8 +36,9 @@ pseudocount = (1/num_states)/intensity_factor
 
 
 last_jobID = eoffRB.do(out_root_dir=out_sopt_dir,in_simSystem=system,
-    in_ene_ana_lib_path=ene_ana_lib, nmpi_per_replica=nmpi_per_replica,
-    duration_per_job = job_duration, iterations=iterations, learningFactors=learningFactors, individualCorrection=individualCorrection,
-    verbose= True, )
+    in_ene_ana_lib_path=ene_ana_lib, in_gromosPP_bin_dir=gromosPP_bin, in_gromosXX_bin_dir=gromosXX_bin,
+    mpi_per_replica=nmpi_per_replica, duration_per_job = job_duration,
+    iterations=iterations, learningFactors=learningFactors, individualCorrection=individualCorrection,
+    undersampling_fraction_threshold=undersampling_frac_thresh, verbose= True, )
 
 
