@@ -124,8 +124,6 @@ int
     optimization_name = "sopt"
     learningFactors = [1 for _ in range(soptIterations)]
     pseudocount = None
-    doubleSided = False
-    doubleSidedWidth = None,
     eoffRB_correctionPerReplica = False
 
     job_id = do_optimization(out_root_dir=out_root_dir, in_simSystem=in_simSystem, optimization_name=optimization_name, in_template_imd=in_template_imd,
