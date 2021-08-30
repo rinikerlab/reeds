@@ -138,6 +138,7 @@ def do_optimization(out_root_dir: str, in_simSystem: fM.System, optimization_nam
     # Prepare each sopt iteration
     #################
     ## Loop vars
+    job_id = None  # id for chaining
     repetitions = 1  # needed to elongate simulation length
     standard_name = simSystem.name
     iteration_sopt_job = None
