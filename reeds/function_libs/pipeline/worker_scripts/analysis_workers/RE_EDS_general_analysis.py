@@ -452,7 +452,6 @@ def do_Reeds_analysis(in_folder: str, out_folder: str, gromos_path: str,
         elif(sub_control["eoffset_rebalancing"]):
             new_eoffs = rebalance_eoffs_directCounting(sampling_stat=sampling_results['samplingDistributions'], old_eoffs=Eoff,
                                                        learningFactor=eoffRebalancing_learningFactor, pseudo_count=eoffRebalancing_pseudocount,
-                                                       double_sided=eoffRebalancing_doubleSided, double_sided_widthFactor= eoffRebalancing_doubleSidedWidth,
                                                        correct_for_s1_only=not eoffRebalancing_correctionPerReplica)
             new_eoffs = new_eoffs.T
             
