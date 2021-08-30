@@ -180,27 +180,27 @@ def do(project_dir: str, optimization_name:str,
 
         if (os.path.exists(out_iteration_file_path)):
             print("\n\nLoading precomputed data for iteration: ", end="\t")
-            sopt_it_stats = pickle.load(open(out_iteration_file_path, "rb"))
-            sopt_data.update({iteration_folder: sopt_it_stats})
+            opt_it_stats = pickle.load(open(out_iteration_file_path, "rb"))
+            sopt_data.update({iteration_folder: opt_it_stats})
 
         elif (len(repdat) == 1):
             print("\nCalculate statistics for iteration: ", iteration)
             repdat_files.update({iteration: repdat[0]})
-            sopt_it_stats = analyse_optimization_iteration(repdat_path=repdat_files[iteration], out_dir=out_dir,
+            opt_it_stats = analyse_optimization_iteration(repdat_path=repdat_files[iteration], out_dir=out_dir,
                                                            title="s-opt " + str(iteration), pot_tresh=state_physical_occurrence_potential_threshold)
 
-            pickle.dump(obj=sopt_it_stats, file=open(out_iteration_file_path, "wb"))
-            sopt_data.update({iteration_folder: sopt_it_stats})
+            pickle.dump(obj=opt_it_stats, file=open(out_iteration_file_path, "wb"))
+            sopt_data.update({iteration_folder: opt_it_stats})
         else:
             continue
         # round trip time efficiency
         if (iteration > 1):
             prefix = "sopt" if("sopt" in list(sopt_data.keys())[0]) else "eoffRB"
-            sopt_it_stats.update({"avg_rountrip_duration_optimization_efficiency": sopt_data[prefix+str(iteration- 1)]["avg_rountrip_durations"] -sopt_it_stats["avg_rountrip_durations"]})
+            opt_it_stats.update({"avg_rountrip_duration_optimization_efficiency": sopt_data[prefix+str(iteration- 1)]["avg_rountrip_durations"] -opt_it_stats["avg_rountrip_durations"]})
 
         #assign convergence in an conserative fasion.
-        sopt_it_stats.update({"converged": converged})
-        if(iteration > 1 and sopt_it_stats["avg_rountrip_duration_optimization_efficiency"] <  rt_convergence ):
+        opt_it_stats.update({"converged": converged})
+        if(iteration > 1 and opt_it_stats["avg_rountrip_duration_optimization_efficiency"] <  rt_convergence ):
             converged=True
 
 
@@ -218,7 +218,7 @@ def do(project_dir: str, optimization_name:str,
     #Final storing
     ##serialization
     final_analysis_out_path = out_dir + "/"+title+"_final_"+optimization_name+"_analysis.obj"
-    pickle.dump(sopt_it_stats, open(final_analysis_out_path, "wb"))
+    pickle.dump(opt_it_stats, open(final_analysis_out_path, "wb"))
 
     ##Human readable:
     final_analysis_out_csv_path = out_dir + "/"+title+"_final_"+optimization_name+"_analysis.csv"
