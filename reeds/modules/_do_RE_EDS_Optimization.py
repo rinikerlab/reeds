@@ -23,7 +23,6 @@ def do_optimization(out_root_dir: str, in_simSystem: fM.System, optimization_nam
                     sOpt_add_replicas: int = 4, sOpt_adding_new_sReplicas_Scheme: adding_Scheme_new_Replicas = adding_Scheme_new_Replicas.from_below,
                     run_NLRTO: bool = True, run_NGRTO: bool = False, run_eoffRB: bool=False,
                     eoffRB_learningFactors:List[float]=None, eoffRB_pseudocount:float=None,
-                    eoffRB_doubleSided:bool=False, eoffRB_doubleSidedWidth:Union[float, None]=None,
                     eoffRB_correctionPerReplica: bool=False,
                     non_ligand_residues: list = [],
                     state_physical_occurrence_potential_threshold:List[float]=None,
@@ -172,7 +171,6 @@ def do_optimization(out_root_dir: str, in_simSystem: fM.System, optimization_nam
         # number of svalues *before* the optimization
         optimization_options = optimization_params(learningFactor=eoffRB_learningFactors[iteration - 1],
                                                    pseudocount=eoffRB_pseudocount,
-                                                   doubleSided=eoffRB_doubleSided, doubleSidedWidth=eoffRB_doubleSidedWidth,
                                                    eoffRB_correctionPerReplica=eoffRB_correctionPerReplica,
                                                    add_replicas=sOpt_add_replicas, adding_new_sReplicas_Scheme=sOpt_adding_new_sReplicas_Scheme,
                                                    current_num_svals=cur_svals)
