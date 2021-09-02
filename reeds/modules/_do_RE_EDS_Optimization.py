@@ -37,7 +37,9 @@ def do_optimization(out_root_dir: str, in_simSystem: fM.System, optimization_nam
                     queueing_system: _SubmissionSystem = LSF,
                     do_not_doubly_submit_to_queue: bool = True,
                     initialize_first_run: bool = True, reinitialize: bool = False, randomize: bool=False, noncontinous: bool = False,
+                    memory: int = None,
                     verbose: bool = True):
+
     try:
         simSystem = copy.deepcopy(in_simSystem)
         sopt_input = out_root_dir + "/input"
@@ -202,7 +204,8 @@ def do_optimization(out_root_dir: str, in_simSystem: fM.System, optimization_nam
                                                              run_NLRTO=run_NLRTO, run_NGRTO=run_NGRTO, run_eoffRB=run_eoffRB,
                                                              pot_tresh=state_physical_occurrence_potential_threshold,
                                                              duration_per_job=duration_per_job,
-                                                             num_simulation_runs=repetitions)
+                                                             num_simulation_runs=repetitions,
+                                                             memory = memory)
 
         except Exception as err:
             print("#####################################################################################")
@@ -223,6 +226,7 @@ def do_optimization(out_root_dir: str, in_simSystem: fM.System, optimization_nam
                                           duration_per_job=duration_per_job, submit=submit, previous_job_id=job_id,
                                           do_not_doubly_submit_to_queue=do_not_doubly_submit_to_queue,
                                           initialize_first_run=initialize_first_run, reinitialize=reinitialize,
+                                          memory = memory,
                                           verbose=verbose)
 
             # UPDATE vars for next run

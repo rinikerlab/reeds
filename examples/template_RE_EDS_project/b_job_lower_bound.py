@@ -22,5 +22,9 @@ system = fM.System(coordinates=in_cnf_file, name=in_name, top=topology_state_opt
 print(system)
 
 #DO:
-findLowerBound.do(in_simSystem=system,template_imd=in_template_md_imd, out_root_dir=out_lowerBound_dir,
-                  gromosXX_bin=gromosXX_bin, gromosPP_bin=gromosPP_bin)
+findLowerBound.do(in_simSystem=system,
+  template_imd=in_template_md_imd,
+  out_root_dir=out_lowerBound_dir,
+  gromosXX_bin=gromosXX_bin,
+  gromosPP_bin=gromosPP_bin,
+  simulation_steps = 10000)

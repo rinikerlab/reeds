@@ -97,13 +97,15 @@ def undersampling_occurence_potential_threshold_distribution_based(ene_traj_csvs
     pot_tresh_pre_rep = []
     state_names = [i for i in ene_traj_csvs[0].columns if (i.startswith("e") and not i == "eR")]
     num_states = len(state_names)
-    total_step_num = ene_traj_csvs[0].shape[0]
 
-    std = [6*np.std(ene_traj_csvs[-1][state]) for state in state_names]
+    #remove first 10% as equilibration
+    total_step_num = ene_traj_csvs[0].shape[0] - 0.1*ene_traj_csvs[0].shape[0]
+    std = [6*np.std(ene_traj_csvs[-1][state][int(len(ene_traj_csvs[-1][state])/10):len(ene_traj_csvs[-1][state])]) for state in state_names]
+
     #mean_potential = [np.mean(ene_traj_csvs[-1][state]) for state in state_names]
     for i, replica_data in enumerate(ene_traj_csvs):
         if(verbose): print("replica " + str(i + 1) + ":")
-        mean_potential = [np.min(replica_data[state]) for state in state_names]
+        mean_potential = [np.min(replica_data[state][int(len(replica_data[state])/10):len(replica_data[state])]) for state in state_names]
         thresholds = [m+s for m, s in zip(mean_potential, std)]
         if(verbose): print("Checkout std: ", thresholds)
         # iterate over states, identify all undersampling replicas, calc fraction
@@ -111,6 +113,8 @@ def undersampling_occurence_potential_threshold_distribution_based(ene_traj_csvs
         for k, state in enumerate(state_names):
             vec = np.array(replica_data[state]).reshape(-1, 1)
             treshold =  thresholds[k]
+            #remove first 10% as equilibration
+            vec = vec[int(len(vec)/10) : len(vec)]
 
             below_thresh = vec[vec < treshold]
             below_thresh_fraction = len(below_thresh) / total_step_num

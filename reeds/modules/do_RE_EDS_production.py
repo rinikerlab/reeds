@@ -33,6 +33,7 @@ def do(out_root_dir: str, in_simSystem: fM.System, in_template_imd: str,
        num_equilibration_runs: int = 0,
        do_not_doubly_submit_to_queue: bool = True, randomize : bool = False,
        initialize_first_run: bool = True, reinitialize: bool = False,
+       memory: int = None,
        verbose: bool = False):
     """RE-EDS Production run
 
@@ -78,6 +79,8 @@ initialize_first_run : bool, optional
     should the velocities of the first run be reinitialized?
 reinitialize : bool, optional
     should the velocities be reinitialized for all runs?
+memory : int, optional
+    how much memory to reserve for submission
 verbose : bool, optional
     Scream!
 
@@ -252,6 +255,7 @@ int
                                                                   do_not_doubly_submit_to_queue=do_not_doubly_submit_to_queue,
                                                                   initialize_first_run=initialize_first_run,
                                                                   reinitialize=reinitialize,
+                                                                  memory = memory,
                                                                   in_analysis_script_path=in_analysis_script_path)
         else:
             if (verbose): print("\n\nSKIP submitting!")
