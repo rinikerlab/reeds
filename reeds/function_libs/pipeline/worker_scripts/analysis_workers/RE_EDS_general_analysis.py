@@ -1,6 +1,5 @@
 import os, glob, warnings
 import numpy as np
-from numbers import Number
 from collections import OrderedDict
 from typing import Union, Dict, List
 
@@ -168,7 +167,6 @@ def do_Reeds_analysis(in_folder: str, out_folder: str, gromos_path: str,
                       add_s_vals: int = 0, state_weights: List[float]=None, s_opt_trial_range:int=None,
                       adding_new_sReplicas_Scheme: adding_Scheme_new_Replicas = adding_Scheme_new_Replicas.from_below,
                       eoffRebalancing_learningFactor: float = None, eoffRebalancing_pseudocount: float = None,
-                      eoffRebalancing_doubleSided: bool = False, eoffRebalancing_doubleSidedWidth=None,
                       eoffRebalancing_correctionPerReplica: bool = False,
                       grom_file_prefix: str = "test", title_prefix: str = "test", ene_ana_prefix="ey_sx.dat",
                       repdat_prefix: str = "run_repdat.dat",
@@ -453,7 +451,6 @@ def do_Reeds_analysis(in_folder: str, out_folder: str, gromos_path: str,
         elif(sub_control["eoffset_rebalancing"]):
             new_eoffs = rebalance_eoffs_directCounting(sampling_stat=sampling_results['samplingDistributions'], old_eoffs=Eoff,
                                                        learningFactor=eoffRebalancing_learningFactor, pseudo_count=eoffRebalancing_pseudocount,
-                                                       double_sided=eoffRebalancing_doubleSided, double_sided_widthFactor= eoffRebalancing_doubleSidedWidth,
                                                        correct_for_s1_only=not eoffRebalancing_correctionPerReplica)
             new_eoffs = new_eoffs.T
             

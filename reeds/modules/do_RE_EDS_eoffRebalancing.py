@@ -13,7 +13,6 @@ Author: bschroed
 import os
 from typing import List
 
-import reeds
 from pygromos.euler_submissions import FileManager as fM
 from pygromos.euler_submissions.Submission_Systems import LSF
 # todo! make the queueing system exchangeable
@@ -29,7 +28,6 @@ def do(out_root_dir: str, in_simSystem: fM.System, in_template_imd: str = None,
        iterations: int = 4,
 
        learningFactors : List[float]= None, pseudocount: float=None, individualCorrection: bool=False,
-       doubleSided:bool=False, doubleSidedWidth=None,
 
        noncontinous: bool = False,
        optimized_states_dir: str = os.path.abspath("a_optimizedState/analysis/next"),
@@ -135,7 +133,6 @@ int
                             sOpt_add_replicas= add_replicas, sOpt_adding_new_sReplicas_Scheme= adding_new_sReplicas_Scheme,
                             run_NLRTO = run_NLRTO, run_NGRTO = run_NGRTO, run_eoffRB=True,
                             eoffRB_learningFactors = learningFactors, eoffRB_pseudocount = pseudocount,
-                            eoffRB_doubleSided = doubleSided, eoffRB_doubleSidedWidth = doubleSidedWidth,
                             eoffRB_correctionPerReplica=individualCorrection,
                             non_ligand_residues = non_ligand_residues,
                             state_physical_occurrence_potential_threshold=state_physical_occurrence_potential_threshold,

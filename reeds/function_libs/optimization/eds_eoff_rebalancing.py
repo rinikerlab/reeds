@@ -6,7 +6,6 @@ from scipy import constants as const
 def rebalance_eoffs_directCounting(old_eoffs: np.array, sampling_stat: Dict[int, Dict[str, Dict[int, float]]],
                                    temperature: float = 298, pseudo_count: float = None, learningFactor: float = 1,
                                    sampling_type: str = "max_contributing_state",
-                                   double_sided: bool = False, double_sided_widthFactor: float = None,
                                    correct_for_s1_only: bool = True, verbose: bool = True) -> np.array:
     """
     This function uses a direct counting approach for (RE-)EDS in order to improve the sampling weights of the min-state sampling ratios.
@@ -43,10 +42,6 @@ def rebalance_eoffs_directCounting(old_eoffs: np.array, sampling_stat: Dict[int,
         If None, the pseudo count is capped to a difference by a factor of 10 (max abs. correction: 5.7 kJ) from the optimal sampling.
     learningFactor : float, optional
         can be used to tune the how much the eoffs should be corrected in this run. actually equal to temperature, but might ease the use :) (default: 1 - turned off)
-    double_sided : bool, optional
-        this option allows switching to a double sided correction scheme.
-    double_sided_widthFactor : float, optional
-        this factor defines the location of the upper bound, where the correction function is reaching infinity. (still the maximal correction factor is capped by an inverse pseudocount, default: 0.8)
     correct_for_s1_only : bool, optional
         Should the energy offsets be corrected by only looking of the sampling behaviour of the first replica? If False, all replica will get individual eoffs. (default: True)
     verbose : bool, optional
@@ -76,8 +71,6 @@ def rebalance_eoffs_directCounting(old_eoffs: np.array, sampling_stat: Dict[int,
     dEoff_corrected_matrix = calculate_Eoff_Correction(samplingDists=samplingDists,
                                                        pseudo_count=pseudo_count, learningFactor=learningFactor,
                                                        temperature=temperature,
-                                                       double_sided=double_sided,
-                                                       double_sided_widthFactor=double_sided_widthFactor,
                                                        verbose=verbose)
 
     # correct eoffs
@@ -100,7 +93,6 @@ def rebalance_eoffs_directCounting(old_eoffs: np.array, sampling_stat: Dict[int,
 
 def calculate_Eoff_Correction(samplingDists: np.array,
                               temperature: float = 298, learningFactor: float = 1,  pseudo_count: float = None,
-                              double_sided: bool = False, double_sided_widthFactor: float = None,
                               _shift_eoff_zero: bool = True, _nstates:int =None,
                               verbose: bool = False) -> np.array:
     """
@@ -136,11 +128,6 @@ def calculate_Eoff_Correction(samplingDists: np.array,
         Temperature defines the possible intensity of the correction. (default: 298K)
     learningFactor : float, optional
         can be used to tune the how much the eoffs should be corrected in this run. actually equal to temperature, but might ease the use :) (default: 1 - turned off)
-    double_sided : bool, optional
-        this option allows switching to a double sided correction scheme.
-    double_sided_widthFactor : float, optional
-        this factor defines the location of the upper bound, where the correction function is reaching infinity. (still the maximal correction factor is capped by an inverse pseudocount, default: None)
-        if None, the width is estimated as 0ptimal sampling+2*optimal sampling.
     _shift_eoff_zero : bool, optional
         shift the eoffs such that eoffset of state 1 is 0. This makes it easier to compare the eoffs with the final ddG.However purely cosmetic. (default: True)
     _nstates : int, optional
@@ -167,35 +154,15 @@ def calculate_Eoff_Correction(samplingDists: np.array,
         pseudo_count = optimal_sampling / 10
 
     ## Get correction functional
-    if (double_sided):  # double sided (default single sided)
-        if (verbose):
-            print("\tApproach: Two-Sided")
-            print("\t\t maxOversampling: ", double_sided_widthFactor)
-
-        if(double_sided_widthFactor is None):
-            double_sided_widthFactor = optimal_sampling+2*optimal_sampling
-        max_pseudocount = (double_sided_widthFactor - pseudo_count)
-        offset_correction = ((1 / beta) * np.log(
-            (double_sided_widthFactor - optimal_sampling) / optimal_sampling))  # generates offset for too large
-
-        bf = lambda x: -(1 / beta) * np.log(x / optimal_sampling)
-        inverse_bf = lambda x: (1 / beta) * np.log((double_sided_widthFactor - x)/optimal_sampling) - offset_correction
-
-        correctionFunction = lambda x: bf(x) if (x < optimal_sampling) else inverse_bf(x)
-
-    else:  # single sided:
-        if (verbose): print("\tApproach: One-Sided")
-        correctionFunction = lambda x: -(1 / beta) * np.log(x / optimal_sampling)
-        max_pseudocount = 1  # optimal_sampling*10 #Don't use max_pseudocount for single sided
+    if (verbose): print("\tApproach: One-Sided")
+    max_pseudocount = 1  # optimal_sampling*10 #Don't use max_pseudocount for single sided
+    correctionFunction = lambda x: -(1 / beta) * np.log((x+pseudo_count) / (optimal_sampling+pseudo_count))
 
     if (verbose): print("\t\tOptimal Sampling fraction: ", optimal_sampling)
 
     correctionFunctionVector = lambda x: list(map(correctionFunction, x))
 
-    # DO
-    ## Add pseudoCount if needed: (also apply max pseudocount, if required!
-    robust_samplingDist = np.clip(samplingDists, a_min=pseudo_count, a_max=max_pseudocount)
-
+    # DO                                    
     # Apply boltzman correction Factor
     if (verbose):
         maxMinValues = np.array([pseudo_count, optimal_sampling, max_pseudocount])
@@ -210,9 +177,9 @@ def calculate_Eoff_Correction(samplingDists: np.array,
         print()
 
     ##correction is calculated here:
-    dEoff_corrected_matrix = np.array(list(map(correctionFunctionVector, robust_samplingDist)))
-    print("Robust Sampling Distributions")
-    print(robust_samplingDist)
+    dEoff_corrected_matrix = np.array(list(map(correctionFunctionVector, samplingDists)))
+    print("Sampling Distributions")
+    print(samplingDists)
     print()
 
     print("raw correction")

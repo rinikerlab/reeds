@@ -507,8 +507,6 @@ def build_optimization_step_dir(iteration: int,  iteration_folder_prefix: str, p
         "state_physical_occurrence_potential_threshold": state_physical_pot_tresh,
         'eoffRebalancing_learningFactor': optimization_options.learningFactor,
         'eoffRebalancing_pseudocount': optimization_options.pseudocount,
-        'eoffRebalancing_doubleSided': optimization_options.doubleSided,
-        'eoffRebalancing_doubleSidedWidth': optimization_options.doubleSidedWidth,
         'eoffRebalancing_correctionPerReplica': optimization_options.eoffRB_correctionPerReplica,
         "state_undersampling_occurrence_potential_threshold": state_undersampling_pot_tresh,
         "undersampling_frac_thresh": undersampling_frac_thresh,

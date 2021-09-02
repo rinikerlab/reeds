@@ -3,17 +3,16 @@ import os
 import sys
 import traceback
 from collections import OrderedDict
-from typing import List, Iterable, Union
+from typing import List, Iterable
 
-import reeds
 from pygromos.euler_submissions import FileManager as fM
 from pygromos.euler_submissions.Submission_Systems import _SubmissionSystem, LSF
 from pygromos.files import imd
 from pygromos.files.coord import cnf as cnf_cls
 from pygromos.utils import bash
 from reeds.data import ene_ana_libs
-from reeds.function_libs.pipeline.module_functions import build_optimization_step_dir, submit_iteration_job
-from reeds.function_libs.pipeline.worker_scripts.analysis_workers import RE_EDS_soptimization_final
+from reeds.function_libs.pipeline.module_functions import build_optimization_step_dir, submit_iteration_job, write_job_script
+from reeds.function_libs.pipeline.worker_scripts.analysis_workers import RE_EDS_optimization_final
 from reeds.function_libs.utils.structures import adding_Scheme_new_Replicas, optimization_params
 
 
@@ -23,7 +22,6 @@ def do_optimization(out_root_dir: str, in_simSystem: fM.System, optimization_nam
                     sOpt_add_replicas: int = 4, sOpt_adding_new_sReplicas_Scheme: adding_Scheme_new_Replicas = adding_Scheme_new_Replicas.from_below,
                     run_NLRTO: bool = True, run_NGRTO: bool = False, run_eoffRB: bool=False,
                     eoffRB_learningFactors:List[float]=None, eoffRB_pseudocount:float=None,
-                    eoffRB_doubleSided:bool=False, eoffRB_doubleSidedWidth:Union[float, None]=None,
                     eoffRB_correctionPerReplica: bool=False,
                     non_ligand_residues: list = [],
                     state_physical_occurrence_potential_threshold:List[float]=None,
@@ -158,9 +156,9 @@ def do_optimization(out_root_dir: str, in_simSystem: fM.System, optimization_nam
         "optimization_name": optimization_name,
         "out_dir": ana_out_dir
     })
-    in_final_analysis_script_path = reeds.function_libs.pipeline.module_functions.write_job_script(
+    in_final_analysis_script_path = write_job_script(
         out_script_path=out_root_dir + "/job_final_analysis.py",
-        target_function=RE_EDS_soptimization_final.do,
+        target_function=RE_EDS_optimization_final.do,
         variable_dict=analysis_vars)
     bash.execute("chmod +x " + in_final_analysis_script_path)  # make executables
     # generate each iteration folder && submission
@@ -174,7 +172,6 @@ def do_optimization(out_root_dir: str, in_simSystem: fM.System, optimization_nam
         # number of svalues *before* the optimization
         optimization_options = optimization_params(learningFactor=eoffRB_learningFactors[iteration - 1],
                                                    pseudocount=eoffRB_pseudocount,
-                                                   doubleSided=eoffRB_doubleSided, doubleSidedWidth=eoffRB_doubleSidedWidth,
                                                    eoffRB_correctionPerReplica=eoffRB_correctionPerReplica,
                                                    add_replicas=sOpt_add_replicas, adding_new_sReplicas_Scheme=sOpt_adding_new_sReplicas_Scheme,
                                                    current_num_svals=cur_svals)
@@ -254,7 +251,7 @@ def do_optimization(out_root_dir: str, in_simSystem: fM.System, optimization_nam
                 job_submission_system = queueing_system()
                 root_dir = os.getcwd()
                 os.chdir(os.path.dirname(ana_out_dir))
-                job_id_final_ana = job_submission_system.submit_to_queue(command=in_final_analysis_script_path,
+                _ = job_submission_system.submit_to_queue(command=in_final_analysis_script_path,
                                                                          jobName=job_name + "_opt" + str(iteration),
                                                                          outLog=ana_out_dir + "/" + job_name + ".out",
                                                                          errLog=ana_out_dir + "/" + job_name + ".err",
