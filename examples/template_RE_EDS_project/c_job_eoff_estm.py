@@ -26,9 +26,7 @@ opt_states = root_dir + "/a_"+name+"_optimize_single_state/analysis/next/"
 #In- Files
 topology = fM.Topology(top_path=in_top_file, disres_path=in_disres_file, pertubation_path=in_pert_file)
 coords = glob.glob(opt_states + "/*.cnf")
-print(coords)
 system = fM.System(coordinates=coords, name=in_name, top=topology)
-print(system)
 
 nmpi_per_replica = 6
 memory = 10

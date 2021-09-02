@@ -33,11 +33,16 @@ memory = 10
 print(system)
 
 #Do:
-last_jobID = production.do(out_root_dir=out_production_dir, in_simSystem=system, in_template_imd=in_template_reeds_imd,
-                           gromosXX_bin_dir = gromosXX_bin, gromosPP_bin_dir = gromosPP_bin,
-                           in_ene_ana_lib_path=ene_ana_lib,
-                           undersampling_fraction_threshold=undersampling_frac_thresh,
-                           num_simulation_runs=5, nmpi_per_replica = nmpi_per_replica, memory = memory,
-                              optimized_states_dir = optimized_states_dir,
-                              lower_bound_dir = lower_bound_dir)
+last_jobID = production.do(out_root_dir=out_production_dir,
+                            in_simSystem=system,
+                            in_template_imd=in_template_reeds_imd,
+                            gromosXX_bin_dir = gromosXX_bin,
+                            gromosPP_bin_dir = gromosPP_bin,
+                            in_ene_ana_lib_path=ene_ana_lib,
+                            undersampling_fraction_threshold=undersampling_frac_thresh,
+                            num_simulation_runs=5,
+                            nmpi_per_replica = nmpi_per_replica,
+                            memory = memory,
+                            optimized_states_dir = optimized_states_dir,
+                            lower_bound_dir = lower_bound_dir)
 
