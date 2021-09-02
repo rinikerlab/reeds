@@ -33,14 +33,12 @@ print(system)
 job_duration="24:00"
 nmpi_per_replica = 6
 iterations = 4
+memory = 10
 
 ## RTO - Params
 run_NLRTO = True
 run_NGRTO = False
 add_replicas = 4
-
-nmpi_per_replica = 6
-memory = 10
 
 last_jobID = sOptimization.do(out_root_dir=out_sopt_dir,in_simSystem=system,
                               in_gromosXX_bin_dir= gromosXX_bin,
