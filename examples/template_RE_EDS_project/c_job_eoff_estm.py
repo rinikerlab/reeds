@@ -25,13 +25,11 @@ topology = fM.Topology(top_path=in_top_file, disres_path=in_disres_file, pertuba
 coords = glob.glob(opt_states + "/*.cnf")
 system = fM.System(coordinates=coords, name=in_name, top=topology)
 
-nmpi_per_replica = 6
-memory = 10
-
 # Additional options
 ## Simulation Params
 job_duration="24:00"
 nmpi_per_replica = 6
+memory = 10
 
 ## Eoff Estimation
 
