@@ -59,5 +59,8 @@ last_jobID = eoffRB.do(out_root_dir=out_sopt_dir,
                         trials_per_run = 1000,
                         optimized_states_dir = optimized_states_dir,
                         lower_bound_dir = lower_bound_dir,
-                        pseudocount = pseudocount)
+                        pseudocount = pseudocount,
+                        in_gromosPP_bin_dir=gromosPP_bin,
+                        in_gromosXX_bin_dir=gromosXX_bin
+                      )
 
