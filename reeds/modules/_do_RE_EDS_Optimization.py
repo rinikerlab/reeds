@@ -176,10 +176,6 @@ def do_optimization(out_root_dir: str, in_simSystem: fM.System, optimization_nam
         # increase cur_svals by add_replicas so it can be used to define soptimization_options in the next iteration
         cur_svals = cur_svals + sOpt_add_replicas
 
-        ##default equilibration scheme for equilibrations run
-        if (not equil_runs):
-            equil_runs = 1
-
         simSystem.name = standard_name + "_" + str(iteration)
         try:  # JOB preperation
             iteration_sopt_job = build_optimization_step_dir(iteration=iteration,
