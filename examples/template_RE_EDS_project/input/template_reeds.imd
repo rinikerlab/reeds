@@ -115,7 +115,7 @@ REPLICA_EDS
 END
 STEP 
 # 	 NSTLIM 	 T 	 DT 
- 	 20 	 0 	 0.002 	  
+ 	 1000 	 0 	 0.002 	  
 END
 SYSTEM 
 # 	 NPM 	 NSM 

@@ -28,6 +28,11 @@ job_duration="24:00"
 nmpi_per_replica = 6
 
 #DO:
-findLowerBound.do(in_simSystem=system,template_imd=in_template_md_imd, out_root_dir=out_lowerBound_dir,
-                  job_duration=job_duration, nmpi_per_replica=nmpi_per_replica,
-                  gromosXX_bin=gromosXX_bin, gromosPP_bin=gromosPP_bin)
+findLowerBound.do(in_simSystem=system,
+  template_imd=in_template_md_imd,
+  out_root_dir=out_lowerBound_dir,
+  gromosXX_bin=gromosXX_bin,
+  gromosPP_bin=gromosPP_bin,
+  simulation_steps = 10000,
+  job_duration = job_duration,
+  nmpi_per_replica = nmpi_per_replica)

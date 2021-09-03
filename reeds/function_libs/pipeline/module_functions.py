@@ -369,6 +369,7 @@ def build_optimization_step_dir(iteration: int,  iteration_folder_prefix: str, p
                                 duration_per_job: str, num_simulation_runs: int,
                                 run_NLRTO:bool=True, run_NGRTO: bool=False, run_eoffRB:bool = False,
                                 optimized_states_dir:str = "../../a_optimizedState/analysis/next",
+                                memory: int = None,
                                 old_sopt_job: optimization_job = False, verbose: bool = False) -> optimization_job:
     """
         This function is setting up the folder structure of an s-optimization iteration, copies some files and builds an settings object of the sopt-iteration.
@@ -407,6 +408,8 @@ def build_optimization_step_dir(iteration: int,  iteration_folder_prefix: str, p
         potential threshold for occurrence sampling
     old_sopt_job : sopt_job, optional
         last soptimization job namedtuple, contains all settings of previous run
+    memory : int, optional
+        how much memory to use for job submission
     verbose : bool, optional
         TADAAAAAAAAAAa Here you go!
 
@@ -548,7 +551,7 @@ def build_optimization_step_dir(iteration: int,  iteration_folder_prefix: str, p
 
 
 def submit_iteration_job(last_iteration_job: optimization_job, duration_per_job: str, submit: bool = True,
-                         stdout_prefix: str = "\n\t\t",
+                         stdout_prefix: str = "\n\t\t", memory: int = None,
                          gromosXX_bin_dir: str = None, do_not_doubly_submit_to_queue: bool = True,
                          previous_job_id: int = None, initialize_first_run: bool = True,
                          reinitialize: bool = False, verbose: bool = False) -> Union[int, None]:
@@ -577,6 +580,8 @@ def submit_iteration_job(last_iteration_job: optimization_job, duration_per_job:
         initialize the velocities of the first run?
     reinitialize : bool, optional
         reinitialize velocities in all runs?
+    memory : int, optional
+        how much memory to reserve for submission
     verbose : bool, optional
         let me tell you a looong story
 
@@ -640,6 +645,7 @@ def submit_iteration_job(last_iteration_job: optimization_job, duration_per_job:
                                                 do_not_doubly_submit_to_queue=do_not_doubly_submit_to_queue,
                                                 initialize_first_run=initialize_first_run,
                                                 reinitialize=reinitialize,
+                                                memory = memory,
                                                 verbose=True)
 
         if verbose: print("process returned id: " + str(job_id))
