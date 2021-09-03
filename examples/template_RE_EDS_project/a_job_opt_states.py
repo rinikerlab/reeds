@@ -36,6 +36,8 @@ optimizeStates.do(in_simSystem=system,
   in_gromosXX_bin_dir=gromosXX_bin, 
   in_gromosPP_bin_dir=gromosPP_bin,
   simulation_steps = 10000,
+  job_duration = job_duration,
+  nmpi_per_replica = nmpi_per_replica,
   ene_ana_lib = ene_ana_lib
   )
 
