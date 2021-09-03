@@ -34,7 +34,7 @@ def do(out_root_dir: str, in_simSystem: fM.System, in_template_imd: str = None,
        state_physical_occurrence_potential_threshold:List[float]=None,
        state_undersampling_occurrence_potential_threshold: List[float]=None,
        undersampling_fraction_threshold:float=0.9,
-       equil_runs: int = 0, steps_between_trials: int = 20, trials_per_run: int = 12500,
+       equil_runs: int = 1, steps_between_trials: int = 20, trials_per_run: int = 12500,
        non_ligand_residues: list = [],
        in_gromosXX_bin_dir: str = None, in_gromosPP_bin_dir: str = None,
        in_ene_ana_lib_path: str = ene_ana_libs.ene_ana_lib_path,
@@ -75,7 +75,7 @@ state_undersampling_occurrence_potential_threshold : List[float], optional
     potential thresholds for occurrence sampling (default: read in from step b)
 undersampling_fraction_threshold : float, optional
     fraction threshold for physical/occurrence sampling (default: 0.9)
-equil_runs : int, optional
+equil_runs : int, optional (default: 1)
     How often do you want to run prequilibration, before each run ? give int times 50ps
 steps_between_trials : int, optional
     How many steps shall be executed between the trials?
