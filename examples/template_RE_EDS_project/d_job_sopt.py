@@ -53,6 +53,7 @@ last_jobID = sOptimization.do(out_root_dir=out_sopt_dir,in_simSystem=system,
                               optimized_states_dir = optimized_states_dir,
                               lower_bound_dir = lower_bound_dir,
                               run_NLRTO=run_NLRTO,
-                              run_NGRTO=run_NGRTO
+                              run_NGRTO=run_NGRTO,
+                              duration_per_job=job_duration,
                              )
 
