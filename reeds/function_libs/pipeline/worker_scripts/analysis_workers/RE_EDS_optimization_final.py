@@ -204,19 +204,23 @@ def do(project_dir: str, optimization_name:str,
             converged=True
 
 
-    print(sopt_data)
+    print("\n Do summary Plots:\n")
 
     #overview
+    print("\tmetric quartet")
     visualization_s_optimization_summary(s_opt_data=sopt_data, out_path=out_dir + "/" + title + "_"+optimization_name+"_analysis.png")
 
     #Optimization  convergence:
+    print("\tRT-convergence")
     visualize_s_optimisation_convergence(s_opt_data=sopt_data, out_path=out_dir + "/" + title + "_"+optimization_name+"_efficiency.png", convergens_radius=rt_convergence)
 
     #Optimization Distribution
+    print("\tsamplingDist - convergence")
     visualize_s_optimisation_sampling_optimization(s_opt_data=sopt_data, out_path=out_dir + "/" + title + "_"+optimization_name+"_sampling_optimumDev.png")
 
     #Final storing
     ##serialization
+    print("\tstore")
     final_analysis_out_path = out_dir + "/"+title+"_final_"+optimization_name+"_analysis.obj"
     pickle.dump(opt_it_stats, open(final_analysis_out_path, "wb"))
 
@@ -224,4 +228,4 @@ def do(project_dir: str, optimization_name:str,
     final_analysis_out_csv_path = out_dir + "/"+title+"_final_"+optimization_name+"_analysis.csv"
     df = pd.DataFrame(sopt_data).T
     df.to_csv(path_or_buf=final_analysis_out_csv_path, sep="\t")
-
+    print("done!")
