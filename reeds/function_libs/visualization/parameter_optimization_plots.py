@@ -266,7 +266,6 @@ def visualize_s_optimisation_convergence(s_opt_data:dict,
         the outpath is returned if one is given. Alternativley the plot direclty will be returned.
     """
     y_RTd_efficency = []
-    print(s_opt_data['eoffRB1'].keys())
 
     for it in sorted(s_opt_data):
         if("avg_rountrip_durations" in s_opt_data[it]):
