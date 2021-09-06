@@ -143,7 +143,7 @@ def visualization_s_optimization_summary(s_opt_data: dict,
 
     x_svalues = []
     y_svalues = []
-    print(s_opt_data)
+    
     bar_heights = []
     bar_x = []
     for it in sorted(s_opt_data):
@@ -159,9 +159,7 @@ def visualization_s_optimization_summary(s_opt_data: dict,
         x_svalues.extend(opti["s_values"])
         y_svalues.extend([int(it.replace('sopt', "").replace("eoffRB", "")) for x in range(len(opti["s_values"]))])
         
-        print(opti)
-        exit()
-        bar_heights.append([opti["state_domination_sampling"][state] for state in opti["state_maxContributing_sampling"]])
+        bar_heights.append([opti["state_maxContributing_sampling"][state] for state in opti["state_maxContributing_sampling"]])
         bar_x.append(np.array(
             [int(state.replace("V", "").replace("r", "").replace("i", "")) for state in opti["state_maxContributing_sampling"]]))
 
