@@ -29,7 +29,15 @@ job_duration="24:00"
 nmpi_per_replica = 6
 
 #DO:
-optimizeStates.do(in_simSystem=system,in_imd_template_path=in_template_md_imd, out_root_dir=out_gOptStates_dir,
-                  job_duration=job_duration, nmpi_per_replica=nmpi_per_replica,
-                  in_gromosXX_bin_dir=gromosXX_bin, in_gromosPP_bin_dir=gromosPP_bin, ene_ana_lib=ene_ana_lib)
+
+optimizeStates.do(in_simSystem=system,
+  in_imd_template_path=in_template_md_imd, 
+  out_root_dir=out_gOptStates_dir,
+  in_gromosXX_bin_dir=gromosXX_bin, 
+  in_gromosPP_bin_dir=gromosPP_bin,
+  simulation_steps = 10000,
+  job_duration = job_duration,
+  nmpi_per_replica = nmpi_per_replica,
+  ene_ana_lib = ene_ana_lib
+  )
 

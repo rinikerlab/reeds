@@ -46,6 +46,7 @@ def do(out_root_dir: str, in_simSystem: fM.System, in_template_imd: str = None,
        queueing_system: _SubmissionSystem = LSF,
        do_not_doubly_submit_to_queue: bool = True,
        initialize_first_run: bool = True, reinitialize: bool = False, randomize:bool=False,
+       memory: int = None,
        verbose: bool = True):
     """
     SCRIPT:            Do Eoff rebalancing
@@ -103,6 +104,8 @@ do_not_doubly_submit_to_queue : bool, optional
     Check if there is already a job with this name, do not submit if true.
 randomize : bool, optional
     randomize the simulation seed
+memory : int, optional
+    how much memory to use for submission
 verbose : bool, optional
     I can be very talkative! :)
 
@@ -143,6 +146,7 @@ int
                             queueing_system=queueing_system,
                             do_not_doubly_submit_to_queue=do_not_doubly_submit_to_queue,
                             initialize_first_run=initialize_first_run, reinitialize=reinitialize, randomize=randomize, noncontinous=noncontinous,
+                            memory = memory,
                             verbose=verbose)
 
     return job_id

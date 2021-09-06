@@ -6,10 +6,10 @@ from pygromos.euler_submissions import FileManager as fM
 #needs to be provided via gromos compiling
 gromosXX_bin = None
 gromosPP_bin = None
-ene_ana_lib ="/cluster/home/bschroed/gromos/ene_ana_libs/ene_ana.md.lib"
+ene_ana_lib = os.path.dirname(reeds.__file__) + "/data/ene_ana_libs/new_ene_ana_REEDS_9state.md++.lib"
 
 #System Dependent settings:
-name = "MY_NAME"
+name = "example_PNMT_water" #adapt for your system
 root_dir = os.getcwd()
 input_folder =    root_dir+"/input/"
 

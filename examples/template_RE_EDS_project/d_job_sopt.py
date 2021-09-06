@@ -13,7 +13,9 @@ from reeds.modules import do_RE_EDS_sOptimisation as sOptimization
 
 #Paths
 in_name = name+"_sopt"
-next_sopt_dir = root_dir+"/c_eoff/analysis/next"
+next_sopt_dir = root_dir+"/c_"+name+"_energy_offsets/analysis/next"
+optimized_states_dir = root_dir + "/a_"+name+"_optimize_single_state/analysis/next"
+lower_bound_dir = root_dir + "/b_"+name+"_find_lower_bound/analysis/next"
 out_sopt_dir = root_dir+"/d_"+in_name
 
 ##make folder
@@ -31,22 +33,27 @@ print(system)
 job_duration="24:00"
 nmpi_per_replica = 6
 iterations = 4
+memory = 10
 
 ## RTO - Params
 run_NLRTO = True
 run_NGRTO = False
 add_replicas = 4
 
-
-last_jobID = sOptimization.do(out_root_dir=out_sopt_dir, in_simSystem=system,
-                              in_gromosXX_bin_dir= gromosXX_bin, in_gromosPP_bin_dir= gromosPP_bin,
+last_jobID = sOptimization.do(out_root_dir=out_sopt_dir,in_simSystem=system,
+                              in_gromosXX_bin_dir= gromosXX_bin,
+                              in_gromosPP_bin_dir= gromosPP_bin,
                               in_ene_ana_lib_path=ene_ana_lib,
                               undersampling_fraction_threshold=undersampling_frac_thresh,
-                              iterations= iterations,
+                              iterations = iterations,
                               add_replicas = add_replicas,
-                              run_NLRTO=run_NLRTO, run_NGRTO=run_NGRTO,
+                              nmpi_per_replica = nmpi_per_replica,
+                              memory = memory,
+                              trials_per_run = 1000,
+                              optimized_states_dir = optimized_states_dir,
+                              lower_bound_dir = lower_bound_dir,
+                              run_NLRTO=run_NLRTO,
+                              run_NGRTO=run_NGRTO,
                               duration_per_job=job_duration,
-                              nmpi_per_replica=nmpi_per_replica,
-                              )
-
+                             )
 
