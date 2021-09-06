@@ -148,7 +148,7 @@ def visualization_s_optimization_summary(s_opt_data: dict,
     bar_x = []
     for it in sorted(s_opt_data):
         opti = s_opt_data[it]
-        x.append(it.replace('sopt', ""))
+        x.append(it.replace('sopt', "").replace("eoffRB", ""))
         y_nRT.append(opti['nRoundTrips'])
 
         # dirty helper. not needed in future! TODO: remove
@@ -169,7 +169,7 @@ def visualization_s_optimization_summary(s_opt_data: dict,
     ax1.bar(x=x, height=y_nRT, color="dimgray")
     ax1.set_title("Total Number Of Roundtrips")
     ax1.set_ylabel("n [1]")
-    ax1.set_xlabel("s-opt iteration")
+    ax1.set_xlabel("iteration")
 
     if (not isinstance(nRT_range, type(None))):
         ax1.set_ylim(nRT_range)
