@@ -37,7 +37,7 @@ def do(out_root_dir: str, in_simSystem: fM.System, in_template_imd: str = None,
        state_undersampling_occurrence_potential_threshold: List[float]=None,
        undersampling_fraction_threshold: float=0.9,
 
-       equil_runs: int = None, steps_between_trials: int = 20, trials_per_run: int = 12500,
+       equil_runs: int = 0, steps_between_trials: int = 20, trials_per_run: int = 12500,
        non_ligand_residues: list = [],
 
        in_gromosXX_bin_dir: str = None, in_gromosPP_bin_dir: str = None,
@@ -46,6 +46,7 @@ def do(out_root_dir: str, in_simSystem: fM.System, in_template_imd: str = None,
        queueing_system: _SubmissionSystem = LSF,
        do_not_doubly_submit_to_queue: bool = True,
        initialize_first_run: bool = True, reinitialize: bool = False, randomize:bool=False,
+       memory: int = None,
        verbose: bool = True):
     """
     SCRIPT:            Do Eoff rebalancing
@@ -73,7 +74,7 @@ state_undersampling_occurrence_potential_threshold : List[float], optional
     potential thresholds for occurrence sampling (default: read in from step b)
 undersampling_fraction_threshold : float, optional
     fraction threshold for physical/occurrence sampling (default: 0.9)
-equil_runs : int, optional
+equil_runs : int, optional (default 0)
     How often do you want to run prequilibration, before each run ? give int times 50ps
 steps_between_trials : int, optional
     How many steps shall be executed between the trials?
@@ -103,6 +104,8 @@ do_not_doubly_submit_to_queue : bool, optional
     Check if there is already a job with this name, do not submit if true.
 randomize : bool, optional
     randomize the simulation seed
+memory : int, optional
+    how much memory to use for submission
 verbose : bool, optional
     I can be very talkative! :)
 
@@ -113,7 +116,7 @@ int
 
     """
 
-    if (verbose): print(spacer + "\n\tSTART sopt_process.")
+    if (verbose): print(spacer + "\n\tSTART eoff rebalancing process.")
     #################
     # Prepare general stuff
     #################
@@ -143,6 +146,7 @@ int
                             queueing_system=queueing_system,
                             do_not_doubly_submit_to_queue=do_not_doubly_submit_to_queue,
                             initialize_first_run=initialize_first_run, reinitialize=reinitialize, randomize=randomize, noncontinous=noncontinous,
+                            memory = memory,
                             verbose=verbose)
 
     return job_id

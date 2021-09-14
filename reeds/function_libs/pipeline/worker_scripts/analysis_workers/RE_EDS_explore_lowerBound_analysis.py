@@ -207,7 +207,7 @@ def do(out_analysis_dir: str, system_name: str,
     for trx in trx_files:
         bash.compress_gzip(in_path=trx)
 
-    if (not os.path.exists(in_simulation_dir + ".tar.gz") and os.path.exists(in_simulation_dir) and False):
+    if (not os.path.exists(in_simulation_dir + ".tar.gz") and os.path.exists(in_simulation_dir)):
         tar_sim_dir = bash.compress_tar(in_path=in_simulation_dir, gunzip_compression=True, )
         bash.wait_for_fileSystem(tar_sim_dir)
         bash.remove_file(in_simulation_dir, additional_options="-r")

@@ -143,12 +143,12 @@ def visualization_s_optimization_summary(s_opt_data: dict,
 
     x_svalues = []
     y_svalues = []
-    print(s_opt_data)
+    
     bar_heights = []
     bar_x = []
     for it in sorted(s_opt_data):
         opti = s_opt_data[it]
-        x.append(it.replace('sopt', ""))
+        x.append(it.replace('sopt', "").replace("eoffRB", ""))
         y_nRT.append(opti['nRoundTrips'])
 
         # dirty helper. not needed in future! TODO: remove
@@ -159,9 +159,7 @@ def visualization_s_optimization_summary(s_opt_data: dict,
         x_svalues.extend(opti["s_values"])
         y_svalues.extend([int(it.replace('sopt', "").replace("eoffRB", "")) for x in range(len(opti["s_values"]))])
         
-        print(opti)
-        exit()
-        bar_heights.append([opti["state_domination_sampling"][state] for state in opti["state_maxContributing_sampling"]])
+        bar_heights.append([opti["state_maxContributing_sampling"][state] for state in opti["state_maxContributing_sampling"]])
         bar_x.append(np.array(
             [int(state.replace("V", "").replace("r", "").replace("i", "")) for state in opti["state_maxContributing_sampling"]]))
 
@@ -171,7 +169,7 @@ def visualization_s_optimization_summary(s_opt_data: dict,
     ax1.bar(x=x, height=y_nRT, color="dimgray")
     ax1.set_title("Total Number Of Roundtrips")
     ax1.set_ylabel("n [1]")
-    ax1.set_xlabel("s-opt iteration")
+    ax1.set_xlabel("iteration")
 
     if (not isinstance(nRT_range, type(None))):
         ax1.set_ylim(nRT_range)
@@ -179,7 +177,7 @@ def visualization_s_optimization_summary(s_opt_data: dict,
     ax2.bar(x=x, height=y_RTd, color="dimgray")
     ax2.set_title("Average Roundtrip Time")
     ax2.set_ylabel("t [ps]")
-    ax2.set_xlabel("s-opt iteration")
+    ax2.set_xlabel("iteration")
 
     if (not isinstance(avRT_range, type(None))):
         ax2.set_ylim(avRT_range)
@@ -268,26 +266,26 @@ def visualize_s_optimisation_convergence(s_opt_data:dict,
         the outpath is returned if one is given. Alternativley the plot direclty will be returned.
     """
     y_RTd_efficency = []
-    for it in sorted(s_opt_data):
-        if("avg_rountrip_duration_optimization_efficiency" in s_opt_data[it]):
-            y_RTd_efficency.append(s_opt_data[it]["avg_rountrip_duration_optimization_efficiency" ])
 
+    for it in sorted(s_opt_data):
+        if("avg_rountrip_durations" in s_opt_data[it]):
+            y_RTd_efficency.append(s_opt_data[it]["avg_rountrip_durations"]/(s_opt_data[it]["nRoundTrips"]/len(s_opt_data[it]["stats_per_replica"]))/s_opt_data[it]["avg_rountrip_durations"])
     fig, ax = plt.subplots(nrows=1, ncols=1, figsize=ps.figsize_doubleColumn, sharex=True, sharey=True)
 
-    ax.plot(np.nan_to_num(np.log10(y_RTd_efficency)), label="efficiency", c="k")
-    ax.hlines(y=np.log10(convergens_radius), xmin=0, xmax=8, label="$convergence criterium$", color="grey")
+    ax.plot(np.nan_to_num(y_RTd_efficency), label="avgRT-time", c="k")
+    #ax.hlines(y=np.log10(convergens_radius), xmin=0, xmax=8, label="$convergence criterium$", color="grey")
 
 
-    ax.set_ylim([-2, 4])
-    ax.set_xlim([0, 7])
+    #ax.set_ylim([-2, 4])
+    #ax.set_xlim([0, 7])
     ax.set_xticks(range(len(s_opt_data)-1))
     ax.set_xticklabels([str(x) + "_" + str(x + 1) for x in range(1, len(s_opt_data))])
-    ax.set_yticks(range(-1, 4))
-    ax.set_yticklabels(range(-1, 4))
+    #ax.set_yticks(range(-1, 4))
+    #ax.set_yticklabels(range(-1, 4))
 
     ax.set_ylabel("$log(\overline{\\tau_j} - \overline{\\tau_i})$ [ps]")
     ax.set_xlabel("iteration ij")
-    ax.set_title("AvgRoundtriptime optimization efficiency")
+    ax.set_title("AvgRoundtriptime optimization ")
     ax.legend(fontsize=6)
 
     fig.tight_layout()

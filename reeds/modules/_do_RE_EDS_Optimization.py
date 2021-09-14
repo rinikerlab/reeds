@@ -35,7 +35,9 @@ def do_optimization(out_root_dir: str, in_simSystem: fM.System, optimization_nam
                     queueing_system: _SubmissionSystem = LSF,
                     do_not_doubly_submit_to_queue: bool = True,
                     initialize_first_run: bool = True, reinitialize: bool = False, randomize: bool=False, noncontinous: bool = False,
+                    memory: int = None,
                     verbose: bool = True):
+
     try:
         simSystem = copy.deepcopy(in_simSystem)
         sopt_input = out_root_dir + "/input"
@@ -138,6 +140,7 @@ def do_optimization(out_root_dir: str, in_simSystem: fM.System, optimization_nam
     # Prepare each sopt iteration
     #################
     ## Loop vars
+    job_id = None  # id for chaining
     repetitions = 1  # needed to elongate simulation length
     standard_name = simSystem.name
     iteration_sopt_job = None
@@ -175,10 +178,6 @@ def do_optimization(out_root_dir: str, in_simSystem: fM.System, optimization_nam
         # increase cur_svals by add_replicas so it can be used to define soptimization_options in the next iteration
         cur_svals = cur_svals + sOpt_add_replicas
 
-        ##default equilibration scheme for equilibrations run
-        if (not equil_runs):
-            equil_runs = 1
-
         simSystem.name = standard_name + "_" + str(iteration)
         try:  # JOB preperation
             iteration_sopt_job = build_optimization_step_dir(iteration=iteration,
@@ -198,7 +197,8 @@ def do_optimization(out_root_dir: str, in_simSystem: fM.System, optimization_nam
                                                              run_NLRTO=run_NLRTO, run_NGRTO=run_NGRTO, run_eoffRB=run_eoffRB,
                                                              pot_tresh=state_physical_occurrence_potential_threshold,
                                                              duration_per_job=duration_per_job,
-                                                             num_simulation_runs=repetitions)
+                                                             num_simulation_runs=repetitions,
+                                                             memory = memory)
 
         except Exception as err:
             print("#####################################################################################")
@@ -219,6 +219,7 @@ def do_optimization(out_root_dir: str, in_simSystem: fM.System, optimization_nam
                                           duration_per_job=duration_per_job, submit=submit, previous_job_id=job_id,
                                           do_not_doubly_submit_to_queue=do_not_doubly_submit_to_queue,
                                           initialize_first_run=initialize_first_run, reinitialize=reinitialize,
+                                          memory = memory,
                                           verbose=verbose)
 
             # UPDATE vars for next run

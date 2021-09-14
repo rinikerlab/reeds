@@ -28,6 +28,7 @@ def do(in_simSystem: Simulation_System.System, in_imd_path: str, out_dir_path: s
        in_analysis_script_path: str = None, run_analysis_script_every_x_runs: int = 0, initial_command: str = "",
        do_not_doubly_submit_to_queue: bool = True, previous_job_ID: int = None, write_free_energy_traj: bool = False,
        type_job_submission_system: _SubmissionSystem = LSF, initialize_first_run:bool = True, reinitialize:bool = False, 
+       memory: int= None,
        verbose: bool = False):
     """ RE_EDS_simulation_scheduler
 
@@ -75,6 +76,8 @@ initialize_first_run : bool, optional
     should the velocities of the first run be reinitialized?
 reinitialize : bool, optional
     should the velocities be reinitialized for all runs?
+memory : int, optional
+    how much memory to reserve for submission
 verbose : bool, optional
     I can be loud and noisy!
 
@@ -220,6 +223,7 @@ int
                                                                        write_free_energy_traj=write_free_energy_traj,
                                                                        initialize_first_run=initialize_first_run,
                                                                        reinitialize=reinitialize,
+                                                                       memory = memory,
                                                                        verbose=verbose)
             prefix_command = ""
 
@@ -243,6 +247,7 @@ int
                                                                    write_free_energy_traj=write_free_energy_traj,
                                                                    initialize_first_run=initialize_first_run,
                                                                    reinitialize=reinitialize,
+                                                                   memory = memory,
                                                                    verbose=verbose)
 
         # schedule - final analysis
