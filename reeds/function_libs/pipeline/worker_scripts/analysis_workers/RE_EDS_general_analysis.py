@@ -66,7 +66,8 @@ template_control_dict = OrderedDict({  # this dictionary is controlling the post
     "prepare_input_folder": {"do": True,
                              "sub": {
                                  "eoff_to_sopt": False,
-                                 "write_eoff": False,
+                                 "write_eoffRB": False,
+                                 "write_eoffEstm": False,
                                  "write_s": True
                              },
                              }
@@ -444,15 +445,15 @@ def do_Reeds_analysis(in_folder: str, out_folder: str, gromos_path: str,
             print("\tsytsemTemp: ", temp)
             # set trim_beg to 0.1 when analysing non equilibrated data
 
-            new_eoffs, all_eoffs = eds_energy_offsets.estimate_energy_offsets(ene_trajs = energy_trajectories, initial_offsets = Eoff[0], sampling_stat=sampling_results, s_values = s_values,
+            new_eoffs_estm, all_eoffs = eds_energy_offsets.estimate_energy_offsets(ene_trajs = energy_trajectories, initial_offsets = Eoff[0], sampling_stat=sampling_results, s_values = s_values,
                                                                               out_path = out_dir, temp = temp, trim_beg = 0., undersampling_idx = sampling_results['undersamplingThreshold'],
                                                                               plot_results = True, calc_clara = False)
-            print("ENERGY OFF: ", new_eoffs, all_eoffs) 
+            print("ENERGY OFF: ", new_eoffs_estm, all_eoffs)
         elif(sub_control["eoffset_rebalancing"]):
-            new_eoffs = rebalance_eoffs_directCounting(sampling_stat=sampling_results['samplingDistributions'], old_eoffs=Eoff,
+            new_eoffs_rb = rebalance_eoffs_directCounting(sampling_stat=sampling_results['samplingDistributions'], old_eoffs=Eoff,
                                                        learningFactor=eoffRebalancing_learningFactor, pseudo_count=eoffRebalancing_pseudocount,
                                                        correct_for_s1_only=not eoffRebalancing_correctionPerReplica)
-            new_eoffs = new_eoffs.T
+            new_eoffs_rb = new_eoffs_rb.T
             
         if (verbose): print("Done\n")
 
@@ -605,11 +606,14 @@ def do_Reeds_analysis(in_folder: str, out_folder: str, gromos_path: str,
         imd_file = imd.Imd(in_imd)
 
         ##New EnergyOffsets
-        if sub_control["write_eoff"] and control_dict["eoffset"]["do"]:
-            imd_file.edit_REEDS(EIR=new_eoffs)
-
-        elif (sub_control["write_eoff"] and not control_dict["Eoff"]["sub"]["eoff_estimation"]):
-            warnings.warn("Could not set Eoffs to imd, as not calculated in this run!")
+        if(sub_control["write_eoffRB"] and sub_control["write_eoffEstm"]):
+            raise Exception("can not write eoffRB and eoffEstm in new imd!")
+        elif sub_control["write_eoffRB"] and control_dict["eoffset"]["do"] and control_dict['eoffset']['sub']['eoffset_rebalancing']:
+            imd_file.edit_REEDS(EIR=new_eoffs_rb)
+        elif sub_control["write_eoffEstm"] and control_dict["eoffset"]["do"] and control_dict['eoffset']['sub']['eoff_estimation']:
+            imd_file.edit_REEDS(EIR=new_eoffs_estm)
+        elif ((sub_control["write_eoffRB"] or sub_control["write_eoffEstm"]) and not control_dict["Eoff"]["do"] and not (control_dict['eoffset']['sub']['eoff_estimation'] or control_dict['eoffset']['sub']['eoffset_rebalancing'])):
+            raise Exception("can not write eoffRB or eoffEstm as no eoff step chosen active!")
 
         ##New S-Values?=
         if (sub_control["write_s"] and control_dict["sopt"]["sub"]["run_RTO"]) or sub_control["eoff_to_sopt"]:

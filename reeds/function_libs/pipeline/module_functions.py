@@ -474,7 +474,7 @@ def build_optimization_step_dir(iteration: int,  iteration_folder_prefix: str, p
                  },
         "eoffset": {"do": True,
                     "sub": {
-                        "eoff_estimation": not run_eoffRB,
+                        "eoff_estimation": True,
                         "sampling_plot": False,
                         "eoffset_rebalancing": run_eoffRB,
                         }
@@ -482,7 +482,8 @@ def build_optimization_step_dir(iteration: int,  iteration_folder_prefix: str, p
         "prepare_input_folder": {"do": True,
                                  "sub": {
                                      "eoff_to_sopt": False,
-                                     "write_eoff": run_eoffRB,
+                                     "write_eoffRB": run_eoffRB,
+                                     "write_eoffEstm": False,
                                      "write_s": run_NLRTO or run_NGRTO
                                  },
                                  }
