@@ -54,7 +54,7 @@ def work(out_dir: str, in_coord: str, in_imd_path: str, in_topo_path: str, in_pe
 
     try:
         # WORKDIR SetUP
-        if (work_dir is None or work_dir == "None") and "TMPDIR" in os.environ):
+        if (work_dir is None or work_dir == "None") and "TMPDIR" in os.environ:
             work_dir = os.environ["TMPDIR"]
             print("using TmpDir")
         elif (work_dir is None and work_dir == "None"):

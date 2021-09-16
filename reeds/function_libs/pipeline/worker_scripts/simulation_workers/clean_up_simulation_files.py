@@ -40,7 +40,7 @@ def do(in_simulation_dir: str, n_processes: int = 1, verbose: bool = True) -> No
     # Adjust to distribute properly (1 cpu per compression max).
     # as this part of the code is now often called with more cpus 
     # than files to compress
-    elif len(tre_files + trc_files) <  n_processes):
+    elif len(tre_files + trc_files) <  n_processes:
         n_processes = len(tre_files + trc_files) 
 
     if (verbose): print("Found trcs: ", trc_files, "\n")
