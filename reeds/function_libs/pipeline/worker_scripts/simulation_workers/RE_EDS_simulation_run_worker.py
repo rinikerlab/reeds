@@ -54,15 +54,21 @@ def work(out_dir: str, in_coord: str, in_imd_path: str, in_topo_path: str, in_pe
 
     try:
         # WORKDIR SetUP
-        if ((isinstance(work_dir, type(None)) or work_dir == "None") and "TMPDIR" in os.environ):
+        if (work_dir is None or work_dir == "None") and "TMPDIR" in os.environ):
             work_dir = os.environ["TMPDIR"]
             print("using TmpDir")
-        elif (isinstance(work_dir, type(None)) and work_dir == "None"):
+        elif (work_dir is None and work_dir == "None"):
             print("Could not find TMPDIR!\n Switched to outdir for work")
             work_dir = out_dir
-
-        print("workDIR: " + work_dir)
-        if (not os.path.isdir(work_dir)):
+        
+        # Check if the calculation is running on multiple nodes:
+        hosts = os.environ['LSB_HOSTS'].split()
+        multi_node = True if len(hosts) > 1 else False        
+        
+        # run a euler script to create tmpdir on all nodes
+        if multi_node:
+            os.system('remote_tmpdir create')
+        elif not os.path.isdir(work_dir): # when we specify a local directory, ensure it exists
             bash.make_folder(work_dir)
 
         os.chdir(work_dir)
@@ -112,13 +118,15 @@ def work(out_dir: str, in_coord: str, in_imd_path: str, in_topo_path: str, in_pe
             return 1
 
         if (out_dir != work_dir):
-            os.system("mv " + work_dir + "/*  " + out_dir)
-            # bash.move_file(in_file_path=work_dir+"/*", out_file_path=out_dir, verbose=True)
-
-        # post simulation cleanup -> for now, don't delete directory because it can lead to data loss during copying
-        #if not (isinstance(work_dir, type(None)) and work_dir == "None" and "TMPDIR" in os.environ):
-        #    bash.remove_folder(work_dir, verbose=True)
-
+            if not multi_node: 
+                os.system("mv " + work_dir + "/*  " + out_dir)
+            else: 
+                # when copying the data back from multiple nodes, data has to be copied back manually from all nodes.
+                for host in hosts:
+                    command = 'ssh ' + host + '  \"cp ${TMPDIR}/* ' + out_dir + '\"'
+                    os.system(command)
+            os.system('remote_tmpdir delete')
+    
     except Exception as err:
         print("#####################################################################################")
         print("\t\tERROR in Reeds_simulationWorker")
