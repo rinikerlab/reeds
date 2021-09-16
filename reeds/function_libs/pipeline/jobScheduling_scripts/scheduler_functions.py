@@ -217,13 +217,14 @@ def chain_submission(gromosXX_bin_dir: str, in_imd_path: str, simSystem:Simulati
                 
             md_script_command += "python " + slave_script + "  \"${md_args[@]}\" \n"
 
-            print("COMMAND: \n", md_script_command)
-            
             # cleanup from the same job!
-            if (verbose): print("\tCLEANING")
             
-            clean_up_command += "python " + str(clean_up.__file__) + "  -in_simulation_dir " + \
+            clean_up_command = "python " + str(clean_up.__file__) + "  -in_simulation_dir " + \
                                 str(tmp_outdir) + " -n_processes " + str(nmpi)
+            
+            md_script_command += "\n\n" + clean_up_command + "\n"
+            
+            print("COMMAND: \n", md_script_command)
 
             try:
                 if (verbose): print("\tSubmitting simulation")
