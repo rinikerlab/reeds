@@ -177,15 +177,10 @@ def chain_submission(gromosXX_bin_dir: str, in_imd_path: str, simSystem:Simulati
             prefix_command += "-reinitialize " + str(reinitialize) + " \n"
             prefix_command += ")\n"
 
-            # build COMMAND:
-            #prefix_command += "sleep 2s && "
+            # build command
             prefix_command += "python " + prepare_imd_initialisation.__file__ + " \"${init_args[@]}\" \n"
             prefix_command += "sleep 2s\n" 
             
-            # add/removed line below as a test! 
-            #prefix_command += "cp " + in_imd_path + " " + tmp_in_imd + " \n" 
-            # && cp " + in_imd_path + " " + tmp_in_imd + " \n"            
-
             # optionals:
             add_option = ""
             if (write_free_energy_traj):
