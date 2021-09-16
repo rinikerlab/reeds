@@ -34,11 +34,6 @@ def do(in_simulation_dir: str, n_processes: int = 1, verbose: bool = True) -> No
     tre_files = glob.glob(in_simulation_dir + "/*.tre")
     trc_files = glob.glob(in_simulation_dir + "/*.trc")
     
-    # Check for nans, and replace them before compressing files.
-    # this is the for the GENBOX block 
-    os.system("sed -i 's/nan/0.0/g' *.trc")
-    os.system("sed -i 's/nan/0.0/g' *.cnf")
-    
     if (len(tre_files + trc_files) == 0):
         raise IOError("Could not find any file in : " + in_simulation_dir)
     
