@@ -110,13 +110,13 @@ def work(out_dir: str, in_coord: str, in_imd_path: str, in_topo_path: str, in_pe
             md_run_log_path = md.repex_mpi_run(**key_args)
             
         except Exception as err:
-            print("#####################################################################################")
+            print("\n#####################################################################################")
             print("\t\tERROR in Reeds_simulationWorker - Gromos Execution")
-            print("#####################################################################################")
-            traceback.print_exception(*sys.exc_info(), file=sys.stderr)
-            bash.move_file(work_dir + "/*", out_dir)
-            return 1
-
+            print("Copying files back to a local directory and exiting.")
+            print("#####################################################################################\n")
+        
+        # This part of the code (which copies all files back)
+        # must be reached after succesful and unsuccesful runs.
         if (out_dir != work_dir):
             if not multi_node: 
                 os.system("mv " + work_dir + "/*  " + out_dir)
