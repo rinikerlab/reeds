@@ -164,12 +164,14 @@ int
         elif(state_undersampling_occurrence_potential_threshold is None):
             state_undersampling_occurrence_potential_threshold = [0 for x in range(num_states)]
 
-
-        # fix for euler!
-        if (num_svals > 15):
-            workdir = out_root_dir + "/local_scratch"
-        else:
-            workdir = None
+            
+        # fix for euler! no longer necessary ! 
+        #if (num_svals > 15):
+        #    workdir = out_root_dir + "/local_scratch"
+        #else:
+        #    workdir = None
+        
+        workdir = None
         nmpi = nmpi_per_replica * num_svals
 
         # GENERATE array scripts
