@@ -455,12 +455,10 @@ def build_optimization_step_dir(iteration: int,  iteration_folder_prefix: str, p
     if (verbose): print("COORD: ", in_simSystem.coordinates)
     if (verbose): print("IMD: ", pre_in_imd_path)
 
-    # PARAMS:
+    # PARAMS: 
     ## fix for euler! - write out to workdir not on node. - so no data is lost in transfer
-    if (optimization_options.current_num_svals > 15):
-        workdir = iteration_folder + "/local_scratch"
-    else:
-        workdir = None
+
+    workdir = None
 
     nmpi = int(optimization_options.current_num_svals) * int(nmpi_per_replica)  # How many MPIcores needed?s
 

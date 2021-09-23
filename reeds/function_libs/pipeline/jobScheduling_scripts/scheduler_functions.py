@@ -4,6 +4,8 @@ import os
 from pygromos.euler_submissions.FileManager import Simulation_System
 from pygromos.euler_submissions.Submission_Systems import _SubmissionSystem
 from pygromos.utils import bash
+from pygromos.files import imd
+
 from reeds.function_libs.pipeline.worker_scripts.simulation_workers import clean_up_simulation_files as clean_up
 from reeds.function_libs.pipeline.worker_scripts.simulation_workers import prepare_imd_initialisation
 from reeds.function_libs.utils.structures import spacer
@@ -180,15 +182,10 @@ def chain_submission(gromosXX_bin_dir: str, in_imd_path: str, simSystem:Simulati
             prefix_command += "-reinitialize " + str(reinitialize) + " \n"
             prefix_command += ")\n"
 
-            # build COMMAND:
-            #prefix_command += "sleep 2s && "
+            # build command
             prefix_command += "python " + prepare_imd_initialisation.__file__ + " \"${init_args[@]}\" \n"
             prefix_command += "sleep 2s\n" 
             
-            # add/removed line below as a test! 
-            #prefix_command += "cp " + in_imd_path + " " + tmp_in_imd + " \n" 
-            # && cp " + in_imd_path + " " + tmp_in_imd + " \n"            
-
             # optionals:
             add_option = ""
             if (write_free_energy_traj):
@@ -223,10 +220,17 @@ def chain_submission(gromosXX_bin_dir: str, in_imd_path: str, simSystem:Simulati
                 
             md_script_command += "python " + slave_script + "  \"${md_args[@]}\" \n"
 
+            # cleanup from the same job!
+            
+            clean_up_command = "python " + str(clean_up.__file__) + "  -in_simulation_dir " + \
+                                str(tmp_outdir) + " -n_processes " + str(nmpi)
+            
+            md_script_command += "\n\n" + clean_up_command + "\n"
+            
             print("COMMAND: \n", md_script_command)
 
             try:
-                if (verbose): print("\tSIMULATION")
+                if (verbose): print("\tSubmitting simulation")
                 os.chdir(tmp_outdir)
                 outLog = tmp_outdir + "/" + out_prefix + "_md.out"
                 errLog = tmp_outdir + "/" + out_prefix + "_md.err"
@@ -240,34 +244,6 @@ def chain_submission(gromosXX_bin_dir: str, in_imd_path: str, simSystem:Simulati
                                                                         maxStorage = memory,
                                                                         verbose=verbose)
 
-                # schedule - simulation cleanup (tar/gz the tre/trc):
-                
-                if (verbose): print("\tCLEANING")
-                clean_up_processes = 10 if (nmpi > 10) else nmpi
-                
-                # CAREFUL : This is a temporary fix for the nans!
-                clean_up_command = "\nnumCnfs=`ls *.cnf | wc -l`\n"
-                clean_up_command += "numNineties=`grep \"90.000000000   90.000000000   90.000000000\" *.cnf | wc -l`\n"
-                clean_up_command += "echo \"Found ${numNineties} lines with the correct angles\"\n"
-                clean_up_command += "echo \"Out of ${numCnfs} conformations\"\n"
-
-                clean_up_command += "sed -i 's/nan/0.0/g' *.trc\n"
-                clean_up_command += "sed -i 's/nan/0.0/g' *.tre\n"
-                clean_up_command += "sed -i 's/nan/0.0/g' *.cnf\n"
-
-                clean_up_command += "python " + str(clean_up.__file__) + "  -in_simulation_dir " + \
-                                    str(tmp_outdir) + " -n_processes " + str(clean_up_processes)
-                
-                outLog = tmp_outdir + "/" + out_prefix + "_cleanup.out"
-                errLog = tmp_outdir + "/" + out_prefix + "_cleanup.err"
-                clean_id = job_submission_system.submit_to_queue(command=clean_up_command,
-                                                                 jobName=tmp_jobname + "_cleanUP",
-                                                                 queue_after_jobID=previous_job_ID,
-                                                                 outLog=outLog, errLog=errLog,
-                                                                 nmpi=nmpi, 
-                                                                 maxStorage = memory,
-                                                                 verbose=verbose)
-
                 # OPTIONAL schedule - analysis inbetween.
                 if (run > 1 and run_analysis_script_every_x_runs != 0 and
                         run % run_analysis_script_every_x_runs == 0
@@ -279,18 +255,18 @@ def chain_submission(gromosXX_bin_dir: str, in_imd_path: str, simSystem:Simulati
                     ana_id = job_submission_system.submit_to_queue(command=in_analysis_script_path,
                                                                    jobName=tmp_ana_jobname,
                                                                    outLog=outLog, errLog=errLog,
-                                                                   maxStorage=20000, queue_after_jobID=clean_id, nmpi=5,
+                                                                   maxStorage=20000, queue_after_jobID=previous_job_ID, nmpi=5,
                                                                    verbose=verbose)
                 if (verbose): print("\n")
             except ValueError as err:  # job already in the queue
                 print("ERROR during submission:\n")
                 print("\n".join(err.args))
         else:
-            clean_id = None
+            previous_job_ID = None
+        
         if (verbose): print("\n")
         if (verbose): print("job_postprocess ")
         prefix_command = ""
         setattr(simSystem, "coordinates", tmp_out_cnf)
 
-    previous_job_ID = clean_id
     return previous_job_ID, tmp_jobname, simSystem
