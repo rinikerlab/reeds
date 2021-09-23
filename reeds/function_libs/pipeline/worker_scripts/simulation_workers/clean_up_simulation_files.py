@@ -29,13 +29,19 @@ def do(in_simulation_dir: str, n_processes: int = 1, verbose: bool = True) -> No
     """
     import time
     time.sleep(3)
-    # compress files:
+    
     if (verbose): print("Search Files START", "\n")
     tre_files = glob.glob(in_simulation_dir + "/*.tre")
     trc_files = glob.glob(in_simulation_dir + "/*.trc")
-
+    
     if (len(tre_files + trc_files) == 0):
         raise IOError("Could not find any file in : " + in_simulation_dir)
+    
+    # Adjust to distribute properly (1 cpu per compression max).
+    # as this part of the code is now often called with more cpus 
+    # than files to compress
+    elif len(tre_files + trc_files) <  n_processes:
+        n_processes = len(tre_files + trc_files) 
 
     if (verbose): print("Found trcs: ", trc_files, "\n")
     if (verbose): print("Found tres: ", tre_files, "\n")
@@ -44,9 +50,6 @@ def do(in_simulation_dir: str, n_processes: int = 1, verbose: bool = True) -> No
     fM.compress_files(tre_files + trc_files, n_processes=n_processes)
 
     if (verbose): print("COMPRESS DONE\n")
-
-    # do more?
-
 
 if __name__ == "__main__":
     # INPUT JUGGELING

@@ -450,12 +450,16 @@ def build_sopt_step_dir(iteration: int, iteration_folder_prefix: str,pot_tresh: 
     if (verbose): print("COORD: ", in_simSystem.coordinates)
     if (verbose): print("IMD: ", pre_in_imd_path)
 
-    # PARAMS:
+    # PARAMS: 
     ## fix for euler! - write out to workdir not on node. - so no data is lost in transfer
-    if (soptimization_options.current_num_svals > 15):
-        workdir = iteration_folder + "/local_scratch"
-    else:
-        workdir = None
+    #if (soptimization_options.current_num_svals > 15):
+    #    workdir = iteration_folder + "/local_scratch"
+    #else:
+    
+    #using remote scratch
+    # commented lines above can be fully removed once code has
+    # been thouroughly tested
+    workdir = None
 
     nmpi = int(soptimization_options.current_num_svals) * int(nmpi_per_replica)  # How many MPIcores needed?s
 
