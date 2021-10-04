@@ -213,7 +213,8 @@ int
             "prepare_input_folder": {"do": True,
                  "sub": {
                      "eoff_to_sopt": True,
-                     "write_eoff": True,
+                     "write_eoffRB": False,
+                     "write_eoffEstm": False,
                      "write_s": False
                  },
             }
