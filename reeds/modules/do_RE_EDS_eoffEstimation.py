@@ -214,7 +214,7 @@ int
                  "sub": {
                      "eoff_to_sopt": True,
                      "write_eoffRB": False,
-                     "write_eoffEstm": False,
+                     "write_eoffEstm": True,
                      "write_s": False
                  },
             }
