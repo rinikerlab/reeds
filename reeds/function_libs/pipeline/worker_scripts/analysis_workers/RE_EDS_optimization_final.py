@@ -97,7 +97,7 @@ def analyse_optimization_iteration(repdat_path: str, out_dir: str, title: str, p
     print("avg. number of roundtrips per ns: ", avg_numberOfRoundtripsPerNs)
     print("avg. roundtrip durations:", avg_roundtrips)
     sopt_it.update({"nRoundTrips": nReplicasRoundtrips,
-                    "avg_nRoundtrips": avg_numberOfRoundtripsPerNs,
+                    "avg_nRoundtripsPerNs": avg_numberOfRoundtripsPerNs,
                     "avg_rountrip_durations": avg_roundtrips})
 
     del trans_dict
