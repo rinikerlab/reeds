@@ -268,7 +268,7 @@ def get_s_optimization_roundtrips_per_replica(data: Dict[int, Dict[str,List[floa
                     lastExtreme = extr.position
                     lastTrial = extr.trial
         roundtrips_per_ns = roundtrip_counter / ( time / 1000)
-        replica_stats.update({replica: {"roundtrips": roundtrip_counter, "roundtrips_per_ns": roundtrips_per_ns, durations": durations}})
+        replica_stats.update({replica: {"roundtrips": roundtrip_counter, "roundtrips_per_ns": roundtrips_per_ns, "durations": durations}})
 
     return replica_stats
 
