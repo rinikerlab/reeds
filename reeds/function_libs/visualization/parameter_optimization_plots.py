@@ -149,7 +149,7 @@ def visualization_s_optimization_summary(s_opt_data: dict,
     for it in sorted(s_opt_data):
         opti = s_opt_data[it]
         x.append(it.replace('sopt', "").replace("eoffRB", ""))
-        y_nRT.append(opti['nRoundTrips'])
+        y_nRT.append(opti['avg_nRoundtripsPerNs'])
 
         # dirty helper. not needed in future! TODO: remove
         roundTripTimeavg = 3333333 if (np.nan_to_num(opti['avg_rountrip_durations']) == 0) else np.nan_to_num(
@@ -167,8 +167,8 @@ def visualization_s_optimization_summary(s_opt_data: dict,
     fig, ((ax1, ax2), (ax3, ax4)) = plt.subplots(ncols=2, nrows=2, figsize=ps.figsize_doubleColumn)
 
     ax1.bar(x=x, height=y_nRT, color="dimgray")
-    ax1.set_title("Total Number Of Roundtrips")
-    ax1.set_ylabel("n [1]")
+    ax1.set_title("Average Number of Roundtrips per ns")
+    ax1.set_ylabel("n$_{avg}^{rt}$ [1 / ns] ")
     ax1.set_xlabel("iteration")
 
     if (not isinstance(nRT_range, type(None))):

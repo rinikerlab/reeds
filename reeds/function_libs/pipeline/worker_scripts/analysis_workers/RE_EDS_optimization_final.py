@@ -14,9 +14,11 @@ from reeds.function_libs.analysis.parameter_optimization import get_s_optimizati
     get_s_optimization_roundtrip_averages
 from reeds.function_libs.visualization.parameter_optimization_plots import visualization_s_optimization_summary, \
     visualize_s_optimisation_convergence, visualize_s_optimisation_sampling_optimization
+from reeds.function_libs.file_management.file_management import parse_csv_energy_trajectory
 
 
-def analyse_optimization_iteration(repdat_path: str, out_dir: str, title: str, pot_tresh=0) -> dict:
+
+def analyse_optimization_iteration(repdat_path: str, out_dir: str, title: str, time: float, pot_tresh=0) -> dict:
     """
         analysis of a single optimization iteration.
         - analyse sampling, round trips, round trip time
@@ -30,8 +32,12 @@ def analyse_optimization_iteration(repdat_path: str, out_dir: str, title: str, p
         output dir for the analysis
     title: str
         title of the iteration
+    time : float
+        total simulation time
     pot_tresh : Union[float, List[float]], optional
         potential threshold for observing
+    
+
     Returns
     -------
     dict
@@ -67,7 +73,8 @@ def analyse_optimization_iteration(repdat_path: str, out_dir: str, title: str, p
                                                                         s_values=s_values, cut_1_replicas=True, equilibration_border=None)
     # calc roundtrips:
     stats = get_s_optimization_roundtrips_per_replica(data=trans_dict, repOffsets=repOff,
-                                                      min_pos=min_pos, max_pos=max_pos)
+                                                      min_pos=min_pos, max_pos=max_pos,
+                                                      time = time)
     sopt_it.update({"stats_per_replica": stats})
     sopt_it.update({"s_values": s_values[repOff:]})
 
@@ -86,12 +93,12 @@ def analyse_optimization_iteration(repdat_path: str, out_dir: str, title: str, p
 
 
 
-    nReplicasRoundtrips, avg_numberOfRoundtrips, avg_roundtrips = get_s_optimization_roundtrip_averages(stats)
+    nReplicasRoundtrips, avg_numberOfRoundtripsPerNs, avg_roundtrips = get_s_optimization_roundtrip_averages(stats)
     print("replicas doing at least one roundtrip:", nReplicasRoundtrips)
-    print("avg. number of roundtrips: ", avg_numberOfRoundtrips)
+    print("avg. number of roundtrips per ns: ", avg_numberOfRoundtripsPerNs)
     print("avg. roundtrip durations:", avg_roundtrips)
     sopt_it.update({"nRoundTrips": nReplicasRoundtrips,
-                    "avg_nRoundtrips": avg_numberOfRoundtrips,
+                    "avg_nRoundtripsPerNs": avg_numberOfRoundtripsPerNs,
                     "avg_rountrip_durations": avg_roundtrips})
 
     del trans_dict
@@ -176,6 +183,9 @@ def do(project_dir: str, optimization_name:str,
 
         print( iteration, end="\t")
         repdat = glob.glob(project_dir + "/" + iteration_folder + "/analysis/data/*repdat*")
+        energies_s1 = os.path.abspath(glob.glob(project_dir + "/" + iteration_folder + "/analysis/data/*energies_s1.dat")[0])
+        energy_trajectory_s1 = parse_csv_energy_trajectory(in_ene_traj_path = energies_s1, verbose = False)
+        time = energy_trajectory_s1.time[len(energy_trajectory_s1)-1]
         out_iteration_file_path = out_dir + "/" + iteration_folder + "_ana_data.npy"
 
         if (os.path.exists(out_iteration_file_path)):
@@ -187,7 +197,8 @@ def do(project_dir: str, optimization_name:str,
             print("\nCalculate statistics for iteration: ", iteration)
             repdat_files.update({iteration: repdat[0]})
             opt_it_stats = analyse_optimization_iteration(repdat_path=repdat_files[iteration], out_dir=out_dir,
-                                                           title="s-opt " + str(iteration), pot_tresh=state_physical_occurrence_potential_threshold)
+                                                           title="s-opt " + str(iteration), pot_tresh=state_physical_occurrence_potential_threshold,
+                                                           time = time)
 
             pickle.dump(obj=opt_it_stats, file=open(out_iteration_file_path, "wb"))
             sopt_data.update({iteration_folder: opt_it_stats})
