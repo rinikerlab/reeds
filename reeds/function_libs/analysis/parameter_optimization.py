@@ -237,10 +237,11 @@ def get_s_optimization_roundtrips_per_replica(data: Dict[int, Dict[str,List[floa
         maximum position of the replica
     min_pos : int
         minimum position of the replica
+    time : float
+        total simulation time
     repOffsets : int, optional
         skip multiple replicas with s = 1
-    time : float, optional (default: 1000 ps)
-        total simulation time
+    
 
     Returns
     -------
