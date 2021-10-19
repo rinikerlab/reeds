@@ -18,7 +18,7 @@ from reeds.function_libs.file_management.file_management import parse_csv_energy
 
 
 
-def analyse_optimization_iteration(repdat_path: str, out_dir: str, title: str, pot_tresh=0, time: float = 1000.0) -> dict:
+def analyse_optimization_iteration(repdat_path: str, out_dir: str, title: str, time: float, pot_tresh=0) -> dict:
     """
         analysis of a single optimization iteration.
         - analyse sampling, round trips, round trip time
@@ -32,10 +32,11 @@ def analyse_optimization_iteration(repdat_path: str, out_dir: str, title: str, p
         output dir for the analysis
     title: str
         title of the iteration
+    time : float
+        total simulation time
     pot_tresh : Union[float, List[float]], optional
         potential threshold for observing
-    time : float, optional (default: 1000 ps)
-        total simulation time
+    
 
     Returns
     -------
