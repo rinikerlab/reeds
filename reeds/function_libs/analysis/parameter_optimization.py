@@ -224,8 +224,8 @@ def get_s_optimization_transitions(out_dir: str,
 def get_s_optimization_roundtrips_per_replica(data: Dict[int, Dict[str,List[float]]],
                                               max_pos: int,
                                               min_pos: int,
-                                              repOffsets: int = 0,
-                                              time: float = 1000) -> dict:
+                                              time: float,
+                                              repOffsets: int = 0) -> dict:
     """get_s_optimization_roundtrips_per_replica
     This function calculates the roundtrips of a replica
 
