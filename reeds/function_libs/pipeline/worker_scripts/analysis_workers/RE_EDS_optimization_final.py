@@ -183,9 +183,6 @@ def do(project_dir: str, optimization_name:str,
 
         print( iteration, end="\t")
         repdat = glob.glob(project_dir + "/" + iteration_folder + "/analysis/data/*repdat*")
-        energies_s1 = os.path.abspath(glob.glob(project_dir + "/" + iteration_folder + "/analysis/data/*energies_s1.dat")[0])
-        energy_trajectory_s1 = parse_csv_energy_trajectory(in_ene_traj_path = energies_s1, verbose = False)
-        time = energy_trajectory_s1.time[len(energy_trajectory_s1)-1]
         out_iteration_file_path = out_dir + "/" + iteration_folder + "_ana_data.npy"
 
         if (os.path.exists(out_iteration_file_path)):
@@ -196,6 +193,9 @@ def do(project_dir: str, optimization_name:str,
         elif (len(repdat) == 1):
             print("\nCalculate statistics for iteration: ", iteration)
             repdat_files.update({iteration: repdat[0]})
+            energies_s1 = os.path.abspath(glob.glob(project_dir + "/" + iteration_folder + "/analysis/data/*energies_s1.dat")[0])
+            energy_trajectory_s1 = parse_csv_energy_trajectory(in_ene_traj_path = energies_s1, verbose = False)
+            time = energy_trajectory_s1.time[len(energy_trajectory_s1)-1]
             opt_it_stats = analyse_optimization_iteration(repdat_path=repdat_files[iteration], out_dir=out_dir,
                                                            title="s-opt " + str(iteration), pot_tresh=state_physical_occurrence_potential_threshold,
                                                            time = time)

@@ -275,7 +275,7 @@ def visualize_s_optimisation_convergence(s_opt_data:dict,
     ax.plot(np.nan_to_num(np.log10(y_RTd_efficency)), c="k")
     if(convergens_radius is not None): ax.hlines(y=np.log10(convergens_radius), xmin=0, xmax=8, label="$convergence criterium$", color="grey")
 
-    ax.set_xticks(range(len(s_opt_data)-1))
+    ax.set_xticks(range(len(s_opt_data)))
     ax.set_xticklabels([str(x) for x in range(1, 1+len(s_opt_data))])
 
     ax.set_ylabel("$log(\overline{\\tau_i}/ (nRT / nR) )$ [ps]")
