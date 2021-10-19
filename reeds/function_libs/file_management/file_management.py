@@ -537,7 +537,7 @@ def find_and_unarchive_tar_files(trc_files: List[str], verbose: bool = False):
 def gather_simulation_replica_file_paths(in_folder: str,
                                          replicas: int,
                                          filePrefix: str = "",
-                                         fileSuffixes: Union[str, List[str]] = [".tre", ".tre.tar.gz"],
+                                         fileSuffixes: Union[str, List[str]] = [".tre", ".tre.tar.gz", ".tre.gz"],
                                          verbose: bool = False,
                                          finalNumberingSort=False) -> Dict[int, List[str]]:
     """gather_simulation_replica_file_paths

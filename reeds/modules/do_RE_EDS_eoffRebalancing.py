@@ -1,12 +1,11 @@
 #!/usr/bin/env python3
 """
 
-SCRIPT:            Do S-optimisation
+SCRIPT:            Do Eoff Re-Balancing
 Description:
-    This script executes multiple simuatlions. The scripts runs mutliple iterations of s-distribution runs.
-    In each iteration x simulations a 400 ps are exectued an afterwards the s-distribution get optimised by NLRTO.
-    here it runs continous
-    TODOS: make adapt imd file more genearl
+    This script executes multiple simuatlions. The scripts runs mutliple iterations of EoffRebalancing runs.
+    In each iteration x simulations a 400 ps * iteration are exectued and afterwards the Eoffs get rebalanced.
+
 Author: bschroed
 
 """
@@ -14,43 +13,47 @@ Author: bschroed
 import os
 from typing import List
 
-import reeds.function_libs.pipeline.module_functions
 from pygromos.euler_submissions import FileManager as fM
 from pygromos.euler_submissions.Submission_Systems import LSF
 # todo! make the queueing system exchangeable
 from pygromos.euler_submissions.Submission_Systems import _SubmissionSystem
 from reeds.data import ene_ana_libs
-from reeds.function_libs.utils.structures import adding_Scheme_new_Replicas
 from reeds.function_libs.utils.structures import spacer
+from reeds.function_libs.utils.structures import adding_Scheme_new_Replicas
+
 from reeds.modules._do_RE_EDS_Optimization import do_optimization
 
 
 def do(out_root_dir: str, in_simSystem: fM.System, in_template_imd: str = None,
-       iterations: int = 4, add_replicas: int = 4,
-       adding_new_sReplicas_Scheme: adding_Scheme_new_Replicas = adding_Scheme_new_Replicas.from_below,
+       iterations: int = 4,
+
+       learningFactors : List[float]= None, pseudocount: float=None, individualCorrection: bool=False,
+
        noncontinous: bool = False,
        optimized_states_dir: str = os.path.abspath("a_optimizedState/analysis/next"),
        lower_bound_dir: str = os.path.abspath("b_lowerBound/analysis/next"),
-       state_physical_occurrence_potential_threshold:List[float]=None,
+
+       state_physical_occurrence_potential_threshold: List[float]=None,
        state_undersampling_occurrence_potential_threshold: List[float]=None,
-       undersampling_fraction_threshold:float=0.9,
-       equil_runs: int = 1, steps_between_trials: int = 20, trials_per_run: int = 12500,
+       undersampling_fraction_threshold: float=0.9,
+
+       equil_runs: int = 0, steps_between_trials: int = 20, trials_per_run: int = 12500,
        non_ligand_residues: list = [],
+
        in_gromosXX_bin_dir: str = None, in_gromosPP_bin_dir: str = None,
        in_ene_ana_lib_path: str = ene_ana_libs.ene_ana_lib_path,
        nmpi_per_replica: int = 1, submit: bool = True, duration_per_job: str = "24:00",
        queueing_system: _SubmissionSystem = LSF,
-       run_NLRTO:bool=True, run_NGRTO:bool=False,
        do_not_doubly_submit_to_queue: bool = True,
-       initialize_first_run: bool = True, reinitialize: bool = False, randomize: bool=False,
-       memory: str = None,
+       initialize_first_run: bool = True, reinitialize: bool = False, randomize:bool=False,
+       memory: int = None,
        verbose: bool = True):
     """
-    SCRIPT:            Do S-optimisation
+    SCRIPT:            Do Eoff rebalancing
     Description:
-        This script executes multiple simuatlions. The scripts runs mutliple iterations of s-distribution runs.
-        In each iteration x simulations a 400 ps are exectued an afterwards the s-distribution get optimised by NLRTO.
-        here it runs continous
+        This script executes multiple simuatlions. The scripts runs mutliple iterations of EoffRebalancing runs.
+        In each iteration x simulations a 400 ps * iteration are exectued and afterwards the Eoffs get rebalanced.
+
     Author: bschroed
 
 Parameters
@@ -61,13 +64,8 @@ in_simSystem : pygromos.PipelineManager.Simulation_System
      this is the system obj. containing all paths to all system relevant Files.
 in_template_imd : str
     path to the imd file to simulate
-
 iterations : int, optional
     How many optimization iterations do you want to perform?
-add_replicas : int, optional
-    How many replicas do you want to add per otpimization run?
-adding_new_sReplicas_Scheme : reeds.function_libs.utils.structures.adding_Scheme_new_Replicas
-    How shall new coordinate files be added to the system?
 noncontinous : bool, optional
     Shall I use the output coordinates of the last sopt for the next sopt(False), or shall I always use the same starting coordinates per s-Optimization Iteration? (True)
 state_physical_occurrence_potential_threshold : List[float], optional
@@ -76,7 +74,7 @@ state_undersampling_occurrence_potential_threshold : List[float], optional
     potential thresholds for occurrence sampling (default: read in from step b)
 undersampling_fraction_threshold : float, optional
     fraction threshold for physical/occurrence sampling (default: 0.9)
-equil_runs : int, optional (default: 1)
+equil_runs : int, optional (default 0)
     How often do you want to run prequilibration, before each run ? give int times 50ps
 steps_between_trials : int, optional
     How many steps shall be executed between the trials?
@@ -106,8 +104,8 @@ do_not_doubly_submit_to_queue : bool, optional
     Check if there is already a job with this name, do not submit if true.
 randomize : bool, optional
     randomize the simulation seed
-memory : str, optional
-    how much memory to reserve for submission
+memory : int, optional
+    how much memory to use for submission
 verbose : bool, optional
     I can be very talkative! :)
 
@@ -118,43 +116,42 @@ int
 
     """
 
-    if (verbose): print(spacer + "\n\tSTART sopt_process.")
+    if (verbose): print(spacer + "\n\tSTART eoff rebalancing process.")
     #################
     # Prepare general stuff
     #################
-    if(run_NGRTO and run_NLRTO or (not run_NGRTO and not run_NLRTO)):
-        raise Exception("Please specify either NLRTO or NGRTO!")
-    optimization_name = "sopt"
-    learningFactors = [1 for _ in range(iterations)]
-    pseudocount = None
-    eoffRB_correctionPerReplica = False
+    optimization_name = "eoffRB"
+
+    add_replicas=0
+    run_NLRTO = False
+    run_NGRTO = False
+    adding_new_sReplicas_Scheme=adding_Scheme_new_Replicas.from_below
 
     job_id = do_optimization(out_root_dir=out_root_dir, in_simSystem=in_simSystem, optimization_name=optimization_name, in_template_imd=in_template_imd,
-                             iterations=iterations,
-                             eoffEstimation_undersampling_fraction_threshold=undersampling_fraction_threshold,
-                             sOpt_add_replicas= add_replicas, sOpt_adding_new_sReplicas_Scheme= adding_new_sReplicas_Scheme,
-                             run_NLRTO = run_NLRTO, run_NGRTO = run_NGRTO,
-                             eoffRB_learningFactors = learningFactors, eoffRB_pseudocount = pseudocount,
-                             eoffRB_correctionPerReplica=eoffRB_correctionPerReplica,
-                             non_ligand_residues = non_ligand_residues,
-                             state_physical_occurrence_potential_threshold=state_physical_occurrence_potential_threshold,
-                             state_undersampling_occurrence_potential_threshold=state_undersampling_occurrence_potential_threshold,
-                             equil_runs=equil_runs, steps_between_trials=steps_between_trials, trials_per_run=trials_per_run,
-                             optimized_states_dir=optimized_states_dir,
-                             lower_bound_dir=lower_bound_dir,
-                             in_gromosXX_bin_dir=in_gromosXX_bin_dir, in_gromosPP_bin_dir=in_gromosPP_bin_dir,
-                             in_ene_ana_lib_path=in_ene_ana_lib_path,
-                             nmpi_per_replica=nmpi_per_replica, submit=submit, duration_per_job=duration_per_job,
-                             queueing_system=queueing_system,
-                             do_not_doubly_submit_to_queue=do_not_doubly_submit_to_queue,
-                             initialize_first_run=initialize_first_run, reinitialize=reinitialize, randomize=randomize, noncontinous=noncontinous,
-                             memory = memory,
-                             verbose=verbose)
-
+                            iterations=iterations,
+                            eoffEstimation_undersampling_fraction_threshold=undersampling_fraction_threshold,
+                            sOpt_add_replicas= add_replicas, sOpt_adding_new_sReplicas_Scheme= adding_new_sReplicas_Scheme,
+                            run_NLRTO = run_NLRTO, run_NGRTO = run_NGRTO, run_eoffRB=True,
+                            eoffRB_learningFactors = learningFactors, eoffRB_pseudocount = pseudocount,
+                            eoffRB_correctionPerReplica=individualCorrection,
+                            non_ligand_residues = non_ligand_residues,
+                            state_physical_occurrence_potential_threshold=state_physical_occurrence_potential_threshold,
+                            state_undersampling_occurrence_potential_threshold=state_undersampling_occurrence_potential_threshold,
+                            equil_runs=equil_runs, steps_between_trials=steps_between_trials, trials_per_run=trials_per_run,
+                            optimized_states_dir=optimized_states_dir,
+                            lower_bound_dir=lower_bound_dir,
+                            in_gromosXX_bin_dir=in_gromosXX_bin_dir, in_gromosPP_bin_dir=in_gromosPP_bin_dir,
+                            in_ene_ana_lib_path=in_ene_ana_lib_path,
+                            nmpi_per_replica=nmpi_per_replica, submit=submit, duration_per_job=duration_per_job,
+                            queueing_system=queueing_system,
+                            do_not_doubly_submit_to_queue=do_not_doubly_submit_to_queue,
+                            initialize_first_run=initialize_first_run, reinitialize=reinitialize, randomize=randomize, noncontinous=noncontinous,
+                            memory = memory,
+                            verbose=verbose)
 
     return job_id
 
-# MAIN Execution from BASH 
+# MAIN Execution from BASH
 if __name__ == "__main__":
     from reeds.function_libs.utils.argument_parser import execute_module_via_bash
     print(spacer + "\t\tRE-EDS S-OPTIMIZATION \n" + spacer + "\n")
@@ -163,5 +160,3 @@ if __name__ == "__main__":
                              ("in_perttop_path", "input pertubation topology .ptp file."),
                              ("in_disres_path", "input distance restraint .dat file.")]
     execute_module_via_bash(__doc__, do, requiers_gromos_files)
-
-

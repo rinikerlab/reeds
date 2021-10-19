@@ -39,7 +39,7 @@ def do(out_root_dir: str, in_simSystem: fM.System, undersampling_occurrence_frac
        gromosXX_bin: str = None, gromosPP_bin: str = None,
        ene_ana_lib: str = ene_ana_libs.ene_ana_lib_path,
        submit: bool = True, exclude_residues: list = [],
-       simulation_steps: int = 100000, job_duration: str = "4:00", memory: int = None,
+       simulation_steps: int = 100000, job_duration: str = "4:00", memory: int = None, nmpi_per_replica: int = 4,
        single_bath: bool = False,
        verbose: bool = True) -> int:
     """ Find lower S-bound for EDS System
@@ -130,13 +130,12 @@ int
 
         # GENERATE array scripts
         if (verbose): print("generating LSF-Bashscripts")
-        cores_per_job = 4
 
         # build: worker_scripts-script
         worker_script = gen_Euler_LSF_jobarray.build_worker_script_multImds(
             out_script_path=input_dir + "/worker_scripts.sh", gromosXX_bin=gromosXX_bin,
             out_dir=sim_dir, job_name=system.name + "_work", in_system=system,
-            in_imd_prefix=imd_template_path, cores=cores_per_job)
+            in_imd_prefix=imd_template_path, cores=nmpi_per_replica)
 
         ## build: analysis_script
         out_script_path = out_root_dir + "/analysis.py"
@@ -157,7 +156,7 @@ int
         job_array_script = gen_Euler_LSF_jobarray.build_jobarray(script_out_path=out_root_dir + "/job_array.sh",
                                                                  output_dir=sim_dir, run_script=worker_script,
                                                                  array_length=len(s_values), array_name=system.name,
-                                                                 cpu_per_job=cores_per_job,
+                                                                 cpu_per_job=nmpi_per_replica,
                                                                  analysis_script=in_analysis_script_path,
                                                                  noFailInChain=False, memory=memory,
                                                                  duration=job_duration)
@@ -200,4 +199,8 @@ if __name__ == "__main__":
     from reeds.function_libs.utils.argument_parser import execute_module_via_bash
 
     print(spacer + "\t\tRE-EDS ENERGY OFFSET ESTIMATION \n" + spacer + "\n")
-    execute_module_via_bash(__doc__, do)
+    requiers_gromos_files = [("in_top_path", "input topology .top file."),
+                             ("in_coord_path", "input coordinate .cn file."),
+                             ("in_perttop_path", "input pertubation topology .ptp file."),
+                             ("in_disres_path", "input distance restraint .dat file.")]
+    execute_module_via_bash(__doc__, do, requiers_gromos_files)

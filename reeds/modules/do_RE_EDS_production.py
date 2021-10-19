@@ -2,6 +2,7 @@
 import copy
 import os
 import sys
+import numpy as np
 import traceback
 from typing import List
 from collections import OrderedDict
@@ -30,8 +31,9 @@ def do(out_root_dir: str, in_simSystem: fM.System, in_template_imd: str,
        undersampling_fraction_threshold: float = 0.9,
        num_simulation_runs: int = 10, duration_per_job: str = "24:00",
        num_equilibration_runs: int = 0,
-       do_not_doubly_submit_to_queue: bool = True, randomize : bool= False,
+       do_not_doubly_submit_to_queue: bool = True, randomize : bool = False,
        initialize_first_run: bool = True, reinitialize: bool = False,
+       memory: int = None,
        verbose: bool = False):
     """RE-EDS Production run
 
@@ -77,6 +79,8 @@ initialize_first_run : bool, optional
     should the velocities of the first run be reinitialized?
 reinitialize : bool, optional
     should the velocities be reinitialized for all runs?
+memory : int, optional
+    how much memory to reserve for submission
 verbose : bool, optional
     Scream!
 
@@ -122,9 +126,13 @@ int
         # Remove multi s=1 (so there is only 1)
         imd_file = imd.Imd(in_template_imd)
         s_1_ammount = list(map(float, imd_file.REPLICA_EDS.RES)).count(1.0)
-        imd_file.edit_REEDS(SVALS=imd_file.REPLICA_EDS.RES[s_1_ammount-1:])
+        eoffs = np.array(imd_file.REPLICA_EDS.EIR).T
+        eoffs = eoffs[s_1_ammount-1:]
+
+        imd_file.edit_REEDS(SVALS=imd_file.REPLICA_EDS.RES[s_1_ammount-1:], EIR=eoffs)
         num_states = int(imd_file.REPLICA_EDS.NUMSTATES)
         num_svals = int(imd_file.REPLICA_EDS.NRES)
+        
         if(randomize):
             imd_file.randomize_seed()
         imd_file.write(in_imd_path)
@@ -249,6 +257,7 @@ int
                                                                   do_not_doubly_submit_to_queue=do_not_doubly_submit_to_queue,
                                                                   initialize_first_run=initialize_first_run,
                                                                   reinitialize=reinitialize,
+                                                                  memory = memory,
                                                                   in_analysis_script_path=in_analysis_script_path)
         else:
             if (verbose): print("\n\nSKIP submitting!")
@@ -270,4 +279,8 @@ if __name__ == "__main__":
     from reeds.function_libs.utils.argument_parser import execute_module_via_bash
 
     print(spacer + "\n\t\tRE_EDS PRODUCTION\n" + spacer + "\n")
-    execute_module_via_bash(__doc__, do)
+    requiers_gromos_files = [("in_top_path", "input topology .top file."),
+                             ("in_coord_path", "input coordinate .cn file."),
+                             ("in_perttop_path", "input pertubation topology .ptp file."),
+                             ("in_disres_path", "input distance restraint .dat file.")]
+    execute_module_via_bash(__doc__, do, requiers_gromos_files)

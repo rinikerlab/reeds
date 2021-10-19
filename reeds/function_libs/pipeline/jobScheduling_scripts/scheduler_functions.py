@@ -85,6 +85,7 @@ def chain_submission(gromosXX_bin_dir: str, in_imd_path: str, simSystem:Simulati
                      prefix_command: str = "", previous_job_ID: int = None, work_dir: str = None,
                      write_free_energy_traj: bool = False, 
                      initialize_first_run: bool = True, reinitialize: bool = False,
+                     memory: int = None, 
                      verbose: bool = False)->(int, str, Simulation_System):
     """
         This function takes care of submiting a given chain of jobs to the job queue.
@@ -134,6 +135,8 @@ def chain_submission(gromosXX_bin_dir: str, in_imd_path: str, simSystem:Simulati
         shall the first run, be initialized with gromos parameters
     reinitialize : bool
         shall all runs, be initialized with gromos parameters (@Warning: not recommended)
+    memory : int, optional
+        how much memory to reserve for submission
     verbose : bool
         verbosity level
 
@@ -236,7 +239,10 @@ def chain_submission(gromosXX_bin_dir: str, in_imd_path: str, simSystem:Simulati
                                                                         submit_from_dir=tmp_outdir,
                                                                         queue_after_jobID=previous_job_ID,
                                                                         outLog=outLog, errLog=errLog,
-                                                                        nmpi=nmpi, end_mail=True, verbose=verbose)
+                                                                        nmpi=nmpi,
+                                                                        end_mail=True,
+                                                                        maxStorage = memory,
+                                                                        verbose=verbose)
 
                 # OPTIONAL schedule - analysis inbetween.
                 if (run > 1 and run_analysis_script_every_x_runs != 0 and

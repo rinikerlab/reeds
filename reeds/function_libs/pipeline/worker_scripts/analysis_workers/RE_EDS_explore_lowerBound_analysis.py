@@ -133,7 +133,8 @@ def do(out_analysis_dir: str, system_name: str,
     state_undersampling_pot_treshold = find_undersampling_pot_tresh(ene_traj_csvs=ene_trajs, sampling_fraction_treshold = undersampling_occurrence_fraction_threshold)
 
     sampling_analysis_results, out_plot_dirs = reeds.function_libs.analysis.sampling.detect_undersampling(out_path = out_analysis_plot_dir,
-                                                                                                       ene_traj_csvs = ene_trajs,
+                                                                                                       ene_traj_csvs = ene_trajs, eoffs= [0 for _ in 
+                                                                                                       range(num_states)],
                                                                                                        s_values = s_values[:succsessful_sim_count],
                                                                                                        state_potential_treshold=state_undersampling_pot_treshold)
 
@@ -206,7 +207,7 @@ def do(out_analysis_dir: str, system_name: str,
     for trx in trx_files:
         bash.compress_gzip(in_path=trx)
 
-    if (not os.path.exists(in_simulation_dir + ".tar.gz") and os.path.exists(in_simulation_dir) and False):
+    if (not os.path.exists(in_simulation_dir + ".tar.gz") and os.path.exists(in_simulation_dir)):
         tar_sim_dir = bash.compress_tar(in_path=in_simulation_dir, gunzip_compression=True, )
         bash.wait_for_fileSystem(tar_sim_dir)
         bash.remove_file(in_simulation_dir, additional_options="-r")

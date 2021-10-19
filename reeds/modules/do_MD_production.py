@@ -3,6 +3,7 @@
 SCRIPT:            Do single Ligand MD
 Description:
     This script is exectuing an gromos simulation for a single ligand in a water box
+    TODO: very old, test!
 Author: Benjamin Schroeder
 """
 

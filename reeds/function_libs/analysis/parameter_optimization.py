@@ -224,6 +224,7 @@ def get_s_optimization_transitions(out_dir: str,
 def get_s_optimization_roundtrips_per_replica(data: Dict[int, Dict[str,List[float]]],
                                               max_pos: int,
                                               min_pos: int,
+                                              time: float,
                                               repOffsets: int = 0) -> dict:
     """get_s_optimization_roundtrips_per_replica
     This function calculates the roundtrips of a replica
@@ -236,8 +237,11 @@ def get_s_optimization_roundtrips_per_replica(data: Dict[int, Dict[str,List[floa
         maximum position of the replica
     min_pos : int
         minimum position of the replica
+    time : float
+        total simulation time
     repOffsets : int, optional
         skip multiple replicas with s = 1
+    
 
     Returns
     -------
@@ -264,7 +268,8 @@ def get_s_optimization_roundtrips_per_replica(data: Dict[int, Dict[str,List[floa
 
                     lastExtreme = extr.position
                     lastTrial = extr.trial
-        replica_stats.update({replica: {"roundtrips": roundtrip_counter, "durations": durations}})
+        roundtrips_per_ns = roundtrip_counter / ( time / 1000)
+        replica_stats.update({replica: {"roundtrips": roundtrip_counter, "roundtrips_per_ns": roundtrips_per_ns, "durations": durations}})
 
     return replica_stats
 
@@ -292,14 +297,14 @@ def get_s_optimization_roundtrip_averages(stats: dict):
     None
     """
     nReplicasRoundtrips = np.sum([1 for stat in stats if (stats[stat]["roundtrips"] > 0)])
-    numberOfRoundtrips = [stats[stat]["roundtrips"] for stat in stats]
-    avg_numberOfRoundtrips = np.mean(numberOfRoundtrips)
+    numberOfRoundtripsPerNs = [stats[stat]["roundtrips_per_ns"] for stat in stats]
+    avg_numberOfRoundtripsPerNs = np.mean(numberOfRoundtripsPerNs)
 
     roundtrip_durations = [np.mean(stats[stat]["durations"]) for stat in stats if (len(stats[stat]["durations"]) > 0)]
     avg_roundtrips = np.inf if (np.mean(roundtrip_durations) == 0 or len(roundtrip_durations) == 0) else np.mean(
         roundtrip_durations)
 
-    print("Number of roundtrips per replica: ", numberOfRoundtrips)
-    print("Avg. Roundtrips per replica: ", roundtrip_durations)
+    print("Number of roundtrips per replica per ns: ", numberOfRoundtripsPerNs)
+    print("Avg. Roundtrip duration: ", roundtrip_durations)
     print()
-    return nReplicasRoundtrips, avg_numberOfRoundtrips, avg_roundtrips
+    return nReplicasRoundtrips, avg_numberOfRoundtripsPerNs, avg_roundtrips

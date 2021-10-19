@@ -52,7 +52,7 @@ def do(in_simulation_dir: str, in_topology_path: str, in_imd_path: str,
     control_dict = {
         "fileManagment": {
             "cp_cnf": True,
-            "cat_trc": True,
+            "cat_trc": False,
             "convert_trcs": True,
             "ene_ana": True,
             "cat_tre": True,
@@ -105,7 +105,7 @@ def do(in_simulation_dir: str, in_topology_path: str, in_imd_path: str,
     physical_state_occurrence_treshold = sampling.get_all_physical_occurence_potential_threshold_distribution_based(ene_trajs, _vacuum_simulation=vacuum_simulation)
 
     sampling.sampling_analysis(out_path=out_analysis_plot_dir, ene_traj_csvs=ene_trajs, s_values=s_values,
-                                state_potential_treshold=physical_state_occurrence_treshold)
+                                state_potential_treshold=physical_state_occurrence_treshold, eoffs=[0 for _ in range(numstates)])
 
     # Plot of all of the potential energy distributions in a single plot:
     reeds.function_libs.visualization.pot_energy_plots.plot_optimized_states_potential_energies(outfile=out_analysis_plot_dir + "/optimized_states_potential_energies.png",
@@ -167,16 +167,3 @@ def do(in_simulation_dir: str, in_topology_path: str, in_imd_path: str,
 
 
 
-
-
-if __name__ == "__main__":
-    states = 2
-    base_dir = "/home/bschroed/Projects/REEDS/systems/BRD4/water/2_ligands/test_ana_optstr"
-    sim_dir = base_dir + "/simulation"
-    gromos_path = "/home/bschroed/gromos/reeds_gromos_bschroed_AmberFF_CG/gromosPP/bin"
-    ene_ana_lib = "/home/bschroed/code/reeds/gromos_files/ene_ana_libs/ene_ana_REEDS_7state.md++.lib"
-    tre_prefix = "2_ligs_4MR3_3U5L_work"
-    ana_dir = base_dir + "/analysis"
-
-    do(out_analysis_dir=base_dir + "/analysis", in_simulation_dir=sim_dir, in_ene_ana_lib=ene_ana_lib,
-       gromosPP_bin=gromos_path, numstates=states)

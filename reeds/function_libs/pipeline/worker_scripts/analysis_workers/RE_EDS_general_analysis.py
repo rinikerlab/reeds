@@ -1,20 +1,20 @@
 import os, glob, warnings
 import numpy as np
-
 from collections import OrderedDict
 from typing import Union, Dict, List
 
 from pygromos.files import imd, repdat
 from pygromos.utils import bash
 
-import reeds.function_libs.analysis.free_energy
-import reeds.function_libs.analysis.parameter_optimization
-import reeds.function_libs.analysis.sampling as sampling_ana
-import reeds.function_libs.optimization.eds_energy_offsets as eds_energy_offsets
-import reeds.function_libs.analysis.replica_exchanges as repex
+from reeds.function_libs.analysis import free_energy
+from reeds.function_libs.analysis import parameter_optimization
+from reeds.function_libs.analysis import sampling as sampling_ana
+from reeds.function_libs.optimization import eds_energy_offsets as eds_energy_offsets
+from reeds.function_libs.optimization.eds_eoff_rebalancing import rebalance_eoffs_directCounting
+from reeds.function_libs.analysis import replica_exchanges as repex
 
-import reeds.function_libs.visualization.pot_energy_plots
-import reeds.function_libs.visualization.re_plots as re_plots
+from reeds.function_libs.visualization import pot_energy_plots
+from reeds.function_libs.visualization import re_plots as re_plots
 
 from reeds.function_libs.file_management import file_management
 from reeds.function_libs.file_management.file_management import parse_csv_energy_trajectories
@@ -25,7 +25,7 @@ template_control_dict = OrderedDict({  # this dictionary is controlling the post
     "concat": {"do": True,
                "sub": {
                    "cp_cnf": True,
-                   "cat_trc": True,
+                   "cat_trc": False,
                    "cat_tre": False,
                    "ene_ana": True,
                    "convert_trcs": False,
@@ -45,8 +45,10 @@ template_control_dict = OrderedDict({  # this dictionary is controlling the post
                                  },
     "eoffset": {"do": True,
                 "sub": {
-                    "calc_eoff": True,
-                    "sampling_plot": True, }
+                    "eoff_estimation": True,
+                    "sampling_plot": True,
+                    "eoffset_rebalancing": False,
+                }
                 },
     "sopt": {"do": True,
              "sub": {
@@ -64,7 +66,8 @@ template_control_dict = OrderedDict({  # this dictionary is controlling the post
     "prepare_input_folder": {"do": True,
                              "sub": {
                                  "eoff_to_sopt": False,
-                                 "write_eoff": False,
+                                 "write_eoffRB": False,
+                                 "write_eoffEstm": False,
                                  "write_s": True
                              },
                              }
@@ -164,6 +167,8 @@ def do_Reeds_analysis(in_folder: str, out_folder: str, gromos_path: str,
                       undersampling_frac_thresh: float = 0.9,
                       add_s_vals: int = 0, state_weights: List[float]=None, s_opt_trial_range:int=None,
                       adding_new_sReplicas_Scheme: adding_Scheme_new_Replicas = adding_Scheme_new_Replicas.from_below,
+                      eoffRebalancing_learningFactor: float = None, eoffRebalancing_pseudocount: float = None,
+                      eoffRebalancing_correctionPerReplica: bool = False,
                       grom_file_prefix: str = "test", title_prefix: str = "test", ene_ana_prefix="ey_sx.dat",
                       repdat_prefix: str = "run_repdat.dat",
                       n_processors: int = 1, verbose=False, dfmult_all_replicas=False,
@@ -324,14 +329,14 @@ def do_Reeds_analysis(in_folder: str, out_folder: str, gromos_path: str,
             if (verbose): print("\n\tPlotting end state potential energy distributions (by state)\n")        
             for state_num in range(1, num_states+1):
                 outfile = plot_folder_path + '/' + title_prefix + '_pot_ene_state_' + str(state_num) + '.png'
-                reeds.function_libs.visualization.pot_energy_plots.plot_energy_distribution_by_state(energy_trajectories, outfile, state_num, s_values,
+                pot_energy_plots.plot_energy_distribution_by_state(energy_trajectories, outfile, state_num, s_values,
                                                                                                      manual_xlim = None, shared_xaxis = True)
         
         if sub_control["pot_ene_by_replica"]:
             if (verbose): print("\n\tPlotting end state potential energy distributions (by replica)\n")
             for replica_num in range(1, len(energy_trajectories) + 1):
                 outfile =  plot_folder_path + '/' + title_prefix + '_pot_ene_replica_' + str(replica_num) + '.png'
-                reeds.function_libs.visualization.pot_energy_plots.plot_energy_distribution_by_replica(energy_trajectories[replica_num - 1], outfile,
+                pot_energy_plots.plot_energy_distribution_by_replica(energy_trajectories[replica_num - 1], outfile,
                                                                                                        replica_num, s_values[replica_num-1],
                                                                                                        manual_xlim = None, shared_xaxis = True)
         
@@ -342,14 +347,14 @@ def do_Reeds_analysis(in_folder: str, out_folder: str, gromos_path: str,
         for i, ene_traj in enumerate(energy_trajectories):
             if sub_control["pot_ene_timeseries"]:
                 out_path = plot_folder_path + "/edsState_potential_timeseries_" + str(ene_traj.s) + ".png"
-                reeds.function_libs.visualization.pot_energy_plots.plot_potential_timeseries(time=ene_traj.time, potentials=ene_traj[singleStates],
+                pot_energy_plots.plot_potential_timeseries(time=ene_traj.time, potentials=ene_traj[singleStates],
                                                                                              y_range=(-1000, 1000), title="EDS_stateV_scatter",
                                                                                              out_path=out_path)
              
             if sub_control["pot_ene_grid_timeseries"]:
                 out_path = plot_folder_path + '/' + title_prefix + '_pot_ene_timeseries_' + str(i+1) + '.png'
                 title = title_prefix + ' potential energy timeseries - s = ' + str(s_values[i])
-                reeds.function_libs.visualization.pot_energy_plots.plot_sampling_grid(traj_data = ene_traj, y_range=(-1000, 1000), out_path=out_path, 
+                pot_energy_plots.plot_sampling_grid(traj_data = ene_traj, y_range=(-1000, 1000), out_path=out_path,
                                                                                         title=title, sampling_thresholds = state_physical_occurrence_potential_threshold,
                                                                                         undersampling_thresholds = state_undersampling_occurrence_potential_threshold)
 
@@ -357,11 +362,11 @@ def do_Reeds_analysis(in_folder: str, out_folder: str, gromos_path: str,
 
         if sub_control["ref_timeseries"]:
             outfile = plot_folder_path + '/' + title_prefix + '_ref_pot_ene_timeseries.png'
-            reeds.function_libs.visualization.pot_energy_plots.plot_ref_pot_ene_timeseries(energy_trajectories, outfile, s_values)
+            pot_energy_plots.plot_ref_pot_ene_timeseries(energy_trajectories, outfile, s_values)
 
         if sub_control["ref_distrib"]:
             outfile = plot_folder_path + '/' + title_prefix + '_ref_pot_ene_distrib.png'
-            reeds.function_libs.visualization.pot_energy_plots.plot_ref_pot_energy_distribution(energy_trajectories, outfile, s_values)
+            pot_energy_plots.plot_ref_pot_energy_distribution(energy_trajectories, outfile, s_values)
             
         if (sub_control["distance_restraints"]):
             if (verbose): print("\tPLOT Disres_bias timeseries:\n")
@@ -370,7 +375,7 @@ def do_Reeds_analysis(in_folder: str, out_folder: str, gromos_path: str,
                 out_path = plot_folder_path + "/distance_restraints_" + str(ene_traj.s) + ".png"
                 singleStates = ["totdisres"]
 
-                reeds.function_libs.visualization.pot_energy_plots.plot_potential_timeseries(time=ene_traj["time"], potentials=ene_traj[singleStates],
+                pot_energy_plots.plot_potential_timeseries(time=ene_traj["time"], potentials=ene_traj[singleStates],
                                                                                              title="EDS disres Potential s" + str(ene_traj.s), y_label="E/[kj/mol]",
                                                                                              x_label="t/[ps]",
                                                                                              out_path=out_path)
@@ -379,22 +384,38 @@ def do_Reeds_analysis(in_folder: str, out_folder: str, gromos_path: str,
             print("\tPLOT temperature 2D histogram:\t")
 
             if (isinstance(imd_file.MULTIBATH, type(None)) and not isinstance(imd_file.STOCHDYN, type(None))):
-                reeds.function_libs.visualization.pot_energy_plots.plot_replicaEnsemble_property_2D(ene_trajs=energy_trajectories,
+                pot_energy_plots.plot_replicaEnsemble_property_2D(ene_trajs=energy_trajectories,
                                                                                                     out_path=plot_folder_path + "/temperature_heatMap.png",
                                                                                                     temperature_property="solutemp2")
 
             elif (not isinstance(imd_file.MULTIBATH, type(None)) and imd_file.MULTIBATH.NBATHS == 1):
-                reeds.function_libs.visualization.pot_energy_plots.plot_replicaEnsemble_property_2D(ene_trajs=energy_trajectories,
+                pot_energy_plots.plot_replicaEnsemble_property_2D(ene_trajs=energy_trajectories,
                                                                                                     out_path=plot_folder_path + "/temperature_heatMap.png",
                                                                                                     temperature_property="solutemp2")
                 
             else:
-                reeds.function_libs.visualization.pot_energy_plots.plot_replicaEnsemble_property_2D(ene_trajs=energy_trajectories,
+                pot_energy_plots.plot_replicaEnsemble_property_2D(ene_trajs=energy_trajectories,
                                                                                                     out_path=plot_folder_path + "/temperature_heatMap.png",
                                                                                                     temperature_property="solvtemp2")
 
             if (verbose): print("DONE\n")
         # del energy_trajectories -- remove if memory without this is fine
+
+    if (control_dict["phys_sampling"]["do"] and not state_physical_occurrence_potential_threshold is None):
+        # parsing_ene_traj_csvs 
+        if energy_trajectories is None:
+            energy_trajectories = parse_csv_energy_trajectories(concat_file_folder, ene_trajs_prefix)
+     
+        out_dir = bash.make_folder(out_folder + "/state_sampling")
+
+        (sampling_results, out_dir) = sampling_ana.sampling_analysis(out_path=out_dir,
+                                                                     ene_traj_csvs=energy_trajectories,
+                                                                     eoffs=Eoff,
+                                                                     s_values=s_values,
+                                                                     state_potential_treshold=state_physical_occurrence_potential_threshold)
+    elif(control_dict["phys_sampling"]["do"]):
+        warnings.warn("DID NOT do physical sampling analysis, as state_physical_occurrence_potential_threshold was None!")
+
 
     if (control_dict["eoffset"]["do"]):
         print("Start Eoffset")
@@ -410,20 +431,32 @@ def do_Reeds_analysis(in_folder: str, out_folder: str, gromos_path: str,
         
         # plot if states are sampled and minimal state
         (sampling_results, out_dir) = sampling_ana.detect_undersampling(out_path = out_dir, ene_traj_csvs = energy_trajectories,_visualize=sub_control["sampling_plot"], 
-                                                                            s_values = s_values, state_potential_treshold= state_undersampling_occurrence_potential_threshold, 
+                                                                            s_values = s_values, eoffs=Eoff, 
+                                                                            state_potential_treshold= state_undersampling_occurrence_potential_threshold, 
                                                                             undersampling_occurence_sampling_tresh=undersampling_frac_thresh)
-        if (sub_control["calc_eoff"]):
+        if(sub_control["eoff_estimation"] and sub_control["eoffset_rebalancing"]):
+            raise Exception("can not have eoff_estimation and eoff Rebalancing turned on at the same time!")
+
+        elif (sub_control["eoff_estimation"]):
             print("calc Eoff: ")
             # WARNING ASSUMPTION THAT ALL EOFF VECTORS ARE THE SAME!
             print("\tEoffs(" + str(len(Eoff[0])) + "): ", Eoff[0])
             print("\tS_values(" + str(len(s_values)) + "): ", s_values)
             print("\tsytsemTemp: ", temp)
             # set trim_beg to 0.1 when analysing non equilibrated data
-	    # Decrement the value of undersampling_idx by 1. As indexing followed a different convention. 
-            new_eoffs, all_eoffs = eds_energy_offsets.estimate_energy_offsets(ene_trajs = energy_trajectories, initial_offsets = Eoff[0], sampling_stat=sampling_results, s_values = s_values,
+
+            # Decrement the value of undersampling_idx by 1. As indexing followed a different convention. 
+            new_eoffs_estm, all_eoffs = eds_energy_offsets.estimate_energy_offsets(ene_trajs = energy_trajectories, initial_offsets = Eoff[0], sampling_stat=sampling_results, s_values = s_values,
                                                                               out_path = out_dir, temp = temp, trim_beg = 0., undersampling_idx = sampling_results['undersamplingThreshold']-1,
-                                                                              plot_results = True, calc_clara = False)
-            print("ENERGY OFF: ", new_eoffs, all_eoffs) 
+
+                                                        plot_results = True, calc_clara = False)
+            print("ENERGY OFF: ", new_eoffs_estm, all_eoffs)
+        elif(sub_control["eoffset_rebalancing"]):
+            new_eoffs_rb = rebalance_eoffs_directCounting(sampling_stat=sampling_results['samplingDistributions'], old_eoffs=Eoff,
+                                                       learningFactor=eoffRebalancing_learningFactor, pseudo_count=eoffRebalancing_pseudocount,
+                                                       correct_for_s1_only=not eoffRebalancing_correctionPerReplica)
+            new_eoffs_rb = new_eoffs_rb.T
+            
         if (verbose): print("Done\n")
 
     if (control_dict["sopt"]["do"]):
@@ -443,15 +476,16 @@ def do_Reeds_analysis(in_folder: str, out_folder: str, gromos_path: str,
         if (sub_control["run_RTO"]):
             print("Start Sopt\n")
             print("repdat_in_file: ", in_file, "\n")
-            svals = reeds.function_libs.analysis.parameter_optimization.optimize_s(in_file=in_file, out_dir=out_dir,
+            svals = parameter_optimization.optimize_s(in_file=in_file, out_dir=out_dir,
                                                                                    title_prefix="s_opt", in_imd=in_imd,
                                                                                    add_s_vals=add_s_vals, trial_range=s_opt_trial_range,
                                                                                    state_weights=state_weights,
                                                                                    run_NLRTO=sub_control["run_NLRTO"], run_NGRTO=sub_control["run_NGRTO"],
                                                                                    verbose=verbose)
+
         if (sub_control["visualize_transitions"]):
             print("\t\tvisualize transitions")
-            reeds.function_libs.analysis.parameter_optimization.get_s_optimization_transitions(out_dir=out_dir, rep_dat=in_file, title_prefix=title_prefix)
+            parameter_optimization.get_s_optimization_transitions(out_dir=out_dir, rep_dat=in_file, title_prefix=title_prefix)
             re_plots.plot_exchange_freq(s_values, exchange_freq, outfile = out_dir + '/exchange_frequencies.png')            
 
         if (sub_control["roundtrips"] and sub_control["run_RTO"]):
@@ -469,21 +503,7 @@ def do_Reeds_analysis(in_folder: str, out_folder: str, gromos_path: str,
                                                     data=trans_dict, title=title_prefix, s_values=s_values)
 
         if (verbose): print("Done\n")
-
-    if (control_dict["phys_sampling"]["do"] and not state_physical_occurrence_potential_threshold is None):
-        # parsing_ene_traj_csvs 
-        if energy_trajectories is None:
-            energy_trajectories = parse_csv_energy_trajectories(concat_file_folder, ene_trajs_prefix)
-     
-        out_dir = bash.make_folder(out_folder + "/state_sampling")
-
-        (sampling_results, out_dir) = sampling_ana.sampling_analysis(out_path=out_dir,
-                                                                     ene_traj_csvs=energy_trajectories,
-                                                                     s_values=s_values,
-                                                                     state_potential_treshold=state_physical_occurrence_potential_threshold)
-    elif(control_dict["phys_sampling"]["do"]):
-        warnings.warn("DID NOT do physical sampling analysis, as state_physical_occurrence_potential_threshold was None!")
-
+    
     if (control_dict["dfmult"]["do"]):
         print("Start Dfmult")
 
@@ -495,7 +515,7 @@ def do_Reeds_analysis(in_folder: str, out_folder: str, gromos_path: str,
         if energy_trajectories is None:
             energy_trajectories = parse_csv_energy_trajectories(concat_file_folder, ene_trajs_prefix)
 
-        reeds.function_libs.analysis.free_energy.free_energy_convergence_analysis(ene_ana_trajs=energy_trajectories, out_dir=dfmult_convergence_folder,
+        free_energy.free_energy_convergence_analysis(ene_ana_trajs=energy_trajectories, out_dir=dfmult_convergence_folder,
                                                                                   out_prefix=title_prefix, in_prefix=ene_trajs_prefix, verbose=verbose,
                                                                                   dfmult_all_replicas=dfmult_all_replicas)
 
@@ -523,13 +543,25 @@ def do_Reeds_analysis(in_folder: str, out_folder: str, gromos_path: str,
         print("svalues var", s_values)
         input_cnfs = os.path.dirname(in_imd) + "/coord"
         print("svals", svals)
-            
-        print("nsvals:")
-        print(len(svals[0]), len(svals[1]), len(svals[2]))
-        # Put the proper cnfs in place        
-        sopt_type_switch = 2 if(svals[1] is None or len(svals[1]) == 0 ) else 1
+           
+        #CLEAN!
+        #print("nsvals:")
+        #print(len(svals[0]), len(svals[1]), len(svals[2]))
+        # Pu the proper cnfs in place        
+        if(len(svals)==0):
+            sopt_type_switch = 0
+        else:    
+            sopt_type_switch = 2 if(svals[1] is None or len(svals[1]) == 0 ) else 1
         print("Switch", sopt_type_switch)
-        if (sub_control["eoff_to_sopt"]):
+        if(len(svals)==0):
+            svals = {0:s_values}
+            sopt_type_switch = 0
+            cnfs = list(sorted(glob.glob(concat_file_folder+"/*.cnf"), key=lambda x: int(x.split("_")[-1].split(".")[0])))
+            for i, cnf in enumerate(cnfs):
+                bash.copy_file(cnf, next_dir+"/"+title_prefix+"_"+str(i+1)+".cnf")
+
+
+        elif (sub_control["eoff_to_sopt"]):
             if (not os.path.isdir(optimized_eds_state_folder)):
                 raise IOError("Could not find optimized state output dir: " + optimized_eds_state_folder)
             
@@ -567,17 +599,23 @@ def do_Reeds_analysis(in_folder: str, out_folder: str, gromos_path: str,
 
         else:
             if verbose: print("same ammount of s_vals -> simply copying output:")
-            bash.copy_file(concat_file_folder + "/*cnf", next_dir)
+            cnfs = list(sorted(glob.glob(concat_file_folder+"/*.cnf"), key=lambda x: int(x.split("_")[-1].split(".")[0])))
+            for i, cnf in enumerate(cnfs):
+                bash.copy_file(cnf, next_dir+"/"+title_prefix+"_"+str(i+1)+".cnf")
 
         # write next_imd.
         print("write out imd file ")
         imd_file = imd.Imd(in_imd)
 
-        ##New EnergyOffsets?
-        if sub_control["write_eoff"] and control_dict["eoffset"]:
-            imd_file.edit_REEDS(EIR=np.round(new_eoffs, 2))
-        elif (sub_control["write_eoff"] and not control_dict["Eoff"]["sub"]["calc_eoff"]):
-            warnings.warn("Could not set Eoffs to imd, as not calculated in this run!")
+        ##New EnergyOffsets
+        if(sub_control["write_eoffRB"] and sub_control["write_eoffEstm"]):
+            raise Exception("can not write eoffRB and eoffEstm in new imd!")
+        elif sub_control["write_eoffRB"] and control_dict["eoffset"]["do"] and control_dict['eoffset']['sub']['eoffset_rebalancing']:
+            imd_file.edit_REEDS(EIR=new_eoffs_rb)
+        elif sub_control["write_eoffEstm"] and control_dict["eoffset"]["do"] and control_dict['eoffset']['sub']['eoff_estimation']:
+            imd_file.edit_REEDS(EIR=new_eoffs_estm)
+        elif ((sub_control["write_eoffRB"] or sub_control["write_eoffEstm"]) and not control_dict["Eoff"]["do"] and not (control_dict['eoffset']['sub']['eoff_estimation'] or control_dict['eoffset']['sub']['eoffset_rebalancing'])):
+            raise Exception("can not write eoffRB or eoffEstm as no eoff step chosen active!")
 
         ##New S-Values?=
         if (sub_control["write_s"] and control_dict["sopt"]["sub"]["run_RTO"]) or sub_control["eoff_to_sopt"]:

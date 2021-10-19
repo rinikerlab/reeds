@@ -577,7 +577,7 @@ class _RTOptimizer():
                 new_s_dist += s_values
                 replicas_to_add -= tmp_add_replicas
                 bucket_index = (len(self._replica_position_flow_list_opt) - 1) - 1 - index
-                for x in range(int(tmp_add_replicas)):
+                for _ in range(int(tmp_add_replicas)):
                     self._add_dummy_replica_to_intervall(bucket_index)
                 area = tmp_rest_area
 

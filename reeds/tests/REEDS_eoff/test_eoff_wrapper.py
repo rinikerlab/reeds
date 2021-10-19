@@ -140,6 +140,7 @@ class test_Eoff_wrapper(unittest.TestCase):
         (sampling_results, out_dir) = sampling_ana.detect_undersampling(out_path="",
                                                                         ene_traj_csvs=ene_ana_trajs,
                                                                         s_values=s_values,
+                                                                        eoffs = init_Eoff,
                                                                         state_potential_treshold=sampling_stat['state_undersampling_potTresh'],
                                                                         _visualize=False,
                                                                         undersampling_occurence_sampling_tresh=sampling_stat['undersampling_occurence_sampling_tresh'])
@@ -165,6 +166,7 @@ class test_Eoff_wrapper(unittest.TestCase):
         (sampling_results, out_dir) = sampling_ana.detect_undersampling(out_path="",
                                                                         ene_traj_csvs=ene_ana_trajs,
                                                                         s_values=s_values,
+                                                                        eoffs=init_Eoff,
                                                                         state_potential_treshold=sampling_stat['state_undersampling_potTresh'],
                                                                         _visualize=False,
                                                                         undersampling_occurence_sampling_tresh=sampling_stat['undersampling_occurence_sampling_tresh'])

@@ -143,13 +143,13 @@ def visualization_s_optimization_summary(s_opt_data: dict,
 
     x_svalues = []
     y_svalues = []
-    print(s_opt_data)
+    
     bar_heights = []
     bar_x = []
     for it in sorted(s_opt_data):
         opti = s_opt_data[it]
-        x.append(it.replace('sopt', ""))
-        y_nRT.append(opti['nRoundTrips'])
+        x.append(it.replace('sopt', "").replace("eoffRB", ""))
+        y_nRT.append(opti['avg_nRoundtripsPerNs'])
 
         # dirty helper. not needed in future! TODO: remove
         roundTripTimeavg = 3333333 if (np.nan_to_num(opti['avg_rountrip_durations']) == 0) else np.nan_to_num(
@@ -157,19 +157,19 @@ def visualization_s_optimization_summary(s_opt_data: dict,
         y_RTd.append(roundTripTimeavg)
 
         x_svalues.extend(opti["s_values"])
-        y_svalues.extend([int(it.replace('sopt', "")) for x in range(len(opti["s_values"]))])
-
-        bar_heights.append([opti["state_domination_sampling"][state] for state in opti["state_domination_sampling"]])
+        y_svalues.extend([int(it.replace('sopt', "").replace("eoffRB", "")) for x in range(len(opti["s_values"]))])
+        
+        bar_heights.append([opti["state_maxContributing_sampling"][state] for state in opti["state_maxContributing_sampling"]])
         bar_x.append(np.array(
-            [int(state.replace("V", "").replace("r", "").replace("i", "")) for state in opti["state_domination_sampling"]]))
+            [int(state.replace("V", "").replace("r", "").replace("i", "")) for state in opti["state_maxContributing_sampling"]]))
 
     y_RTd = np.array(y_RTd) * 20 * 0.002
     fig, ((ax1, ax2), (ax3, ax4)) = plt.subplots(ncols=2, nrows=2, figsize=ps.figsize_doubleColumn)
 
     ax1.bar(x=x, height=y_nRT, color="dimgray")
-    ax1.set_title("Total Number Of Roundtrips")
-    ax1.set_ylabel("n [1]")
-    ax1.set_xlabel("s-opt iteration")
+    ax1.set_title("Average Number of Roundtrips per ns")
+    ax1.set_ylabel("n$_{avg}^{rt}$ [1 / ns] ")
+    ax1.set_xlabel("iteration")
 
     if (not isinstance(nRT_range, type(None))):
         ax1.set_ylim(nRT_range)
@@ -177,7 +177,7 @@ def visualization_s_optimization_summary(s_opt_data: dict,
     ax2.bar(x=x, height=y_RTd, color="dimgray")
     ax2.set_title("Average Roundtrip Time")
     ax2.set_ylabel("t [ps]")
-    ax2.set_xlabel("s-opt iteration")
+    ax2.set_xlabel("iteration")
 
     if (not isinstance(avRT_range, type(None))):
         ax2.set_ylim(avRT_range)
@@ -246,7 +246,7 @@ def visualization_s_optimization_summary(s_opt_data: dict,
 
 def visualize_s_optimisation_convergence(s_opt_data:dict,
                                          out_path:str=None,
-                                         convergens_radius:int=100) -> Union[str, plt.figure]:
+                                         convergens_radius:int=None) -> Union[str, plt.figure]:
     """visualize_s_optimisation_convergence
     This function visualizes the s-optimization round trip optimization time efficency convergence.
     Ideally the roundtrip time is  reduced by the s-optimization, if the average time converges towards 1ps it is assumed to be converged.
@@ -258,7 +258,7 @@ def visualize_s_optimisation_convergence(s_opt_data:dict,
     out_path : str, optional
         if provided, the plot will be saved here. if not provided, the plot will be shown directly.
     convergens_radius: int, optional
-        default 100
+        if a float is passed, the convergence radius is drawn.
 
     Returns
     -------
@@ -266,27 +266,21 @@ def visualize_s_optimisation_convergence(s_opt_data:dict,
         the outpath is returned if one is given. Alternativley the plot direclty will be returned.
     """
     y_RTd_efficency = []
-    for it in sorted(s_opt_data):
-        if("avg_rountrip_duration_optimization_efficiency" in s_opt_data[it]):
-            y_RTd_efficency.append(s_opt_data[it]["avg_rountrip_duration_optimization_efficiency" ])
 
+    for it in sorted(s_opt_data):
+        if("avg_rountrip_durations" in s_opt_data[it]):
+            y_RTd_efficency.append(s_opt_data[it]["avg_rountrip_durations"]/(s_opt_data[it]["nRoundTrips"]/len(s_opt_data[it]["stats_per_replica"])))
     fig, ax = plt.subplots(nrows=1, ncols=1, figsize=ps.figsize_doubleColumn, sharex=True, sharey=True)
 
-    ax.plot(np.nan_to_num(np.log10(y_RTd_efficency)), label="efficiency", c="k")
-    ax.hlines(y=np.log10(convergens_radius), xmin=0, xmax=8, label="$convergence criterium$", color="grey")
+    ax.plot(np.nan_to_num(np.log10(y_RTd_efficency)), c="k")
+    if(convergens_radius is not None): ax.hlines(y=np.log10(convergens_radius), xmin=0, xmax=8, label="$convergence criterium$", color="grey")
 
-
-    ax.set_ylim([-2, 4])
-    ax.set_xlim([0, 7])
     ax.set_xticks(range(len(s_opt_data)-1))
-    ax.set_xticklabels([str(x) + "_" + str(x + 1) for x in range(1, len(s_opt_data))])
-    ax.set_yticks(range(-1, 4))
-    ax.set_yticklabels(range(-1, 4))
+    ax.set_xticklabels([str(x) for x in range(1, 1+len(s_opt_data))])
 
-    ax.set_ylabel("$log(\overline{\\tau_j} - \overline{\\tau_i})$ [ps]")
-    ax.set_xlabel("iteration ij")
-    ax.set_title("AvgRoundtriptime optimization efficiency")
-    ax.legend(fontsize=6)
+    ax.set_ylabel("$log(\overline{\\tau_i}/ (nRT / nR) )$ [ps]")
+    ax.set_xlabel("iteration i")
+    ax.set_title("avg. roundtrip time optimization")
 
     fig.tight_layout()
     fig.subplots_adjust(wspace=0.0, hspace=0)

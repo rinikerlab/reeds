@@ -42,6 +42,7 @@ def do(out_root_dir: str, in_simSystem: fM.System, in_ene_ana_lib: str,
        initialize_first_run: bool = True, reinitialize: bool = False, randomize: bool=False,
        do_not_doubly_submit_to_queue: bool = True,
        single_bath: bool = False,
+       memory: str = None,
        verbose: bool = True):
     """do Energy Offsets estimation
 
@@ -104,6 +105,8 @@ do_not_doubly_submit_to_queue : bool, optional
     Check if there is already a job with this name, do not submit if true.
 single_bath : bool, optional
     only use a single MULTIBATH (i.e. NBATHS = 1)
+memory : str, optional
+    how much memory to reserve for submission
 verbose
     I can be very talkative, you know...
 
@@ -126,7 +129,7 @@ int
         coordinate_dir = input_dir + "/coord"
         out_dir_path = out_root_dir + "/simulation"
         in_imd_path = input_dir + "/repex_eoff.imd"
-        lower_s_bound_dir = os.path.dirname(simSystem.coordinates[0])
+        lower_s_bound_dir = os.path.dirname(sval_file)
         analysis_dir = out_root_dir + "/analysis"
         if (verbose): print("Generating Folders")
 
@@ -202,13 +205,16 @@ int
         control_dict = {
             "eoffset": {"do": True,
                 "sub": {
-                    "calc_eoff": True,
-                    "sampling_plot": True, }
+                    "eoff_estimation": True,
+                    "sampling_plot": True,
+                    "eoffset_rebalancing": False,
+                }
                  },
             "prepare_input_folder": {"do": True,
                  "sub": {
                      "eoff_to_sopt": True,
-                     "write_eoff": True,
+                     "write_eoffRB": False,
+                     "write_eoffEstm": True,
                      "write_s": False
                  },
             }
@@ -290,6 +296,7 @@ int
                                                                   do_not_doubly_submit_to_queue=do_not_doubly_submit_to_queue,
                                                                   initialize_first_run=initialize_first_run,
                                                                   reinitialize=reinitialize,
+                                                                  memory = memory,
                                                                   verbose=verbose)
 
         else:
