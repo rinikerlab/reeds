@@ -102,7 +102,7 @@ def work(out_dir: str, in_coord: str, in_imd_path: str, in_topo_path: str, in_pe
             if(not in_disres_path is None):
                 key_args.update({"in_disres_path": in_disres_path})
             elif(not (in_posres_path is None or in_refpos_path is None)):
-                key_args.update({"in_posres_path": in_posres_path,
+                key_args.update({"in_posresspec_path": in_posres_path,
                                  "in_refpos_path": in_refpos_path})
             else:
                 raise ValueError("Are you really sure you want to run without restraints?")
@@ -149,9 +149,9 @@ if __name__ == "__main__":
     parser.add_argument('-in_top', type=str, required=True, help="give input .top - file.")
     parser.add_argument('-in_coord', type=str, required=True, help="give input coordinates .cnf file.")
     parser.add_argument('-in_perttop', type=str, required=True, help="give input pertubation topology.")
-    parser.add_argument('-in_disres', type=str, required=False, default=False, help="give input distance restraints.")
-    parser.add_argument('-in_posres', type=str, required=False, default=False, help="give input for position restraints.")
-    parser.add_argument('-in_refpos', type=str, required=False, default=False, help="give input for reference positoins.")
+    parser.add_argument('-in_disres', type=str, required=False, default=None, help="give input distance restraints.")
+    parser.add_argument('-in_posres', type=str, required=False, default=None, help="give input for position restraints.")
+    parser.add_argument('-in_refpos', type=str, required=False, default=None, help="give input for reference positoins.")
 
     parser.add_argument('-out_dir', required=True, default=None, help="where to final store the Files?.")
     parser.add_argument('-work_dir', required=False, default=None, help="where to work? Default on node.")
