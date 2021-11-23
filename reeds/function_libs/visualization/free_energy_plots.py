@@ -50,7 +50,7 @@ def plot_dF_conv(dF_timewise : dict,
         dF = [x["mean"] for x in data.values()]
         err = [x["err"] for x in data.values()]
 
-        # recenter to 0, from the values of the last 5 elements.
+        # recenter to 0, from the values of the last element.
         dF_recentered = [i - dF[-1] for i in dF]
 
         last_dF.append(dF[-1])
@@ -81,10 +81,12 @@ def plot_dF_conv(dF_timewise : dict,
     axes[1].set_title('Free Energy Convergence (recentered)')
     axes[1].set_xlabel("time [ns]")
 
-    if (show_legend): axes[0].legend(fontsize=8, loc='upper right', title='Pair A-B:', ncol=2, edgecolor='black')
-    if (show_legend): axes[1].legend(fontsize=8, loc='upper right', title='Pair A-B:', ncol=2, edgecolor='black')
-
     fig.suptitle(title)
+    fig.tight_layout()
+    
+    #if (show_legend): axes[0].legend(fontsize=8, loc='upper right', title='Pair A-B:', ncol=2, edgecolor='black')
+    if (show_legend): axes[1].legend(fontsize=8, loc='upper right', title='Pair A-B:', ncol=4, edgecolor='black')
+    
     fig.savefig(out_path + ".png")
     plt.close(fig)
 
