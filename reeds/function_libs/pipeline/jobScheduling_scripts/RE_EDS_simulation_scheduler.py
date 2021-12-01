@@ -127,9 +127,16 @@ int
         # all Files present?
         if (verbose): print("in: " + str(prepared_imd))
         check_path_warn_paths = []
-        check_path_dependencies_paths = [slave_script, simSystem.top.top_path, simSystem.top.disres_path,
+        check_path_dependencies_paths = [slave_script, simSystem.top.top_path, 
                                          simSystem.top.pertubation_path,
                                          out_dir_path, ]  # Coord file is used by repex in_imd_path prepared_imd
+              
+        # accounting for the different types of restraint used:
+        if(not simSystem.top.disres_path is None):
+              check_path_dependencies_paths.append(simSystem.top.disres_path)
+        if(not (simSystem.top.refpos_path is None and imSystem.top.posres_path is None)):
+              check_path_dependencies_paths.append(simSystem.top.posres_path)
+              check_path_dependencies_paths.append(simSystem.top.refpos_path)
 
         # optional paths
         if (not isinstance(work_dir, type(None)) and work_dir != "None"):
