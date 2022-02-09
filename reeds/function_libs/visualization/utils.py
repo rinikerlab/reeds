@@ -252,3 +252,57 @@ def discard_high_energy_points(pot_i:List[float],
         list of energies below the threshold
     """
     return [e for e in pot_i if e < threshold]
+
+def determine_vrange(traj_data, num_states, tight:bool = False):
+    """
+    This functions allows use to determine the range of potential energy 
+    values we will use in our plots!
+
+    It determines this by looking at the minimum for each state of each 
+    of the siulations (either the RE-EDS replicas, or the independent parallel EDS
+    simulations in the pipelines first steps).
+    
+    Parameters
+    ----------
+    traj_data : List[pd.DataFrame]
+        list of potential energies dataframes for each state
+    num_states: int 
+        Number of different end states in the EDS simulation.
+    tight: bool
+        If true, will also set a maximum close to the minimum found
+
+    Returns
+    -------
+    List[float]
+        list of energies below the threshold
+    """
+
+    v_max = 1000 # Manually defined
+    current_min = 1000
+
+    # 1: Find minimum energy value 
+
+    for sub_traj in traj_data:
+        for i in range(1, num_states+1):
+            tmp_min = np.min(sub_traj['e'+str(i)])
+            if current_min > tmp_min:
+                current_min = tmp_min
+
+    # 2: To make it look nicer, compare this minimum 
+    # with a set of predefined values. 
+    # These can of course be changed if the minimum is below that value.
+    # or if we want tighter possibilities. 
+    
+    increment = 500
+
+    predetermined_mins = np.arange(-5000, 1, increment)
+    use_lower_lim = predetermined_mins[0]
+
+    for v in predetermined_mins:
+        if current_min < v: break
+        use_lower_lim = v
+
+    # Return upper and lower values to use.
+    if tight: return [use_lower_lim, use_lower_lim+increment]
+   
+    return [use_lower_lim, v_max]

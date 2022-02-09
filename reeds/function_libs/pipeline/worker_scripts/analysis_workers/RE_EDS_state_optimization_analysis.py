@@ -12,6 +12,7 @@ from reeds.data import ene_ana_libs
 from reeds.function_libs.file_management import file_management as fM
 from reeds.function_libs.analysis import sampling
 
+from reeds.function_libs.visualization.utils import determine_vrange
 
 def do(in_simulation_dir: str, in_topology_path: str, in_imd_path: str,
        out_analysis_dir: str,
@@ -53,12 +54,12 @@ def do(in_simulation_dir: str, in_topology_path: str, in_imd_path: str,
         "fileManagment": {
             "cp_cnf": True,
             "cat_trc": False,
-            "convert_trcs": True,
+            "convert_trcs": False,
             "ene_ana": True,
             "cat_tre": True,
         },
         "plots": True,
-        "compress": True,
+        "compress": False,
         "plot_timeseries": True,
         "plot_grid_timeseries": True,
         "plot_ref_timeseries": True,
@@ -120,21 +121,22 @@ def do(in_simulation_dir: str, in_topology_path: str, in_imd_path: str,
         reeds.function_libs.visualization.pot_energy_plots.plot_ref_pot_energy_distribution(ene_trajs, outfile, s_values=[], optimized_state = True)
 
     # do visualisation pot energies
-
+    
     num_states = len(ene_trajs)
+    v_range = determine_vrange(ene_trajs, num_states)
 
     for i, ene_traj in enumerate(ene_trajs):
         singleStates = ['e' + str(i) for i in range(1, num_states+1)]
 
         if control_dict["plot_timeseries"]:
             reeds.function_libs.visualization.pot_energy_plots.plot_potential_timeseries(time = ene_traj.time, potentials = ene_traj[singleStates],
-                                                                                         y_range = (-1000, 1000), title = "EDS_stateV_scatter",
+                                                                                         y_range = v_range, title = "EDS_stateV_scatter",
                                                                                          out_path = out_analysis_plot_dir + "/edsState_potential_timeseries_"
                                                      + str(ene_traj.s) + ".png")
         if control_dict["plot_grid_timeseries"]:
             out_path = out_analysis_plot_dir + "/edsState_potential_timeseries_stageGrid_" + str(ene_traj.s) + ".png"
             title = 'Optimized State potential energy timeseries - System biased to state ' + str(i+1)
-            reeds.function_libs.visualization.pot_energy_plots.plot_sampling_grid(traj_data = ene_traj, y_range = (-1000, 1000),
+            reeds.function_libs.visualization.pot_energy_plots.plot_sampling_grid(traj_data = ene_traj, y_range = v_range,
                                                                                   out_path = out_path, title = title)
 
 
