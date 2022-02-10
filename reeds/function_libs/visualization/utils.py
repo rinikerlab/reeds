@@ -275,8 +275,8 @@ def determine_vrange(traj_data, num_states, tight:bool = False):
 
     Returns
     -------
-    List[float]
-        list of energies below the threshold
+    [float, float]
+        Upper and lower limits to use in plots
     """
     
     increment = 250
