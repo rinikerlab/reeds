@@ -3,6 +3,8 @@ from typing import List
 import numpy as np
 import pandas as pd
 
+from copy import deepcopy
+
 from reeds.function_libs.visualization import plots_style as ps
 
 def nice_s_vals(svals: list,
@@ -276,33 +278,37 @@ def determine_vrange(traj_data, num_states, tight:bool = False):
     List[float]
         list of energies below the threshold
     """
-
-    v_max = 1000 # Manually defined
-    current_min = 1000
-
-    # 1: Find minimum energy value 
-
-    for sub_traj in traj_data:
-        for i in range(1, num_states+1):
-            tmp_min = np.min(sub_traj['e'+str(i)])
-            if current_min > tmp_min:
-                current_min = tmp_min
-
-    # 2: To make it look nicer, compare this minimum 
-    # with a set of predefined values. 
-    # These can of course be changed if the minimum is below that value.
-    # or if we want tighter possibilities. 
     
-    increment = 500
+    increment = 250
+    v_max = 1000 # Manually defined for non-tight plots
 
-    predetermined_mins = np.arange(-5000, 1, increment)
-    use_lower_lim = predetermined_mins[0]
+    predetermined_mins = np.arange(-5000, v_max+1, increment)
+    
+    lower_lim = predetermined_mins[-1]
+    upper_lim = predetermined_mins[0]
+    
+    all_vs = np.array([])    
+ 
+    for i, sub_traj in enumerate(traj_data):
+        
+        # Get lower 95 of all data and append to all_vs
+        n = np.size(sub_traj['e'+str(i+1)])        
+        tmp_traj = sorted(deepcopy(sub_traj['e'+str(i+1)]))[:int(0.95*n)]
+        all_vs = np.append(all_vs, tmp_traj)
+        
 
-    for v in predetermined_mins:
-        if current_min < v: break
-        use_lower_lim = v
+    max_v = np.max(all_vs)
+    min_v = np.min(all_vs)
+    
+    # re-adjust minimum to this value    
+    for v in predetermined_mins:        
+        if min_v < v: break
+        lower_lim = v             
+    
+    for v in predetermined_mins[::-1]:
+        if max_v > v: break
+        upper_lim = v
 
     # Return upper and lower values to use.
-    if tight: return [use_lower_lim, use_lower_lim+increment]
-   
-    return [use_lower_lim, v_max]
+    if tight: return [lower_lim, upper_lim]
+    return [lower_lim, v_max]
