@@ -179,7 +179,9 @@ int
         #else:
         #    workdir = None
         
-        workdir = None
+#        workdir = None
+        # Running localy because of Euler ssh "can't connect" error
+        workdir = out_root_dir + "/local_scratch"
         nmpi = nmpi_per_replica * num_svals
 
         # GENERATE array scripts
