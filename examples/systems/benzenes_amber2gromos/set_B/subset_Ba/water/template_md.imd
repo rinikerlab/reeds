@@ -73,7 +73,7 @@ NONBONDED
 # 	 NLRELE 
  	 1 	  
 # 	 APPAK 	 RCRF 	 EPSRF 	 NSLFEXCL 
- 	 0 	 1.2 	 66.7 	 1 	  
+ 	 0 	 1.2 	 78.5 	 1 	  
 # 	 NSHAPE 	 ASHAPE 	 NA2CLC 	 TOLA2 	 EPSLS 
  	 3 	 1.4 	 2 	 1e-10 	 0 	  
 # 	 NKX 	 NKY 	 NKZ 	 KCUT 
