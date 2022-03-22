@@ -8,6 +8,7 @@ from pygromos.files import imd
 from pygromos.utils import bash
 from reeds.function_libs.analysis.sampling import undersampling_occurence_potential_threshold_distribution_based as find_undersampling_pot_tresh
 
+from reeds.function_libs.visualization.utils import determine_vrange
 
 import reeds.function_libs.analysis.sampling
 import reeds.function_libs.visualization.pot_energy_plots
@@ -21,7 +22,7 @@ from reeds.data import ene_ana_libs
 def do(out_analysis_dir: str, system_name: str,
        in_simulation_dir: str, in_topology_path: str, in_imd_path: str,
        undersampling_occurrence_fraction_threshold: float = 0.9,
-       gromosPP_bin: str = None, final_number_of_replicas : int= None,
+       gromosPP_bin: str = None,
        in_ene_ana_lib: str = ene_ana_libs.ene_ana_lib_path,
        verbose: bool = True):
     """
@@ -133,21 +134,24 @@ def do(out_analysis_dir: str, system_name: str,
     state_undersampling_pot_treshold = find_undersampling_pot_tresh(ene_traj_csvs=ene_trajs, sampling_fraction_treshold = undersampling_occurrence_fraction_threshold)
 
     sampling_analysis_results, out_plot_dirs = reeds.function_libs.analysis.sampling.detect_undersampling(out_path = out_analysis_plot_dir,
-                                                                                                       ene_traj_csvs = ene_trajs, eoffs= [0 for _ in 
-                                                                                                       range(num_states)],
+                                                                                                       ene_traj_csvs = ene_trajs,
                                                                                                        s_values = s_values[:succsessful_sim_count],
                                                                                                        state_potential_treshold=state_undersampling_pot_treshold)
+    
+    v_range = determine_vrange(ene_trajs, num_states) 
 
     # Plotting the different potential energy distributions
     if control_dict["pot_ene_by_state"]:
         for i in range(num_states):
             outfile = out_analysis_plot_dir + '/' + system_name + '_pot_ene_state_' + str(i+1) + '.png'
-            reeds.function_libs.visualization.pot_energy_plots.plot_energy_distribution_by_state(energy_trajs=ene_trajs, outfile=outfile, state_num=i + 1, s_values=s_values)
+            reeds.function_libs.visualization.pot_energy_plots.plot_energy_distribution_by_state(energy_trajs=ene_trajs, outfile=outfile, 
+                                                                                                 state_num=i + 1, s_values=s_values, manual_xlim=v_range)
     
     if control_dict["pot_ene_by_replica"]:
         for i in range(len(ene_trajs)):
             outfile = out_analysis_plot_dir + '/' + system_name + '_pot_ene_replica_' + str(i+1) + '.png'
-            reeds.function_libs.visualization.pot_energy_plots.plot_energy_distribution_by_replica(traj_data=ene_trajs[i], outfile_path=outfile, replica_num=i + 1, s_value=s_values[i])
+            reeds.function_libs.visualization.pot_energy_plots.plot_energy_distribution_by_replica(traj_data=ene_trajs[i], outfile_path=outfile, 
+                                                                                                   replica_num=i + 1, s_value=s_values[i], manual_xlim=v_range)
     
     if control_dict["plot_ref_timeseries"]:
         outfile = out_analysis_plot_dir + '/' + system_name + '_ref_pot_ene_timeseries.png'
@@ -162,7 +166,7 @@ def do(out_analysis_dir: str, system_name: str,
         for i, ene_traj in enumerate(ene_trajs):
             out_path = out_analysis_plot_dir + '/' + system_name  + '_pot_ene_timeseries_' + str(i+1) + '.png'
             title = 'Lower Bound Analysis potential energy timeseries - s = ' + str(s_values[i])
-            reeds.function_libs.visualization.pot_energy_plots.plot_sampling_grid(traj_data = ene_traj, y_range = (-1000, 1000),
+            reeds.function_libs.visualization.pot_energy_plots.plot_sampling_grid(traj_data = ene_traj, y_range = v_range,
                                                                                   out_path = out_path, title = title)
 
     # Preparing input for the energy offset run
@@ -171,19 +175,15 @@ def do(out_analysis_dir: str, system_name: str,
     bash.make_folder(out_analysis_next_dir, "-p")
 
     print(sampling_analysis_results)
-    u_idx = sampling_analysis_results["undersamplingThreshold"]
+    u_idx = sampling_analysis_results["undersamplingThreshold"]-1 #candide: fix index convention
+    
     # Make the new s-distribution based on this 
-    print("undersampling found after replica: " + str(u_idx) + ' with s = ' + str(s_values[u_idx]))    
-    print('New s distribution will place ' + str(num_states) + ' replicas between  s = ' + str(s_values[u_idx]) + ' and s = ' +str(s_values[u_idx+3]))
-
-    if(not final_number_of_replicas is None):
-        new_sdist = list(s_log_dist.get_log_s_distribution_between(s_values[0],s_values[u_idx-2], final_number_of_replicas-num_states))
-        lower_sdist = list(s_log_dist.get_log_s_distribution_between(s_values[u_idx-1], s_values[u_idx], num_states))
-        new_sdist.extend(lower_sdist)
-    else:
-        new_sdist = s_values[:u_idx-2]
-        lower_sdist = s_log_dist.get_log_s_distribution_between(s_values[u_idx-1], s_values[u_idx], num_states)
-        new_sdist.extend(lower_sdist)
+    print("undersampling found after replica: " + str(u_idx+1) + ' with s = ' + str(s_values[u_idx]))    
+    print('New s distribution will place ' + str(num_states) + ' replicas between  s = ' + str(s_values[u_idx]) + ' and s = ' +str(s_values[u_idx+2]))
+ 
+    new_sdist = s_values[:u_idx]
+    lower_sdist = s_log_dist.get_log_s_distribution_between(s_values[u_idx], s_values[u_idx+2], num_states)
+    new_sdist.extend(lower_sdist)  
 
     # Write the s-values to a csv file
     out_file = open(out_analysis_next_dir + "/s_vals.csv", "w")
@@ -198,7 +198,7 @@ def do(out_analysis_dir: str, system_name: str,
     out_file.close()
 
     # Coordinates:
-    cnfs = list(sorted(glob.glob(data_dir + "/*.cnf"), key=lambda x: int(x.split("_")[-1].replace(".cnf", ""))))
+    cnfs = glob.glob(data_dir + "/*.cnf")
     if(len(s_values) != len(cnfs)):
         fM.adapt_cnfs_to_new_sDistribution(in_old_svals=s_values[:u_idx], in_new_svals=new_sdist, in_cnf_files=cnfs[:u_idx], out_cnf_dir=out_analysis_next_dir, cnf_prefix=system_name+"_lower_bound")
 

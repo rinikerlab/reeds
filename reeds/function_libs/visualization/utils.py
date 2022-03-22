@@ -3,8 +3,6 @@ from typing import List
 import numpy as np
 import pandas as pd
 
-from copy import deepcopy
-
 from reeds.function_libs.visualization import plots_style as ps
 
 def nice_s_vals(svals: list,
@@ -255,7 +253,7 @@ def discard_high_energy_points(pot_i:List[float],
     """
     return [e for e in pot_i if e < threshold]
 
-def determine_vrange(traj_data, num_states, tight:bool = False):
+def determine_vrange(traj_data, num_states):
     """
     This functions allows use to determine the range of potential energy 
     values we will use in our plots!
@@ -270,45 +268,39 @@ def determine_vrange(traj_data, num_states, tight:bool = False):
         list of potential energies dataframes for each state
     num_states: int 
         Number of different end states in the EDS simulation.
-    tight: bool
-        If true, will also set a maximum close to the minimum found
-
     Returns
     -------
-    [float, float]
-        Upper and lower limits to use in plots
+    List[float]
+        list of energies below the threshold
     """
-    
-    increment = 250
-    v_max = 1000 # Manually defined for non-tight plots
-
-    predetermined_mins = np.arange(-5000, v_max+1, increment)
-    
-    lower_lim = predetermined_mins[-1]
-    upper_lim = predetermined_mins[0]
-    
-    all_vs = np.array([])    
  
-    for i, sub_traj in enumerate(traj_data):
-        
-        # Get lower 95 of all data and append to all_vs
-        n = np.size(sub_traj['e'+str(i+1)])        
-        tmp_traj = sorted(deepcopy(sub_traj['e'+str(i+1)]))[:int(0.95*n)]
-        all_vs = np.append(all_vs, tmp_traj)
-        
-
-    max_v = np.max(all_vs)
-    min_v = np.min(all_vs)
+    y_max = 1000 # Manually defined
+    current_min = 1000
     
-    # re-adjust minimum to this value    
-    for v in predetermined_mins:        
-        if min_v < v: break
-        lower_lim = v             
+    # 1: Find minimum energy value 
     
-    for v in predetermined_mins[::-1]:
-        if max_v > v: break
-        upper_lim = v
-
+    for sub_traj in traj_data:
+        for i in range(1, num_states+1):
+            tmp_min = np.min(sub_traj['e'+str(i)])
+            if current_min > tmp_min:
+                current_min = tmp_min
+        
+    #print ('Found a minimum at: ' + str(current_min))
+    
+    # 2: To make it look nicer, compare this minimum 
+    # with a set of predefined values. 
+    # These can of course be changed if the minimum is below that value.
+    # or if we want tighter possibilities. 
+    
+    predetermined_mins = np.arange(-5000, 1, 500)
+    use_lower_lim = predetermined_mins[0]
+    
+    for v in predetermined_mins: 
+        if current_min < v: break
+        use_lower_lim = v
+        
+    #print (use_lower_lim)
+    
     # Return upper and lower values to use.
-    if tight: return [lower_lim, upper_lim]
-    return [lower_lim, v_max]
+    
+    return [use_lower_lim, y_max]
