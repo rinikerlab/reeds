@@ -134,7 +134,7 @@ int
         # accounting for the different types of restraint used:
         if(not simSystem.top.disres_path is None):
               check_path_dependencies_paths.append(simSystem.top.disres_path)
-        if(not (simSystem.top.refpos_path is None and imSystem.top.posres_path is None)):
+        if(not (simSystem.top.refpos_path is None and simSystem.top.posres_path is None)):
               check_path_dependencies_paths.append(simSystem.top.posres_path)
               check_path_dependencies_paths.append(simSystem.top.refpos_path)
 
