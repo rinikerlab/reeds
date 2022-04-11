@@ -115,18 +115,24 @@ def work(out_dir: str, in_coord: str, in_imd_path: str, in_topo_path: str, in_pe
             print("Copying files back to a local directory and exiting.")
             print("#####################################################################################\n")
         
-        # This part of the code (which copies all files back)
-        # must be reached after succesful and unsuccesful runs.
+#        # This part of the code (which copies all files back)
+#        # must be reached after succesful and unsuccesful runs.
+#        if (out_dir != work_dir):
+#            if not multi_node: 
+#                os.system("mv " + work_dir + "/*  " + out_dir)
+#            else: 
+#                # when copying the data back from multiple nodes, data has to be copied back manually from all nodes.
+#                for host in hosts:
+#                    command = 'ssh ' + host + '  \"cp ${TMPDIR}/* ' + out_dir + '\"'
+#                    os.system(command)
+#            os.system('remote_tmpdir delete')
+
         if (out_dir != work_dir):
-            if not multi_node: 
-                os.system("mv " + work_dir + "/*  " + out_dir)
-            else: 
-                # when copying the data back from multiple nodes, data has to be copied back manually from all nodes.
-                for host in hosts:
-                    command = 'ssh ' + host + '  \"cp ${TMPDIR}/* ' + out_dir + '\"'
-                    os.system(command)
-            os.system('remote_tmpdir delete')
-    
+            os.system("mv " + work_dir + "/*  " + out_dir)
+        # post simulation cleanup -> for now, don't delete directory because it can lead to data loss during copying
+        #if not (isinstance(work_dir, type(None)) and work_dir == "None" and "TMPDIR" in os.environ):
+        #    bash.remove_folder(work_dir, verbose=True)    
+
     except Exception as err:
         print("#####################################################################################")
         print("\t\tERROR in Reeds_simulationWorker")
