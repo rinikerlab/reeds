@@ -81,11 +81,22 @@ def do(out_analysis_dir: str, system_name: str,
     data_dir = out_analysis_dir + "/data"
     imd_file = imd.Imd(in_imd_path + "_1.imd")
     num_states = int(imd_file.EDS.NUMSTATES)
-
+    
     # Read in all s-values that were used
 
     imd_files = sorted(glob.glob(in_imd_path + "*.imd"), key=lambda x: int(x.split("_")[-1].replace(".imd", "")))
     s_values = [float((imd.Imd(f)).EDS.S) for f in imd_files]
+    
+       
+    eoffs = []
+    # Get entries and convert to float
+    for f in imd_files:
+        eoff_state_values = imd.Imd(f).EDS.EIR
+        for index, item in enumerate(eoff_state_values):
+            eoff_state_values[index] = float(item)
+        eoffs.append(eoff_state_values)
+
+
 
     # Count the number of simulations wich were succesful
     if (verbose): print("START file organization")
@@ -136,7 +147,8 @@ def do(out_analysis_dir: str, system_name: str,
     sampling_analysis_results, out_plot_dirs = reeds.function_libs.analysis.sampling.detect_undersampling(out_path = out_analysis_plot_dir,
                                                                                                        ene_traj_csvs = ene_trajs,
                                                                                                        s_values = s_values[:succsessful_sim_count],
-                                                                                                       state_potential_treshold=state_undersampling_pot_treshold)
+                                                                                                       state_potential_treshold=state_undersampling_pot_treshold, 
+                                                                                                       eoffs = eoffs)
     
     v_range = determine_vrange(ene_trajs, num_states) 
 

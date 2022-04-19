@@ -199,7 +199,7 @@ def chain_submission(gromosXX_bin_dir: str, in_imd_path: str, simSystem:Simulati
             md_script_command += "-in_imd " + tmp_in_imd + "\n"
             md_script_command += "-in_top " + simSystem.top.top_path + "\n"
             
-            if(hasattr(simSystem.top, "disres_path") and not simSystem.top.disres_path is None):
+            if(hasattr(simSystem.top, "disres_path") and simSystem.top.disres_path is not None):
                 md_script_command += "-in_disres " + simSystem.top.disres_path + "\n"
             elif(hasattr(simSystem.top, "posres_path")):
                 md_script_command += "-in_posres " + simSystem.top.posres_path + "\n"
