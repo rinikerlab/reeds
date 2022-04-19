@@ -201,9 +201,12 @@ def chain_submission(gromosXX_bin_dir: str, in_imd_path: str, simSystem:Simulati
             
             if(hasattr(simSystem.top, "disres_path") and simSystem.top.disres_path is not None):
                 md_script_command += "-in_disres " + simSystem.top.disres_path + "\n"
-            elif(hasattr(simSystem.top, "posres_path")):
+            elif(hasattr(simSystem.top, "posres_path") and simSystem.top is not None):
                 md_script_command += "-in_posres " + simSystem.top.posres_path + "\n"
                 md_script_command += "-in_refpos " + simSystem.top.refpos_path + "\n"
+            # system is not going to be restrained
+            elif(not hasattr(simSystem.top, "refpos_path")):
+                print("Warning - No restraint file given.")
             else:
                 raise ValueError("No restraint file, suuuure?")
             

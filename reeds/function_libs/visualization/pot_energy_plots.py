@@ -28,7 +28,7 @@ def plot_optimized_states_potential_energies(outfile:str,
 
     nstates = len(ene_trajs)
     
-    v_range = determine_vrange(ene_trajs, nstates, tight=True)
+    v_range = determine_vrange(ene_trajs, nstates)
 
     colors = ps.active_qualitative_map_mligs(nstates)
 

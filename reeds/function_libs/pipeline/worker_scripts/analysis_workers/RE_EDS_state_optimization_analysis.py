@@ -124,6 +124,16 @@ def do(in_simulation_dir: str, in_topology_path: str, in_imd_path: str,
     imd_file = imd.Imd(in_imd_path + "_1.imd")
     numstates = int(imd_file.EDS.NUMSTATES)
     s_values = [1.0 for x in range(1, numstates + 1)]
+    
+    # Read in all eoffs
+    imd_files = sorted(glob.glob(in_imd_path + "*.imd"), key=lambda x: int(x.split("_")[-1].replace(".imd", "")))
+    eoffs = []
+    # Get entries and convert to float
+    for f in imd_files:
+        eoff_state_values = imd.Imd(f).EDS.EIR
+        for index, item in enumerate(eoff_state_values):
+            eoff_state_values[index] = float(item)
+        eoffs.append(eoff_state_values)
 
     # organize siulation Files:
     coord_dir = out_analysis_dir + "/data"
@@ -155,7 +165,7 @@ def do(in_simulation_dir: str, in_topology_path: str, in_imd_path: str,
     physical_state_occurrence_treshold = sampling.get_all_physical_occurence_potential_threshold_distribution_based(ene_trajs, _vacuum_simulation=vacuum_simulation)
 
     sampling.sampling_analysis(out_path=out_analysis_plot_dir, ene_traj_csvs=ene_trajs, s_values=s_values,
-                                state_potential_treshold=physical_state_occurrence_treshold)
+                                state_potential_treshold=physical_state_occurrence_treshold, eoffs=eoffs)
 
     # Plot of all of the potential energy distributions in a single plot:
     reeds.function_libs.visualization.pot_energy_plots.plot_optimized_states_potential_energies(outfile=out_analysis_plot_dir + "/optimized_states_potential_energies.png",

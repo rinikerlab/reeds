@@ -132,16 +132,18 @@ int
                                          out_dir_path, ]  # Coord file is used by repex in_imd_path prepared_imd
               
         # accounting for the different types of restraint used:
-        if simSystem.top.disres_path is not None:
-              check_path_dependencies_paths.append(simSystem.top.disres_path)
-        
         if not hasattr(simSystem.top, 'refpos_path'):
             simSystem.top.refpos_path = None
         if not hasattr(simSystem.top, 'posres_path'):
             simSystem.top.posres_path = None
+        if(not ((simSystem.top.disres_path is None) or (simSystem.top.disres_path == "None"))):
+                            check_path_dependencies_paths.append(simSystem.top.disres_path)
+        
         if(not (simSystem.top.refpos_path is None and simSystem.top.posres_path is None)):
             check_path_dependencies_paths.append(simSystem.top.posres_path)
             check_path_dependencies_paths.append(simSystem.top.refpos_path)
+        if(not simSystem.top.disres_path is None):
+              check_path_dependencies_paths.append(simSystem.top.disres_path)
 
         # optional paths
         if (not isinstance(work_dir, type(None)) and work_dir != "None"):
