@@ -141,7 +141,7 @@ def do_optimization(out_root_dir: str, in_simSystem: fM.System, optimization_nam
     #################
     ## Loop vars
     job_id = None  # id for chaining
-    repetitions = 1  # needed to elongate simulation length
+    repetitions = 9  # needed to elongate simulation length
     standard_name = simSystem.name
     iteration_sopt_job = None
     add_replicas_mode = sOpt_add_replicas
@@ -235,7 +235,9 @@ def do_optimization(out_root_dir: str, in_simSystem: fM.System, optimization_nam
             print()
             traceback.print_exception(*sys.exc_info())
             raise Exception("ERROR during job job-submissoin")
-        if(run_eoffRB and not run_NLRTO and not run_NGRTO):
+        if True : 
+            pass # I want to skip this code used by other people...
+        elif(run_eoffRB and not run_NLRTO and not run_NGRTO):
           repetitions=1
         else:
           repetitions = repetitions + 1 if (repetitions < 3) else 3  # limit the simulation time accumulation to 1.2ns
