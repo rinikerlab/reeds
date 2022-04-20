@@ -528,26 +528,18 @@ def do_Reeds_analysis(in_folder: str, out_folder: str, gromos_path: str,
 
         next_dir = bash.make_folder(out_folder + "/next", "-p")
         next_imd = next_dir + "/next.imd"
-
+        
         # add ne w cnf s for the new S-distribution
         print("generating new Cnfs for new s_dist")
         if (sub_control["eoff_to_sopt"]):  # if the s_dist should be converted from eoff to sopt
-            new_sval = [s_values, [], []]
-            new_sval[1] = [1.0 for x in range(num_states)] + list(
-                sdist.get_log_s_distribution_between(start=1.0, end=min(s_values), num=len(s_values) - 4))[
-                                                             1:]  # todo: hardcoded make clever and do automatic!
-            new_sval[2] = new_sval[1]
-            svals = new_sval
+            svals = sdist.generate_preoptimized_sdist(svals[0], num_states, exchange_freq, svals[1][sampling_results['undersamplingThreshold']+2])
 
         print('new_s(' + str(len(svals)) + ") ", svals)
         print("svalues var", s_values)
         input_cnfs = os.path.dirname(in_imd) + "/coord"
         print("svals", svals)
            
-        #CLEAN!
-        #print("nsvals:")
-        #print(len(svals[0]), len(svals[1]), len(svals[2]))
-        # Pu the proper cnfs in place        
+        # Put the proper cnfs in place        
         if(len(svals)==0):
             sopt_type_switch = 0
         else:    
@@ -611,9 +603,9 @@ def do_Reeds_analysis(in_folder: str, out_folder: str, gromos_path: str,
         if(sub_control["write_eoffRB"] and sub_control["write_eoffEstm"]):
             raise Exception("can not write eoffRB and eoffEstm in new imd!")
         elif sub_control["write_eoffRB"] and control_dict["eoffset"]["do"] and control_dict['eoffset']['sub']['eoffset_rebalancing']:
-            imd_file.edit_REEDS(EIR=new_eoffs_rb)
+            imd_file.edit_REEDS(EIR=np.round(new_eoffs_rb, 2))
         elif sub_control["write_eoffEstm"] and control_dict["eoffset"]["do"] and control_dict['eoffset']['sub']['eoff_estimation']:
-            imd_file.edit_REEDS(EIR=new_eoffs_estm)
+            imd_file.edit_REEDS(EIR=np.round(new_eoffs_estm, 2))
         elif ((sub_control["write_eoffRB"] or sub_control["write_eoffEstm"]) and not control_dict["Eoff"]["do"] and not (control_dict['eoffset']['sub']['eoff_estimation'] or control_dict['eoffset']['sub']['eoffset_rebalancing'])):
             raise Exception("can not write eoffRB or eoffEstm as no eoff step chosen active!")
 

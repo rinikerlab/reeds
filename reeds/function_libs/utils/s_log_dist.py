@@ -111,7 +111,7 @@ def generate_preoptimized_sdist(eoff_s_values, num_states, exchange_freq, unders
         and the newly distributed s-values for the 1st iteration of s-optmization.   
     """    
     new_sval = [eoff_s_values, []]
-
+    
     # 1: Find the upper and lower s-values of the gap region from the exchange frequencies
 
     upper = []
@@ -125,7 +125,7 @@ def generate_preoptimized_sdist(eoff_s_values, num_states, exchange_freq, unders
             upper_gap_s = eoff_s_values[i]
             break
         upper.append(eoff_s_values[i])
-
+    
     for i, f in reversed(list(enumerate(exchange_freq))):
         # do not add s-value that is lower than the limit found to be appropriate
         if eoff_s_values[i+1] < undersampling_s: continue
@@ -144,6 +144,9 @@ def generate_preoptimized_sdist(eoff_s_values, num_states, exchange_freq, unders
     # 2: Now that the extrema have been defined, we can build our new distribution.
     # This distribution will keep exactly the same values in the upper and lower s-ranges
     # and place many in the gap region
+
+    # Make it automatic so we always have 32 s-values
+    num_svals_gap = 32 - len(upper) - len(lower) 
 
     new_s_distrib = np.zeros(0)
     gap = get_log_s_distribution_between(start = upper_gap_s, end = lower_gap_s, num= num_svals_gap)

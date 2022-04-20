@@ -93,8 +93,8 @@ def estimate_energy_offsets(ene_trajs: List[pd.DataFrame], initial_offsets: List
             raise Exception("Could not determine new offsets, as no undersampling detected!")
     else: 
         undersampling_eoffs = all_eoffs[undersampling_idx:]
-        results = 'Undersampling found at replica ' + str(undersampling_idx) \
-                  + ' with s = ' + str(s_values[undersampling_idx-1]) + '\n\n' 
+        results = 'Undersampling found at replica ' + str(undersampling_idx+1) \
+                  + ' with s = ' + str(s_values[undersampling_idx]) + '\n\n' 
         results += 'New energy offset for each state:\n\n'
         means   = undersampling_eoffs.mean(axis=0)
         stdevs  = undersampling_eoffs.std(axis=0)
