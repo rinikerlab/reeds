@@ -26,7 +26,7 @@ def do_optimization(out_root_dir: str, in_simSystem: fM.System, optimization_nam
                     non_ligand_residues: list = [],
                     state_physical_occurrence_potential_threshold:List[float]=None,
                     state_undersampling_occurrence_potential_threshold: List[float]=None,
-                    equil_runs: int = 0, steps_between_trials: int = 20, trials_per_run: int = 12500,
+                    equil_runs: int = 1, steps_between_trials: int = 50, trials_per_run: int = 12500,
                     optimized_states_dir: str = os.path.abspath("a_optimizedState/analysis/next"),
                     lower_bound_dir: str = os.path.abspath("b_lowerBound/analysis/next"),
                     in_gromosXX_bin_dir: str = None, in_gromosPP_bin_dir: str = None,
