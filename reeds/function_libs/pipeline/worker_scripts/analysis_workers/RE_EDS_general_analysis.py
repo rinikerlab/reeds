@@ -591,9 +591,13 @@ def do_Reeds_analysis(in_folder: str, out_folder: str, gromos_path: str,
 
         else:
             if verbose: print("same ammount of s_vals -> simply copying output:")
-            cnfs = list(sorted(glob.glob(concat_file_folder+"/*.cnf"), key=lambda x: int(x.split("_")[-1].split(".")[0])))
-            for i, cnf in enumerate(cnfs):
-                bash.copy_file(cnf, next_dir+"/"+title_prefix+"_"+str(i+1)+".cnf")
+            
+            if "complex" in in_folder:
+                print ('complex needs to keep sssm conformation, do not copy conformations')
+            else:
+                cnfs = list(sorted(glob.glob(concat_file_folder+"/*.cnf"), key=lambda x: int(x.split("_")[-1].split(".")[0])))
+                for i, cnf in enumerate(cnfs):
+                    bash.copy_file(cnf, next_dir+"/"+title_prefix+"_"+str(i+1)+".cnf")
 
         # write next_imd.
         print("write out imd file ")
