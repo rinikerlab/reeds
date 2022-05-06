@@ -212,54 +212,6 @@ def get_all_physical_occurence_potential_threshold_distribution_based(ene_trajs:
         opt_pot_tresh.append(pot_tresh_state[key])
     return opt_pot_tresh
 
-
-def calculate_sampling_distributions(ene_traj_csvs: List[pd.DataFrame],
-                                     potential_treshold: List[float])-> Dict[int, Dict[str, Dict[int, float]]]:
-    """calculate_sampling_distributions
-    This function is using the dominating state sampling and occurrence state sampling definition, to calculate
-    for both definitions the sampling distributions including each stat.
-    Further each replica, having an occurrence sampling >= undersampling_occurence_sampling_tresh for each state is categorized as undersampling.
-
-    Parameters
-    ----------
-    ene_traj_csvs: List[pd.Dataframe]
-        a list of pandas dataframes containing the energy data of each state eX
-    potential_treshold: List[float]
-        a list of potential thresholds for undersampling
-    undersampling_occurence_sampling_tresh: float, optional
-        threshold for the fraction of the energies which has to be below the threshold (default 0.75)
-
-    Returns
-    -------
-    Dict[int, Dict[str, Dict[int, float]]]
-        the dictionary contains for all replicas, the occurrence/dominating sampling fractions of each state  and undersamplin classification
-    """
-
-    replica_sampling_dist = {}
-    num_states = sum([1 for i in ene_traj_csvs[0].columns if (i.startswith("e") and not i == "eR")])
-    states = ["e" + str(s) for s in range(1, 1 + num_states)]
-    for replica in ene_traj_csvs:
-        total_number_steps = replica.shape[0]
-
-        # Domination sampling
-        minV_state_sampling = {x: 0 for x in range(1, 1 + num_states)}
-        min_state, counts = np.unique(replica[states].idxmin(axis=1), return_counts=True)
-        minV_state_sampling.update(
-            {int(key.replace("e", "")): val / total_number_steps for key, val in zip(min_state, counts)})
-
-        # occurence samplng
-        occurrence_state_sampling = {}
-        for ind, state in enumerate(states):
-            occurrence_sampling_frac = replica[replica[state] < potential_treshold[ind]].shape[0] / total_number_steps
-            occurrence_state_sampling.update({int(state.replace("e", "")): occurrence_sampling_frac})
-
-        # update results
-        replica_sampling_dist.update({int(replica.s.replace("s", "")): {"minV_state": minV_state_sampling,
-                                                                        "occurence_state": occurrence_state_sampling}})
-
-    return replica_sampling_dist
-
-
 def calculate_sampling_distributions(ene_traj_csvs: List[pd.DataFrame], eoffs: List[List[float]],
                                      potential_treshold: List[float]) -> Dict[int, Dict[str, Dict[int, float]]]:
     """calculate_sampling_distributions
