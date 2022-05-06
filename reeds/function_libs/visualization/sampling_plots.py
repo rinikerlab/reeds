@@ -133,18 +133,18 @@ def plot_t_statepres(data: dict,
     # plot:
     fig = plt.figure()
     ax = fig.add_subplot(1, 1, 1)
-
+    
     ##plotting
     first = True
-    for xy in yunders:
+    for sampling_data in yunders:
         if first:
-            ax.scatter(xy["x"], xy["y"], label='undersample', alpha=0.5, c="blue", s=2, lw=0, marker=".",
+            ax.scatter(x_ax[sampling_data["x"]], sampling_data["y"]+0.1, label='undersample', alpha=0.5, c="blue", s=2, lw=0, marker=".",
                        edgecolors=None)
             first = False
         else:
-            ax.scatter(xy["x"], xy["y"], alpha=0.5, c="blue", s=2, lw=0, marker=".", edgecolors=None)
+            ax.scatter(x_ax[sampling_data["x"]], sampling_data["y"]+0.1, alpha=0.5, c="blue", s=2, lw=0, marker=".", edgecolors=None)
 
-    ax.scatter(x_ax, ymin, label="maxContrib", alpha=0.7, c="red", lw=0.0, s=5, marker=".", edgecolors=None)
+    ax.scatter(x_ax, ymin-0.1, label="maxContrib", alpha=0.7, c="red", lw=0.0, s=5, marker=".", edgecolors=None)
 
     ##define limits
     ax.set_ylim(0.25, num_states + 0.5)
@@ -155,8 +155,8 @@ def plot_t_statepres(data: dict,
 
     ##labels
     title = "$" + title + "$"
-    ax.set_title("state occurence in " + title)
-    ax.set_ylabel("states")
+    ax.set_title("sampling at " + title)
+    ax.set_ylabel("state")
     ax.set_xlabel("time [ps]")
     ax.set_yticks(range(0, num_states))
     ax.set_yticks(range(1, num_states + 1))
@@ -164,7 +164,7 @@ def plot_t_statepres(data: dict,
     ##legends
     chartBox = ax.get_position()
     ax.set_position([chartBox.x0, chartBox.y0, chartBox.width * 0.85, chartBox.height])
-    lgnd = ax.legend(title="states:", loc=2, borderaxespad=0, bbox_to_anchor=(1.05, 1), ncol=1, prop={"size": 10})
+    lgnd = ax.legend(title="sampling def:", loc=2, borderaxespad=0, bbox_to_anchor=(1.05, 1), ncol=1, prop={"size": 10})
     for handle in lgnd.legendHandles:
         handle.set_sizes([28.0])
 
@@ -172,7 +172,6 @@ def plot_t_statepres(data: dict,
     if (not out_path is None):
         fig.savefig(out_path, bbox_extra_artists=(lgnd,), bbox_inches='tight')
         plt.close()
-
 
 def plot_stateOccurence_hist(data: dict,
                              out_path: str = None,
@@ -282,10 +281,9 @@ def plot_stateOccurence_matrix(data: dict,
 
     # Plot occurence:
     ##Title setting
-    title = "$ state occurence"
+    title = "occurence sampling"
     if title_suffix is not None:
         title += title_suffix
-    title += "$"
 
     fig = plt.figure(figsize=ps.figsize_doubleColumn)
     ax = fig.add_subplot(111)
@@ -318,7 +316,7 @@ def plot_stateOccurence_matrix(data: dict,
     ax.set_ylabel("states")
     ax.xaxis.set_ticks_position("bottom")
 
-    fig.tight_layout()
+    #fig.tight_layout()
 
     if (not out_dir is None):
         fig.savefig(out_dir + '/sampling_undersample_matrix.png', bbox_inches='tight')
@@ -326,10 +324,9 @@ def plot_stateOccurence_matrix(data: dict,
 
     # Plot domination samp:
     ##Title setting
-    title = "$ state domination "
+    title = "dominating state sampling"
     if title_suffix is not None:
         title += title_suffix
-    title += "$"
 
     fig = plt.figure(figsize=ps.figsize_doubleColumn)
     ax = fig.add_subplot(111)
@@ -361,7 +358,7 @@ def plot_stateOccurence_matrix(data: dict,
     ax.set_ylabel("states")
     ax.xaxis.set_ticks_position("bottom")
 
-    fig.tight_layout()
+    #fig.tight_layout()
 
     if (not out_dir is None):
         fig.savefig(out_dir + '/sampling_minstate_matrix.png', bbox_inches='tight')

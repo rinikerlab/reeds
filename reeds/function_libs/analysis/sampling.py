@@ -336,7 +336,7 @@ def sampling_analysis(ene_traj_csvs: List[pd.DataFrame],
             occurrence_sampling_replica.append(occurrence_sampling_state_replica)
 
         data = {"time": replica.time, "occurrence_t": occurrence_sampling_replica, "minV_state": minV_state_sampling, "maxContrib_state":max_contributing_sampling}
-
+        
         if (_visualize):
             reeds.function_libs.visualization.sampling_plots.plot_t_statepres(data=data,
                                                                               title="s=" + str(s_vals_nice[ind]),

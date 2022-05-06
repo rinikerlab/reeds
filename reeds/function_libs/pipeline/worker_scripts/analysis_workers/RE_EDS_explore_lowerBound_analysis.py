@@ -86,7 +86,6 @@ def do(out_analysis_dir: str, system_name: str,
 
     imd_files = sorted(glob.glob(in_imd_path + "*.imd"), key=lambda x: int(x.split("_")[-1].replace(".imd", "")))
     s_values = [float((imd.Imd(f)).EDS.S) for f in imd_files]
-    
        
     eoffs = []
     # Get entries and convert to float
@@ -95,8 +94,6 @@ def do(out_analysis_dir: str, system_name: str,
         for index, item in enumerate(eoff_state_values):
             eoff_state_values[index] = float(item)
         eoffs.append(eoff_state_values)
-
-
 
     # Count the number of simulations wich were succesful
     if (verbose): print("START file organization")
@@ -186,7 +183,7 @@ def do(out_analysis_dir: str, system_name: str,
     out_analysis_next_dir = out_analysis_dir + "/next"
     bash.make_folder(out_analysis_next_dir, "-p")
 
-    print(sampling_analysis_results)
+    #print(sampling_analysis_results)
     u_idx = sampling_analysis_results["undersamplingThreshold"]-1 #candide: fix index convention
     
     # Make the new s-distribution based on this 
@@ -196,6 +193,8 @@ def do(out_analysis_dir: str, system_name: str,
     new_sdist = s_values[:u_idx]
     lower_sdist = s_log_dist.get_log_s_distribution_between(s_values[u_idx], s_values[u_idx+2], num_states)
     new_sdist.extend(lower_sdist)  
+    
+    print ('new s-dist: ' + str(new_sdist))
 
     # Write the s-values to a csv file
     out_file = open(out_analysis_next_dir + "/s_vals.csv", "w")
