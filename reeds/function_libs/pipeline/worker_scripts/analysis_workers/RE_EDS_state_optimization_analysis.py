@@ -115,7 +115,7 @@ def do(in_simulation_dir: str, in_topology_path: str, in_imd_path: str,
         "plot_ref_distrib": True
     }
 
-    if (verbose): print("START opt_structure ana")
+    if (verbose): print("Start analysis of the optimized state generation:")
     # generate
     bash.make_folder(out_analysis_dir, "-p")
 
@@ -233,7 +233,7 @@ def do(in_simulation_dir: str, in_topology_path: str, in_imd_path: str,
 
     ##write_pot_tresh:
     out_file = open(next_dir + "/state_occurence_physical_pot_thresh.csv", "w")
-    out_file.write("\t".join(map(str, physical_state_occurrence_treshold)))
+    out_file.write("\t".join(map(str, np.round(physical_state_occurrence_treshold, 2))))
     out_file.close()
 
     

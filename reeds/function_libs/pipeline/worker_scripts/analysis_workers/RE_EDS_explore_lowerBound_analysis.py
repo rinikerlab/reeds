@@ -205,7 +205,7 @@ def do(out_analysis_dir: str, system_name: str,
 
     # Write the potential energy thresholds to a csv file
     out_file = open(out_analysis_next_dir + "/state_occurence_pot_thresh.csv", "w")
-    out_file.write("\t".join(map(str, sampling_analysis_results["potentialThreshold"])))
+    out_file.write("\t".join(map(str, np.round(sampling_analysis_results["potentialThreshold"], 2))))
     out_file.write("\n")
     out_file.close()
 

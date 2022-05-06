@@ -130,7 +130,7 @@ def undersampling_occurence_potential_threshold_distribution_based(ene_traj_csvs
     # final averaging.
     pot_thresh_per_state_and_replica = np.array([t for t in pot_tresh_pre_rep if (len(t) == num_states)]).T
     
-    print(pot_thresh_per_state_and_replica)
+    #print(pot_thresh_per_state_and_replica)
     if (len(pot_thresh_per_state_and_replica) > 0):
         pot_thresh_per_state = np.min(pot_thresh_per_state_and_replica, axis=1) + np.std(pot_thresh_per_state_and_replica, axis=1)
     else:
@@ -203,10 +203,10 @@ def get_all_physical_occurence_potential_threshold_distribution_based(ene_trajs:
     """
     opt_pot_tresh = []
     for key, traj in enumerate(ene_trajs):
-        print(key)
+        #print(key)
         pot_tresh_state = physical_occurence_potential_threshold_distribution_based(traj, _vacuum_simulation=_vacuum_simulation)
 
-        print(pot_tresh_state)
+        #print(pot_tresh_state)
         if (np.isnan(pot_tresh_state[key])):
             warnings.warn("A state potential threshold was NaN -> This hints on that you did not sample the state as a dominating one! Please check your simulatigons!")
         opt_pot_tresh.append(pot_tresh_state[key])
