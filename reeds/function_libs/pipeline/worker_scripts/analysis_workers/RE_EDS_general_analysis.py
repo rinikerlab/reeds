@@ -464,7 +464,7 @@ def do_Reeds_analysis(in_folder: str, out_folder: str, gromos_path: str,
         out_dir = bash.make_folder(out_folder + "/s_optimization")
 
         # get repdat file
-        print(repdat_file_out_path)
+        #print(repdat_file_out_path)
         in_file = glob.glob(repdat_file_out_path)[0]
         print("Found repdat file: " + str(in_file))
         
