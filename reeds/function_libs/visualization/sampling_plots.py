@@ -176,7 +176,9 @@ def plot_t_statepres(data: dict,
 def plot_stateOccurence_hist(data: dict,
                              out_path: str = None,
                              title: str = "sampling histogramms",
-                             verbose: bool = False):
+                             verbose: bool = False, 
+                             show_num: bool = False
+                            ):
     """plot_stateOccurence_hist
     plot histogram of state occurrence
 
@@ -226,25 +228,26 @@ def plot_stateOccurence_hist(data: dict,
     fig = plt.figure()
     ax = fig.add_subplot(111)
 
-    sampled = ax.bar(x=labels, height=bins_und, width=width, label="occurrence", color="C0")
-    autolabel(sampled, xpos='left')
+    sampled = ax.bar(x=np.array(labels)-width/2, height=np.array(bins_und)*100, width=width, label="occurrence", edgecolor = 'black', color="C0")
+    if show_num:
+        autolabel(sampled, xpos='left')
 
-    sampled = ax.bar(x=labels, height=bins_dom, width=width, label="maxContributing", color="C3")
-    autolabel(sampled, xpos='right')
+    sampled = ax.bar(x=np.array(labels)+width/2, height=np.array(bins_dom)*100, width=width, label="maxContributing",edgecolor = 'black', color="C3")
+    if show_num:
+        autolabel(sampled, xpos='right')
 
     ax.set_xticks(range(0, len(labels) + 1))
     ax.set_xticklabels([""] + list(range(1, len(labels) + 1)))
     title = "$" + title + "$"
     ax.set_title(title)
     ax.set_xlabel("state")
-    ax.set_ylabel("number of steps")
-    ax.set_ylim([0, 1])
-    ax.legend()
+    ax.set_ylabel("fraction [%]")
+    ax.set_ylim([0, 120])
+    ax.legend(fontsize = 12, ncol =2)
 
     if (not out_path is None):
         fig.savefig(out_path)
         plt.close()
-
 
 def plot_stateOccurence_matrix(data: dict,
                                out_dir: str = None,
