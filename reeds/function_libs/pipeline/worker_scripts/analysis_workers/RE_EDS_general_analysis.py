@@ -592,6 +592,7 @@ def do_Reeds_analysis(in_folder: str, out_folder: str, gromos_path: str,
         else:
             if verbose: print("same ammount of s_vals -> simply copying output:")
             
+            # candide: warning, this if/else is a temporaty workaround for me
             if "complex" in in_folder:
                 print ('complex needs to keep sssm conformation, do not copy conformations')
             else:
