@@ -460,6 +460,7 @@ def do_Reeds_analysis(in_folder: str, out_folder: str, gromos_path: str,
         if (verbose): print("Done\n")
 
     if (control_dict["sopt"]["do"]):
+        print ('\nANALYSIS of the S-DISTRIBUTION')
         sub_control = control_dict["sopt"]["sub"]
         out_dir = bash.make_folder(out_folder + "/s_optimization")
 
@@ -524,27 +525,26 @@ def do_Reeds_analysis(in_folder: str, out_folder: str, gromos_path: str,
 
     if (control_dict["prepare_input_folder"]["do"]):
         sub_control = control_dict["prepare_input_folder"]["sub"]
-        print("PREPARE NEXT FOLDER- for next run")
+        print("PREPARE NEXT FOLDER - for following simulation")
 
         next_dir = bash.make_folder(out_folder + "/next", "-p")
         next_imd = next_dir + "/next.imd"
         
-        # add ne w cnf s for the new S-distribution
-        print("generating new Cnfs for new s_dist")
+        # add new cnf s for the new S-distribution
+        print("Place the proper conformations (.cnf) files in analysis/next")
         if (sub_control["eoff_to_sopt"]):  # if the s_dist should be converted from eoff to sopt
             svals = sdist.generate_preoptimized_sdist(svals[0], num_states, exchange_freq, svals[1][sampling_results['undersamplingThreshold']+2])
 
-        print('new_s(' + str(len(svals)) + ") ", svals)
-        print("svalues var", s_values)
+        #print('new_s(' + str(len(svals)) + ") ", svals)
+        #print("svalues: ", s_values)
         input_cnfs = os.path.dirname(in_imd) + "/coord"
-        print("svals", svals)
            
         # Put the proper cnfs in place        
         if(len(svals)==0):
             sopt_type_switch = 0
         else:    
             sopt_type_switch = 2 if(svals[1] is None or len(svals[1]) == 0 ) else 1
-        print("Switch", sopt_type_switch)
+        print("Switch (algorithm for conformations): ", sopt_type_switch)
         if(len(svals)==0):
             svals = {0:s_values}
             sopt_type_switch = 0
