@@ -465,7 +465,6 @@ def do_Reeds_analysis(in_folder: str, out_folder: str, gromos_path: str,
         out_dir = bash.make_folder(out_folder + "/s_optimization")
 
         # get repdat file
-        #print(repdat_file_out_path)
         in_file = glob.glob(repdat_file_out_path)[0]
         print("Found repdat file: " + str(in_file))
         
@@ -475,8 +474,6 @@ def do_Reeds_analysis(in_folder: str, out_folder: str, gromos_path: str,
         exchange_freq = repex.calculate_exchange_freq(exchange_data)
 
         if (sub_control["run_RTO"]):
-            print("Start Sopt\n")
-            print("repdat_in_file: ", in_file, "\n")
             svals = parameter_optimization.optimize_s(in_file=in_file, out_dir=out_dir,
                                                                                    title_prefix="s_opt", in_imd=in_imd,
                                                                                    add_s_vals=add_s_vals, trial_range=s_opt_trial_range,
