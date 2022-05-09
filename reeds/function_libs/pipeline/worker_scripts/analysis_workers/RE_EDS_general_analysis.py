@@ -161,7 +161,7 @@ def check_script_control(control_dict: dict = None) -> dict:
 
 def do_Reeds_analysis(in_folder: str, out_folder: str, gromos_path: str,
                       topology: str, in_ene_ana_lib: str, in_imd: str,
-                      optimized_eds_state_folder: str = "../a_optimizedState/analysis/data",
+                      optimized_eds_state_folder: str = "../a_optimizedStates/analysis/data",
                       state_undersampling_occurrence_potential_threshold: List[float] = None,
                       state_physical_occurrence_potential_threshold: List[float] = None,
                       undersampling_frac_thresh: float = 0.9,
@@ -532,8 +532,6 @@ def do_Reeds_analysis(in_folder: str, out_folder: str, gromos_path: str,
         if (sub_control["eoff_to_sopt"]):  # if the s_dist should be converted from eoff to sopt
             svals = sdist.generate_preoptimized_sdist(svals[0], num_states, exchange_freq, svals[1][sampling_results['undersamplingThreshold']+2])
 
-        #print('new_s(' + str(len(svals)) + ") ", svals)
-        #print("svalues: ", s_values)
         input_cnfs = os.path.dirname(in_imd) + "/coord"
            
         # Put the proper cnfs in place        
@@ -589,16 +587,25 @@ def do_Reeds_analysis(in_folder: str, out_folder: str, gromos_path: str,
         else:
             if verbose: print("same ammount of s_vals -> simply copying output:")
             
-            # candide: warning, this if/else is a temporaty workaround for me
-            if "complex" in in_folder:
-                print ('complex needs to keep sssm conformation, do not copy conformations')
+            if control_dict["sopt"]["sub"]["run_RTO"] or control_dict["eoffset"]["eoffset_rebalancing"]:
+                print ('Copying the SSM conformations for next simulation')
+            
+                if (not os.path.isdir(optimized_eds_state_folder)):
+                    raise IOError("Could not find optimized state output dir: " + optimized_eds_state_folder)
+
+                opt_state_cnfs = sorted(glob.glob(optimized_eds_state_folder+'/*.cnf'),
+                                        key=lambda x: int(x.split("_")[-1].replace(".cnf", "")))
+                for i in range(1, len(svals[sopt_type_switch])+1):
+                    bash.copy_file(opt_state_cnfs[(i-1)%num_states], next_dir+"/"+title_prefix+"_"+str(i+1)+".cnf")
+            
             else:
+                print ('Copying the final conformations for next simulation')
                 cnfs = list(sorted(glob.glob(concat_file_folder+"/*.cnf"), key=lambda x: int(x.split("_")[-1].split(".")[0])))
                 for i, cnf in enumerate(cnfs):
                     bash.copy_file(cnf, next_dir+"/"+title_prefix+"_"+str(i+1)+".cnf")
 
         # write next_imd.
-        print("write out imd file ")
+        print("Writing out the next .imd file ")
         imd_file = imd.Imd(in_imd)
 
         ##New EnergyOffsets
