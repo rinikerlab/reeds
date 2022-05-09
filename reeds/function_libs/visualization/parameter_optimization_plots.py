@@ -182,6 +182,7 @@ def visualization_s_optimization_summary(s_opt_data: dict,
     ax1.set_title("Average Number of Roundtrips per ns")
     ax1.set_ylabel("n$_{avg}^{rt}$ [1 / ns] ")
     ax1.set_xlabel("iteration")
+    ax1.set_xticks(x)
 
     if (not isinstance(nRT_range, type(None))):
         ax1.set_ylim(nRT_range)
@@ -190,6 +191,7 @@ def visualization_s_optimization_summary(s_opt_data: dict,
     ax2.set_title("Average Roundtrip Time")
     ax2.set_ylabel("t [ps]")
     ax2.set_xlabel("iteration")
+    ax2.set_xticks(x)
 
     if avRT_range is not None:
         ax2.set_ylim(avRT_range)
