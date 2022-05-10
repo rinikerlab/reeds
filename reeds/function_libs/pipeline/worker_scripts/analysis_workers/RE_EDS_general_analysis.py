@@ -596,7 +596,7 @@ def do_Reeds_analysis(in_folder: str, out_folder: str, gromos_path: str,
                 opt_state_cnfs = sorted(glob.glob(optimized_eds_state_folder+'/*.cnf'),
                                         key=lambda x: int(x.split("_")[-1].replace(".cnf", "")))
                 for i in range(1, len(svals[sopt_type_switch])+1):
-                    bash.copy_file(opt_state_cnfs[(i-1)%num_states], next_dir+"/"+title_prefix+"_"+str(i+1)+".cnf")
+                    bash.copy_file(opt_state_cnfs[(i-1)%num_states], next_dir+"/"+title_prefix+"_"+str(i)+".cnf")
             
             else:
                 print ('Copying the final conformations for next simulation')
