@@ -44,8 +44,8 @@ def do(out_root_dir: str, in_simSystem: fM.System, in_template_imd: str = None,
        state_undersampling_occurrence_potential_threshold: List[float]=None,
        undersampling_fraction_threshold: float=0.9,
 
-       equil_runs: int = 1, steps_between_trials: int = 50, trials_per_run: int = 1000,
-       non_ligand_residues: list = [],
+       equil_runs: int = 1, prod_runs: int  = 1, steps_between_trials: int = 50, 
+       trials_per_run: int = 1000, non_ligand_residues: list = [],
 
        in_gromosXX_bin_dir: str = None, in_gromosPP_bin_dir: str = None,
        in_ene_ana_lib_path: str = ene_ana_libs.ene_ana_lib_path,

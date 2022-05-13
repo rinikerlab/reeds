@@ -26,7 +26,7 @@ def do_optimization(out_root_dir: str, in_simSystem: fM.System, optimization_nam
                     non_ligand_residues: list = [],
                     state_physical_occurrence_potential_threshold:List[float]=None,
                     state_undersampling_occurrence_potential_threshold: List[float]=None,
-                    equil_runs: int = 1, steps_between_trials: int = 50, trials_per_run: int = 12500,
+                    equil_runs: int = 1, prod_runs: int = 1, steps_between_trials: int = 50, trials_per_run: int = 12500,
                     optimized_states_dir: str = os.path.abspath("a_optimizedState/analysis/next"),
                     lower_bound_dir: str = os.path.abspath("b_lowerBound/analysis/next"),
                     in_gromosXX_bin_dir: str = None, in_gromosPP_bin_dir: str = None,
@@ -141,7 +141,7 @@ def do_optimization(out_root_dir: str, in_simSystem: fM.System, optimization_nam
     #################
     ## Loop vars
     job_id = None  # id for chaining
-    repetitions = 9  # needed to elongate simulation length
+    repetitions = prod_runs  # needed to elongate simulation length
     standard_name = simSystem.name
     iteration_sopt_job = None
     add_replicas_mode = sOpt_add_replicas
@@ -198,7 +198,8 @@ def do_optimization(out_root_dir: str, in_simSystem: fM.System, optimization_nam
                                                              pot_tresh=state_physical_occurrence_potential_threshold,
                                                              duration_per_job=duration_per_job,
                                                              num_simulation_runs=repetitions,
-                                                             memory = memory)
+                                                             memory = memory, 
+                                                             optimized_states_dir = optimized_states_dir)
 
         except Exception as err:
             print("#####################################################################################")
