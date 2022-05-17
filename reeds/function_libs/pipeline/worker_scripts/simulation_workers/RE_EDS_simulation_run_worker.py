@@ -62,8 +62,11 @@ def work(out_dir: str, in_coord: str, in_imd_path: str, in_topo_path: str, in_pe
             work_dir = out_dir
         
         # Check if the calculation is running on multiple nodes:
-        hosts = os.environ['LSB_HOSTS'].split()
-        multi_node = True if len(hosts) > 1 else False        
+        if 'LSB_HOSTS' in os.environ: 
+            hosts = os.environ['LSB_HOSTS'].split()
+            multi_node = True if len(hosts) > 1 else False
+        else:
+            multi_node = False
         
         # run a euler script to create tmpdir on all nodes
         if multi_node:
