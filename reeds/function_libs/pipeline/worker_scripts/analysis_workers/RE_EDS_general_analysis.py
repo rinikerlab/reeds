@@ -172,6 +172,7 @@ def do_Reeds_analysis(in_folder: str, out_folder: str, gromos_path: str,
                       grom_file_prefix: str = "test", title_prefix: str = "test", ene_ana_prefix="ey_sx.dat",
                       repdat_prefix: str = "run_repdat.dat",
                       n_processors: int = 1, verbose=False, dfmult_all_replicas=False,
+                      ssm_next_cnfs: bool = True, 
                       control_dict: Dict[str, Union[bool, Dict[str, bool]]] = None) -> (
         dict, dict, dict):
     """
@@ -223,6 +224,9 @@ def do_Reeds_analysis(in_folder: str, out_folder: str, gromos_path: str,
         verbosity level
     dfmult_all_replicas : bool, optional
         shall dfmult be calculated for all replicas
+    ssm_next_cnfs: bool
+        if true, the conformations placed in /analysis/next will be SSM conformations
+        if false, the conformations will be the last conformations of the simulation
     control_dict : dict, optional
         control dict for analysis
 
@@ -587,7 +591,7 @@ def do_Reeds_analysis(in_folder: str, out_folder: str, gromos_path: str,
         else:
             if verbose: print("same ammount of s_vals -> simply copying output:")
             
-            if control_dict["sopt"]["sub"]["run_RTO"] or control_dict["eoffset"]["eoffset_rebalancing"]:
+            if (control_dict["sopt"]["sub"]["run_RTO"] or control_dict["eoffset"]["eoffset_rebalancing"]) and ssm_next_cnfs:
                 print ('Copying the SSM conformations for next simulation')
             
                 if (not os.path.isdir(optimized_eds_state_folder)):
