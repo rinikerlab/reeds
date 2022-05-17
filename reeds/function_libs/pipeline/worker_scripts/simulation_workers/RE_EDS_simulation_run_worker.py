@@ -99,12 +99,17 @@ def work(out_dir: str, in_coord: str, in_imd_path: str, in_topo_path: str, in_pe
                         "out_prefix" : out_prefix,
                         "out_trg" : write_free_energy_traj}
             
+            restrained = False
             if in_disres_path is not None and in_disres_path != "None":
                 key_args.update({"in_disres_path": in_disres_path})
-            elif(not (in_posres_path is None or in_refpos_path is None)):
+                restrained = True
+
+            if(not (in_posres_path is None or in_refpos_path is None)):
                 key_args.update({"in_posresspec_path": in_posres_path,
                                  "in_refpos_path": in_refpos_path})
-            else:
+                restrained = True
+
+            if not restrained:
                 print ("Are you really sure you want to run without restraints?\n")
 
             md_run_log_path = md.repex_mpi_run(**key_args)
