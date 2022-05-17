@@ -85,7 +85,7 @@ def default_eoff_to_sopt(eoff_s_values, num_states):
 
     return new_sval
 
-def generate_preoptimized_sdist(eoff_s_values, num_states, exchange_freq, undersampling_s, num_svals_gap:int  = 25):
+def generate_preoptimized_sdist(eoff_s_values, num_states, exchange_freq, undersampling_s, num_svals:int  = 32):
     """
     This function makes a new s-distribution for the s-opt iteration.
     This distribution will keep exactly the same values in the upper s-range
@@ -102,8 +102,8 @@ def generate_preoptimized_sdist(eoff_s_values, num_states, exchange_freq, unders
         list of exchange frequencies in the energy offset run
     undersampling_s: float
         s-value for the replica that is 3 replicas below undersampling
-    num_svals_gap:int
-        number of s-values to place in the gap region
+    num_svals:int
+        total number of s-values which make up the prooptimized distribution
     Returns
     ----------
     new_sval: List[List[float]] 
@@ -146,7 +146,7 @@ def generate_preoptimized_sdist(eoff_s_values, num_states, exchange_freq, unders
     # and place many in the gap region
 
     # Make it automatic so we always have 32 s-values
-    num_svals_gap = 32 - len(upper) - len(lower) 
+    num_svals_gap = num_svals - len(upper) - len(lower) 
 
     new_s_distrib = np.zeros(0)
     gap = get_log_s_distribution_between(start = upper_gap_s, end = lower_gap_s, num= num_svals_gap)
