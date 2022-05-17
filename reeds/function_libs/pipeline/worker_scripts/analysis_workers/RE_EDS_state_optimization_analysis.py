@@ -252,7 +252,6 @@ def do(in_simulation_dir: str, in_topology_path: str, in_imd_path: str,
     print ('\n\nAnalysis of the Optimized States completed successfully !')
 
 if __name__ == "__main__":
-    states = 2
     base_dir = "/home/bschroed/Projects/REEDS/systems/BRD4/water/2_ligands/test_ana_optstr"
     sim_dir = base_dir + "/simulation"
     gromos_path = "/home/bschroed/gromos/reeds_gromos_bschroed_AmberFF_CG/gromosPP/bin"
@@ -261,4 +260,4 @@ if __name__ == "__main__":
     ana_dir = base_dir + "/analysis"
 
     do(out_analysis_dir=base_dir + "/analysis", in_simulation_dir=sim_dir, in_ene_ana_lib=ene_ana_lib,
-       gromosPP_bin=gromos_path, numstates=states)
+       gromosPP_bin=gromos_path)

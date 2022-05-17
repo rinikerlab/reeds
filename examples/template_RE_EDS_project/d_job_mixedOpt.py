@@ -51,6 +51,7 @@ sOpt_add_replicas = 0
 last_jobID = mixedOpt.do(out_root_dir=out_sopt_dir,
                          in_simSystem=system,
                          in_ene_ana_lib_path=ene_ana_lib,
+                         undersampling_fraction_threshold=undersampling_frac_thresh,
                          nmpi_per_replica=nmpi_per_replica,
                          duration_per_job = job_duration,
                          iterations=iterations,
