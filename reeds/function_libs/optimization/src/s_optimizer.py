@@ -256,11 +256,11 @@ class _RTOptimizer():
         new_replica_num = add_replicas + old_num_replicas
 
         if verbose:
-            print("smin ", smin)
-            print("smax ", smax)
-            print("list:flow,svals ", [(f.f, f.s) for f in f_n_list])
-            print("old_num_replicas: ", old_num_replicas)
-            print("add_replicas: ", add_replicas)
+            print("number of replicas (initial): ", old_num_replicas)
+            print("smax: ", smax)
+            print("smin: ", smin) 
+            print ("add replicas: ", add_replicas)
+            print("list:flow,svals ", [(np.round(f.f, 2), f.s) for f in f_n_list])
 
         # 1: calculate normalisation factor c_prime from troyer 2006
         if (detail_verbose == 1):
@@ -287,12 +287,13 @@ class _RTOptimizer():
                                                             new_replica_num=new_replica_num, verbose=add_verbose)
         new_s_dist_round = self._nice_sval_list(new_s_dist)
         self.opt_replica_parameters = new_s_dist_round
-
-        if verbose:
-            print("\nold_s_vals", old_s_dist)
-            print("new_s dist ", new_s_dist)
-            print("new_s dist round ", new_s_dist_round)
-            print("len old, new", len(old_s_dist), len(new_s_dist))
+        
+        # candide: commented out this as it is printed out later in code
+        #if verbose:
+            #print("\nold_s_vals", old_s_dist)
+            #print("new_s dist ", new_s_dist)
+            #print("new_s dist round ", new_s_dist_round)
+            #print("len old, new", len(old_s_dist), len(new_s_dist))
 
     def _optimize_LRTO(self, add_replicas: int, verbose=False) -> None:
         """

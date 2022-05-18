@@ -115,11 +115,6 @@ int
         if (initial_command != ""):
             prefix_command += initial_command + "\n\n"
         
-        # Candide: I comment out this line to see what happens !
-        # For the production it needs to be commented out.
-
-        #prefix_command += " cp " + in_imd_path + " " + prepared_imd + " && "
-
         # sim vars logs
         out_prefix = jobname
         slave_script = workerScript.__file__
@@ -132,11 +127,18 @@ int
                                          out_dir_path, ]  # Coord file is used by repex in_imd_path prepared_imd
               
         # accounting for the different types of restraint used:
+        if not hasattr(simSystem.top, 'refpos_path'):
+            simSystem.top.refpos_path = None
+        if not hasattr(simSystem.top, 'posres_path'):
+            simSystem.top.posres_path = None
+        if(not ((simSystem.top.disres_path is None) or (simSystem.top.disres_path == "None"))):
+                            check_path_dependencies_paths.append(simSystem.top.disres_path)
+        
+        if(not (simSystem.top.refpos_path is None and simSystem.top.posres_path is None)):
+            check_path_dependencies_paths.append(simSystem.top.posres_path)
+            check_path_dependencies_paths.append(simSystem.top.refpos_path)
         if(not simSystem.top.disres_path is None):
               check_path_dependencies_paths.append(simSystem.top.disres_path)
-        if(not (simSystem.top.refpos_path is None and imSystem.top.posres_path is None)):
-              check_path_dependencies_paths.append(simSystem.top.posres_path)
-              check_path_dependencies_paths.append(simSystem.top.refpos_path)
 
         # optional paths
         if (not isinstance(work_dir, type(None)) and work_dir != "None"):
@@ -276,8 +278,8 @@ int
                     spacer + "\n submit ANA part " + str(num_simulation_runs + num_equilibration_runs) + "\n")
                 try:
                     if (verbose): print("\tFINAL ANALYSIS")
-                    outLog = out_dir_path + "/" + jobname + "_Ana.out"
-                    errLog = out_dir_path + "/" + jobname + "_Ana.err"
+                    outLog = out_dir_path + "/../" + jobname + "_Ana.out"
+                    errLog = out_dir_path + "/../" + jobname + "_Ana.err"
                     previous_job_ID = job_submission_system.submit_to_queue(command=in_analysis_script_path,
                                                                             jobName=tmp_ana_jobname,
                                                                             submit_from_dir=out_dir_path,

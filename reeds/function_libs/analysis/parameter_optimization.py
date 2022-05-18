@@ -34,7 +34,6 @@ def energyOffset_time_convergence(ene_ana_trajs, out_dir: str, Eoff: List[float]
             tmp_ene_traj = ene_traj.iloc[ene_traj.index < last_step]
             tmp_ene_traj.replicaID = ene_traj.replicaID
             shortened_trajs.append(tmp_ene_traj)
-            print(len(tmp_ene_traj))
 
         # estm eoff
         statistic = eoff.estEoff(ene_ana_trajs=shortened_trajs, out_path=out_dir + "/Eoff_estimate_new.out",
