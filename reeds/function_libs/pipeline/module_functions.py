@@ -511,7 +511,7 @@ def build_optimization_step_dir(iteration: int,  iteration_folder_prefix: str, p
         "undersampling_frac_thresh": undersampling_frac_thresh,
         "verbose": True,
         "add_s_vals": optimization_options.add_replicas,
-        "": control_dict,
+        "control_dict": control_dict,
         "title_prefix": in_simSystem.name,
         "grom_file_prefix": in_simSystem.name,
     })
