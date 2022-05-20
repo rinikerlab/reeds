@@ -172,7 +172,7 @@ def do_Reeds_analysis(in_folder: str, out_folder: str, gromos_path: str,
                       grom_file_prefix: str = "test", title_prefix: str = "test", ene_ana_prefix="ey_sx.dat",
                       repdat_prefix: str = "run_repdat.dat",
                       n_processors: int = 1, verbose=False, dfmult_all_replicas=False,
-                      ssm_next_cnfs: bool = True, 
+                      ssm_next_cnfs: bool = False, 
                       control_dict: Dict[str, Union[bool, Dict[str, bool]]] = None) -> (
         dict, dict, dict):
     """
