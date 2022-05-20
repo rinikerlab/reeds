@@ -76,16 +76,22 @@ def rebalance_eoffs_directCounting(old_eoffs: np.array, sampling_stat: Dict[int,
     # correct eoffs
     if (verbose):
         print("Eoff correction:")
-        print(dEoff_corrected_matrix)
+        print(np.round(dEoff_corrected_matrix, 2))
         print()
     new_eoffs = old_eoffs + dEoff_corrected_matrix
-
+    
     if (verbose):
         print("old Eoffs:")
-        print(old_eoffs)
+        if np.array_equal(old_eoffs[0], old_eoffs[1]):
+            print (old_eoffs[0])
+        else:
+            print(old_eoffs)
         print()
         print("corrected Eoffs:")
-        print(new_eoffs)
+        if np.array_equal(new_eoffs[0], new_eoffs[1]):
+            print(np.round(new_eoffs[0], 2))
+        else: 
+            print(np.round(new_eoffs, 2))
         print()
 
     return new_eoffs
@@ -183,7 +189,7 @@ def calculate_Eoff_Correction(samplingDists: np.array,
     print()
 
     print("raw correction")
-    print(dEoff_corrected_matrix)
+    print(np.round(dEoff_corrected_matrix, 2))
     print()
 
     # some eoff shifting (such that eoff 0 is)
@@ -196,7 +202,7 @@ def calculate_Eoff_Correction(samplingDists: np.array,
     if (verbose):
 
         print("Correction after learning Factor:")
-        print(dEoff_corrected_matrix)
+        print(np.round(dEoff_corrected_matrix, 2))
         print()
 
     return dEoff_corrected_matrix

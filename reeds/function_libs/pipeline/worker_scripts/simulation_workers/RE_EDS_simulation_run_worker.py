@@ -62,8 +62,11 @@ def work(out_dir: str, in_coord: str, in_imd_path: str, in_topo_path: str, in_pe
             work_dir = out_dir
         
         # Check if the calculation is running on multiple nodes:
-        hosts = os.environ['LSB_HOSTS'].split()
-        multi_node = True if len(hosts) > 1 else False        
+        if 'LSB_HOSTS' in os.environ: 
+            hosts = os.environ['LSB_HOSTS'].split()
+            multi_node = True if len(hosts) > 1 else False
+        else:
+            multi_node = False
         
         # run a euler script to create tmpdir on all nodes
         if multi_node:
@@ -98,14 +101,19 @@ def work(out_dir: str, in_coord: str, in_imd_path: str, in_topo_path: str, in_pe
                         "in_pert_topo_path" : in_perttopo_path,
                         "out_prefix" : out_prefix,
                         "out_trg" : write_free_energy_traj}
-
-            if(not in_disres_path is None):
+            
+            restrained = False
+            if in_disres_path is not None and in_disres_path != "None":
                 key_args.update({"in_disres_path": in_disres_path})
-            elif(not (in_posres_path is None or in_refpos_path is None)):
+                restrained = True
+
+            if(not (in_posres_path is None or in_refpos_path is None)):
                 key_args.update({"in_posresspec_path": in_posres_path,
                                  "in_refpos_path": in_refpos_path})
-            else:
-                raise ValueError("Are you really sure you want to run without restraints?")
+                restrained = True
+
+            if not restrained:
+                print ("Are you really sure you want to run without restraints?\n")
 
             md_run_log_path = md.repex_mpi_run(**key_args)
             

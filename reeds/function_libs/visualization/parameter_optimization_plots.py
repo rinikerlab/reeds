@@ -116,86 +116,95 @@ def plot_peoe_eoff_time_convergence(state_time_dict: dict,
     fig.savefig(out_path)
     plt.close()
 
-
 def visualization_s_optimization_summary(s_opt_data: dict,
                                          out_path: str = None,
                                          nRT_range: List[float] = None,
-                                         avRT_range: List[float] = None) -> Union[str, plt.figure]:
+                                         avRT_range: List[float] = None, 
+                                         nsteps: float = 50) -> Union[str, plt.figure]:
     """visualization_s_optimization_summary
 
     Parameters
     ----------
     s_opt_data : dict
+        dictionary containing data of all optimization iterations
     out_path : str, optional
+        path to save figure
     nRT_range : List[float]
+        range for the plot of number of roundtrips
     avRT_range : List[float]
-
+        range for the plot of roundtrip times
+    nsteps: float 
+        number of steps between two exchange trials
     Returns
     -------
     Union[str, plt.figure]
         the outpath is returned if one is given. Alternativley the plot direclty will be returned.
     """
     niterations = len(s_opt_data)
-
-    y_nRT = []
-    y_RTd = []
-    x = []
-
+    
+    x = np.linspace(1, niterations, niterations)
+    
+    num_roundtrips = []
+    std_num_roundtrips = []
+    
+    avg_roundtrip_time = []
+    
     x_svalues = []
     y_svalues = []
     
     bar_heights = []
-    bar_x = []
-    for it in sorted(s_opt_data):
-        opti = s_opt_data[it]
-        x.append(it.replace('sopt', "").replace("eoffRB", ""))
-        y_nRT.append(opti['avg_nRoundtripsPerNs'])
-
-        # dirty helper. not needed in future! TODO: remove
-        roundTripTimeavg = 3333333 if (np.nan_to_num(opti['avg_rountrip_durations']) == 0) else np.nan_to_num(
-            opti['avg_rountrip_durations'])
-        y_RTd.append(roundTripTimeavg)
-
+    
+    # Format data properly for plotting:
+    
+    for i, key in enumerate(sorted(s_opt_data)):
+        
+        opti = s_opt_data[key]
+        num_roundtrips.append(opti['avg_nRoundtripsPerNs'])
+            
+        std_num_roundtrips.append(np.std([ v['roundtrips_per_ns'] for k, v in (opti['stats_per_replica'].items())]))
+        
+        avg_roundtrip_time.append(np.nan_to_num(opti['avg_rountrip_durations']))
+        
         x_svalues.extend(opti["s_values"])
-        y_svalues.extend([int(it.replace('sopt', "").replace("eoffRB", "")) for x in range(len(opti["s_values"]))])
+        y_svalues.extend([(i+1) for x in range(len(opti["s_values"]))])
         
         bar_heights.append([opti["state_maxContributing_sampling"][state] for state in opti["state_maxContributing_sampling"]])
-        bar_x.append(np.array(
-            [int(state.replace("V", "").replace("r", "").replace("i", "")) for state in opti["state_maxContributing_sampling"]]))
-
-    y_RTd = np.array(y_RTd) * 20 * 0.002
+        
+    
+    # Convert the number of steps into a time 
+    avg_roundtrip_time = np.array(avg_roundtrip_time) * 0.002 * nsteps
+    
+    # Plot the formatted data: 
+    
     fig, ((ax1, ax2), (ax3, ax4)) = plt.subplots(ncols=2, nrows=2, figsize=ps.figsize_doubleColumn)
 
-    ax1.bar(x=x, height=y_nRT, color="dimgray")
+    ax1.bar(x=x, height=num_roundtrips, yerr = std_num_roundtrips, color="dimgray")
     ax1.set_title("Average Number of Roundtrips per ns")
     ax1.set_ylabel("n$_{avg}^{rt}$ [1 / ns] ")
     ax1.set_xlabel("iteration")
+    ax1.set_xticks(x)
 
     if (not isinstance(nRT_range, type(None))):
         ax1.set_ylim(nRT_range)
 
-    ax2.bar(x=x, height=y_RTd, color="dimgray")
+    ax2.bar(x=x, height=avg_roundtrip_time, color="dimgray")
     ax2.set_title("Average Roundtrip Time")
     ax2.set_ylabel("t [ps]")
     ax2.set_xlabel("iteration")
+    ax2.set_xticks(x)
 
-    if (not isinstance(avRT_range, type(None))):
+    if avRT_range is not None:
         ax2.set_ylim(avRT_range)
-    else:
-        pass
-        #ax2.set_ylim([0, max(y_RTd) * 1.2])
 
-    x_svalues = (-1 * np.log10(np.array(x_svalues)))[::-1]
-    y_svalues = y_svalues[::-1]
-
-    ax3.scatter(x=x_svalues, y=y_svalues, c="k", alpha=0.6)
-
+    # Plot of the s-distribution
+    ax3.scatter(x=x_svalues, y=y_svalues, marker = 'x', c="black", s = 6, alpha = 0.6)
     ax3.set_yticks(np.unique(y_svalues))
     ax3.set_yticklabels(np.unique(y_svalues))
 
     ax3.set_title("Replica Placement")
-    ax3.set_ylabel("s-opt iteration")
-    ax3.set_xlabel("-log(s)")
+    ax3.set_ylabel("opt. iteration")
+    ax3.set_xlabel("s")
+    ax3.set_xscale('log')
 
     # Making the bottom right corner plot
     num_sopts = len(bar_heights)
@@ -220,8 +229,8 @@ def visualization_s_optimization_summary(s_opt_data: dict,
         percent_heights = [100*j for j in normalized_heights]
 
         ax4.bar(x + offsets[i]*width, percent_heights, width= width,
-              alpha= i/num_sopts * 0.8 + 0.2, color=["C" + str(k) for k in range(num_states)],
-              label="iteration " + str(i+ 1))
+                alpha= i/num_sopts * 0.8 + 0.2, color=["C" + str(k) for k in range(num_states)],
+                label="iteration " + str(i+ 1))
 
     xmin = x[0] + offsets[0]/3
     xmax = x[num_states-1] + offsets[num_sopts-1]/3
@@ -229,7 +238,7 @@ def visualization_s_optimization_summary(s_opt_data: dict,
     ax4.hlines(y= 100/num_states, xmin=xmin, xmax=xmax, color="red")
     ax4.set_xlim([xmin, xmax])
 
-    ax4.set_title("State Sampling For $s=1$")
+    ax4.set_title("State Sampling at $s=1$")
     ax4.set_ylabel("fraction [%]")
     ax4.set_xlabel("states")
 
@@ -238,11 +247,11 @@ def visualization_s_optimization_summary(s_opt_data: dict,
     ax4.legend()
 
     fig.tight_layout()
-
+    
     if(out_path is None):
         return fig
     else:
-        fig.savefig(out_path)
+        fig.savefig(out_path, dpi = 300)
 
 def visualize_s_optimisation_convergence(s_opt_data:dict,
                                          out_path:str=None,

@@ -161,7 +161,7 @@ def check_script_control(control_dict: dict = None) -> dict:
 
 def do_Reeds_analysis(in_folder: str, out_folder: str, gromos_path: str,
                       topology: str, in_ene_ana_lib: str, in_imd: str,
-                      optimized_eds_state_folder: str = "../a_optimizedState/analysis/data",
+                      optimized_eds_state_folder: str = "../a_optimizedStates/analysis/data",
                       state_undersampling_occurrence_potential_threshold: List[float] = None,
                       state_physical_occurrence_potential_threshold: List[float] = None,
                       undersampling_frac_thresh: float = 0.9,
@@ -172,6 +172,7 @@ def do_Reeds_analysis(in_folder: str, out_folder: str, gromos_path: str,
                       grom_file_prefix: str = "test", title_prefix: str = "test", ene_ana_prefix="ey_sx.dat",
                       repdat_prefix: str = "run_repdat.dat",
                       n_processors: int = 1, verbose=False, dfmult_all_replicas=False,
+                      ssm_next_cnfs: bool = False, 
                       control_dict: Dict[str, Union[bool, Dict[str, bool]]] = None) -> (
         dict, dict, dict):
     """
@@ -223,6 +224,9 @@ def do_Reeds_analysis(in_folder: str, out_folder: str, gromos_path: str,
         verbosity level
     dfmult_all_replicas : bool, optional
         shall dfmult be calculated for all replicas
+    ssm_next_cnfs: bool
+        if true, the conformations placed in /analysis/next will be SSM conformations
+        if false, the conformations will be the last conformations of the simulation
     control_dict : dict, optional
         control dict for analysis
 
@@ -447,10 +451,10 @@ def do_Reeds_analysis(in_folder: str, out_folder: str, gromos_path: str,
 
             # Decrement the value of undersampling_idx by 1. As indexing followed a different convention. 
             new_eoffs_estm, all_eoffs = eds_energy_offsets.estimate_energy_offsets(ene_trajs = energy_trajectories, initial_offsets = Eoff[0], sampling_stat=sampling_results, s_values = s_values,
-                                                                              out_path = out_dir, temp = temp, trim_beg = 0., undersampling_idx = sampling_results['undersamplingThreshold']-1,
-
-                                                        plot_results = True, calc_clara = False)
-            print("ENERGY OFF: ", new_eoffs_estm, all_eoffs)
+                                                                                   out_path = out_dir, temp = temp, trim_beg = 0., undersampling_idx = sampling_results['undersamplingThreshold']-1,
+                                                                                   plot_results = True, calc_clara = False)
+            print("ENERGY OFFSETS ESTIMATION:\n") 
+            print("new_eoffs_estm: " + str(np.round(new_eoffs_estm, 2)))
         elif(sub_control["eoffset_rebalancing"]):
             new_eoffs_rb = rebalance_eoffs_directCounting(sampling_stat=sampling_results['samplingDistributions'], old_eoffs=Eoff,
                                                        learningFactor=eoffRebalancing_learningFactor, pseudo_count=eoffRebalancing_pseudocount,
@@ -460,11 +464,11 @@ def do_Reeds_analysis(in_folder: str, out_folder: str, gromos_path: str,
         if (verbose): print("Done\n")
 
     if (control_dict["sopt"]["do"]):
+        print ('\nANALYSIS of the S-DISTRIBUTION')
         sub_control = control_dict["sopt"]["sub"]
         out_dir = bash.make_folder(out_folder + "/s_optimization")
 
         # get repdat file
-        print(repdat_file_out_path)
         in_file = glob.glob(repdat_file_out_path)[0]
         print("Found repdat file: " + str(in_file))
         
@@ -474,8 +478,6 @@ def do_Reeds_analysis(in_folder: str, out_folder: str, gromos_path: str,
         exchange_freq = repex.calculate_exchange_freq(exchange_data)
 
         if (sub_control["run_RTO"]):
-            print("Start Sopt\n")
-            print("repdat_in_file: ", in_file, "\n")
             svals = parameter_optimization.optimize_s(in_file=in_file, out_dir=out_dir,
                                                                                    title_prefix="s_opt", in_imd=in_imd,
                                                                                    add_s_vals=add_s_vals, trial_range=s_opt_trial_range,
@@ -524,35 +526,24 @@ def do_Reeds_analysis(in_folder: str, out_folder: str, gromos_path: str,
 
     if (control_dict["prepare_input_folder"]["do"]):
         sub_control = control_dict["prepare_input_folder"]["sub"]
-        print("PREPARE NEXT FOLDER- for next run")
+        print("PREPARE NEXT FOLDER - for following simulation")
 
         next_dir = bash.make_folder(out_folder + "/next", "-p")
         next_imd = next_dir + "/next.imd"
-
-        # add ne w cnf s for the new S-distribution
-        print("generating new Cnfs for new s_dist")
+        
+        # add new cnf s for the new S-distribution
+        print("Place the proper conformations (.cnf) files in analysis/next")
         if (sub_control["eoff_to_sopt"]):  # if the s_dist should be converted from eoff to sopt
-            new_sval = [s_values, [], []]
-            new_sval[1] = [1.0 for x in range(num_states)] + list(
-                sdist.get_log_s_distribution_between(start=1.0, end=min(s_values), num=len(s_values) - 4))[
-                                                             1:]  # todo: hardcoded make clever and do automatic!
-            new_sval[2] = new_sval[1]
-            svals = new_sval
+            svals = sdist.generate_preoptimized_sdist(svals[0], num_states, exchange_freq, svals[1][sampling_results['undersamplingThreshold']+2])
 
-        print('new_s(' + str(len(svals)) + ") ", svals)
-        print("svalues var", s_values)
         input_cnfs = os.path.dirname(in_imd) + "/coord"
-        print("svals", svals)
            
-        #CLEAN!
-        #print("nsvals:")
-        #print(len(svals[0]), len(svals[1]), len(svals[2]))
-        # Pu the proper cnfs in place        
+        # Put the proper cnfs in place        
         if(len(svals)==0):
             sopt_type_switch = 0
         else:    
             sopt_type_switch = 2 if(svals[1] is None or len(svals[1]) == 0 ) else 1
-        print("Switch", sopt_type_switch)
+        print("Switch (algorithm for conformations): ", sopt_type_switch)
         if(len(svals)==0):
             svals = {0:s_values}
             sopt_type_switch = 0
@@ -599,21 +590,35 @@ def do_Reeds_analysis(in_folder: str, out_folder: str, gromos_path: str,
 
         else:
             if verbose: print("same ammount of s_vals -> simply copying output:")
-            cnfs = list(sorted(glob.glob(concat_file_folder+"/*.cnf"), key=lambda x: int(x.split("_")[-1].split(".")[0])))
-            for i, cnf in enumerate(cnfs):
-                bash.copy_file(cnf, next_dir+"/"+title_prefix+"_"+str(i+1)+".cnf")
+            
+            if (control_dict["sopt"]["sub"]["run_RTO"] or control_dict["eoffset"]["eoffset_rebalancing"]) and ssm_next_cnfs:
+                print ('Copying the SSM conformations for next simulation')
+            
+                if (not os.path.isdir(optimized_eds_state_folder)):
+                    raise IOError("Could not find optimized state output dir: " + optimized_eds_state_folder)
+
+                opt_state_cnfs = sorted(glob.glob(optimized_eds_state_folder+'/*.cnf'),
+                                        key=lambda x: int(x.split("_")[-1].replace(".cnf", "")))
+                for i in range(1, len(svals[sopt_type_switch])+1):
+                    bash.copy_file(opt_state_cnfs[(i-1)%num_states], next_dir+"/"+title_prefix+"_"+str(i)+".cnf")
+            
+            else:
+                print ('Copying the final conformations for next simulation')
+                cnfs = list(sorted(glob.glob(concat_file_folder+"/*.cnf"), key=lambda x: int(x.split("_")[-1].split(".")[0])))
+                for i, cnf in enumerate(cnfs):
+                    bash.copy_file(cnf, next_dir+"/"+title_prefix+"_"+str(i+1)+".cnf")
 
         # write next_imd.
-        print("write out imd file ")
+        print("Writing out the next .imd file ")
         imd_file = imd.Imd(in_imd)
 
         ##New EnergyOffsets
         if(sub_control["write_eoffRB"] and sub_control["write_eoffEstm"]):
             raise Exception("can not write eoffRB and eoffEstm in new imd!")
         elif sub_control["write_eoffRB"] and control_dict["eoffset"]["do"] and control_dict['eoffset']['sub']['eoffset_rebalancing']:
-            imd_file.edit_REEDS(EIR=new_eoffs_rb)
+            imd_file.edit_REEDS(EIR=np.round(new_eoffs_rb, 2))
         elif sub_control["write_eoffEstm"] and control_dict["eoffset"]["do"] and control_dict['eoffset']['sub']['eoff_estimation']:
-            imd_file.edit_REEDS(EIR=new_eoffs_estm)
+            imd_file.edit_REEDS(EIR=np.round(new_eoffs_estm, 2))
         elif ((sub_control["write_eoffRB"] or sub_control["write_eoffEstm"]) and not control_dict["Eoff"]["do"] and not (control_dict['eoffset']['sub']['eoff_estimation'] or control_dict['eoffset']['sub']['eoffset_rebalancing'])):
             raise Exception("can not write eoffRB or eoffEstm as no eoff step chosen active!")
 

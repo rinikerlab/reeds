@@ -176,8 +176,13 @@ def do(project_dir: str, optimization_name:str,
     for iteration_folder in sorted(sopt_dirs):
         if("sopt" in iteration_folder):
             iteration = int(iteration_folder.replace("sopt", ""))
+            prefix = "sopt"
         elif("eoffRB" in iteration_folder):
             iteration = int(iteration_folder.replace("eoffRB", ""))
+            prefix = "eoffRB"
+        elif("mixedOpt" in iteration_folder):
+            iteration = int(iteration_folder.replace("mixedOpt", ""))
+            prefix = "mixedOpt"
         else:
             raise Exception("OHOH!")
 
@@ -206,7 +211,6 @@ def do(project_dir: str, optimization_name:str,
             continue
         # round trip time efficiency
         if (iteration > 1):
-            prefix = "sopt" if("sopt" in list(sopt_data.keys())[0]) else "eoffRB"
             opt_it_stats.update({"avg_rountrip_duration_optimization_efficiency": sopt_data[prefix+str(iteration- 1)]["avg_rountrip_durations"] -opt_it_stats["avg_rountrip_durations"]})
 
         #assign convergence in an conserative fasion.
