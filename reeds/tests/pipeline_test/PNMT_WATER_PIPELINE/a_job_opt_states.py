@@ -19,7 +19,7 @@ in_name = name+"_optimize_single_state"
 out_gOptStates_dir = bash.make_folder(out_gOptStates_dir)
 
 #In- Files
-topology_state_opt = fM.Topology(top_path=in_top_file, disres_path=in_disres_file, pertubation_path=in_pert_file)
+topology_state_opt = fM.Topology(top_path=in_top_file, disres_path=in_disres_file, perturbation_path=in_pert_file)
 system = fM.System(coordinates=in_cnf_file, name=in_name, top=topology_state_opt)
 print(system)
 

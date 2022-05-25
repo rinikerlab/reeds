@@ -78,7 +78,6 @@ def adapt_imd_template_optimizedState(in_template_imd_path: str, out_imd_dir: st
     imd_file.SYSTEM.NSM = int(round(residues["SOLV"] / 3)) if ("SOLV" in residues) else 0
     imd_file.FORCE.adapt_energy_groups(residues)
     imd_file.STEP.NSTLIM = simulation_steps
-    imd_file.STEP.NSTLIM = simulation_steps
 
     if(single_bath):
         solvent_bath = (
