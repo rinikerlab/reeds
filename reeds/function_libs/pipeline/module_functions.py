@@ -10,6 +10,7 @@ from pygromos.euler_submissions import FileManager as fM
 from pygromos.files import imd, coord
 from pygromos.files.coord import cnf as cnf_cls
 from pygromos.utils import amino_acids as aa, bash
+from pygromos.files._basics.parser import read_ptp
 from reeds.function_libs.pipeline.jobScheduling_scripts import RE_EDS_simulation_scheduler
 from reeds.function_libs.pipeline.worker_scripts.analysis_workers import RE_EDS_general_analysis, \
     RE_EDS_general_analysis as reeds_analysis
@@ -20,7 +21,7 @@ from reeds.function_libs.utils.structures import optimization_params
 """
 IMD template adaptations
 """
-def adapt_imd_template_optimizedState(in_template_imd_path: str, out_imd_dir: str, cnf: cnf_cls.Cnf, non_ligand_residues: list = [],
+def adapt_imd_template_optimizedState(in_pert_file: str, in_template_imd_path: str, out_imd_dir: str, cnf: cnf_cls.Cnf, non_ligand_residues: list = [],
                                       simulation_steps: int = 100000, solvent_keyword: str = "SOLV", single_bath: bool = False)->(str, list):
     """
       modify_imds - for generateOptimizedStates
@@ -28,6 +29,8 @@ def adapt_imd_template_optimizedState(in_template_imd_path: str, out_imd_dir: st
 
     Parameters
     ----------
+    in_pert_file : str
+        path to the perturbation topology
     in_template_imd_path : str
         path to the template imd
     out_imd_dir : str
@@ -46,7 +49,7 @@ def adapt_imd_template_optimizedState(in_template_imd_path: str, out_imd_dir: st
     Returns
     -------
     (str, list)
-        imd_template_path, lig_nums
+        imd_template_path, states_num
     """
 
     orig_residues = cnf.get_residues()
@@ -63,7 +66,7 @@ def adapt_imd_template_optimizedState(in_template_imd_path: str, out_imd_dir: st
 
     # get ligand parameters
     lig_atoms = sum([sum(list(residues[res].values())) for res in residues if ignore_residues(res)])
-    lig_num = sum([1 for res in residues if ignore_residues(res)])
+    states_num = int(read_ptp(in_pert_file)['MPERTATOM']['NPTB'])
     lig_names = [res for res in residues if ignore_residues(res)]
     lig_position = min([min(residues[res]) for res in residues if ignore_residues(res)])
 
@@ -115,13 +118,13 @@ def adapt_imd_template_optimizedState(in_template_imd_path: str, out_imd_dir: st
 
     # edit EDS part
     imd_template_path = out_imd_dir + "/opt_structs_" + "_".join(lig_names)
-    s_values = [1.0 for x in range(lig_num)]
-    for state, s_values in zip(range(1, lig_num + 1), s_values):
-        imd_file.edit_EDS(NUMSTATES=lig_num, S=s_values,
-                          EIR=[500 if (x == state) else -500 for x in range(1, lig_num + 1)])
+    s_values = [1.0 for x in range(states_num)]
+    for state, s_values in zip(range(1, states_num + 1), s_values):
+        imd_file.edit_EDS(NUMSTATES=states_num, S=s_values,
+                          EIR=[500 if (x == state) else -500 for x in range(1, states_num + 1)])
         imd_file.write(imd_template_path + "_" + str(state) + ".imd")
 
-    return imd_template_path, s_values, lig_num
+    return imd_template_path, s_values, states_num
 
 
 def adapt_imd_template_lowerBound(in_template_imd_path: str, out_imd_dir: str, cnf: coord.Cnf,

@@ -134,7 +134,8 @@ def do(out_root_dir: str, in_simSystem: fM.System,
                           clean_resiNumbers_by_Name=True)  # TODO: Careful with cleaning flag! protein is not correctly described.
 
         # prepare imd_templates
-        imd_template_path, s_values, lig_num = adapt_imd_template_optimizedState(in_template_imd_path=in_imd_template_path,
+        imd_template_path, s_values, states_num = adapt_imd_template_optimizedState(in_pert_file=system.top.perturbation_path,
+                                                                                 in_template_imd_path=in_imd_template_path,
                                                                                  out_imd_dir=input_dir, cnf=cnf,
                                                                                  non_ligand_residues=exclude_residues,
                                                                                  simulation_steps=simulation_steps,
@@ -142,7 +143,7 @@ def do(out_root_dir: str, in_simSystem: fM.System,
                                                                                  single_bath = single_bath)
 
         # copy and prepare cnfs:
-        for state in range(1, lig_num + 1):
+        for state in range(1, states_num + 1):
             bash.copy_file(system.coordinates, coord_dir + "/" + os.path.basename(system.coordinates).replace(".cnf",
                                                                                                               "_" + str(
                                                                                                                   state) + ".cnf"))
@@ -166,7 +167,7 @@ def do(out_root_dir: str, in_simSystem: fM.System,
                          "in_topology_path": system.top.top_path,
                          "in_simulation_dir": sim_dir,
                          "in_imd_path": imd_template_path,
-                         "numstates": lig_num,
+                         "numstates": states_num,
                          "gromosPP_bin": in_gromosPP_bin_dir,
                          "vacuum_simulation": vacuum_simulation,
                          "in_ene_ana_lib": ene_ana_lib,
@@ -181,7 +182,7 @@ def do(out_root_dir: str, in_simSystem: fM.System,
                                                                  output_dir=sim_dir, duration=job_duration,
                                                                  run_script=worker_script,
                                                                  analysis_script=in_analysis_script_path,
-                                                                 array_length=lig_num,
+                                                                 array_length=states_num,
                                                                  array_name=system.name, cpu_per_job=nmpi_per_replica,
                                                                  memory=memory)
         ###bash make job_array script executable
