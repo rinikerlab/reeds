@@ -127,7 +127,7 @@ def adapt_imd_template_optimizedState(in_pert_file: str, in_template_imd_path: s
     return imd_template_path, s_values, states_num
 
 
-def adapt_imd_template_lowerBound(in_template_imd_path: str, out_imd_dir: str, cnf: coord.Cnf,
+def adapt_imd_template_lowerBound(in_pert_file: str, in_template_imd_path: str, out_imd_dir: str, cnf: coord.Cnf,
                                   non_ligand_residues: list = [], s_values: t.List[float] = None,
                                   simulation_steps: int = 1000000, solvent_keyword:str="SOLV",
                                   single_bath: bool = False)->(str, list, int):
@@ -165,7 +165,7 @@ def adapt_imd_template_lowerBound(in_template_imd_path: str, out_imd_dir: str, c
 
     # get ligand parameters
     lig_atoms = sum([sum(list(residues[res].values())) for res in residues if ignore_residues(res)])
-    lig_num = sum([1 for res in residues if ignore_residues(res)])
+    states_num = int(read_ptp(in_pert_file)['MPERTATOM']['NPTB'])
     lig_names = [res for res in residues if ignore_residues(res)]
     lig_position = min([min(residues[res]) for res in residues if ignore_residues(res)])
 
@@ -179,7 +179,6 @@ def adapt_imd_template_lowerBound(in_template_imd_path: str, out_imd_dir: str, c
     imd_file = imd.Imd(in_template_imd_path)
     imd_file.SYSTEM.NSM = int(round(residues["SOLV"] / 3)) if ("SOLV" in residues) else 0
     imd_file.FORCE.adapt_energy_groups(residues)
-    imd_file.STEP.NSTLIM = simulation_steps
     imd_file.STEP.NSTLIM = simulation_steps
 
     if (single_bath):
@@ -225,10 +224,10 @@ def adapt_imd_template_lowerBound(in_template_imd_path: str, out_imd_dir: str, c
         s_values = s_log_dist.get_log_s_distribution_between(start=1.0, end=0.00001)
 
     for ind, sval in enumerate(s_values):
-        imd_file.edit_EDS(NUMSTATES=lig_num, S=sval, EIR=[0.0 for x in range(lig_num)])
-        imd_file.write(imd_template_path + "_" + str(ind) + ".imd")
+        imd_file.edit_EDS(NUMSTATES=states_num, S=sval, EIR=[0.0 for x in range(states_num)])
+        imd_file.write(imd_template_path + "_" + str(ind+1) + ".imd")
 
-    return imd_template_path, s_values, lig_num
+    return imd_template_path, s_values
 
 
 def adapt_imd_template_eoff(system: fM.System, imd_out_path: str, imd_path: str,

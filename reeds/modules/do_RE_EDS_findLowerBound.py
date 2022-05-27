@@ -114,7 +114,8 @@ int
         cnf = coord.Cnf(system.coordinates, clean_resiNumbers_by_Name=True)
 
         # build imd_templates
-        imd_template_path, s_values, lig_num = adapt_imd_template_lowerBound(in_template_imd_path=template_imd,
+        imd_template_path, s_values = adapt_imd_template_lowerBound(in_pert_file=system.top.perturbation_path,
+                                                                             in_template_imd_path=template_imd,
                                                                              out_imd_dir=input_dir, cnf=cnf,
                                                                              non_ligand_residues=exclude_residues,
                                                                              simulation_steps=simulation_steps,
