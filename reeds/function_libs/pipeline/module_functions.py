@@ -475,7 +475,7 @@ def build_optimization_step_dir(iteration: int,  iteration_folder_prefix: str, p
                      "roundtrips": True,
                      "generate_replica trace": True}
                  },
-        "eoffset": {"do": True,
+        "eoffset": {"do": True if run_eoffRB else False,
                     "sub": {
                         "eoff_estimation": not run_eoffRB,
                         "sampling_plot": False,
