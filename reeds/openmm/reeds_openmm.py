@@ -431,26 +431,20 @@ class Reeds:
     calculates exchange probability between replicas at positions partners[0] and partners[1]
     """
     V_orig = np.array([0.,0.])
-    for i, p in enumerate(partners):
-      self.simulations.context.setState(self.states[p])
-      
-      for j in range(self.num_endstates):
-        self.simulations.context.setParameter('scaling_' + str(j), 1)
-      
-      # calculate reference state with original s value
-      Vi = [self.simulations.context.getState(getEnergy=True, groups=1<<j+1).getPotentialEnergy().value_in_unit(u.kilojoules_per_mole) for j in range(self.num_endstates)]
-      s = self.s_values[p]
-      V_orig[i] = - 1/(self.beta * s) * logsumexp(-self.beta * s * (Vi - self.energy_offsets))
-
     V_exch = np.array([0.,0.])
     for i, p in enumerate(partners):
       self.simulations.context.setState(self.states[p])
       
       for j in range(self.num_endstates):
         self.simulations.context.setParameter('scaling_' + str(j), 1)
-          
-      # calculate reference state with partner's s value
+      
       Vi = [self.simulations.context.getState(getEnergy=True, groups=1<<j+1).getPotentialEnergy().value_in_unit(u.kilojoules_per_mole) for j in range(self.num_endstates)]
+      
+      # calculate reference state with original s value
+      s = self.s_values[p]
+      V_orig[i] = - 1/(self.beta * s) * logsumexp(-self.beta * s * (Vi - self.energy_offsets))
+      
+      # calculate reference state with partner's s value
       s = self.s_values[partners[-(i+1)]]
       V_exch[i] = - 1/(self.beta * s) * logsumexp(-self.beta * s * (Vi - self.energy_offsets))
 
