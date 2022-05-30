@@ -349,7 +349,8 @@ def adapt_imd_template_eoff(system: fM.System, imd_out_path: str, imd_path: str,
     if (not isinstance(imd_file.MULTIBATH, type(None))):
         imd_file.MULTIBATH.adapt_multibath(last_atoms_bath=temp_baths)  # adapt bath last atom nums
     if (verbose): print("svals " + str(len(svals)) + ": " + str(svals))
-    imd_file.edit_REEDS(NATOM=all_atoms, NUMSTATES=ligands.number, SVALS=svals, EIR=0.0)  # build REEDS Block
+    states_num = int(read_ptp(system.top.perturbation_path)['MPERTATOM']['NPTB'])
+    imd_file.edit_REEDS(NATOM=all_atoms, NUMSTATES=states_num, SVALS=svals, EIR=0.0)  # build REEDS Block
     if(randomize): imd_file.randomize_seed()
     imd_out_path = imd_file.write(imd_out_path)
     if (verbose): print(imd_file.REPLICA_EDS)
