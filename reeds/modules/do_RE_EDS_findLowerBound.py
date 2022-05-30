@@ -159,7 +159,7 @@ int
                                                                  array_length=len(s_values), array_name=system.name,
                                                                  cpu_per_job=nmpi_per_replica,
                                                                  analysis_script=in_analysis_script_path,
-                                                                 noFailInChain=False, memory=memory,
+                                                                 memory=memory,
                                                                  duration=job_duration)
 
         # bash make job_array script executable
