@@ -32,13 +32,14 @@ from reeds.function_libs.pipeline import generate_euler_job_files as gjs
 from reeds.function_libs.pipeline.module_functions import adapt_imd_template_lowerBound
 from reeds.function_libs.pipeline.worker_scripts.analysis_workers import RE_EDS_explore_lowerBound_analysis as ana
 from reeds.function_libs.utils.structures import spacer
+from scipy import rand
 
 
 def do(out_root_dir: str, in_simSystem: fM.System, undersampling_occurrence_fraction: float = 0.9,
        template_imd: str = None,
        gromosXX_bin: str = None, gromosPP_bin: str = None,
        ene_ana_lib: str = ene_ana_libs.ene_ana_lib_path,
-       submit: bool = True, s_values = None,
+       submit: bool = True, s_values = None, randomize_seed: bool = False,
        simulation_steps: int = 100000, job_duration: str = "4:00", memory: int = None, nmpi_per_replica: int = 4,
        verbose: bool = True) -> int:
     """ Find lower S-bound for EDS System
@@ -75,6 +76,10 @@ ene_ana_lib : str, optional
     path to in_ene_ana_lib,that can read the reeds system.
 submit : bool, optional
     Flag, if the generated sopt_job should be submitted to lsf queue.
+s_values : list[float], optional
+    manually specify s_values
+randomize_seed : bool, optional
+    randomize initial velocities
 exclude_residues : str, optional
     for cofactors, so that they are not considered as eds states
 simulation_steps : int, optional
@@ -117,7 +122,8 @@ int
                                                                            in_template_imd_path=template_imd,
                                                                            out_imd_dir=input_dir,
                                                                            s_values=s_values,
-                                                                           simulation_steps=simulation_steps)
+                                                                           simulation_steps=simulation_steps,
+                                                                           randomize=randomize_seed)
 
         # copy cnfs:
         for ind in range(len(s_values)):

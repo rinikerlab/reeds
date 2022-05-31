@@ -30,7 +30,7 @@ def do(out_root_dir: str, in_simSystem: fM.System, in_ene_ana_lib: str,
        in_template_imd_path: str = imd_templates.reeds_md_path,
        optimized_states: str = os.path.abspath("a_optimizedState/analysis/next"),
        sval_file: str = None, ssm_approach:bool = True,
-       undersampling_fraction_threshold:float = 0.9,
+       undersampling_fraction_threshold:float = 0.9, randomize_seeds: bool = False,
        state_physical_occurrence_potential_threshold: List[float] = None,
        state_undersampling_occurrence_potential_threshold: List[float] = None,
        gromosXX_bin_dir: str = None, gromosPP_bin_dir: str = None,
@@ -78,6 +78,8 @@ state_undersampling_occurrence_potential_threshold : List[float], optional
     potential thresholds for occurrence sampling (default: read in from step b)
 undersampling_fraction_threshold : float, optional
     fraction threshold for physical/occurrence sampling (default: 0.9)
+randomize_seed
+    randomize initial velocities
 equilibration_trial_num
     how many long shall the equil time be? equil?
 s_num
@@ -163,7 +165,7 @@ int
         ##adapt imd_templates
         if (verbose): print("Writing imd_templates")
         imd_file = adapt_imd_template_eoff(system=simSystem, imd_out_path=in_imd_path, in_template_imd_path=in_template_imd_path,
-                                           input_svals=s_values)
+                                           input_svals=s_values, randomize=randomize_seed)
         in_imd_path = imd_file.path
         svals = imd_file.REPLICA_EDS.RES
         numstates = imd_file.REPLICA_EDS.NUMSTATES

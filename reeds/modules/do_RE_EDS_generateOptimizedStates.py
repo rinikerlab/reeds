@@ -51,7 +51,7 @@ def do(out_root_dir: str, in_simSystem: fM.System,
        simulation_steps: int = 1000000,
        nmpi_per_replica: int = 4, submit: bool = True, verbose: bool = True,
        vacuum_simulation:bool =False,
-       memory: int = None, job_duration: str = "8:00") -> int:
+       memory: int = None, job_duration: str = "8:00", randomize_seed: bool = False) -> int:
     """      Generate Optimized structures with EDS
 
             This script executes simulations, that optimize the input EDS system in each state seperatley.
@@ -135,7 +135,8 @@ def do(out_root_dir: str, in_simSystem: fM.System,
         imd_template_path, states_num = adapt_imd_template_optimizedState(system=system,
                                                                                  in_template_imd_path=in_imd_template_path,
                                                                                  out_imd_dir=input_dir,
-                                                                                 simulation_steps=simulation_steps)
+                                                                                 simulation_steps=simulation_steps,
+                                                                                 randomize=randomize_seed)
 
         # copy and prepare cnfs:
         for state in range(1, states_num + 1):

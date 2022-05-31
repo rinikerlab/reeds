@@ -24,7 +24,7 @@ from reeds.function_libs.utils.structures import optimization_params
 IMD template adaptations
 """
 
-def initialize_imd(system: fM.System, imd_out_path: str = "template.imd", randomize:bool=True,
+def initialize_imd(system: fM.System, imd_out_path: str = "template.imd", single_bath: bool = False,
                    non_ligand_residues: list = [], verbose: bool = True):
     """
             This function initialises a template imd for the very beginning of the pipeline
@@ -37,6 +37,8 @@ def initialize_imd(system: fM.System, imd_out_path: str = "template.imd", random
         path where the new .imd should be written
     non_ligand_residues: List[str], optional
         non ligand residues are not considered as possible states for the eds simulation, will not have their own force group
+    single_bath : bool, optional
+        use single bath for all atoms (default False)
 
     verbose : bool, optional
         I wanna screaaaam
@@ -57,12 +59,9 @@ def initialize_imd(system: fM.System, imd_out_path: str = "template.imd", random
                         "\n\n ligands:\n ", ligands,
                         "\n\n protein:\n ", protein,
                         "\n\n non-ligands:\n ", non_ligands, "\n\n")
-    
-    # hack for TIP3P explicit solvent
-    if (len(non_ligand_residues) > 0 and protein.number_of_atoms == 0):
-        solvent_bath = (
-                ligands.number_of_atoms + non_ligands.number_of_atoms)
-        temp_baths = {ligands.number_of_atoms: 1, solvent_bath: 2}
+    if(single_bath):
+        solvent_bath = (ligands.number_of_atoms + protein.number_of_atoms + residues["SOLV"])
+        temp_baths = {solvent_bath: 1}
 
     ##Define temperature baths
     elif (protein.number_of_atoms > 0):
@@ -98,20 +97,20 @@ def initialize_imd(system: fM.System, imd_out_path: str = "template.imd", random
     if system.top.posres_path:
         imd_file.add_block(block=blocks.POSITIONRES(1,1,0,500))
     if system.top.disres_path:
-        imd_file.add_block(block=blocks.DISTANCERES(1,0,1000,1,1,0,0,0))
+        imd_file.add_block(block=blocks.DISTANCERES(1,0,5000,1,1,0,0,0))
     
     if (not isinstance(imd_file.MULTIBATH, type(None))):
         imd_file.MULTIBATH.adapt_multibath(last_atoms_bath=temp_baths)
     if (verbose): print("TEMPBATHS: ",temp_baths)
     imd_file.FORCE.adapt_energy_groups(residues)
-    if(randomize): imd_file.randomize_seed()
 
     if (verbose):
         print("Imd has been initialized. Please make any additional changes to "+imd_out_path+" before the next steps of the pipeline")
     imd_file.write(imd_out_path)
 
 
-def adapt_imd_template_optimizedState(system: fM.System, in_template_imd_path: str, out_imd_dir: str,simulation_steps: int = 100000)->(str, list):
+def adapt_imd_template_optimizedState(system: fM.System, in_template_imd_path: str, out_imd_dir: str,
+                                      randomize: bool = False, simulation_steps: int = 100000)->(str, list):
     """
       modify_imds - for generateOptimizedStates
         This function prepares the imd. protocol file for gromos simulation.
@@ -124,6 +123,8 @@ def adapt_imd_template_optimizedState(system: fM.System, in_template_imd_path: s
         path to the template imd, prepared with initialize_imd
     out_imd_dir : str
         output path for the imds
+    randomize: bool, optional
+        randomize initial velocities
     simulation_steps : int, optional
         number of steps to simulate
 
@@ -136,6 +137,7 @@ def adapt_imd_template_optimizedState(system: fM.System, in_template_imd_path: s
     states_num = int(read_ptp(system.top.perturbation_path)['MPERTATOM']['NPTB'])
     imd_file = imd.Imd(in_template_imd_path)
     imd_file.STEP.NSTLIM = simulation_steps
+    if(randomize): imd_file.randomize_seed()
     # edit EDS part
     imd_template_path = out_imd_dir + "/opt_structs_state"
     s_values = [1.0 for x in range(states_num)]
@@ -147,7 +149,7 @@ def adapt_imd_template_optimizedState(system: fM.System, in_template_imd_path: s
     return imd_template_path, states_num
 
 
-def adapt_imd_template_lowerBound(system: fM.System, in_template_imd_path: str, out_imd_dir: str,
+def adapt_imd_template_lowerBound(system: fM.System, in_template_imd_path: str, out_imd_dir: str, randomize: bool = False,
                                   s_values: t.List[float] = None, simulation_steps: int = 1000000)->(str, list, int):
     """
         This function prepares the imd. protocol file for a gromos simulation.
@@ -160,6 +162,8 @@ def adapt_imd_template_lowerBound(system: fM.System, in_template_imd_path: str, 
         path to the template imd, prepared with initialize_imd
     out_imd_dir : str
         output path for the imds
+    randomize : bool, optional
+        randomize initial velocities
     s_values : List[float], optional
         range of values to use instead of the automatically generated log distribution
     simulation_steps : int, optional
@@ -175,6 +179,7 @@ def adapt_imd_template_lowerBound(system: fM.System, in_template_imd_path: str, 
     states_num = int(read_ptp(system.top.perturbation_path)['MPERTATOM']['NPTB'])
     imd_file = imd.Imd(in_template_imd_path)
     imd_file.STEP.NSTLIM = simulation_steps
+    if(randomize): imd_file.randomize_seed()
 
     imd_template_path = out_imd_dir + "/lower_bound_sval"
 
@@ -189,8 +194,7 @@ def adapt_imd_template_lowerBound(system: fM.System, in_template_imd_path: str, 
 
 
 def adapt_imd_template_eoff(system: fM.System, imd_out_path: str, in_template_imd_path: str,
-                            input_svals: List[float] = None, s_num: int = None, s_range: Tuple[float, float] = None,
-                            verbose: bool = True) -> imd.Imd:
+                            input_svals: List[float] = None, randomize: bool = False, verbose: bool = True) -> imd.Imd:
     """
             This function is preparing the imd_template in gromos_files for the REEDS SYSTEM>
 
@@ -202,13 +206,10 @@ def adapt_imd_template_eoff(system: fM.System, imd_out_path: str, in_template_im
         path, where the new .imd should be written to.
     imd_path : str
         imd template path that shall be modified
-    input_svals: List[float], optional
+    input_svals : List[float], optional
         list containing previously generated s_values
-    s_num : int, optional
-        number of max s_values(optional)
-    s_range : Tuple[float, float], optional
-        max and min of log distributed s_vals (optional, not in combination with s_vals_csv_path)
-
+    randomize : bool, optional
+        randomize initial velocities
 
     verbose : bool, optional
         I can talk :)
@@ -220,26 +221,13 @@ def adapt_imd_template_eoff(system: fM.System, imd_out_path: str, in_template_im
 
     """
 
-    ### At the moment, do_REEDS_eoff throws an error if input_svals are not present, so s_range and s_num are obsolete ###
-#    if (input_svals is not None):  # pirority! are overwriting range!
-#        if ((s_range is not None) and (s_num is not None) and (isinstance(s_range[0], Number) and isinstance(s_range[1], Number))):
-#            svals = s_log_dist.get_log_s_distribution_between(start=s_range[0], end=s_range[-1], num=s_num)
-#        elif (s_num is not None):  # reduce svalues (with log dist)
-#            svals = s_log_dist.get_log_s_distribution_between(start=input_svals[0], end=input_svals[-1], num=s_num)
-#        else:
-#            svals = input_svals
-#    elif (s_num is not None) and (isinstance(s_range[0], Number) and isinstance(s_range[1], Number)):
-#        svals = s_log_dist.get_log_s_distribution_between(start=s_range[0], end=s_range[-1], num=s_num)
-#    else:
-#        raise IOError(
-#            "The imd file could not be adapted, as at least a s_vals_csv_path or s_num, s_range variable has to be given.")
-
     svals=input_svals
     if verbose: print(str(len(svals)) + " SVALUES: " + str(svals))
     
     # BUILD IMD
     imd_file = imd.Imd(in_template_imd_path)  # reads IMD
     states_num = int(read_ptp(system.top.perturbation_path)['MPERTATOM']['NPTB'])
+    if(randomize): imd_file.randomize_seed()
     # build REEDS Block
     imd_file.add_block(block=blocks.NEW_REPLICA_EDS(REEDS=1, NRES=len(svals), NUMSTATES=states_num, NEOFF=len(svals),
                                                     RES=svals, EIR=0, NRETRIAL=10, NREQUIL=0, EDS_STAT_OUT=1,
