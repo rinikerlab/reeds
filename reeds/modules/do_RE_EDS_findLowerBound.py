@@ -27,7 +27,7 @@ import reeds.function_libs.pipeline.module_functions
 from pygromos.euler_submissions import gen_Euler_LSF_jobarray, FileManager as fM
 from pygromos.files import coord
 from pygromos.utils import bash
-from reeds.data import imd_templates, ene_ana_libs
+from reeds.data import ene_ana_libs
 from reeds.function_libs.pipeline import generate_euler_job_files as gjs
 from reeds.function_libs.pipeline.module_functions import adapt_imd_template_lowerBound
 from reeds.function_libs.pipeline.worker_scripts.analysis_workers import RE_EDS_explore_lowerBound_analysis as ana
@@ -35,12 +35,11 @@ from reeds.function_libs.utils.structures import spacer
 
 
 def do(out_root_dir: str, in_simSystem: fM.System, undersampling_occurrence_fraction: float = 0.9,
-       template_imd: str = imd_templates.eds_md_path,
+       template_imd: str = None,
        gromosXX_bin: str = None, gromosPP_bin: str = None,
        ene_ana_lib: str = ene_ana_libs.ene_ana_lib_path,
-       submit: bool = True, exclude_residues: list = [],
+       submit: bool = True, s_values = None,
        simulation_steps: int = 100000, job_duration: str = "4:00", memory: int = None, nmpi_per_replica: int = 4,
-       single_bath: bool = False,
        verbose: bool = True) -> int:
     """ Find lower S-bound for EDS System
          - Description:\n
@@ -114,15 +113,14 @@ int
         cnf = coord.Cnf(system.coordinates, clean_resiNumbers_by_Name=True)
 
         # build imd_templates
-        imd_template_path, s_values = adapt_imd_template_lowerBound(in_pert_file=system.top.perturbation_path,
-                                                                             in_template_imd_path=template_imd,
-                                                                             out_imd_dir=input_dir, cnf=cnf,
-                                                                             non_ligand_residues=exclude_residues,
-                                                                             simulation_steps=simulation_steps,
-                                                                             single_bath = single_bath)
+        imd_template_path, s_values = adapt_imd_template_lowerBound(system=system,
+                                                                           in_template_imd_path=template_imd,
+                                                                           out_imd_dir=input_dir,
+                                                                           s_values=s_values,
+                                                                           simulation_steps=simulation_steps)
 
         # copy cnfs:
-        for ind, sval in enumerate(s_values):
+        for ind in range(len(s_values)):
             bash.copy_file(system.coordinates, coord_dir + "/" + \
                     os.path.basename(system.coordinates).replace(".cnf", "_" + str(ind+1) + ".cnf"))
 

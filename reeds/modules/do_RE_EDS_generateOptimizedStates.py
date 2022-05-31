@@ -36,7 +36,7 @@ import reeds.function_libs.pipeline.module_functions
 from pygromos.euler_submissions import gen_Euler_LSF_jobarray, FileManager as fM
 from pygromos.files.coord import cnf as cnf_cls
 from pygromos.utils import bash
-from reeds.data import imd_templates, ene_ana_libs
+from reeds.data import ene_ana_libs
 from reeds.function_libs.pipeline import generate_euler_job_files as gjs
 from reeds.function_libs.pipeline.module_functions import adapt_imd_template_optimizedState
 from reeds.function_libs.pipeline.worker_scripts.analysis_workers import RE_EDS_state_optimization_analysis as ana
@@ -44,15 +44,13 @@ from reeds.function_libs.utils.structures import spacer
 
 
 def do(out_root_dir: str, in_simSystem: fM.System,
-       in_imd_template_path: str = imd_templates.eds_md_path,
+       in_imd_template_path: str = None,
        in_gromosXX_bin_dir: str = None,
        in_gromosPP_bin_dir: str = None,
        ene_ana_lib: str = ene_ana_libs.ene_ana_lib_path,
-       simulation_steps: int = 1000000, exclude_residues: list = [],
+       simulation_steps: int = 1000000,
        nmpi_per_replica: int = 4, submit: bool = True, verbose: bool = True,
-       solvent_keyword: str = "SOLV",
        vacuum_simulation:bool =False,
-       single_bath: bool = False,
        memory: int = None, job_duration: str = "8:00") -> int:
     """      Generate Optimized structures with EDS
 
@@ -134,13 +132,10 @@ def do(out_root_dir: str, in_simSystem: fM.System,
                           clean_resiNumbers_by_Name=True)  # TODO: Careful with cleaning flag! protein is not correctly described.
 
         # prepare imd_templates
-        imd_template_path, s_values, states_num = adapt_imd_template_optimizedState(in_pert_file=system.top.perturbation_path,
+        imd_template_path, states_num = adapt_imd_template_optimizedState(system=system,
                                                                                  in_template_imd_path=in_imd_template_path,
-                                                                                 out_imd_dir=input_dir, cnf=cnf,
-                                                                                 non_ligand_residues=exclude_residues,
-                                                                                 simulation_steps=simulation_steps,
-                                                                                 solvent_keyword=solvent_keyword,
-                                                                                 single_bath = single_bath)
+                                                                                 out_imd_dir=input_dir,
+                                                                                 simulation_steps=simulation_steps)
 
         # copy and prepare cnfs:
         for state in range(1, states_num + 1):

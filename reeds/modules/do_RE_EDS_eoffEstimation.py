@@ -20,7 +20,6 @@ import reeds.function_libs.pipeline.module_functions
 from pygromos.euler_submissions import FileManager as fM
 from pygromos.utils import bash
 from reeds.data import imd_templates
-from reeds.function_libs.file_management import file_management as fileReeds
 from reeds.function_libs.pipeline.jobScheduling_scripts import RE_EDS_simulation_scheduler
 from reeds.function_libs.pipeline.module_functions import adapt_imd_template_eoff
 from reeds.function_libs.pipeline.worker_scripts.analysis_workers import RE_EDS_general_analysis
@@ -35,13 +34,11 @@ def do(out_root_dir: str, in_simSystem: fM.System, in_ene_ana_lib: str,
        state_physical_occurrence_potential_threshold: List[float] = None,
        state_undersampling_occurrence_potential_threshold: List[float] = None,
        gromosXX_bin_dir: str = None, gromosPP_bin_dir: str = None,
-       exclude_residues: list = [], nmpi_per_replica: int = 1, num_simulation_runs: int = 2,
-       num_equilibration_runs: int = 1, equilibration_trial_num: int = None,
-       queueing_sys: object = None, work_dir: str = None,
+       nmpi_per_replica: int = 1, num_simulation_runs: int = 2,
+       num_equilibration_runs: int = 1, work_dir: str = None,
        submit: bool = True, duration_per_job: str = "24:00", 
-       initialize_first_run: bool = True, reinitialize: bool = False, randomize: bool=False,
+       initialize_first_run: bool = True, reinitialize: bool = False,
        do_not_doubly_submit_to_queue: bool = True,
-       single_bath: bool = False,
        memory: str = None,
        verbose: bool = True):
     """do Energy Offsets estimation
@@ -165,9 +162,8 @@ int
 
         ##adapt imd_templates
         if (verbose): print("Writing imd_templates")
-        imd_file = adapt_imd_template_eoff(system=simSystem, imd_out_path=in_imd_path, imd_path=in_template_imd_path,
-                                           old_svals=s_values, non_ligand_residues=exclude_residues, randomize=randomize,
-                                           single_bath = single_bath)
+        imd_file = adapt_imd_template_eoff(system=simSystem, imd_out_path=in_imd_path, in_template_imd_path=in_template_imd_path,
+                                           input_svals=s_values)
         in_imd_path = imd_file.path
         svals = imd_file.REPLICA_EDS.RES
         numstates = imd_file.REPLICA_EDS.NUMSTATES
