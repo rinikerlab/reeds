@@ -10,7 +10,7 @@ from pygromos.euler_submissions import FileManager as fM
 from pygromos.files.imd import Imd
 from pygromos.files.blocks import imd_blocks
 from pygromos.files.coord.cnf import Cnf
-from pygromos.utils import amino_acids as bash
+from pygromos.utils import bash
 from pygromos.files._basics.parser import read_ptp
 from pygromos.data.imd_templates import template_md
 from reeds.function_libs.pipeline.jobScheduling_scripts import RE_EDS_simulation_scheduler
