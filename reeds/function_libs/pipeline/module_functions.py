@@ -7,10 +7,10 @@ from numbers import Number
 from typing import Tuple, List, Union, Dict
 
 from pygromos.euler_submissions import FileManager as fM
-from pygromos.files import imd, coord
-from pygromos.files.blocks import imd_blocks as blocks
-from pygromos.files.coord import cnf as cnf_cls
-from pygromos.utils import amino_acids as aa, bash
+from pygromos.files.imd import Imd
+from pygromos.files.blocks import imd_blocks
+from pygromos.files.coord.cnf import Cnf
+from pygromos.utils import amino_acids as bash
 from pygromos.files._basics.parser import read_ptp
 from pygromos.data.imd_templates import template_md
 from reeds.function_libs.pipeline.jobScheduling_scripts import RE_EDS_simulation_scheduler
@@ -45,15 +45,15 @@ def initialize_imd(system: fM.System, imd_out_path: str = "template.imd", single
 
     Returns
     -------
-    imd.Imd
+    Imd
         returns imd_class obj
 
     """
 
-    cnf = cnf_cls.Cnf(system.coordinates, verbose=False)
+    cnf = Cnf(system.coordinates, verbose=False)
     raw_residues = cnf.get_residues()
     # TODO: Get ligands (or rather, perturbed residues) vs non-ligands from ptp file instead of deducing them from cnf?
-    residues, ligands, protein, non_ligands = imd.Imd.clean_residue_list_for_imd(raw_residues, non_ligand_residues)
+    residues, ligands, protein, non_ligands = Imd.clean_residue_list_for_imd(raw_residues, non_ligand_residues)
     if (verbose): print("counted residues, ligands, proteins etc.", )
     if (verbose): print("\n all_resis:\n ", residues,
                         "\n\n ligands:\n ", ligands,
@@ -87,26 +87,26 @@ def initialize_imd(system: fM.System, imd_out_path: str = "template.imd", single
     if ("SOLV" in residues):
         all_atoms += residues["SOLV"]
     
-    imd_file = imd.Imd(template_md)
+    imd = Imd(template_md)
 
-    imd_file.TITLE.content = system.name + "\nGeneral imd template for the RE-EDS pipeline"
+    imd.TITLE.content = system.name + "\nGeneral imd template for the RE-EDS pipeline"
     atoms_per_solv = 3 # Assumes SOLV is water
-    imd_file.SYSTEM.NSM = int(residues["SOLV"] / atoms_per_solv) if ("SOLV" in residues) else 0
+    imd.SYSTEM.NSM = int(residues["SOLV"] / atoms_per_solv) if ("SOLV" in residues) else 0
 
     # Deal with restraints
     if system.top.posres_path:
-        imd_file.add_block(block=blocks.POSITIONRES(1,1,0,500))
+        imd.add_block(block=imd_blocks.POSITIONRES(1,1,0,500))
     if system.top.disres_path:
-        imd_file.add_block(block=blocks.DISTANCERES(1,0,5000,1,1,0,0,0))
+        imd.add_block(block=imd_blocks.DISTANCERES(1,0,5000,1,1,0,0,0))
     
-    if (not isinstance(imd_file.MULTIBATH, type(None))):
-        imd_file.MULTIBATH.adapt_multibath(last_atoms_bath=temp_baths)
+    if (not isinstance(imd.MULTIBATH, type(None))):
+        imd.MULTIBATH.adapt_multibath(last_atoms_bath=temp_baths)
     if (verbose): print("TEMPBATHS: ",temp_baths)
-    imd_file.FORCE.adapt_energy_groups(residues)
+    imd.FORCE.adapt_energy_groups(residues)
 
     if (verbose):
         print("Imd has been initialized. Please make any additional changes to "+imd_out_path+" before the next steps of the pipeline")
-    imd_file.write(imd_out_path)
+    imd.write(imd_out_path)
 
 
 def adapt_imd_template_optimizedState(system: fM.System, in_template_imd_path: str, out_imd_dir: str,
@@ -135,16 +135,16 @@ def adapt_imd_template_optimizedState(system: fM.System, in_template_imd_path: s
     """
 
     states_num = int(read_ptp(system.top.perturbation_path)['MPERTATOM']['NPTB'])
-    imd_file = imd.Imd(in_template_imd_path)
-    imd_file.STEP.NSTLIM = simulation_steps
-    if(randomize): imd_file.randomize_seed()
+    imd = Imd(in_template_imd_path)
+    imd.STEP.NSTLIM = simulation_steps
+    if(randomize): imd.randomize_seed()
     # edit EDS part
     imd_template_path = out_imd_dir + "/opt_structs_state"
     s_values = [1.0 for x in range(states_num)]
     for state, s_values in zip(range(1, states_num + 1), s_values):
-        imd_file.edit_EDS(NUMSTATES=states_num, S=s_values,
+        imd.edit_EDS(NUMSTATES=states_num, S=s_values,
                           EIR=[500 if (x == state) else -500 for x in range(1, states_num + 1)])
-        imd_file.write(imd_template_path + "_" + str(state) + ".imd")
+        imd.write(imd_template_path + "_" + str(state) + ".imd")
 
     return imd_template_path, states_num
 
@@ -177,9 +177,9 @@ def adapt_imd_template_lowerBound(system: fM.System, in_template_imd_path: str, 
     """
 
     states_num = int(read_ptp(system.top.perturbation_path)['MPERTATOM']['NPTB'])
-    imd_file = imd.Imd(in_template_imd_path)
-    imd_file.STEP.NSTLIM = simulation_steps
-    if(randomize): imd_file.randomize_seed()
+    imd = Imd(in_template_imd_path)
+    imd.STEP.NSTLIM = simulation_steps
+    if(randomize): imd.randomize_seed()
 
     imd_template_path = out_imd_dir + "/lower_bound_sval"
 
@@ -187,14 +187,14 @@ def adapt_imd_template_lowerBound(system: fM.System, in_template_imd_path: str, 
         s_values = s_log_dist.get_log_s_distribution_between(start=1.0, end=0.00001)
 
     for ind, sval in enumerate(s_values):
-        imd_file.edit_EDS(NUMSTATES=states_num, S=sval, EIR=[0.0 for x in range(states_num)])
-        imd_file.write(imd_template_path + "_" + str(ind+1) + ".imd")
+        imd.edit_EDS(NUMSTATES=states_num, S=sval, EIR=[0.0 for x in range(states_num)])
+        imd.write(imd_template_path + "_" + str(ind+1) + ".imd")
 
     return imd_template_path, s_values
 
 
 def adapt_imd_template_eoff(system: fM.System, imd_out_path: str, in_template_imd_path: str,
-                            input_svals: List[float] = None, randomize: bool = False, verbose: bool = True) -> imd.Imd:
+                            input_svals: List[float] = None, randomize: bool = False, verbose: bool = True) -> Imd:
     """
             This function is preparing the imd_template in gromos_files for the REEDS SYSTEM>
 
@@ -216,7 +216,7 @@ def adapt_imd_template_eoff(system: fM.System, imd_out_path: str, in_template_im
 
     Returns
     -------
-    imd.Imd
+    Imd
         returns imd_class obj
 
     """
@@ -225,17 +225,17 @@ def adapt_imd_template_eoff(system: fM.System, imd_out_path: str, in_template_im
     if verbose: print(str(len(svals)) + " SVALUES: " + str(svals))
     
     # BUILD IMD
-    imd_file = imd.Imd(in_template_imd_path)  # reads IMD
+    imd = Imd(in_template_imd_path)  # reads IMD
     states_num = int(read_ptp(system.top.perturbation_path)['MPERTATOM']['NPTB'])
-    if(randomize): imd_file.randomize_seed()
+    if(randomize): imd.randomize_seed()
     # build REEDS Block
-    imd_file.add_block(block=blocks.NEW_REPLICA_EDS(REEDS=1, NRES=len(svals), NUMSTATES=states_num, NEOFF=len(svals),
+    imd.add_block(block=imd_blocks.NEW_REPLICA_EDS(REEDS=1, NRES=len(svals), NUMSTATES=states_num, NEOFF=len(svals),
                                                     RES=svals, EIR=0, NRETRIAL=10, NREQUIL=0, EDS_STAT_OUT=1,
                                                     CONT=1, PERIODIC=0))
-    imd_file.edit_REEDS(EIR=0.0)
-    imd_out_path = imd_file.write(imd_out_path)
-    if (verbose): print(imd_file.REPLICA_EDS)
-    return imd_file
+    imd.edit_REEDS(EIR=0.0)
+    imd_out_path = imd.write(imd_out_path)
+    if (verbose): print(imd.REPLICA_EDS)
+    return imd
 
 
 """
