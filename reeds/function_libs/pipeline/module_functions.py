@@ -7,9 +7,12 @@ from numbers import Number
 from typing import Tuple, List, Union, Dict
 
 from pygromos.euler_submissions import FileManager as fM
-from pygromos.files import imd, coord
-from pygromos.files.coord import cnf as cnf_cls
-from pygromos.utils import amino_acids as aa, bash
+from pygromos.files.imd import Imd
+from pygromos.files.blocks import imd_blocks
+from pygromos.files.coord.cnf import Cnf
+from pygromos.utils import bash
+from pygromos.files._basics.parser import read_ptp
+from pygromos.data.imd_templates import template_md
 from reeds.function_libs.pipeline.jobScheduling_scripts import RE_EDS_simulation_scheduler
 from reeds.function_libs.pipeline.worker_scripts.analysis_workers import RE_EDS_general_analysis, \
     RE_EDS_general_analysis as reeds_analysis
@@ -20,272 +23,37 @@ from reeds.function_libs.utils.structures import optimization_params
 """
 IMD template adaptations
 """
-def adapt_imd_template_optimizedState(in_template_imd_path: str, out_imd_dir: str, cnf: cnf_cls.Cnf, non_ligand_residues: list = [],
-                                      simulation_steps: int = 100000, solvent_keyword: str = "SOLV", single_bath: bool = False)->(str, list):
+
+def initialize_imd(system: fM.System, imd_out_path: str = "template.imd", single_bath: bool = False,
+                   non_ligand_residues: list = [], verbose: bool = True):
     """
-      modify_imds - for generateOptimizedStates
-        This function prepares the imd. protocol file for gromos simulation.
-
-    Parameters
-    ----------
-    in_template_imd_path : str
-        path to the template imd
-    out_imd_dir : str
-        output path for the imds
-    cnf : cnf_cls.Cnf
-        coordinate file obj, for retrieving the residues
-    non_ligand_residues : list, optional
-
-    simulation_steps : int, optional
-        number of steps to simulate
-    solvent_keyword : str, optional
-        residue name for the solvent
-    single_bath : bool, optional
-        use single bath for all atoms (default False)
-
-    Returns
-    -------
-    (str, list)
-        imd_template_path, lig_nums
-    """
-
-    orig_residues = cnf.get_residues()
-
-    ignore_residues = lambda res: res != solvent_keyword and res not in aa.three_letter_aa_lib and res != "prot" and (
-        not res in non_ligand_residues)
-    protein_residues = {res: val for res, val in orig_residues.items() if (res in aa.three_letter_aa_lib)}
-    n_atoms_prot = sum([sum(list(orig_residues[res].values())) for res in orig_residues if
-                        res in aa.three_letter_aa_lib])  # if protein is present!
-    prot_position = min([min(val) for res, val in protein_residues.items()]) if (n_atoms_prot > 0) else 0
-
-    # adapt resis
-    residues = {res: val for res, val in orig_residues.items() if (res not in aa.three_letter_aa_lib)}
-
-    # get ligand parameters
-    lig_atoms = sum([sum(list(residues[res].values())) for res in residues if ignore_residues(res)])
-    lig_num = sum([1 for res in residues if ignore_residues(res)])
-    lig_names = [res for res in residues if ignore_residues(res)]
-    lig_position = min([min(residues[res]) for res in residues if ignore_residues(res)])
-
-    if (n_atoms_prot > 1):
-        print("protein_position:", prot_position)
-        residues.update({"prot": {prot_position: n_atoms_prot}})
-
-    if (not solvent_keyword in residues):
-        residues.update({solvent_keyword: 0})
-
-    imd_file = imd.Imd(in_template_imd_path)
-    imd_file.SYSTEM.NSM = int(round(residues["SOLV"] / 3)) if ("SOLV" in residues) else 0
-    imd_file.FORCE.adapt_energy_groups(residues)
-    imd_file.STEP.NSTLIM = simulation_steps
-    imd_file.STEP.NSTLIM = simulation_steps
-
-    if(single_bath):
-        solvent_bath = (
-                lig_atoms + sum([sum(list(residues[x].values())) for x in non_ligand_residues]) +
-                residues[solvent_keyword])
-        temp_baths = {solvent_bath : 1}
-
-    # hack for TIP3P explicit solvent
-    elif (len(non_ligand_residues) > 0 and not ("prot" in residues or "protein" in residues)):
-        solvent_bath = (
-                lig_atoms + sum([sum(list(residues[x].values())) for x in non_ligand_residues]) +
-                residues[solvent_keyword])
-        temp_baths = {lig_atoms: 1, solvent_bath: 2}
-
-    # Temperature baths
-    elif ("prot" in residues or "protein" in residues):
-        temp_baths = {}
-        if (len(non_ligand_residues) < 0):  # TODO: DIRTY HACK: in PNMT is Cofactor at end of the file.
-            solvent_bath = (lig_atoms + n_atoms_prot + residues[solvent_keyword])
-        else:
-            solvent_bath = (
-                    lig_atoms + n_atoms_prot + sum([sum(list(residues[x].values())) for x in non_ligand_residues]) +
-                    residues[solvent_keyword])
-
-        if (lig_position < prot_position):
-            temp_baths = {lig_atoms: 1, (lig_atoms + n_atoms_prot): 2, solvent_bath: 3}
-        else:
-            temp_baths = {n_atoms_prot: 1, (lig_atoms + n_atoms_prot): 2, solvent_bath: 3}
-    else:
-        temp_baths = {lig_atoms: 1, (lig_atoms + residues[solvent_keyword]): 2} if (solvent_keyword in residues) else {
-            lig_atoms: 1}
-
-    if (not isinstance(imd_file.MULTIBATH, type(None))):
-        imd_file.MULTIBATH.adapt_multibath(last_atoms_bath=temp_baths)
-
-    # edit EDS part
-    imd_template_path = out_imd_dir + "/opt_structs_" + "_".join(lig_names)
-    s_values = [1.0 for x in range(lig_num)]
-    for state, s_values in zip(range(1, lig_num + 1), s_values):
-        imd_file.edit_EDS(NUMSTATES=lig_num, S=s_values,
-                          EIR=[500 if (x == state) else -500 for x in range(1, lig_num + 1)])
-        imd_file.write(imd_template_path + "_" + str(state) + ".imd")
-
-    return imd_template_path, s_values, lig_num
-
-
-def adapt_imd_template_lowerBound(in_template_imd_path: str, out_imd_dir: str, cnf: coord.Cnf,
-                                  non_ligand_residues: list = [], s_values: t.List[float] = None,
-                                  simulation_steps: int = 1000000, solvent_keyword:str="SOLV",
-                                  single_bath: bool = False)->(str, list, int):
-    """
-        This function prepares the imd. protocol file for a gromos simulation.
-
-    Parameters
-    ----------
-    in_template_imd_path
-    out_imd_dir
-    cnf
-    non_ligand_residues
-    s_values
-    single_bath
-    simulation_steps
-
-    Returns
-    -------
-    str, list, int
-        imd_template_path, s_values, num ligands
-
-    """
-
-    orig_residues = cnf.get_residues()
-
-    ignore_residues = lambda res: res != solvent_keyword and res not in aa.three_letter_aa_lib and res != "prot" and (
-        not res in non_ligand_residues)
-    protein_residues = {res: val for res, val in orig_residues.items() if (res in aa.three_letter_aa_lib)}
-    n_atoms_prot = sum([sum(list(orig_residues[res].values())) for res in orig_residues if
-                        res in aa.three_letter_aa_lib])  # if protein is present!
-    prot_position = min([min(val) for res, val in protein_residues.items()]) if (n_atoms_prot > 0) else 0
-
-    # adapt resis
-    residues = {res: val for res, val in orig_residues.items() if (res not in aa.three_letter_aa_lib)}
-
-    # get ligand parameters
-    lig_atoms = sum([sum(list(residues[res].values())) for res in residues if ignore_residues(res)])
-    lig_num = sum([1 for res in residues if ignore_residues(res)])
-    lig_names = [res for res in residues if ignore_residues(res)]
-    lig_position = min([min(residues[res]) for res in residues if ignore_residues(res)])
-
-    if (n_atoms_prot > 1):
-        print("protein_position:", prot_position)
-        residues.update({"prot": {prot_position: n_atoms_prot}})
-
-    if (not solvent_keyword in residues):
-        residues.update({solvent_keyword: 0})
-
-    imd_file = imd.Imd(in_template_imd_path)
-    imd_file.SYSTEM.NSM = int(round(residues["SOLV"] / 3)) if ("SOLV" in residues) else 0
-    imd_file.FORCE.adapt_energy_groups(residues)
-    imd_file.STEP.NSTLIM = simulation_steps
-    imd_file.STEP.NSTLIM = simulation_steps
-
-    if (single_bath):
-        solvent_bath = (
-                lig_atoms + sum([sum(list(residues[x].values())) for x in non_ligand_residues]) +
-                residues[solvent_keyword])
-        temp_baths = {solvent_bath: 1}
-
-    # hack for TIP3P explicit solvent
-    elif (len(non_ligand_residues) > 0 and not ("prot" in residues or "protein" in residues)):
-        solvent_bath = (
-                lig_atoms + sum([sum(list(residues[x].values())) for x in non_ligand_residues]) +
-                residues[solvent_keyword])
-        temp_baths = {lig_atoms: 1, solvent_bath: 2}
-
-    # Temperature baths
-    elif ("prot" in residues or "protein" in residues):
-        temp_baths = {}
-        if (len(non_ligand_residues) < 0):  # TODO: DIRTY HACK: in PNMT is Cofactor at end of the file.
-            solvent_bath = (lig_atoms + n_atoms_prot + residues[solvent_keyword])
-        else:
-            solvent_bath = (
-                    lig_atoms + n_atoms_prot + sum([sum(list(residues[x].values())) for x in non_ligand_residues]) +
-                    residues[solvent_keyword])
-
-        if (lig_position < prot_position):
-            temp_baths = {lig_atoms: 1, (lig_atoms + n_atoms_prot): 2, solvent_bath: 3}
-        else:
-            temp_baths = {n_atoms_prot: 1, (lig_atoms + n_atoms_prot): 2, solvent_bath: 3}
-    else:
-        temp_baths = {lig_atoms: 1, (lig_atoms + residues[solvent_keyword]): 2} if (solvent_keyword in residues) else {
-            lig_atoms: 1}
-
-    if (not isinstance(imd_file.MULTIBATH, type(None))):
-        imd_file.MULTIBATH.adapt_multibath(last_atoms_bath=temp_baths)
-
-
-    imd_file.STEP.NSTLIM = simulation_steps
-
-    imd_template_path = out_imd_dir + "/lower_bound_" + "_".join(lig_names)
-
-    if (type(s_values) == type(None)):
-        s_values = s_log_dist.get_log_s_distribution_between(start=1.0, end=0.00001)
-
-    for ind, sval in enumerate(s_values):
-        imd_file.edit_EDS(NUMSTATES=lig_num, S=sval, EIR=[0.0 for x in range(lig_num)])
-        imd_file.write(imd_template_path + "_" + str(ind) + ".imd")
-
-    return imd_template_path, s_values, lig_num
-
-
-def adapt_imd_template_eoff(system: fM.System, imd_out_path: str, imd_path: str,
-                            old_svals: List[float] = None, s_num: int = None, s_range: Tuple[float, float] = None,
-                            non_ligand_residues: list = [],
-                            single_bath: bool = False, randomize:bool=False,
-                            verbose: bool = True) -> imd.Imd:
-    """
-            This function is preparing the imd_template in gromos_files for the REEDS SYSTEM>
+            This function initialises a template imd for the very beginning of the pipeline
 
     Parameters
     ----------
     system : pygromos.PipelineManager.Simulation_System
         this is the system obj. containing all paths to all system relevant Files.
     imd_out_path : str
-        path, where the new .imd should be written to.
-    imd_path : str
-        imd template path that shall be modified
-    old_svals: List[float], optional
-        list containing previous system files
-    s_num : int, optional
-        number of max s_values(optional)
-    s_range : Tuple[float, float], optional
-        max and min of log distributed s_vals (optional, not in combination with s_vals_csv_path)
+        path where the new .imd should be written
     non_ligand_residues: List[str], optional
         non ligand residues are not considered as possible states for the eds simulation, will not have their own force group
-
+    single_bath : bool, optional
+        use single bath for all atoms (default False)
 
     verbose : bool, optional
         I wanna screaaaam
 
     Returns
     -------
-    imd.Imd
+    Imd
         returns imd_class obj
 
     """
 
-    if (verbose): print(s_num)
-    if (old_svals is not None):  # pirority! are overwriting range!
-        if ((s_range is not None) and (s_num is not None) and (isinstance(s_range[0], Number) and isinstance(s_range[1], Number))):
-            svals = s_log_dist.get_log_s_distribution_between(start=s_range[0], end=s_range[-1], num=s_num)
-        elif (s_num is not None):  # reduce svalues (with log dist)
-            svals = s_log_dist.get_log_s_distribution_between(start=old_svals[0], end=old_svals[-1], num=s_num)
-        else:
-            svals = old_svals
-    elif (s_num is not None) and (isinstance(s_range[0], Number) and isinstance(s_range[1], Number)):
-        svals = s_log_dist.get_log_s_distribution_between(start=s_range[0], end=s_range[-1], num=s_num)
-    else:
-        raise IOError(
-            "The imd file could not be adapted, as at least a s_vals_csv_path or s_num, s_range variable has to be given.")
-    
-    if verbose: print(str(len(svals)) + " SVALUES: " + str(svals))
-    # extract residue and atom information from cnf file
-    cnf = cnf_cls.Cnf(system.coordinates[0], verbose=False)
+    cnf = Cnf(system.coordinates, verbose=False)
     raw_residues = cnf.get_residues()
-
-    residues, ligands, protein, non_ligands = imd.Imd.clean_residue_list_for_imd(raw_residues, non_ligand_residues)
-
+    # TODO: Get ligands (or rather, perturbed residues) vs non-ligands from ptp file instead of deducing them from cnf?
+    residues, ligands, protein, non_ligands = Imd.clean_residue_list_for_imd(raw_residues, non_ligand_residues)
     if (verbose): print("counted residues, ligands, proteins etc.", )
     if (verbose): print("\n all_resis:\n ", residues,
                         "\n\n ligands:\n ", ligands,
@@ -295,15 +63,8 @@ def adapt_imd_template_eoff(system: fM.System, imd_out_path: str, imd_path: str,
         solvent_bath = (ligands.number_of_atoms + protein.number_of_atoms + residues["SOLV"])
         temp_baths = {solvent_bath: 1}
 
-    # hack for TIP3P explicit solvent
-    elif (len(non_ligand_residues) > 0 and protein.number_of_atoms == 0):
-        solvent_bath = (
-                ligands.number_of_atoms + non_ligands.number_of_atoms)
-        temp_baths = {ligands.number_of_atoms: 1, solvent_bath: 2}
-
     ##Define temperature baths
     elif (protein.number_of_atoms > 0):
-        temp_baths = {}
         if(len(non_ligand_residues) > 0):
             solvent_bath = (ligands.number_of_atoms + protein.number_of_atoms + non_ligands.number_of_atoms)
         elif (isinstance(non_ligands, type(None))):  # TODO: DIRTY HACK: in PNMT is Cofactor at end of the file.
@@ -322,39 +83,159 @@ def adapt_imd_template_eoff(system: fM.System, imd_out_path: str, imd_path: str,
         temp_baths = {ligands.number_of_atoms: 1, (ligands.number_of_atoms + residues["SOLV"]): 2} if (
                     "SOLV" in residues) else {ligands.number_of_atoms: 1}
 
-    if (non_ligands):
-        non_lig_atoms = non_ligands.number_of_atoms
-    else:
-        non_lig_atoms = 0
-
-    if (protein):
-        protein_number_of_atoms = protein.number_of_atoms
-    else:
-        protein_number_of_atoms = 0
-
-    all_atoms = ligands.number_of_atoms + protein_number_of_atoms + non_lig_atoms
+    all_atoms = ligands.number_of_atoms + protein.number_of_atoms + non_ligands.number_of_atoms
     if ("SOLV" in residues):
         all_atoms += residues["SOLV"]
+    
+    imd = Imd(template_md)
 
+    imd.TITLE.content = system.name + "\nGeneral imd template for the RE-EDS pipeline"
+    atoms_per_solv = 3 # Assumes SOLV is water
+    imd.SYSTEM.NSM = int(residues["SOLV"] / atoms_per_solv) if ("SOLV" in residues) else 0
+
+    # Deal with restraints
+    if system.top.posres_path:
+        imd.add_block(block=imd_blocks.POSITIONRES(1,1,0,500))
+    if system.top.disres_path:
+        imd.add_block(block=imd_blocks.DISTANCERES(1,0,5000,1,1,0,0,0))
+    
+    if (not isinstance(imd.MULTIBATH, type(None))):
+        imd.MULTIBATH.adapt_multibath(last_atoms_bath=temp_baths)
+    if (verbose): print("TEMPBATHS: ",temp_baths)
+    imd.FORCE.adapt_energy_groups(residues)
+
+    if (verbose):
+        print("Imd has been initialized. Please make any additional changes to "+imd_out_path+" before the next steps of the pipeline")
+    imd.write(imd_out_path)
+
+
+def adapt_imd_template_optimizedState(system: fM.System, in_template_imd_path: str, out_imd_dir: str,
+                                      randomize: bool = False, simulation_steps: int = 100000)->(str, list):
+    """
+      modify_imds - for generateOptimizedStates
+        This function prepares the imd. protocol file for gromos simulation.
+
+    Parameters
+    ----------
+    system : pygromos.PipelineManager.Simulation_System
+        this is the system obj. containing all paths to all system relevant Files.
+    in_template_imd_path : str
+        path to the template imd, prepared with initialize_imd
+    out_imd_dir : str
+        output path for the imds
+    randomize: bool, optional
+        randomize initial velocities
+    simulation_steps : int, optional
+        number of steps to simulate
+
+    Returns
+    -------
+    str, list
+        imd_template_path, states_num
+    """
+
+    states_num = int(read_ptp(system.top.perturbation_path)['MPERTATOM']['NPTB'])
+    imd = Imd(in_template_imd_path)
+    imd.STEP.NSTLIM = simulation_steps
+    if(randomize): imd.randomize_seed()
+    # edit EDS part
+    imd_template_path = out_imd_dir + "/opt_structs_state"
+    s_values = [1.0 for x in range(states_num)]
+    for state, s_values in zip(range(1, states_num + 1), s_values):
+        imd.edit_EDS(NUMSTATES=states_num, S=s_values,
+                          EIR=[500 if (x == state) else -500 for x in range(1, states_num + 1)])
+        imd.write(imd_template_path + "_" + str(state) + ".imd")
+
+    return imd_template_path, states_num
+
+
+def adapt_imd_template_lowerBound(system: fM.System, in_template_imd_path: str, out_imd_dir: str, randomize: bool = False,
+                                  s_values: t.List[float] = None, simulation_steps: int = 1000000)->(str, list, int):
+    """
+        This function prepares the imd. protocol file for a gromos simulation.
+
+    Parameters
+    ----------
+    system : pygromos.PipelineManager.Simulation_System
+        this is the system obj. containing all paths to all system relevant Files.
+    in_template_imd_path : str
+        path to the template imd, prepared with initialize_imd
+    out_imd_dir : str
+        output path for the imds
+    randomize : bool, optional
+        randomize initial velocities
+    s_values : List[float], optional
+        range of values to use instead of the automatically generated log distribution
+    simulation_steps : int, optional
+        number of steps to simulate
+
+    Returns
+    -------
+    str, list
+        imd_template_path, s_values
+
+    """
+
+    states_num = int(read_ptp(system.top.perturbation_path)['MPERTATOM']['NPTB'])
+    imd = Imd(in_template_imd_path)
+    imd.STEP.NSTLIM = simulation_steps
+    if(randomize): imd.randomize_seed()
+
+    imd_template_path = out_imd_dir + "/lower_bound_sval"
+
+    if (type(s_values) == type(None)):
+        s_values = s_log_dist.get_log_s_distribution_between(start=1.0, end=0.00001)
+
+    for ind, sval in enumerate(s_values):
+        imd.edit_EDS(NUMSTATES=states_num, S=sval, EIR=[0.0 for x in range(states_num)])
+        imd.write(imd_template_path + "_" + str(ind+1) + ".imd")
+
+    return imd_template_path, s_values
+
+
+def adapt_imd_template_eoff(system: fM.System, imd_out_path: str, in_template_imd_path: str,
+                            input_svals: List[float] = None, randomize: bool = False, verbose: bool = True) -> Imd:
+    """
+            This function is preparing the imd_template in gromos_files for the REEDS SYSTEM>
+
+    Parameters
+    ----------
+    system : pygromos.PipelineManager.Simulation_System
+        this is the system obj. containing all paths to all system relevant Files.
+    imd_out_path : str
+        path, where the new .imd should be written to.
+    imd_path : str
+        imd template path that shall be modified
+    input_svals : List[float], optional
+        list containing previously generated s_values
+    randomize : bool, optional
+        randomize initial velocities
+
+    verbose : bool, optional
+        I can talk :)
+
+    Returns
+    -------
+    Imd
+        returns imd_class obj
+
+    """
+
+    svals=input_svals
+    if verbose: print(str(len(svals)) + " SVALUES: " + str(svals))
+    
     # BUILD IMD
-    imd_file = imd.Imd(imd_path)  # reads IMD
-
-    atoms_per_solv = 3
-    imd_file.SYSTEM.NSM = int(round(residues["SOLV"] / atoms_per_solv)) if ("SOLV" in residues) else 0
-
-    # imd_file.SYSTEM.NSM = int(round(residues["SOLV"] / 3))  # only for water solvent valid!@ needs res num
-    print("TEMPBATHS: ",temp_baths)
-    imd_file.FORCE.adapt_energy_groups(residues)  # adapt force groups
-    if (not isinstance(imd_file.MULTIBATH, type(None))):
-        imd_file.MULTIBATH.adapt_multibath(last_atoms_bath=temp_baths)  # adapt bath last atom nums
-    if (verbose): print("svals " + str(len(svals)) + ": " + str(svals))
-    imd_file.edit_REEDS(NATOM=all_atoms, NUMSTATES=ligands.number, SVALS=svals, EIR=0.0)  # build REEDS Block
-    if(randomize): imd_file.randomize_seed()
-    imd_out_path = imd_file.write(imd_out_path)
-    if (verbose): print(imd_file.REPLICA_EDS)
-    if verbose: print("Wrote out new imd to -> " + imd_out_path)
-    return imd_file
-
+    imd = Imd(in_template_imd_path)  # reads IMD
+    states_num = int(read_ptp(system.top.perturbation_path)['MPERTATOM']['NPTB'])
+    if(randomize): imd.randomize_seed()
+    # build REEDS Block
+    imd.add_block(block=imd_blocks.NEW_REPLICA_EDS(REEDS=1, NRES=len(svals), NUMSTATES=states_num, NEOFF=len(svals),
+                                                    RES=svals, EIR=0, NRETRIAL=10, NREQUIL=0, EDS_STAT_OUT=1,
+                                                    CONT=1, PERIODIC=0))
+    imd.edit_REEDS(EIR=0.0)
+    imd_out_path = imd.write(imd_out_path)
+    if (verbose): print(imd.REPLICA_EDS)
+    return imd
 
 
 """
@@ -473,7 +354,7 @@ def build_optimization_step_dir(iteration: int,  iteration_folder_prefix: str, p
                      "roundtrips": True,
                      "generate_replica trace": True}
                  },
-        "eoffset": {"do": True,
+        "eoffset": {"do": True if run_eoffRB else False,
                     "sub": {
                         "eoff_estimation": not run_eoffRB,
                         "sampling_plot": False,

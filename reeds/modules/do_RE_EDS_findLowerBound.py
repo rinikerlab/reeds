@@ -27,20 +27,20 @@ import reeds.function_libs.pipeline.module_functions
 from pygromos.euler_submissions import gen_Euler_LSF_jobarray, FileManager as fM
 from pygromos.files import coord
 from pygromos.utils import bash
-from reeds.data import imd_templates, ene_ana_libs
+from reeds.data import ene_ana_libs
 from reeds.function_libs.pipeline import generate_euler_job_files as gjs
 from reeds.function_libs.pipeline.module_functions import adapt_imd_template_lowerBound
 from reeds.function_libs.pipeline.worker_scripts.analysis_workers import RE_EDS_explore_lowerBound_analysis as ana
 from reeds.function_libs.utils.structures import spacer
+from scipy import rand
 
 
 def do(out_root_dir: str, in_simSystem: fM.System, undersampling_occurrence_fraction: float = 0.9,
-       template_imd: str = imd_templates.eds_md_path,
+       template_imd: str = None,
        gromosXX_bin: str = None, gromosPP_bin: str = None,
        ene_ana_lib: str = ene_ana_libs.ene_ana_lib_path,
-       submit: bool = True, exclude_residues: list = [],
+       submit: bool = True, s_values = None, randomize_seed: bool = False,
        simulation_steps: int = 100000, job_duration: str = "4:00", memory: int = None, nmpi_per_replica: int = 4,
-       single_bath: bool = False,
        verbose: bool = True) -> int:
     """ Find lower S-bound for EDS System
          - Description:\n
@@ -76,6 +76,10 @@ ene_ana_lib : str, optional
     path to in_ene_ana_lib,that can read the reeds system.
 submit : bool, optional
     Flag, if the generated sopt_job should be submitted to lsf queue.
+s_values : list[float], optional
+    manually specify s_values
+randomize_seed : bool, optional
+    randomize initial velocities
 exclude_residues : str, optional
     for cofactors, so that they are not considered as eds states
 simulation_steps : int, optional
@@ -114,14 +118,15 @@ int
         cnf = coord.Cnf(system.coordinates, clean_resiNumbers_by_Name=True)
 
         # build imd_templates
-        imd_template_path, s_values, lig_num = adapt_imd_template_lowerBound(in_template_imd_path=template_imd,
-                                                                             out_imd_dir=input_dir, cnf=cnf,
-                                                                             non_ligand_residues=exclude_residues,
-                                                                             simulation_steps=simulation_steps,
-                                                                             single_bath = single_bath)
+        imd_template_path, s_values = adapt_imd_template_lowerBound(system=system,
+                                                                           in_template_imd_path=template_imd,
+                                                                           out_imd_dir=input_dir,
+                                                                           s_values=s_values,
+                                                                           simulation_steps=simulation_steps,
+                                                                           randomize=randomize_seed)
 
         # copy cnfs:
-        for ind, sval in enumerate(s_values):
+        for ind in range(len(s_values)):
             bash.copy_file(system.coordinates, coord_dir + "/" + \
                     os.path.basename(system.coordinates).replace(".cnf", "_" + str(ind+1) + ".cnf"))
 
@@ -158,7 +163,7 @@ int
                                                                  array_length=len(s_values), array_name=system.name,
                                                                  cpu_per_job=nmpi_per_replica,
                                                                  analysis_script=in_analysis_script_path,
-                                                                 noFailInChain=False, memory=memory,
+                                                                 memory=memory,
                                                                  duration=job_duration)
 
         # bash make job_array script executable
@@ -201,6 +206,6 @@ if __name__ == "__main__":
     print(spacer + "\t\tRE-EDS ENERGY OFFSET ESTIMATION \n" + spacer + "\n")
     requiers_gromos_files = [("in_top_path", "input topology .top file."),
                              ("in_coord_path", "input coordinate .cn file."),
-                             ("in_perttop_path", "input pertubation topology .ptp file."),
+                             ("in_perttop_path", "input perturbation topology .ptp file."),
                              ("in_disres_path", "input distance restraint .dat file.")]
     execute_module_via_bash(__doc__, do, requiers_gromos_files)

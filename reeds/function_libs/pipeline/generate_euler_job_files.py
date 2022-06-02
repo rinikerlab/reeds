@@ -43,7 +43,7 @@ def build_md_job_script(script_out_path: str, job_name: str, system: sys.System,
     in_imd = in_protocol
     in_cnf = system.coordinates
     in_top = system.top.top_path
-    in_ptp = system.top.pertubation_path
+    in_ptp = system.top.perturbation_path
     in_disres = system.top.disres_path
 
     # for copying old Files

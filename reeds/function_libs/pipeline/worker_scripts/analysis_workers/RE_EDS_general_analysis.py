@@ -172,7 +172,7 @@ def do_Reeds_analysis(in_folder: str, out_folder: str, gromos_path: str,
                       grom_file_prefix: str = "test", title_prefix: str = "test", ene_ana_prefix="ey_sx.dat",
                       repdat_prefix: str = "run_repdat.dat",
                       n_processors: int = 1, verbose=False, dfmult_all_replicas=False,
-                      ssm_next_cnfs: bool = False, 
+                      ssm_next_cnfs: bool = True, 
                       control_dict: Dict[str, Union[bool, Dict[str, bool]]] = None) -> (
         dict, dict, dict):
     """
@@ -591,16 +591,20 @@ def do_Reeds_analysis(in_folder: str, out_folder: str, gromos_path: str,
         else:
             if verbose: print("same ammount of s_vals -> simply copying output:")
             
-            if (control_dict["sopt"]["sub"]["run_RTO"] or control_dict["eoffset"]["eoffset_rebalancing"]) and ssm_next_cnfs:
-                print ('Copying the SSM conformations for next simulation')
-            
+            if ssm_next_cnfs: # This is a quick fix for doing reeds both with and without ssm, should be done differently
                 if (not os.path.isdir(optimized_eds_state_folder)):
-                    raise IOError("Could not find optimized state output dir: " + optimized_eds_state_folder)
+                    warnings.warn("Could not find optimized state output dir: " + optimized_eds_state_folder)
+                    print ('Copying the final conformations for next simulation')
+                    cnfs = list(sorted(glob.glob(concat_file_folder+"/*.cnf"), key=lambda x: int(x.split("_")[-1].split(".")[0])))
+                    for i, cnf in enumerate(cnfs):
+                        bash.copy_file(cnf, next_dir+"/"+title_prefix+"_"+str(i+1)+".cnf")
+                elif (control_dict["sopt"]["sub"]["run_RTO"] or control_dict["eoffset"]["eoffset_rebalancing"]):
+                    print ('Copying the SSM conformations for next simulation')
 
-                opt_state_cnfs = sorted(glob.glob(optimized_eds_state_folder+'/*.cnf'),
-                                        key=lambda x: int(x.split("_")[-1].replace(".cnf", "")))
-                for i in range(1, len(svals[sopt_type_switch])+1):
-                    bash.copy_file(opt_state_cnfs[(i-1)%num_states], next_dir+"/"+title_prefix+"_"+str(i)+".cnf")
+                    opt_state_cnfs = sorted(glob.glob(optimized_eds_state_folder+'/*.cnf'),
+                                            key=lambda x: int(x.split("_")[-1].replace(".cnf", "")))
+                    for i in range(1, len(svals[sopt_type_switch])+1):
+                        bash.copy_file(opt_state_cnfs[(i-1)%num_states], next_dir+"/"+title_prefix+"_"+str(i)+".cnf")
             
             else:
                 print ('Copying the final conformations for next simulation')

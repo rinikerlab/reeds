@@ -36,7 +36,7 @@ import reeds.function_libs.pipeline.module_functions
 from pygromos.euler_submissions import gen_Euler_LSF_jobarray, FileManager as fM
 from pygromos.files.coord import cnf as cnf_cls
 from pygromos.utils import bash
-from reeds.data import imd_templates, ene_ana_libs
+from reeds.data import ene_ana_libs
 from reeds.function_libs.pipeline import generate_euler_job_files as gjs
 from reeds.function_libs.pipeline.module_functions import adapt_imd_template_optimizedState
 from reeds.function_libs.pipeline.worker_scripts.analysis_workers import RE_EDS_state_optimization_analysis as ana
@@ -44,16 +44,14 @@ from reeds.function_libs.utils.structures import spacer
 
 
 def do(out_root_dir: str, in_simSystem: fM.System,
-       in_imd_template_path: str = imd_templates.eds_md_path,
+       in_imd_template_path: str = None,
        in_gromosXX_bin_dir: str = None,
        in_gromosPP_bin_dir: str = None,
        ene_ana_lib: str = ene_ana_libs.ene_ana_lib_path,
-       simulation_steps: int = 1000000, exclude_residues: list = [],
+       simulation_steps: int = 1000000,
        nmpi_per_replica: int = 4, submit: bool = True, verbose: bool = True,
-       solvent_keyword: str = "SOLV",
        vacuum_simulation:bool =False,
-       single_bath: bool = False,
-       memory: int = None, job_duration: str = "8:00") -> int:
+       memory: int = None, job_duration: str = "8:00", randomize_seed: bool = False) -> int:
     """      Generate Optimized structures with EDS
 
             This script executes simulations, that optimize the input EDS system in each state seperatley.
@@ -134,15 +132,14 @@ def do(out_root_dir: str, in_simSystem: fM.System,
                           clean_resiNumbers_by_Name=True)  # TODO: Careful with cleaning flag! protein is not correctly described.
 
         # prepare imd_templates
-        imd_template_path, s_values, lig_num = adapt_imd_template_optimizedState(in_template_imd_path=in_imd_template_path,
-                                                                                 out_imd_dir=input_dir, cnf=cnf,
-                                                                                 non_ligand_residues=exclude_residues,
+        imd_template_path, states_num = adapt_imd_template_optimizedState(system=system,
+                                                                                 in_template_imd_path=in_imd_template_path,
+                                                                                 out_imd_dir=input_dir,
                                                                                  simulation_steps=simulation_steps,
-                                                                                 solvent_keyword=solvent_keyword,
-                                                                                 single_bath = single_bath)
+                                                                                 randomize=randomize_seed)
 
         # copy and prepare cnfs:
-        for state in range(1, lig_num + 1):
+        for state in range(1, states_num + 1):
             bash.copy_file(system.coordinates, coord_dir + "/" + os.path.basename(system.coordinates).replace(".cnf",
                                                                                                               "_" + str(
                                                                                                                   state) + ".cnf"))
@@ -166,7 +163,7 @@ def do(out_root_dir: str, in_simSystem: fM.System,
                          "in_topology_path": system.top.top_path,
                          "in_simulation_dir": sim_dir,
                          "in_imd_path": imd_template_path,
-                         "numstates": lig_num,
+                         "numstates": states_num,
                          "gromosPP_bin": in_gromosPP_bin_dir,
                          "vacuum_simulation": vacuum_simulation,
                          "in_ene_ana_lib": ene_ana_lib,
@@ -181,7 +178,7 @@ def do(out_root_dir: str, in_simSystem: fM.System,
                                                                  output_dir=sim_dir, duration=job_duration,
                                                                  run_script=worker_script,
                                                                  analysis_script=in_analysis_script_path,
-                                                                 array_length=lig_num,
+                                                                 array_length=states_num,
                                                                  array_name=system.name, cpu_per_job=nmpi_per_replica,
                                                                  memory=memory)
         ###bash make job_array script executable
@@ -223,6 +220,6 @@ if __name__ == "__main__":
     print(spacer + "\t\tRE-EDS ENERGY OFFSET ESTIMATION \n" + spacer + "\n")
     requiers_gromos_files = [("in_top_path", "input topology .top file."),
                              ("in_coord_path", "input coordinate .cn file."),
-                             ("in_perttop_path", "input pertubation topology .ptp file."),
+                             ("in_perttop_path", "input perturbation topology .ptp file."),
                              ("in_disres_path", "input distance restraint .dat file.")]
     execute_module_via_bash(__doc__, do, requiers_gromos_files)

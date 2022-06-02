@@ -29,7 +29,7 @@ def work(out_dir: str, in_coord: str, in_imd_path: str, in_topo_path: str, in_pe
     in_topo_path : str
         input topology
     in_perttopo_path : str
-        input pertubation topology
+        input perturbation topology
     in_disres_path : str, optional
         input distance restraints (default: None)
     in_posres_path : str, optional
@@ -156,7 +156,7 @@ if __name__ == "__main__":
     parser.add_argument('-in_imd', type=str, required=True, help="give .imd file which should be used.")
     parser.add_argument('-in_top', type=str, required=True, help="give input .top - file.")
     parser.add_argument('-in_coord', type=str, required=True, help="give input coordinates .cnf file.")
-    parser.add_argument('-in_perttop', type=str, required=True, help="give input pertubation topology.")
+    parser.add_argument('-in_perttop', type=str, required=True, help="give input perturbation topology.")
     parser.add_argument('-in_disres', type=str, required=False, default=None, help="give input distance restraints.")
     parser.add_argument('-in_posres', type=str, required=False, default=None, help="give input for position restraints.")
     parser.add_argument('-in_refpos', type=str, required=False, default=None, help="give input for reference positoins.")

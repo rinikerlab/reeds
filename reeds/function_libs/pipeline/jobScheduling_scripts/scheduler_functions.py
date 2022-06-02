@@ -214,7 +214,7 @@ def chain_submission(gromosXX_bin_dir: str, in_imd_path: str, simSystem:Simulati
             else:
                 print("No restraint file, suuuure?")
             
-            md_script_command += "-in_perttop " + simSystem.top.pertubation_path + "\n"
+            md_script_command += "-in_perttop " + simSystem.top.perturbation_path + "\n"
             md_script_command += "-in_coord " + simSystem.coordinates + "\n"
             md_script_command += "-nmpi " + str(nmpi) + "\n"
             md_script_command += "-gromosXX_bin_dir " + gromosXX_bin_dir + "\n"
