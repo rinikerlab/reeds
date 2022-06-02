@@ -227,22 +227,42 @@ def get_s_optimization_transitions(out_dir: str,
                                                out_path= out_dir + "/transitions_trace_numSampled"+str(i)+".png"
                                               )
     
-    # Temporary comment out of the older plot showing the same data
-    #re_plots.plot_replica_transitions(transitions, s_values=svals, out_path=out_dir + "/transitions.png",
-    #                                                                    title_prefix=title_prefix)
+    if verbose: print("\t\t draw combined replica traces ")
+
+    re_plots.plot_replica_transitions(transitions, 
+                                      s_values=svals, 
+                                      out_path=out_dir + "/transitions.png",
+                                      title_prefix=title_prefix
+                                     )
     
-    re_plots.plot_replica_transitions(transitions, s_values=svals, out_path=out_dir + "/transitions_cutted.png",
-                                                                        title_prefix=title_prefix, cut_1_replicas=True)
-    re_plots.plot_replica_transitions(transitions, s_values=svals, out_path=out_dir + "/transitions_cutted_250.png",
-                                                                        title_prefix=title_prefix, cut_1_replicas=True, xBond=(0, 250))
+    re_plots.plot_replica_transitions(transitions, 
+                                      s_values=svals, 
+                                      out_path=out_dir + "/transitions_cutted.png",
+                                      title_prefix=title_prefix, 
+                                      cut_1_replicas=True
+                                     )
+    
+    re_plots.plot_replica_transitions(transitions, 
+                                      s_values=svals, 
+                                      out_path=out_dir + "/transitions_cutted_250.png",
+                                      title_prefix=title_prefix, 
+                                      cut_1_replicas=True, 
+                                      xBond=(0, 250)
+                                     )
+    
+    
+    
+    # Temporary comment out of the older plot showing the same data
     # single trace replica
-    if verbose: print("\t\t draw single replica trace ")
-    for replica in range(1, len(repdat.system.s) + 1): 
-        single_transition_trace = transitions.loc[transitions.replicaID == replica]
-        re_plots.plot_replica_transitions_min_states(single_transition_trace, s_values=old_svals,
-                                                                                       out_path=out_dir + "/transitions_trace_" + str(replica) + ".png",
-                                                                                       title_prefix=title_prefix,
-                                                                                       cut_1_replicas=True)
+    #if verbose: print("\t\t draw single replica trace ")
+    #for replica in range(1, len(repdat.system.s) + 1): 
+    #    single_transition_trace = transitions.loc[transitions.replicaID == replica]
+    #    re_plots.plot_replica_transitions_min_states(single_transition_trace, s_values=svals,
+    #                                                                                   out_path=out_dir + "/transitions_trace_" + str(replica) + ".png",
+    #                                                                                   title_prefix=title_prefix,
+    #                                                                                   cut_1_replicas=True)
+
+
 def get_s_optimization_roundtrips_per_replica(data: Dict[int, Dict[str,List[float]]],
                                               max_pos: int,
                                               min_pos: int,
