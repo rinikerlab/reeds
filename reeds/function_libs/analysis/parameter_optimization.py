@@ -209,7 +209,7 @@ def get_s_optimization_transitions(out_dir: str,
     if verbose: print("\t\t draw replica traces ")
     
     # Plot the new replica trace s-value by s-value
-    for i in range(1, len(svals)):
+    for i in range(1, len(svals)+1):
         re_plots.plot_replica_trace_maxContrib(transitions.loc[i], 
                                                num_states, 
                                                eoffs[i-1], 
