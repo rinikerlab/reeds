@@ -3,10 +3,11 @@ from typing import List, Dict, Union
 
 import numpy as np
 import pandas as pd
-from pygromos.files import imd, repdat
+from pygromos.files.imd import Imd
+from pygromos.files.repdat import Repdat
 
-import reeds.function_libs.visualization.parameter_optimization_plots
-import reeds.function_libs.visualization.re_plots
+import reeds.function_libs.visualization.parameter_optimization_plots as popt_plots
+import reeds.function_libs.visualization.re_plots as re_plots
 from reeds.function_libs.optimization import eds_s_values as sopt_wrap
 from reeds.function_libs.optimization.src import sopt_Pathstatistic as parseS
 
@@ -58,7 +59,7 @@ def energyOffset_time_convergence(ene_ana_trajs, out_dir: str, Eoff: List[float]
             state_time_dict[stateInd + 1]["time"].append(ene_traj_key * time_step)
 
     if (visualize):
-        reeds.function_libs.visualization.parameter_optimization_plots.plot_peoe_eoff_time_convergence(state_time_dict,
+        popt_plots.plot_peoe_eoff_time_convergence(state_time_dict,
                                                                                                        out_path=out_dir + "/" + plot_title_prefix + "_eoff_convergence.png")
     return state_time_dict
 
@@ -115,8 +116,8 @@ def optimize_s(in_file: str,
     stat = parseS.generate_PathStatistic_from_file(in_file, trial_range=trial_range)
 
     if (in_imd != None):
-        imd_file = imd.Imd(in_imd)
-        svals = list(map(float, imd_file.REPLICA_EDS.RES))
+        imd = Imd(in_imd)
+        svals = list(map(float, imd.REPLICA_EDS.RES))
         setattr(stat, "s_values", sorted(list(set(svals)), reverse=True))
         setattr(stat, "raw_s_values", sorted(svals, reverse=True))
 
@@ -167,8 +168,10 @@ def optimize_s(in_file: str,
 
 
 def get_s_optimization_transitions(out_dir: str,
-                                   rep_dat: str,
+                                   repdat: Repdat,
+                                   transitions: pd.DataFrame, 
                                    title_prefix: str,
+                                   undersampling_thresholds: List, 
                                    verbose: bool = True):
     """get_s_optimization_transitions
     This function visualized the replica transitions
@@ -177,10 +180,14 @@ def get_s_optimization_transitions(out_dir: str,
     ----------
     out_dir : str
         path where the plots should be stored
-    rep_dat : str
-        path to the repdat file containing the replica transition history
+    repdat : str
+        the Repdat object contain information on the transitions
+    transitions: pd.Dataframe
+        data-frame containing information related to the transitions of the replicas.
     title_prefix : str
         title prefix for plots
+    undersampling_thresholds:
+        list of potential energy threshold to consider each state to be sampled
     verbose : bool, optional
         verbose output (default True)
 
@@ -193,33 +200,49 @@ def get_s_optimization_transitions(out_dir: str,
     if verbose: print("Plot output in: " + out_dir)
 
     # visualize transitions
-    repdat_file = repdat.Repdat(rep_dat)
-    old_svals = list(map(float, repdat_file.system.s))
+    num_states = len(repdat.system.state_eir)
+    svals = list(map(float, repdat.system.s))
+    
+    # Note: takes the energy offsets at all s-values here!
+    eoffs = np.array([repdat.system.state_eir[i+1] for i in range(num_states)]).T
 
-    # print(list(repdat_file.keys()))
-    if verbose: print("\t transition plots ")
-    transitions = repdat_file.get_replica_traces()
     if verbose: print("\t\t draw replica traces ")
-    reeds.function_libs.visualization.re_plots.plot_replica_transitions(transitions, s_values=old_svals, out_path=out_dir + "/transitions.png",
-                                                                        title_prefix=title_prefix)
-    reeds.function_libs.visualization.re_plots.plot_replica_transitions(transitions, s_values=old_svals, out_path=out_dir + "/transitions_cutted.png",
+    
+    # Plot the new replica trace s-value by s-value
+    for i in range(1, len(svals)):
+        re_plots.plot_replica_trace_maxContrib(transitions.loc[i], 
+                                               num_states, 
+                                               eoffs[i-1], 
+                                               svals, 
+                                               title = title_prefix, 
+                                               out_path= out_dir + "/transitions_trace_maxContrib"+str(i)+".png"
+                                               )
+        
+        re_plots.plot_replica_trace_numSampled(transitions.loc[i],
+                                               num_states,
+                                               eoffs[i-1],
+                                               svals,
+                                               title = title_prefix,
+                                               undersampling_thres = undersampling_thresholds,
+                                               out_path= out_dir + "/transitions_trace_numSampled"+str(i)+".png"
+                                              )
+    
+    # Temporary comment out of the older plot showing the same data
+    #re_plots.plot_replica_transitions(transitions, s_values=svals, out_path=out_dir + "/transitions.png",
+    #                                                                    title_prefix=title_prefix)
+    
+    re_plots.plot_replica_transitions(transitions, s_values=svals, out_path=out_dir + "/transitions_cutted.png",
                                                                         title_prefix=title_prefix, cut_1_replicas=True)
-    reeds.function_libs.visualization.re_plots.plot_replica_transitions(transitions, s_values=old_svals, out_path=out_dir + "/transitions_cutted_250.png",
+    re_plots.plot_replica_transitions(transitions, s_values=svals, out_path=out_dir + "/transitions_cutted_250.png",
                                                                         title_prefix=title_prefix, cut_1_replicas=True, xBond=(0, 250))
     # single trace replica
     if verbose: print("\t\t draw single replica trace ")
-    for replica in range(1, len(repdat_file.system.s) + 1):  # future: change to ->repdat_file.num_replicas
+    for replica in range(1, len(repdat.system.s) + 1): 
         single_transition_trace = transitions.loc[transitions.replicaID == replica]
-        reeds.function_libs.visualization.re_plots.plot_replica_transitions_min_states(single_transition_trace, s_values=old_svals,
+        re_plots.plot_replica_transitions_min_states(single_transition_trace, s_values=old_svals,
                                                                                        out_path=out_dir + "/transitions_trace_" + str(replica) + ".png",
                                                                                        title_prefix=title_prefix,
                                                                                        cut_1_replicas=True)
-        # vis.plot_state_transitions_min_states(single_transition, s_values=old_svals,
-        #                           out_path=out_path + "/transitions_trace_" + str(replica) + "_250t.png",
-        #                           title_prefix=title_prefix,
-        #                           cut_1_replicas=True, xBond=(0, 250))
-
-
 def get_s_optimization_roundtrips_per_replica(data: Dict[int, Dict[str,List[float]]],
                                               max_pos: int,
                                               min_pos: int,

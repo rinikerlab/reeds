@@ -473,36 +473,44 @@ def do_Reeds_analysis(in_folder: str, out_folder: str, gromos_path: str,
         print("Found repdat file: " + str(in_file))
         
         # Calculate the exchanges for this re-eds simulation
-        # Here we will have to tweak things to avoid reading the repdat multiple times
+        # Repdat is read here once and passed to all subfuncions.
+        # Similarly transitions are calculated here so its only done once.
+
         exchange_data = repdat.Repdat(in_file)
         exchange_freq = repex.calculate_exchange_freq(exchange_data)
+        transitions = exchange_data.get_replica_traces() 
 
         if (sub_control["run_RTO"]):
-            svals = parameter_optimization.optimize_s(in_file=in_file, out_dir=out_dir,
-                                                                                   title_prefix="s_opt", in_imd=in_imd,
-                                                                                   add_s_vals=add_s_vals, trial_range=s_opt_trial_range,
-                                                                                   state_weights=state_weights,
-                                                                                   run_NLRTO=sub_control["run_NLRTO"], run_NGRTO=sub_control["run_NGRTO"],
-                                                                                   verbose=verbose)
+            svals = parameter_optimization.optimize_s(in_file=in_file, 
+                                                      out_dir=out_dir,
+                                                      title_prefix="s_opt", 
+                                                      in_imd=in_imd,
+                                                      add_s_vals=add_s_vals, 
+                                                      trial_range=s_opt_trial_range,
+                                                      state_weights=state_weights,
+                                                      run_NLRTO=sub_control["run_NLRTO"], 
+                                                      run_NGRTO=sub_control["run_NGRTO"],
+                                                      verbose=verbose
+                                                     )
 
         if (sub_control["visualize_transitions"]):
             print("\t\tvisualize transitions")
-            parameter_optimization.get_s_optimization_transitions(out_dir=out_dir, rep_dat=in_file, title_prefix=title_prefix)
+            parameter_optimization.get_s_optimization_transitions(out_dir = out_dir, 
+                                                                  repdat = exchange_data,
+                                                                  transitions = transitions,
+                                                                  title_prefix=title_prefix, 
+                                                                  undersampling_thresholds = state_undersampling_occurrence_potential_threshold
+                                                                 )
+            
             re_plots.plot_exchange_freq(s_values, exchange_freq, outfile = out_dir + '/exchange_frequencies.png')            
 
         if (sub_control["roundtrips"] and sub_control["run_RTO"]):
             print("\t\tshow roundtrips")
-            in_repdat_file = repdat.Repdat(in_file)
-
-            # retrieve data:
-            if verbose: print("get replica transitions")
-            s_values = in_repdat_file.system.s
-            trans_dict = in_repdat_file.get_replica_traces()
 
             # plot
             if verbose: print("Plotting Histogramm")
             re_plots.plot_repPos_replica_histogramm(out_path=out_dir + "/replica_repex_pos.png", 
-                                                    data=trans_dict, title=title_prefix, s_values=s_values)
+                                                    data=transitions, title=title_prefix, s_values=s_values)
 
         if (verbose): print("Done\n")
     
