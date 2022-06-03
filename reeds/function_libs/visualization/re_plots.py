@@ -3,11 +3,191 @@ from typing import List
 import numpy as np
 import pandas as pd
 from matplotlib import pyplot as plt
+from matplotlib.cm import get_cmap
+
 
 from reeds.function_libs.visualization import plots_style as ps
 from reeds.function_libs.visualization.utils import generate_trace_from_transition_dict, y_axis_for_s_plots, x_axis, \
     prepare_system_state_data
 
+
+
+def plot_replica_trace_maxContrib(trace_data, num_states, eoffs, svals, title, out_path=None):
+    """
+    This function plots the path in s-space followed by one of the replicas and highlights 
+    which state is currently sampled (following the max contrib sampling criteria) at each 
+    timepoint
+
+    Parameters
+    ----------
+    trace_data : pd.DataFrame
+        The data related to the transitions for a specific replica. 
+    num_states: int
+        number of EDS states
+    eoffs: np.array
+        energy offsets at all s-values
+    svals: List
+        list of s-values  
+    title: str
+        prefix to give the title of this plot    
+    out_path: str
+        path to save the image to. if none, the image is returned 
+        (to display in jupyter notebook)    
+
+    Returns
+    -------
+    None or fig
+        matplotlib figure if if was not saved
+    
+    """
+    
+    colors = np.zeros(len(trace_data))
+    fig, ax = plt.subplots(nrows=1, ncols =1, figsize=[14,7])
+    
+    colors =  ps.active_qualitative_map_mligs(num_states)
+    
+    xtrace = np.zeros(len(trace_data))
+    ytrace = np.zeros(len(trace_data))
+    
+    # will keep track of all indices sampled
+    idx_points = np.zeros([num_states, len(trace_data)]) -1
+    
+    for i, p in enumerate(trace_data['state_pot']):
+        v = np.array(list(p.values()))
+        idx_min = np.argmin(v-eoffs) # find index of match contributing state
+               
+        # place all of data so we plot once in the end. 
+        xtrace[i] = trace_data['trial'].iloc[i]
+        ytrace[i] = - trace_data['position'].iloc[i] +1 
+        # here we reverse so s = 1 is at the top, adding 1 is just for formatting
+        idx_points[idx_min, i-1] = 0 # just here to differentiate from all the -1s
+        
+    # Plot the concatenated data (per number of states sampled)
+    # NOTE: Here the sampling is not for s = 1 but everywhere
+    for i, state_sampled in enumerate(idx_points):
+        idx_sampled = np.where(state_sampled != -1)
+        percent_sampl = len(idx_sampled[0]) / len(state_sampled) * 100
+        
+        ax.scatter(xtrace[idx_sampled], ytrace[idx_sampled], 
+                   color = colors[i], s = 8, marker = 's', 
+                   label = 'state ' + str(i+1) + ': ' + f'{percent_sampl:.0f} % ', 
+                   zorder =1)
+        
+    # Set the limits correctly
+    ax.set_ylim([-len(svals)+0.5, 0.5])
+    ax.set_xlim([0, len(trace_data)])       
+
+    # connect all the dots with a line    
+    plt.plot(xtrace, ytrace, lw = 2, color = 'lightgrey', alpha = 0.5, zorder =2)
+
+    # Put a legend outside of the plot:
+    # Shrink current axis by 20%
+    box = ax.get_position()
+    ax.set_position([box.x0, box.y0, box.width * 0.8, box.height])
+    ax.legend(loc='center left', bbox_to_anchor=(1, 0.5), fontsize = 12, 
+              fancybox=True, edgecolor = 'black', title='maxContrib sampling:')
+
+    # Set the proper axis labels 
+    ax.set_xlabel('exchange trial')
+    ax.set_ylabel('s-value')
+
+    ax.set_yticks(np.arange(-len(svals)+1, 1, 1))
+    ax.set_yticklabels(svals[::-1])
+
+    ax.set_title(title + ' transisions/trial')
+    
+    if out_path is None:
+        return fig
+    else:
+        plt.savefig(out_path)
+        plt.close()  
+
+def plot_replica_trace_numSampled(trace_data, num_states, eoffs, svals, title, undersampling_thres, out_path=None):
+    """
+    This function plots the path in s-space followed by one of the replicas and highlights 
+    how many states are currently sampled (using undersampling threshold) and the 
+    occurence sampling definition .
+    
+    Parameters
+    ----------
+    trace_data : pd.DataFrame
+        The data related to the transitions for a specific replica. 
+    num_states: int
+        number of EDS states
+    eoffs: np.array
+        energy offsets at all s-values
+    svals: List
+        list of s-values  
+    title: str
+        prefix to give the title of this plot    
+    undersampling_threshold:
+        list of thresholds value to consider a state as sampled.
+    out_path: str
+        path to save the image to. if none, the image is returned 
+        (to display in jupyter notebook)    
+
+    Returns
+    -------
+    None or fig
+        matplotlib figure if if was not saved
+    
+    """
+    
+    fig, ax = plt.subplots(nrows=1, ncols =1, figsize=[14,7])
+    
+    colors =  ps.active_qualitative_map_mligs(num_states)
+    
+    xtrace = np.zeros(len(trace_data))
+    ytrace = np.zeros(len(trace_data))
+    
+    # will keep track of all indices sampled
+    idx_points = np.zeros([num_states, len(trace_data)]) -1
+    
+    for i, p in enumerate(trace_data['state_pot']):
+        v = np.array(list(p.values()))
+        num_sampled = np.sum(v < undersampling_thres) -1
+               
+        # place all of data so we plot once in the end. 
+        xtrace[i] = trace_data['trial'].iloc[i]
+        ytrace[i] = - trace_data['position'].iloc[i] +1 
+        # here we reverse so s = 1 is at the top, adding 1 is just for formatting
+        idx_points[num_sampled, i-1] = 0 # just here to differentiate from all the -1s
+        
+    # Plot the concatenated data (per number of states sampled)
+    for i, state_sampled in enumerate(idx_points):
+        idx_sampled = np.where(state_sampled != -1)
+        ax.scatter(xtrace[idx_sampled], ytrace[idx_sampled], 
+                   color = colors[i], s = 8, marker = 's', 
+                   label = str(i+1), zorder =1)
+        
+    # Set the limits correctly
+    ax.set_ylim([-len(svals)+0.5, 0.5])
+    ax.set_xlim([0, len(trace_data)]) # change to len(dataframe)      
+
+    # connect all the dots with a line    
+    plt.plot(xtrace, ytrace, lw = 2, color = 'lightgrey', alpha = 0.5, zorder =2)
+
+    # Put a legend outside of the plot:
+    # Shrink current axis by 20%
+    box = ax.get_position()
+    ax.set_position([box.x0, box.y0, box.width * 0.8, box.height])
+    ax.legend(loc='center left', bbox_to_anchor=(1, 0.5), fontsize = 12, 
+              fancybox=True, edgecolor = 'black', title='# states sampled:')
+
+    # Set the proper axis labels 
+    ax.set_xlabel('exchange trial')
+    ax.set_ylabel('s-value')
+
+    ax.set_yticks(np.arange(-len(svals)+1, 1, 1))
+    ax.set_yticklabels(svals[::-1])
+
+    ax.set_title(title + ' transisions/trial')
+    
+    if out_path is None:
+        return fig
+    else:
+        plt.savefig(out_path)
+        plt.close()
 
 def plot_replica_transitions(transition_dict: pd.DataFrame,
                              out_path: str = None,
