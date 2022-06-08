@@ -231,8 +231,6 @@ int
         #else:
         #    work_dir = None
 
-        work_dir = None
-
         ##Build analysis_script
         if (verbose): print("Analysis Script")
         analysis_vars = OrderedDict({
