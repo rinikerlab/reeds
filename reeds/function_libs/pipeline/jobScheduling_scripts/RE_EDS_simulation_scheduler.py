@@ -278,8 +278,8 @@ int
                     spacer + "\n submit ANA part " + str(num_simulation_runs + num_equilibration_runs) + "\n")
                 try:
                     if (verbose): print("\tFINAL ANALYSIS")
-                    outLog = out_dir_path + "/../" + jobname + "_Ana.out"
-                    errLog = out_dir_path + "/../" + jobname + "_Ana.err"
+                    outLog = os.path.dirname(out_dir_path) + "/" + jobname + "_Ana.out"
+                    errLog = os.path.dirname(out_dir_path) + "/" + jobname + "_Ana.err"
                     previous_job_ID = job_submission_system.submit_to_queue(command=in_analysis_script_path,
                                                                             jobName=tmp_ana_jobname,
                                                                             submit_from_dir=out_dir_path,
