@@ -1,6 +1,7 @@
 import os, copy, glob
 
 from datetime import datetime
+import traceback
 
 import numpy as np
 import rdkit
@@ -146,7 +147,7 @@ def find_new_id(atom_mapping, init_lig, init_id):
 # Functions used after MCS search to set-up the list of PerturbedAtom(s)
 # which we carry throughout the rest of the Hybrid Topology creation
 
-def getCoreBondHList(top, core_mapping):
+def getCoreBondHList(top, core_mapping, connection_point):
     """
         Returns the list of X-H covalent bonds
         in the core
@@ -157,6 +158,12 @@ def getCoreBondHList(top, core_mapping):
                 topology for which we will look for X-H bonds
             core_mapping
                 indices of the "core-atoms" for that topology
+            connection_point: (int, int) or (List[int], List[int])
+                first element is the atom (or list of atoms) in the core region 
+                second element is the atom (or list of atoms) in the rgroup
+                We use this to avoid adding "core hydrogens" 
+                if we want them not to be part of the core ( e.g. -H -> -F perturbation)
+
         Returns
         --------
             heave_ats, hydrogen_ats
@@ -166,7 +173,12 @@ def getCoreBondHList(top, core_mapping):
     heavy_ats = []
     hydrogens_ats = []
     
-    for bh in top.BONDH.content:
+    # We also need to do this for BOND as openFF miscategorizes (because of mass)
+    for bh in top.BONDH.content + top.BOND.content:
+        if bh.IB in connection_point[0] or bh.JB in connection_point[0]:
+            #print ('skipping: ' + str(bh))
+            continue # skip, those atoms need to be included explicitely later   
+
         type1 = top.SOLUTEATOM.content[bh.IB-1].PANM
         type2 = top.SOLUTEATOM.content[bh.JB-1].PANM
             
@@ -174,18 +186,6 @@ def getCoreBondHList(top, core_mapping):
             heavy_ats.append(bh.IB)
             hydrogens_ats.append(bh.JB)
         elif type1[0] == 'H' and bh.JB in core_mapping: 
-            heavy_ats.append(bh.JB)
-            hydrogens_ats.append(bh.IB)
-    
-    # We also need to do this for BOND as openFF miscategorizes (because of mass)
-    for bh in top.BOND.content:
-        type1 = top.SOLUTEATOM.content[bh.IB-1].PANM
-        type2 = top.SOLUTEATOM.content[bh.JB-1].PANM
-    
-        if type2[0] == 'H' and bh.IB in core_mapping:
-            heavy_ats.append(bh.IB)
-            hydrogens_ats.append(bh.JB)
-        elif type1[0] == 'H' and bh.JB in core_mapping:
             heavy_ats.append(bh.JB)
             hydrogens_ats.append(bh.IB)
  
@@ -236,7 +236,7 @@ def addCoreHydrogens(perturbed_atoms, core_bondsH, lig_bondsH, init_lig_id):
     return perturbed_atoms
 
 
-def initializePerturbedAtoms(tops, core_mappings):
+def initializePerturbedAtoms(tops, core_mappings, connection_points):
     """
     This function will initialize the list of PerturbedAtoms    
     
@@ -255,6 +255,8 @@ def initializePerturbedAtoms(tops, core_mappings):
             list of topologies, first element is the one we use for the core
         core_mappins
             mapping between each of the topologies found by the MCS
+        connection_points:
+            keeps track of atoms belonmging to core and -R group
 
     Returns
     --------
@@ -264,7 +266,7 @@ def initializePerturbedAtoms(tops, core_mappings):
     
     perturbed_atoms = []
     
-    core_bondsH = getCoreBondHList(tops[0], core_mappings[0])
+    core_bondsH = getCoreBondHList(tops[0], core_mappings[0], connection_points[0])
     
     # We can skip the first ligand
     for i, (top, cmap) in enumerate(zip(tops[1:], core_mappings[1:])):        
@@ -279,7 +281,7 @@ def initializePerturbedAtoms(tops, core_mappings):
         # Add the mappings of the Hydrogens (as those were not in the core) that are part of the core.
         # as we need those to have proper 1,3 and 1,4 exclusions. Ensure no duplicates are entered.
         
-        lig_bondsH = getCoreBondHList(top, cmap)
+        lig_bondsH = getCoreBondHList(top, cmap, connection_points[i+1])
         perturbed_atoms = addCoreHydrogens(perturbed_atoms, core_bondsH, lig_bondsH, i+2)
         
     return perturbed_atoms
@@ -746,7 +748,8 @@ def addLigandToTopology(core_top, new_lig_top, new_lig_rgroup, atom_mappings):
 def findConnectionPoints(tops, core_mappings, force_connecting = None):
     """
         Find all occurences of a bond between a core atom
-        to another atom which is not part of the core (and is not a hydrogen).
+        to another atom which is not part of the core 
+        (and is not a hydrogen, unless the core atom is part of force_connecting).
         
         Atoms maybe be forced to be connecting atoms with the force_connecting
         option (to make a core - H bond be a connecting atom for example)
@@ -1277,8 +1280,15 @@ def constructHybridTopology(core_top, new_ligand_tops, atom_mappings, connecting
     for i, lig_top in enumerate(new_ligand_tops):
         lig_core, lig_rgroup = findAtomsInCoreAndRGroup(lig_top, connecting_points[i+1])     
         print ('Working on addition of ligand ' + str(i+2) + ' has: ' + str(len(lig_rgroup)) + ' atoms.')
-        (new_core, atom_mappings) = addLigandToTopology(new_core, lig_top, lig_rgroup, atom_mappings)        
-         
+        
+        try:
+            (new_core, atom_mappings) = addLigandToTopology(new_core, lig_top, lig_rgroup, atom_mappings)        
+        except Exception as e:
+            print ('We got some errors in the making: returning atom mappings at the end')
+            print (e)
+            traceback.print_exc()
+            return atom_mappings
+
         if verbose: 
             print (f'{lig_core=}')
             print (f'{lig_rgroup=}') 
