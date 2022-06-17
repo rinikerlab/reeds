@@ -108,6 +108,45 @@ def initialize_imd(system: fM.System, imd_out_path: str = "template.imd", single
         print("Imd has been initialized. Please make any additional changes to "+imd_out_path+" before the next steps of the pipeline")
     imd.write(imd_out_path)
 
+def adapt_imd_template_emin(system: fM.System, in_template_imd_path: str, out_imd_dir: str)->(str, list):
+    """
+      modify_imds for an energy minmization for each of the end states
+        This function prepares the imd. protocol file for gromos simulation.
+
+    Parameters
+    ----------
+    system : pygromos.PipelineManager.Simulation_System
+        this is the system obj. containing all paths to all system relevant Files.
+    in_template_imd_path : str
+        path to the template imd, prepared with initialize_imd
+    out_imd_dir : str
+        output path for the imds
+
+    Returns
+    -------
+    str, list
+        imd_template_path, states_num
+    """
+
+    states_num = int(read_ptp(system.top.perturbation_path)['MPERTATOM']['NPTB'])
+    imd = Imd(in_template_imd_path)
+    
+    # Remove blocks that shouldn't be there, add blocks that should be there
+    del imd.COMTRANSROT
+    del imd.PRESSURESCALE 
+    
+    emin_options = {'NTEM':1, 'NCYC':0, 'DELE':0.1, 'DX0':0.01, 'DXM':0.05, 'NMIN':10000, 'FLIM':0.0}
+    imd.add_block(blocktitle="ENERGYMIN", content=emin_options) 
+ 
+    # edit EDS part
+    imd_template_path = out_imd_dir + "/emin_state"
+    s_values = [1.0 for x in range(states_num)]
+    for state, s_values in zip(range(1, states_num + 1), s_values):
+        imd.edit_EDS(NUMSTATES=states_num, S=s_values,
+                          EIR=[500 if (x == state) else -500 for x in range(1, states_num + 1)])
+        imd.write(imd_template_path + "_" + str(state) + ".imd")
+
+    return imd_template_path, states_num
 
 def adapt_imd_template_optimizedState(system: fM.System, in_template_imd_path: str, out_imd_dir: str,
                                       randomize: bool = False, simulation_steps: int = 100000)->(str, list):
