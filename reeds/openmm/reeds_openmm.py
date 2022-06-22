@@ -126,27 +126,28 @@ class Reeds:
     default_nonbonded_force.setReactionFieldDielectric(reeds_simulation_variables.eps_reaction_field)
     default_nonbonded_force.setCutoffDistance(reeds_simulation_variables.cutoff)
 
-    solvents = []
+    # assumption: end-state molecules are listed consecutively at beginning of the topology, all non end-state particles are unperturbed
+    unperturbed_particles = []
     for mol in self.simulations.context.getMolecules()[self.num_endstates:]:
-        solvents.extend(mol)
+        unperturbed_particles.extend(mol)
 
     active_particles_ = [self.simulations.context.getMolecules()[i] for i in range(self.num_endstates)]
-    active_particles_.append(solvents)
+    active_particles_.append(unperturbed_particles)
 
     for i, active_particles in enumerate(active_particles_):
 
-        a, b, c, d = (self.custom_reaction_field(i, default_nonbonded_force, active_particles, solvents))
+        a, b, c, d = (self.custom_reaction_field(i, default_nonbonded_force, active_particles, unperturbed_particles))
 
-        if(active_particles != solvents):
+        if(active_particles != unperturbed_particles):
           a.setName("lj_rf_endstate_" + str(i+1))
           b.setName("lj_rf_endstate_" + str(i+1) + "_one_four")
           c.setName("rf_endstate_" + str(i+1) + "_excluded")
           d.setName("rf_endstate_" + str(i+1) + "_self_interaction")
         else:
-          a.setName("lj_rf_solvent_solvent")
-          b.setName("lj_rf_solvent_solvent_one_four")
-          c.setName("rf_endstate_solvent_solvent_excluded")
-          d.setName("rf_endstate_solvent_solvent_self_interaction")
+          a.setName("lj_rf_unperturbed_unperturbed")
+          b.setName("lj_rf_unperturbed_unperturbed_one_four")
+          c.setName("rf_endstate_unperturbed_unperturbed_excluded")
+          d.setName("rf_endstate_unperturbed_unperturbed_self_interaction")
 
         a.setForceGroup(i+1)
         self.simulations.system.addForce(a)
@@ -202,6 +203,7 @@ class Reeds:
     self.repdat = open("repdat_" + self.system_name, "w")
     self.repdat.write('{0: <15}'.format("time") + '{0: <15}'.format("partner_i") + '{0: <15}'.format("partner_j")+ '{0: <15}'.format("s_i") + '{0: <15}'.format("s_j")+'{0: <15}'.format("position_i")+'{0: <15}'.format("position_j")+'{0: <15}'.format("probability")+'{0: <15}'.format("exchanged")+"\n")
     
+    # repdat in GROMOS format to use with existing analysis script -> remove in the long run
     self.repdat_gromos = open("repdat_gromos_" + self.system_name, "w")
     self.repdat_gromos.write("#======================\n#REPLICAEXSYSTEM\n#======================\n#Number of temperatures:\t1\n#Dimension of temperature values:\t1")
     self.repdat_gromos.write("#Number of lambda values:\t" + str(self.num_replicas) + "\n")
@@ -224,7 +226,7 @@ class Reeds:
       self.repdat_gromos.write("Vr" + str(i+1) + "\t")
     self.repdat_gromos.write("\n")
 
-  def custom_reaction_field(self, end_state, original_nonbonded_force, active_particles, solvent_particles):
+  def custom_reaction_field(self, end_state, original_nonbonded_force, active_particles, unperturbed_particles):
     """
     defines a reaction field with a shifting function (see A. Kubincova et al, Phys. Chem. Chem. Phys. 2020, 22)
 
@@ -235,9 +237,9 @@ class Reeds:
     original_nonbonded_force: mm.NonbondedForce
       original nonbonded force of the system
     active_particles: List
-      list of particle indices of current particles (either all particles of current end-state or all solvent particles)
-    solvent_particles: List
-      list of solvent particles
+      list of particle indices of current particles (either the particles of the current end-state or all unperturbed particles)
+    unperturbed_particles: List
+      list of unperturbed particles (e.g. solvent, protein, cofactor, etc.)
 
     Returns
     -------
@@ -306,9 +308,9 @@ class Reeds:
       j, k, chargeprod, sigma, epsilon = original_nonbonded_force.getExceptionParameters(index)
       force_lj_crf.addExclusion(j, k)
 
-    # set interaction groups -> end-state with itself and end-state with solvent (or only solvent with solvent)
-    force_lj_crf.addInteractionGroup(active_particles, solvent_particles)
-    if(active_particles != solvent_particles):
+    # set interaction groups -> end-state with itself and end-state with unperturbed particles (or only unperturbed with unperturbed)
+    force_lj_crf.addInteractionGroup(active_particles, unperturbed_particles)
+    if(active_particles != unperturbed_particles):
       force_lj_crf.addInteractionGroup(active_particles, active_particles)
 
     #
@@ -361,7 +363,7 @@ class Reeds:
     force_crf_excluded.addGlobalParameter(scal, 1)
     force_crf_excluded.setUsesPeriodicBoundaryConditions(True)
 
-    # copy excluded neighbors from reaction field
+    # copy excluded neighbors from original nonbonded force
     for index in range(original_nonbonded_force.getNumExceptions()):
       j, k, chargeprod, sigma, epsilon = original_nonbonded_force.getExceptionParameters(index)
       if j in active_particles and k in active_particles and (chargeprod._value == 0):
@@ -380,7 +382,7 @@ class Reeds:
     force_crf_self_term.addGlobalParameter(scal, 1)
     force_crf_self_term.setUsesPeriodicBoundaryConditions(True)
 
-    # add self interaction of all current end-state/solvent particles
+    # add self interaction of all current end-state/unperturbed particles
     for i in active_particles:
       ch1, _, _ = original_nonbonded_force.getParticleParameters(i)
       force_crf_self_term.addBond(i, i, [ch1*ch1])
