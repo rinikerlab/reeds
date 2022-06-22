@@ -410,7 +410,7 @@ class Reeds:
 
   def reference_state(self, pos):
     """
-    calculates V_R of replica at position pos
+    calculates V_R of replica at with s-value at index pos
     """
     Vi = np.array([self.simulations.context.getState(getEnergy=True, groups=1<<i+1).getPotentialEnergy().value_in_unit(u.kilojoules_per_mole) for i in range(self.num_endstates)])
     s = self.s_values[pos]
@@ -588,6 +588,7 @@ class Reeds:
       run += 1
 
       # store state files every 1000 steps and flush
+      # TODO: add output frequency as ReedsSimulationVariables member
       if(not (total_steps % 1000)):
         for idx, pos in enumerate(self.replica_positions):
           self.simulations.context.setState(self.states[pos])
