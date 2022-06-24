@@ -6,6 +6,7 @@ import warnings
 
 from pygromos.files import imd
 from pygromos.utils import bash
+from pygromos.files.coord.cnf import Cnf
 
 import reeds.function_libs.visualization.pot_energy_plots
 from reeds.data import ene_ana_libs
@@ -226,8 +227,13 @@ def do(in_simulation_dir: str, in_topology_path: str, in_imd_path: str,
                         include = 'ALL',
                         frames = lowest_frames[i]
                        )
-     
-    
+        # Set the title block so the file will be easier to work with
+        # we also print coord dir in case we mix SSM conformations from 
+        # multiple optimized states (e.g. multiple torsion states)
+        cnf = Cnf(coord_dir + "/REEDS_SSM_state_" + str(i+1) +'.cnf') 
+        cnf.TITLE.content = 'SSM for ligand ' + str(i+1) + ' from ' + coord_dir 
+        cnf.write(coord_dir + "/REEDS_SSM_state_" + str(i+1) +'.cnf')
+
     bash.copy_file(coord_dir + "/REEDS_SSM_state*.cnf", next_dir)
 
 
