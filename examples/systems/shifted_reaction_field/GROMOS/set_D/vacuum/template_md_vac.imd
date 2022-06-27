@@ -1,0 +1,119 @@
+TITLE
+        Automatically generated input file
+        dsidler Sat Oct 21 10:51:41 2017
+
+	 >>> Generated with python lib function_libs utilities. (riniker group)
+	 >>> line_seperator: '\n'	 field_seperator: '\t'
+END
+STOCHDYN
+#     NTSD     NTFR     NSFR   NBREF  RCUTF    CFRIC    TEMPSD
+         1        1      100       5    0.3    91.0     298.15
+END
+BOUNDCOND 
+# 	 NTB 	 NDFMIN 
+ 	 0 	 0 	  
+END
+COMTRANSROT 
+# 	 NSCM 
+ 	 0 	  
+END
+CONSTRAINT 
+# 	 NTC 
+ 	 3 	  
+# 	 NTCP 	 NTCP0(1) 
+ 	 1 	 0.0001 	  
+# 	 NTCS 	 NTCS0(1) 
+ 	 1 	 0.0001 	  
+END
+DISTANCERES 
+# 	 NTDIR 	 NTDIRA 	 CDIR 	 DIR0 	 TAUDIR 	 FORCESCALE 	 VDIR 	 NTWDIR 
+ 	 1 	 0 	 5000 	 1 	 1 	 0 	 0 	 0 	  
+END
+EDS 
+# 	 EDS 
+ 	 1 	  
+# 	 ALPHLJ 	 ALPHC 
+ 	 0.0 	 0.0 	  
+# 	 FUNCTIONAL FORM 
+ 	 1 	  
+# 	 NUMSTATES 
+ 	 9 	  
+# 	 S 
+ 	 1.0 	  
+# 	 EIR 
+ 	 0 	 0 	 0 	 0 	 0 	 0 	 0 	 0 	 0
+END
+FORCE 
+# 	 BONDS 	 ANGLES 	 IMPROPER 	 DIHEDRAL 	 ELECTROSTATIC 	 VDW 
+ 	 0 	 1 	 1 	 1 	 1 	 1 	  
+# 	 NEGR 	 NRE 
+ 	 9 	 15 	 31 	 48 	 66 	 87 	 108 	 132 	 151 	 170
+END
+INITIALISE 
+# 	 NTIVEL 	 NTISHK 	 NTINHT 	 NTINHB 
+ 	 1              0 	 0 	 0 	  
+# 	 NTISHI 	 NTIRTC 	 NTICOM 
+ 	 1 	 0 	 0 	  
+# 	 NTISTI 
+ 	 1 	  
+# 	 IG 	 TEMPI 
+ 	 210185 	 298.15 	  
+END
+NONBONDED 
+# 	 NLRELE 
+ 	 1 	  
+# 	 APPAK 	 RCRF 	 EPSRF 	 NSLFEXCL 
+ 	 0 	 %cutoff% 	 1 	 1 	  
+# 	 NSHAPE 	 ASHAPE 	 NA2CLC 	 TOLA2 	 EPSLS 
+ 	 3 	 1.4 	 2 	 1e-10 	 0 	  
+# 	 NKX 	 NKY 	 NKZ 	 KCUT 
+ 	 10 	 10 	 10 	 100 	  
+# 	 NGX 	 NGY 	 NGZ 	 NASORD 	 NFDORD 	 NALIAS 	 NSPORD 
+ 	 32 	 32 	 32 	 3 	 2 	 3 	 4 	  
+# 	 NQEVAL 	 FACCUR 	 NRDGRD 	 NWRGRD 
+ 	 100000 	 1.6 	 0 	 0 	  
+# 	 NLRLJ 	 SLVDNS 
+ 	 0 	 33.3 	  
+END
+PAIRLIST 
+# 	 ALGORITHM 	 NSNB 	 RCUTP 	 RCUTL 	 SIZE 	 TYPE 
+ 	 0 	 	 1 	 %cutoff%   %cutoff% 	 %cutoff_half% 	 %cutoff_type%
+END
+#
+PRINTOUT 
+# 	 NTPR 	 NTPP 
+ 	 1000 	 0 	  
+END
+STEP 
+# 	 NSTLIM 	 T 	 DT 
+ 	 1000000 	 0 	 0.002 	  
+END
+SYSTEM 
+# 	 NPM 	 NSM 
+ 	 1 	 0 	  
+END
+WRITETRAJ 
+# 	 NTWX 	 NTWSE 	 NTWV 	 NTWF 	 NTWE 	 NTWG 	 NTWB 
+ 	 100 	 0 	 0 	 0 	 20 	 0 	 0 	  
+END
+#
+AMBER
+# AMBER 0..1 use AMBER topology
+#    0: GROMOS topology
+#    1: AMBER topology
+# AMBSCAL >= 0.0 scaling factor for 1,4-electrostatic-interactoins
+#                (will be directly inverted when reading in)
+#                Default: 1.2
+#AMBER     AMBSCAL
+      1     1.2
+END
+COVALENTFORM
+# NTBBH NTBAH   NTBDN
+ 1      1       0
+END
+SHIFT
+1
+END
+SHIFT
+%shift%
+END
