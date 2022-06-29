@@ -35,7 +35,7 @@ def do(out_root_dir: str, in_simSystem: fM.System, in_ene_ana_lib: str,
        state_undersampling_occurrence_potential_threshold: List[float] = None,
        gromosXX_bin_dir: str = None, gromosPP_bin_dir: str = None,
        nmpi_per_replica: int = 1, num_simulation_runs: int = 2,
-       num_equilibration_runs: int = 1, work_dir: str = None,
+       num_equilibration_runs: int = 1, work_dir: str = None, trials_per_run: int = 12500,
        submit: bool = True, duration_per_job: str = "24:00", 
        initialize_first_run: bool = True, reinitialize: bool = False,
        do_not_doubly_submit_to_queue: bool = True,
@@ -165,7 +165,7 @@ int
         ##adapt imd_templates
         if (verbose): print("Writing imd_templates")
         imd_file = adapt_imd_template_eoff(system=simSystem, imd_out_path=in_imd_path, in_template_imd_path=in_template_imd_path,
-                                           input_svals=s_values, randomize=randomize_seed)
+                                           trials_per_run=trials_per_run, input_svals=s_values, randomize=randomize_seed)
         in_imd_path = imd_file.path
         svals = imd_file.REPLICA_EDS.RES
         numstates = imd_file.REPLICA_EDS.NUMSTATES

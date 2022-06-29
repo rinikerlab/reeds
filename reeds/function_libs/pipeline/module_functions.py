@@ -193,7 +193,7 @@ def adapt_imd_template_lowerBound(system: fM.System, in_template_imd_path: str, 
     return imd_template_path, s_values
 
 
-def adapt_imd_template_eoff(system: fM.System, imd_out_path: str, in_template_imd_path: str,
+def adapt_imd_template_eoff(system: fM.System, imd_out_path: str, in_template_imd_path: str, trials_per_run: int,
                             input_svals: List[float] = None, randomize: bool = False, verbose: bool = True) -> Imd:
     """
             This function is preparing the imd_template in gromos_files for the REEDS SYSTEM>
@@ -230,9 +230,10 @@ def adapt_imd_template_eoff(system: fM.System, imd_out_path: str, in_template_im
     if(randomize): imd.randomize_seed()
     # build REEDS Block
     imd.add_block(block=imd_blocks.NEW_REPLICA_EDS(REEDS=1, NRES=len(svals), NUMSTATES=states_num, NEOFF=len(svals),
-                                                    RES=svals, EIR=0, NRETRIAL=10, NREQUIL=0, EDS_STAT_OUT=1,
+                                                    RES=svals, EIR=0, NRETRIAL=trials_per_run, NREQUIL=0, EDS_STAT_OUT=1,
                                                     CONT=1, PERIODIC=0))
     imd.edit_REEDS(EIR=0.0)
+    imd.STEP.NSTLIM = 50
     imd_out_path = imd.write(imd_out_path)
     if (verbose): print(imd.REPLICA_EDS)
     return imd
