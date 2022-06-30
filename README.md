@@ -23,6 +23,7 @@ For more on RE-EDS checkout:
  * [Replica exchange enveloping distribution sampling (RE-EDS): A robust method to estimate multiple free-energy differences from a single simulation;  Dominik Sidler, Arthur Schwaninger, and Sereina Riniker (2016)](https://aip.scitation.org/doi/abs/10.1063/1.4964781)
 
 Further reading on EDS:
+ * [Efficient Alchemical Intermediate States in Free Energy Calculations Using λ-Enveloping Distribution Sampling; Gerhard König, Benjamin Ries, Philippe H. Hünenberger, and Sereina Riniker (2021)](https://doi.org/10.1021/acs.jctc.1c00418)
  * [An Alternative to Conventional λ-Intermediate States in Alchemical Free Energy Calculations: λ-Enveloping Distribution Sampling; Gerhard König, Nina Glaser, Benjamin Schroeder, Alžbeta Kubincová, Philippe H. Hünenberger, and Sereina Riniker (2020)](https://pubs.acs.org/doi/abs/10.1021/acs.jcim.0c00520)
  * [Multiple free energies from a single simulation: Extending enveloping distribution sampling to nonoverlapping phase-space distributions; Clara D. Christ and Wilfred F. van Gunsteren (2008)](https://aip.scitation.org/doi/10.1063/1.2913050)
 
