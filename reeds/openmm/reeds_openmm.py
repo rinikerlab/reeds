@@ -126,45 +126,81 @@ class Reeds:
     default_nonbonded_force.setReactionFieldDielectric(reeds_simulation_variables.eps_reaction_field)
     default_nonbonded_force.setCutoffDistance(reeds_simulation_variables.cutoff)
 
-    # assumption: end-state molecules are listed consecutively at beginning of the topology, all non end-state particles are unperturbed
-    unperturbed_particles = []
+    # assumption: end-state molecules are listed consecutively at beginning of the topology, all non end-state particles are environment
+    environment_particles = []
     for mol in self.simulations.context.getMolecules()[self.num_endstates:]:
-        unperturbed_particles.extend(mol)
+        environment_particles.extend(mol)
 
     active_particles_ = [self.simulations.context.getMolecules()[i] for i in range(self.num_endstates)]
-    active_particles_.append(unperturbed_particles)
-
+    
+    # custom forces for energy
     for i, active_particles in enumerate(active_particles_):
 
-        a, b, c, d = (self.custom_reaction_field(i, default_nonbonded_force, active_particles, unperturbed_particles))
+        a, b, c, d = (self.custom_reaction_field(i, default_nonbonded_force, active_particles, environment_particles, False))
 
-        if(active_particles != unperturbed_particles):
+        a.setName("lj_rf_endstate_" + str(i+1))
+        b.setName("lj_rf_endstate_" + str(i+1) + "_one_four")
+        c.setName("rf_endstate_" + str(i+1) + "_excluded")
+        d.setName("rf_endstate_" + str(i+1) + "_self_interaction")
+        a.setForceGroup(i+1)
+        b.setForceGroup(i+1)
+        c.setForceGroup(i+1)
+        d.setForceGroup(i+1)
+        
+        self.simulations.system.addForce(a)
+
+        if (b.getNumBonds()):
+            self.simulations.system.addForce(b)
+            
+        if (c.getNumBonds()): 
+            self.simulations.system.addForce(c)
+            
+        if (d.getNumBonds()):
+            self.simulations.system.addForce(d)
+    
+            
+    active_particles_.append(environment_particles)            
+    # custom forces for integration
+    for i, active_particles in enumerate(active_particles_):
+
+        if(active_particles != environment_particles):
+          a, b, c, d = (self.custom_reaction_field(i, default_nonbonded_force, active_particles, environment_particles, True))
           a.setName("lj_rf_endstate_" + str(i+1))
           b.setName("lj_rf_endstate_" + str(i+1) + "_one_four")
           c.setName("rf_endstate_" + str(i+1) + "_excluded")
           d.setName("rf_endstate_" + str(i+1) + "_self_interaction")
+          a.setForceGroup(i+1+self.num_endstates)
+          b.setForceGroup(i+1+self.num_endstates)
+          c.setForceGroup(i+1+self.num_endstates)
+          d.setForceGroup(i+1+self.num_endstates)
         else:
-          a.setName("lj_rf_unperturbed_unperturbed")
-          b.setName("lj_rf_unperturbed_unperturbed_one_four")
-          c.setName("rf_endstate_unperturbed_unperturbed_excluded")
-          d.setName("rf_endstate_unperturbed_unperturbed_self_interaction")
+          a, b, c, d = (self.custom_reaction_field(i, default_nonbonded_force, active_particles, environment_particles, False))
+          a.setName("lj_rf_environment_environment")
+          b.setName("lj_rf_environment_environment_one_four")
+          c.setName("rf_environment_environment_excluded")
+          d.setName("rf_environment_environment_self_interaction")
+          a.setForceGroup(0)
+          b.setForceGroup(0)
+          c.setForceGroup(0)
+          d.setForceGroup(0)
 
-        a.setForceGroup(i+1)
+        
         self.simulations.system.addForce(a)
 
         if (b.getNumBonds()):
-            b.setForceGroup(i+1)
             self.simulations.system.addForce(b)
             
-        if (c.getNumBonds()):
-            c.setForceGroup(i+1)
+        if (c.getNumBonds()): 
             self.simulations.system.addForce(c)
             
         if (d.getNumBonds()):
-            d.setForceGroup(i+1)
             self.simulations.system.addForce(d)
     
-    self.simulations.context.reinitialize()  
+    integration_force_groups = [i+1+self.num_endstates for i in range(self.num_endstates)]
+    integration_force_groups.append(0)
+    
+    self.integrators.setIntegrationForceGroups(set(integration_force_groups))
+    self.simulations.context.reinitialize() 
 
     # initialize positions and velocities
     if(reeds_input_files.state_files is None):
@@ -226,7 +262,7 @@ class Reeds:
       self.repdat_gromos.write("Vr" + str(i+1) + "\t")
     self.repdat_gromos.write("\n")
 
-  def custom_reaction_field(self, end_state, original_nonbonded_force, active_particles, unperturbed_particles):
+  def custom_reaction_field(self, end_state, original_nonbonded_force, active_particles, environment_particles, use_scaling_factor):
     """
     defines a reaction field with a shifting function (see A. Kubincova et al, Phys. Chem. Chem. Phys. 2020, 22)
 
@@ -237,9 +273,9 @@ class Reeds:
     original_nonbonded_force: mm.NonbondedForce
       original nonbonded force of the system
     active_particles: List
-      list of particle indices of current particles (either the particles of the current end-state or all unperturbed particles)
-    unperturbed_particles: List
-      list of unperturbed particles (e.g. solvent, protein, cofactor, etc.)
+      list of particle indices of current particles (either all particles of current end-state or all environment particles)
+    environment_particles: List
+      list of environment particles
 
     Returns
     -------
@@ -272,7 +308,10 @@ class Reeds:
     #
     # nonbonded pairlist interactions (lennard jones and coulomb reaction field)
     #
-    lj_crf  = scal + "*(4*epsilon*(sigma_over_r12 - sigma_over_r6) + ONE_4PI_EPS0*chargeprod*(1/r + krf*r2 + arfm*r4 + arfn*r6 - crf));"
+    if(use_scaling_factor):
+      lj_crf  = scal + "*(4*epsilon*(sigma_over_r12 - sigma_over_r6) + ONE_4PI_EPS0*chargeprod*(1/r + krf*r2 + arfm*r4 + arfn*r6 - crf));"
+    else:
+      lj_crf  = "(4*epsilon*(sigma_over_r12 - sigma_over_r6) + ONE_4PI_EPS0*chargeprod*(1/r + krf*r2 + arfm*r4 + arfn*r6 - crf));"
     lj_crf += "krf = {:f};".format(krf.value_in_unit(u.nanometer**-3))
     lj_crf += "crf = {:f};".format(crf.value_in_unit(u.nanometer**-1))
     lj_crf += "r6 = r2*r4;"
@@ -293,7 +332,8 @@ class Reeds:
     force_lj_crf.addPerParticleParameter('charge')
     force_lj_crf.addPerParticleParameter('sigma')
     force_lj_crf.addPerParticleParameter('epsilon')
-    force_lj_crf.addGlobalParameter(scal, 1)
+    if(use_scaling_factor):
+      force_lj_crf.addGlobalParameter(scal, 1)
     force_lj_crf.setNonbondedMethod(mm.CustomNonbondedForce.CutoffPeriodic)
     force_lj_crf.setCutoffDistance(cutoff)
     force_lj_crf.setUseLongRangeCorrection(False)
@@ -308,15 +348,18 @@ class Reeds:
       j, k, chargeprod, sigma, epsilon = original_nonbonded_force.getExceptionParameters(index)
       force_lj_crf.addExclusion(j, k)
 
-    # set interaction groups -> end-state with itself and end-state with unperturbed particles (or only unperturbed with unperturbed)
-    force_lj_crf.addInteractionGroup(active_particles, unperturbed_particles)
-    if(active_particles != unperturbed_particles):
+    # set interaction groups -> end-state with itself and end-state with environment (or only environment with environment)
+    force_lj_crf.addInteractionGroup(active_particles, environment_particles)
+    if(active_particles != environment_particles):
       force_lj_crf.addInteractionGroup(active_particles, active_particles)
 
     #
     # third neighbor interactions (lennard jones and coulomb reaction field)
     #
-    lj_crf_one_four = scal + "*(4*epsilon*(sigma_over_r12 - sigma_over_r6) + ONE_4PI_EPS0*chargeprod*(1/r) +ONE_4PI_EPS0*chargeprod_*(krf*r2 + arfm*r4 + arfn*r6 - crf));"
+    if(use_scaling_factor):
+      lj_crf_one_four = scal + "*(4*epsilon*(sigma_over_r12 - sigma_over_r6) + ONE_4PI_EPS0*chargeprod*(1/r) +ONE_4PI_EPS0*chargeprod_*(krf*r2 + arfm*r4 + arfn*r6 - crf));"
+    else:
+      lj_crf_one_four = "(4*epsilon*(sigma_over_r12 - sigma_over_r6) + ONE_4PI_EPS0*chargeprod*(1/r) +ONE_4PI_EPS0*chargeprod_*(krf*r2 + arfm*r4 + arfn*r6 - crf));"
     lj_crf_one_four += "ONE_4PI_EPS0 = {:f};".format(ONE_4PI_EPS0)
     lj_crf_one_four += "krf = {:f};".format(krf.value_in_unit(u.nanometer**-3))
     lj_crf_one_four += "crf = {:f};".format(crf.value_in_unit(u.nanometer**-1))
@@ -334,8 +377,9 @@ class Reeds:
     force_lj_crf_one_four.addPerBondParameter('sigma')
     force_lj_crf_one_four.addPerBondParameter('epsilon')
     force_lj_crf_one_four.addPerBondParameter('chargeprod_')
-    force_lj_crf_one_four.addGlobalParameter(scal, 1)
-    force_lj_crf_one_four.setUsesPeriodicBoundaryConditions(True)
+    if(use_scaling_factor):
+      force_lj_crf_one_four.addGlobalParameter(scal, 1)
+    #force_lj_crf_one_four.setUsesPeriodicBoundaryConditions(True)
 
     # copy third neighbors from original nonbonded force
     for index in range(original_nonbonded_force.getNumExceptions()):
@@ -349,7 +393,10 @@ class Reeds:
     #
     # excluded neighbors reaction field
     #
-    crf_excluded = scal + "*(ONE_4PI_EPS0*chargeprod_*(krf*r2 + arfm*r4 + arfn*r6 -crf));"
+    if(use_scaling_factor):
+      crf_excluded = scal + "*(ONE_4PI_EPS0*chargeprod_*(krf*r2 + arfm*r4 + arfn*r6 -crf));"
+    else:
+      crf_excluded = "(ONE_4PI_EPS0*chargeprod_*(krf*r2 + arfm*r4 + arfn*r6 -crf));"
     crf_excluded += "ONE_4PI_EPS0 = {:f};".format(ONE_4PI_EPS0)
     crf_excluded += "krf = {:f};".format(krf.value_in_unit(u.nanometer**-3))
     crf_excluded += "crf = {:f};".format(crf.value_in_unit(u.nanometer**-1))
@@ -360,10 +407,11 @@ class Reeds:
     crf_excluded += "arfn = {:f};".format(arfn.value_in_unit(u.nanometer**-7))
     force_crf_excluded = mm.CustomBondForce(crf_excluded)
     force_crf_excluded.addPerBondParameter('chargeprod_')
-    force_crf_excluded.addGlobalParameter(scal, 1)
-    force_crf_excluded.setUsesPeriodicBoundaryConditions(True)
+    if(use_scaling_factor):
+      force_crf_excluded.addGlobalParameter(scal, 1)
+    #force_crf_excluded.setUsesPeriodicBoundaryConditions(True)
 
-    # copy excluded neighbors from original nonbonded force
+    # copy excluded neighbors from reaction field
     for index in range(original_nonbonded_force.getNumExceptions()):
       j, k, chargeprod, sigma, epsilon = original_nonbonded_force.getExceptionParameters(index)
       if j in active_particles and k in active_particles and (chargeprod._value == 0):
@@ -374,15 +422,19 @@ class Reeds:
     #
     # self term
     #
-    crf_self_term = scal + "*(0.5 * ONE_4PI_EPS0* chargeprod_ * (-crf));"
+    if(use_scaling_factor):
+      crf_self_term = scal + "*(0.5 * ONE_4PI_EPS0* chargeprod_ * (-crf));"
+    else:
+      crf_self_term = "(0.5 * ONE_4PI_EPS0* chargeprod_ * (-crf));"
     crf_self_term += "ONE_4PI_EPS0 = {:f};".format(ONE_4PI_EPS0)
     crf_self_term += "crf = {:f};".format(crf.value_in_unit(u.nanometer**-1))
     force_crf_self_term = mm.CustomBondForce(crf_self_term)
     force_crf_self_term.addPerBondParameter('chargeprod_')
-    force_crf_self_term.addGlobalParameter(scal, 1)
-    force_crf_self_term.setUsesPeriodicBoundaryConditions(True)
+    if(use_scaling_factor):
+      force_crf_self_term.addGlobalParameter(scal, 1)
+    #force_crf_self_term.setUsesPeriodicBoundaryConditions(True)
 
-    # add self interaction of all current end-state/unperturbed particles
+    # add self interaction of all current end-state/environment particles
     for i in active_particles:
       ch1, _, _ = original_nonbonded_force.getParticleParameters(i)
       force_crf_self_term.addBond(i, i, [ch1*ch1])
@@ -437,8 +489,8 @@ class Reeds:
     for i, p in enumerate(partners):
       self.simulations.context.setState(self.states[p])
       
-      for j in range(self.num_endstates):
-        self.simulations.context.setParameter('scaling_' + str(j), 1)
+      #for j in range(self.num_endstates):
+      #  self.simulations.context.setParameter('scaling_' + str(j), 1)
       
       Vi = [self.simulations.context.getState(getEnergy=True, groups=1<<j+1).getPotentialEnergy().value_in_unit(u.kilojoules_per_mole) for j in range(self.num_endstates)]
       
@@ -485,8 +537,8 @@ class Reeds:
         self.simulations.context.setState(state)
         for step in range(self.reeds_simulation_variables.num_steps_between_exchanges):
           # calculate scaling factors for forces
-          for i in range(self.num_endstates):
-            self.simulations.context.setParameter('scaling_' + str(i), 1)
+          #for i in range(self.num_endstates):
+          #  self.simulations.context.setParameter('scaling_' + str(i), 1)
 
           scal = self.get_scaling(self.s_values[idx])        
 
@@ -508,7 +560,7 @@ class Reeds:
         self.ene_traj_files[idx].write('{0: <14}'.format("{:.4f}".format(time)) + " ")
 
         for i in range(self.num_endstates):
-          self.simulations.context.setParameter('scaling_' + str(i), 1)
+          #self.simulations.context.setParameter('scaling_' + str(i), 1)
           Vi[idx][i] = self.simulations.context.getState(getEnergy=True, groups=1<<i+1).getPotentialEnergy().value_in_unit(u.kilojoules_per_mole)
           self.ene_traj_files[idx].write('{0: <14}'.format("{:.10f}".format(Vi[idx][i])) + " ")
         
