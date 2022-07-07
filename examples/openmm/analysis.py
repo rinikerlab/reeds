@@ -8,6 +8,7 @@ import matplotlib.pyplot as plt
 from matplotlib.ticker import FormatStrFormatter
 import sys
 
+
 """
 This script performs a very general analysis of the RE-EDS calculations for a set of six small molecules in vacuum and water to calculate relative hydration free energies (see Rieder et al. J. Chem. Inf. Model. 2022, 62 for description of the dataset). Execute as 'python analysis.py' after executing the two scripts set_A_water.py and set_A_vacuum.py.
 """
@@ -38,24 +39,24 @@ def calculate_free_energies(ene_traj, T, step = None):
     return df
     
 def plot_fe_convergence(num_ligs, ene_traj, file_out, environment, subset, T):
-    """
-    plots the convergence of the RE-EDS free-energy calculation
+  """
+  plots the convergence of the RE-EDS free-energy calculation
 
-    Parameters
-    ----------
-    num_ligs: int
-      number of end-states
-    ene_traj: pandas Dataframe
-      energy trajectory from a RE-EDS simulation
-    file_out: string
-      name of output png file
-    environment: string
-      name of environment for plot legends (e.g. "water", "vacuum", ...)
-    subset: string
-      name of dataset (e.g. "A", "PNMT", ...)
-    T: float
-      temperature
-    """
+  Parameters
+  ----------
+  num_ligs: int
+    number of end-states
+  ene_traj: pandas Dataframe
+    energy trajectory from a RE-EDS simulation
+  file_out: string
+    name of output png file
+  environment: string
+    name of environment for plot legends (e.g. "water", "vacuum", ...)
+  subset: string
+    name of dataset (e.g. "A", "PNMT", ...)
+  T: float
+    temperature
+  """
   
   min_ = 1000
   max_ = -1000
@@ -109,7 +110,7 @@ def plot_fe_convergence(num_ligs, ene_traj, file_out, environment, subset, T):
   ax[1].cla()
   plt.cla() 
   
-def plot_ene_traj(ene_traj):
+def plot_ene_traj(ene_traj, s_values):
   """
   plots the energy trajectories of all replicas 
   
@@ -117,10 +118,14 @@ def plot_ene_traj(ene_traj):
   ----------
   ene_traj: pandas Dataframe
     energy trajectory from a RE-EDS simulation
+  s_values: np.array
+    list of s values
   
   """
+  nrows = int(np.ceil(len(ene_traj)/3))
+  ncols=3
   
-  fig, ax = plt.subplots(nrows=int(np.ceil(len(ene_traj)/3)),ncols=3, figsize=(12, 12))
+  fig, ax = plt.subplots(nrows=nrows, ncols=3, figsize=(12, 12), sharex = True, sharey = True)
   ax = ax.ravel()
   for i in range(len(ene_traj)):
       ene_traj_ = ene_traj[i]
@@ -131,6 +136,10 @@ def plot_ene_traj(ene_traj):
 
   for i in range(len(ene_traj)):
       ax[i].set_ylim([-1000,1000])
+      ax[i].set_ylabel("V / kJ mol$^{-1}$")
+      ax[i].set_xlabel("t / ps")
+      ax[i].set_title("s = " + str(s_values[i]))
+      
       
   ax[0].legend(fontsize='xx-small', ncol = 2)
   plt.tight_layout()
@@ -142,7 +151,10 @@ def plot_ene_traj(ene_traj):
 
 num_endstates = 6
 T = 298.15
-for dir in ["vacuum", "water"]:
+s_values_vac = np.array([1.0,0.518,0.393,0.3305,0.268,0.225,0.182,0.1605,0.139,0.1055,0.0887,0.072,0.0546,0.0373,0.0193,0.01])
+s_values_wat = np.array([1.0,0.518,0.393,0.3305,0.268,0.225,0.182,0.1605,0.139,0.1055,0.0887,0.072,0.0546,0.0373,0.0193,0.01])
+
+for dir, sval in zip(["vacuum", "water"], [s_values_vac, s_values_wat]):
   print(dir)
   os.chdir(dir)
 
@@ -158,7 +170,7 @@ for dir in ["vacuum", "water"]:
   print("plotting convergence in " + dir + "/convergence.png")
   plot_fe_convergence(num_endstates, ene_traj, "convergence.png", dir[:3], "A", T)
   print("plotting energy trajectories in " + dir + "/ene_traj.png")
-  plot_ene_traj(ene_traj)
+  plot_ene_traj(ene_traj, sval)
   os.chdir('..')
   print()
 
