@@ -8,7 +8,28 @@ import matplotlib.pyplot as plt
 from matplotlib.ticker import FormatStrFormatter
 import sys
 
+"""
+This script performs a very general analysis of the RE-EDS calculations for a set of six small molecules in vacuum and water to calculate relative hydration free energies (see Rieder et al. J. Chem. Inf. Model. 2022, 62 for description of the dataset). Execute as 'python analysis.py' after executing the two scripts set_A_water.py and set_A_vacuum.py.
+"""
+
 def calculate_free_energies(ene_traj, T, step = None):
+    """
+    calculates the free-energy differences between all end-states for a given energy trajectory
+
+    Parameters
+    ----------
+    ene_traj: pandas Dataframe
+      energy trajectory from a RE-EDS simulation
+    T: float
+      temperature
+    step: int
+      number of values of the energy trajectory to take into account (used for convergence plotting)
+    Returns
+    -------
+    df: list
+      list of all pairwise free-energy differences
+    """
+
     if step is None:
       step = -1
     kb = (u.BOLTZMANN_CONSTANT_kB*u.AVOGADRO_CONSTANT_NA).value_in_unit(u.kilojoule_per_mole/u.kelvin)
@@ -16,7 +37,25 @@ def calculate_free_energies(ene_traj, T, step = None):
     df = [- 1/beta * np.log(np.mean(np.exp(-beta * (ene_traj["V_" + str(j+1)][:step] - ene_traj["V_R"][:step])))/np.mean(np.exp(-beta * (ene_traj["V_" + str(i+1)][:step] - ene_traj["V_R"][:step])))) for i in range(num_endstates) for j in range(i+1, num_endstates)]    
     return df
     
-def plot_fe_convergence(num_ligs, ene_traj, file_out, watvac, subset, file2 = None):
+def plot_fe_convergence(num_ligs, ene_traj, file_out, environment, subset, T):
+    """
+    plots the convergence of the RE-EDS free-energy calculation
+
+    Parameters
+    ----------
+    num_ligs: int
+      number of end-states
+    ene_traj: pandas Dataframe
+      energy trajectory from a RE-EDS simulation
+    file_out: string
+      name of output png file
+    environment: string
+      name of environment for plot legends (e.g. "water", "vacuum", ...)
+    subset: string
+      name of dataset (e.g. "A", "PNMT", ...)
+    T: float
+      temperature
+    """
   
   min_ = 1000
   max_ = -1000
@@ -30,7 +69,6 @@ def plot_fe_convergence(num_ligs, ene_traj, file_out, watvac, subset, file2 = No
   steps = [int(s) for s in steps]
   df = []
   
-  T = 298.15
   for step in steps:
     df.append(calculate_free_energies(ene_traj[0], T, step))
   
@@ -62,8 +100,8 @@ def plot_fe_convergence(num_ligs, ene_traj, file_out, watvac, subset, file2 = No
   
   ax[0].set_xlabel('t / ns')
   ax[1].set_xlabel('t / ns')
-  ax[0].set_ylabel('$\Delta G_{' + watvac + '}^{RE-EDS}$ / kJ mol$^{-1}$')
-  ax[1].set_ylabel('$\left(\Delta G_{' + watvac + '}^{RE-EDS} - \Delta G_{' + watvac + ',t=' + "{:.1f}".format(t.tolist()[-1]) + '\mathrm{ns}}^{RE-EDS}\\right)$ / kJ mol$^{-1}$')
+  ax[0].set_ylabel('$\Delta G_{' + environment + '}^{RE-EDS}$ / kJ mol$^{-1}$')
+  ax[1].set_ylabel('$\left(\Delta G_{' + environment + '}^{RE-EDS} - \Delta G_{' + environment + ',t=' + "{:.1f}".format(t.tolist()[-1]) + '\mathrm{ns}}^{RE-EDS}\\right)$ / kJ mol$^{-1}$')
    
   plt.tight_layout()
   plt.savefig(file_out + ".png", dpi= 300)
@@ -72,6 +110,16 @@ def plot_fe_convergence(num_ligs, ene_traj, file_out, watvac, subset, file2 = No
   plt.cla() 
   
 def plot_ene_traj(ene_traj):
+  """
+  plots the energy trajectories of all replicas 
+  
+  Parameters
+  ----------
+  ene_traj: pandas Dataframe
+    energy trajectory from a RE-EDS simulation
+  
+  """
+  
   fig, ax = plt.subplots(nrows=int(np.ceil(len(ene_traj)/3)),ncols=3, figsize=(12, 12))
   ax = ax.ravel()
   for i in range(len(ene_traj)):
@@ -107,8 +155,9 @@ for dir in ["vacuum", "water"]:
     print(d)
   
   print("plotting convergence in " + dir + "/convergence.png")
-  plot_fe_convergence(num_endstates, ene_traj, "convergence.png", dir[:3], "A")
+  plot_fe_convergence(num_endstates, ene_traj, "convergence.png", dir[:3], "A", T)
   print("plotting energy trajectories in " + dir + "/ene_traj.png")
   plot_ene_traj(ene_traj)
   os.chdir('..')
   print()
+
