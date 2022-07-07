@@ -141,6 +141,7 @@ def plot_ene_traj(ene_traj):
 
 
 num_endstates = 6
+T = 298.15
 for dir in ["vacuum", "water"]:
   print(dir)
   os.chdir(dir)
@@ -149,7 +150,7 @@ for dir in ["vacuum", "water"]:
   ene_traj_files = sorted(ene_traj_files, key=lambda x: float(x.split("_")[-1]), reverse = False)
   ene_traj = [pd.read_csv(name, header = [0], delim_whitespace = True) for name in ene_traj_files]
 
-  df = calculate_free_energies(ene_traj[0], 298.15)
+  df = calculate_free_energies(ene_traj[0], T)
   print("free energies:")
   for d in df:
     print(d)
