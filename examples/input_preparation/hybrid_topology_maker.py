@@ -471,7 +471,7 @@ def addHybridBonds(core_top, new_lig_top, new_lig_rgroup, atom_mappings):
         
         newBond = blocks.top_bond_type(IB=find_new_id(atom_mappings, mres, bondh.IB),
                                        JB=find_new_id(atom_mappings, mres, bondh.JB),
-                                       ICB=bond.ICB)    
+                                       ICB=bondh.ICB)    
         # Append this new bond to the topology
         core_top.BONDH.content.append(newBond)
         core_top.BONDH.NBONH += 1
