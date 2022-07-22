@@ -340,9 +340,7 @@ def build_optimization_step_dir(iteration: int,  iteration_folder_prefix: str, p
     # PARAMS: 
     ## fix for euler! - write out to workdir not on node. - so no data is lost in transfer
 
-#    workdir = None
-    # Running localy because of Euler ssh "can't connect" error
-    workdir = iteration_folder + "/local_scratch"
+    workdir = None
     
     nmpi = int(optimization_options.current_num_svals) * int(nmpi_per_replica)  # How many MPIcores needed?s
 
