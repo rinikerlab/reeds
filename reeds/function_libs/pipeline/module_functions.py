@@ -346,9 +346,9 @@ def build_optimization_step_dir(iteration: int,  iteration_folder_prefix: str, p
 
     ##which analysis functions to execute
     control_dict = {  # this dictionary is controlling the post  Simulation analysis procedure!
-        "sopt": {"do": True,
+        "sopt": {"do": run_NGRTO or run_NLRTO,
                  "sub": {
-                     "run_RTO": run_NGRTO or run_NLRTO,
+                     "run_RTO": True,
                      "run_NLRTO": run_NLRTO,
                      "run_NGRTO": run_NGRTO,
                      "visualize_transitions": True,
@@ -358,7 +358,7 @@ def build_optimization_step_dir(iteration: int,  iteration_folder_prefix: str, p
         "eoffset": {"do": run_eoffRB,
                     "sub": {
                         "eoff_estimation": False,
-                        "sampling_plot": True,
+                        "sampling_plot": False,
                         "eoffset_rebalancing": run_eoffRB,
                         }
                     },
