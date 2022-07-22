@@ -212,7 +212,7 @@ def get_s_optimization_transitions(out_dir: str,
     for i in range(1, len(svals)+1):
         re_plots.plot_replica_trace_maxContrib(transitions.loc[i], 
                                                num_states, 
-                                               eoffs[i-1], 
+                                               eoffs, 
                                                svals, 
                                                title = title_prefix, 
                                                out_path= out_dir + "/transitions_trace_maxContrib"+str(i)+".png"
@@ -220,7 +220,6 @@ def get_s_optimization_transitions(out_dir: str,
         
         re_plots.plot_replica_trace_numSampled(transitions.loc[i],
                                                num_states,
-                                               eoffs[i-1],
                                                svals,
                                                title = title_prefix,
                                                undersampling_thres = undersampling_thresholds,
