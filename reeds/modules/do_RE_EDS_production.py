@@ -180,6 +180,7 @@ int
         #    workdir = None
         
         workdir = None
+        nmpi = nmpi_per_replica * num_svals
 
         # GENERATE array scripts
         control_dict = {
