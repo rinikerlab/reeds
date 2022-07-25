@@ -115,8 +115,6 @@ def plot_replica_trace_numSampled(trace_data, num_states, svals, title, undersam
         The data related to the transitions for a specific replica. 
     num_states: int
         number of EDS states
-    eoffs: np.array
-        energy offsets at all s-values
     svals: List
         list of s-values  
     title: str
