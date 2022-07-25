@@ -21,6 +21,8 @@ from reeds.function_libs.file_management.file_management import parse_csv_energy
 from reeds.function_libs.utils import s_log_dist as sdist
 from reeds.function_libs.utils.structures import adding_Scheme_new_Replicas
 
+from reeds.function_libs.visualization.utils import determine_vrange
+
 template_control_dict = OrderedDict({  # this dictionary is controlling the post  Simulation analysis procedure!
     "concat": {"do": True,
                "sub": {
@@ -327,6 +329,8 @@ def do_Reeds_analysis(in_folder: str, out_folder: str, gromos_path: str,
         # No need to check if trajectories are parsed here, as it is the first access point. 
         energy_trajectories = parse_csv_energy_trajectories(concat_file_folder, ene_trajs_prefix)
         
+        v_range = determine_vrange(energy_trajectories, num_states)
+
         # Plots related to the potential energy distributions of the end states.
 
         if sub_control["pot_ene_by_state"]:
@@ -352,15 +356,19 @@ def do_Reeds_analysis(in_folder: str, out_folder: str, gromos_path: str,
             if sub_control["pot_ene_timeseries"]:
                 out_path = plot_folder_path + "/edsState_potential_timeseries_" + str(ene_traj.s) + ".png"
                 pot_energy_plots.plot_potential_timeseries(time=ene_traj.time, potentials=ene_traj[singleStates],
-                                                                                             y_range=(-1000, 1000), title="EDS_stateV_scatter",
+                                                                                             y_range=v_range, 
+                                                                                             title="EDS_stateV_scatter",
                                                                                              out_path=out_path)
              
             if sub_control["pot_ene_grid_timeseries"]:
                 out_path = plot_folder_path + '/' + title_prefix + '_pot_ene_timeseries_' + str(i+1) + '.png'
                 title = title_prefix + ' potential energy timeseries - s = ' + str(s_values[i])
-                pot_energy_plots.plot_sampling_grid(traj_data = ene_traj, y_range=(-1000, 1000), out_path=out_path,
-                                                                                        title=title, sampling_thresholds = state_physical_occurrence_potential_threshold,
-                                                                                        undersampling_thresholds = state_undersampling_occurrence_potential_threshold)
+                pot_energy_plots.plot_sampling_grid(traj_data = ene_traj, 
+                                                    y_range= v_range, 
+                                                    out_path=out_path,
+                                                    title=title, 
+                                                    sampling_thresholds = state_physical_occurrence_potential_threshold,
+                                                    undersampling_thresholds = state_undersampling_occurrence_potential_threshold)
 
         # Plots related to the reference potential energy (V_R)
 
