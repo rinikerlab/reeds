@@ -52,9 +52,10 @@ def plot_replica_trace_maxContrib(trace_data, num_states, eoffs, svals, title, o
     # will keep track of all indices sampled
     idx_points = np.zeros([num_states, len(trace_data)]) -1
     
-    for i, p in enumerate(trace_data['state_pot']):
-        v = np.array(list(p.values()))
-        idx_min = np.argmin(v-eoffs) # find index of match contributing state
+    for i, p in trace_data[['position', 'state_pot']].iterrows():
+        v = np.array(list(p['state_pot'].values()))
+        sval = p['position'] - 1
+        idx_min = np.argmin(v-eoffs[sval]) # find index of match contributing state
                
         # place all of data so we plot once in the end. 
         xtrace[i] = trace_data['trial'].iloc[i]
@@ -102,7 +103,7 @@ def plot_replica_trace_maxContrib(trace_data, num_states, eoffs, svals, title, o
         plt.savefig(out_path)
         plt.close()  
 
-def plot_replica_trace_numSampled(trace_data, num_states, eoffs, svals, title, undersampling_thres, out_path=None):
+def plot_replica_trace_numSampled(trace_data, num_states, svals, title, undersampling_thres, out_path=None):
     """
     This function plots the path in s-space followed by one of the replicas and highlights 
     how many states are currently sampled (using undersampling threshold) and the 
@@ -114,8 +115,6 @@ def plot_replica_trace_numSampled(trace_data, num_states, eoffs, svals, title, u
         The data related to the transitions for a specific replica. 
     num_states: int
         number of EDS states
-    eoffs: np.array
-        energy offsets at all s-values
     svals: List
         list of s-values  
     title: str

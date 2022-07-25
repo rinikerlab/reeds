@@ -134,7 +134,7 @@ def work(out_dir: str, in_coord: str, in_imd_path: str, in_topo_path: str, in_pe
                     command = 'ssh ' + host + '  \"cp ${TMPDIR}/* ' + out_dir + '\"'
                     os.system(command)
             os.system('remote_tmpdir delete')
-    
+          
     except Exception as err:
         print("#####################################################################################")
         print("\t\tERROR in Reeds_simulationWorker")

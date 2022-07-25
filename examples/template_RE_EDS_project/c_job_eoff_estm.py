@@ -42,6 +42,7 @@ last_jobID = eoffEstm.do(out_root_dir=out_eoff_dir, in_simSystem=system,
                          undersampling_fraction_threshold=undersampling_frac_thresh,
                          optimized_states = opt_states,
                          duration_per_job=job_duration, nmpi_per_replica=nmpi_per_replica,
+                         trials_per_run = 10000,
                          submit=True,
                          memory = memory
                          )

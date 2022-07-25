@@ -34,8 +34,8 @@ def do(out_root_dir: str, in_simSystem: fM.System, in_template_imd: str = None,
        state_physical_occurrence_potential_threshold:List[float]=None,
        state_undersampling_occurrence_potential_threshold: List[float]=None,
        undersampling_fraction_threshold:float=0.9,
-       equil_runs: int = 1, steps_between_trials: int = 50, trials_per_run: int = 12500,
-       non_ligand_residues: list = [],
+       equil_runs: int = 1, prod_runs = 1, steps_between_trials: int = 50,
+       trials_per_run: int = 12500, non_ligand_residues: list = [],
        in_gromosXX_bin_dir: str = None, in_gromosPP_bin_dir: str = None,
        in_ene_ana_lib_path: str = ene_ana_libs.ene_ana_lib_path,
        nmpi_per_replica: int = 1, submit: bool = True, duration_per_job: str = "24:00",
@@ -78,6 +78,8 @@ undersampling_fraction_threshold : float, optional
     fraction threshold for physical/occurrence sampling (default: 0.9)
 equil_runs : int, optional (default: 1)
     How often do you want to run prequilibration, before each run ? give int times 50ps
+prod_runs : int, optional (default: 1)
+    How many production runs after equilibration ?
 steps_between_trials : int, optional
     How many steps shall be executed between the trials?
 trials_per_run : int, optional
@@ -139,7 +141,7 @@ int
                              non_ligand_residues = non_ligand_residues,
                              state_physical_occurrence_potential_threshold=state_physical_occurrence_potential_threshold,
                              state_undersampling_occurrence_potential_threshold=state_undersampling_occurrence_potential_threshold,
-                             equil_runs=equil_runs, steps_between_trials=steps_between_trials, trials_per_run=trials_per_run,
+                             equil_runs=equil_runs, prod_runs=prod_runs, steps_between_trials=steps_between_trials, trials_per_run=trials_per_run,
                              optimized_states_dir=optimized_states_dir,
                              lower_bound_dir=lower_bound_dir,
                              in_gromosXX_bin_dir=in_gromosXX_bin_dir, in_gromosPP_bin_dir=in_gromosPP_bin_dir,
