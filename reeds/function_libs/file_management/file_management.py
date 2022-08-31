@@ -33,7 +33,9 @@ def _thread_worker_cat_trc(job: int,
                            time: float = 0,
                            verbose: bool = False,
                            boundary_conditions: str = "r cog",
-                           include_all: bool = False):
+                           include_all: bool = False, 
+                           s1_only = True
+                          ):
     """_thread_worker_cat_trc
         This thread worker_scripts concatenates all .trc files of one replica into one file.
 
@@ -61,7 +63,8 @@ def _thread_worker_cat_trc(job: int,
         include SOLVENT? (default: False)
     verbose : bool
         verbosity?
-
+    s1_only: 
+        concatenate data for s = 1 only
     Returns
     -------
     None
@@ -70,7 +73,11 @@ def _thread_worker_cat_trc(job: int,
     gromPP = gromosPP.GromosPP()
     start_dir = os.getcwd()
     if (verbose): print("JOB " + str(job) + ": range " + str(list(replicaID_range)))
+
     for replicaID in replicaID_range:
+        if s1_only and replicaID != 1:
+            continue
+
         out_path = out_prefix + str(replicaID) + ".trc"
         compress_out_path = out_path + ".gz"
 
