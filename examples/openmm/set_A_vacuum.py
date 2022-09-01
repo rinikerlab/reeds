@@ -4,8 +4,8 @@ from reeds.openmm.reeds_openmm import *
 os.makedirs("vacuum", exist_ok = True)
 os.chdir("vacuum")
 
-s_values = np.array([1.0,0.518,0.393,0.3305,0.268,0.225,0.182,0.1605,0.139,0.1055,0.0887,0.072,0.0546,0.0373,0.0193,0.01])
-energy_offsets = np.array([0.0, -25.13, -94.15, 105.73, 122.62, 139.76])
+s_values = np.array([1.0,0.511,0.261,0.197,0.133,0.112,0.090,0.068,0.052,0.035,0.018])
+energy_offsets = np.array([0, -26.97, -87.77, 91.96, 99.9, 118.63])
 
 # Careful: taken from Restraintmaker, so indices start at one, and will be decreased by one during the assignment of the distance restraints!!
 restraint_pairs = [[31,78], [34,75], [35,80], [32,77], [16,52], [19,49], [18,54], [15,51], [49,78], [52,75], [53,80], [50,77], [1,32], [4,35], [5,34], [2,31], [16,64], [19,67], [18,66], [15,63], [2,67], [5,64], [4,65], [1,68]]
