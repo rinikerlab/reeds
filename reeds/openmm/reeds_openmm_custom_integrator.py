@@ -7,9 +7,6 @@ from copy import deepcopy
 import numpy as np
 import pandas as pd
 
-#from mpmath import mp
-#mp.dps = 5
-
 from scipy.special import logsumexp
 
 class ReedsSimulationVariables:
@@ -170,49 +167,6 @@ class Reeds:
         if (d.getNumBonds()):
             self.simulations.system.addForce(d)
     
-    """        
-    active_particles_.append(environment_particles)            
-    # custom forces for integration
-    for i, active_particles in enumerate(active_particles_):
-
-        if(active_particles != environment_particles):
-          a, b, c, d = (self.custom_reaction_field(i, default_nonbonded_force, active_particles, environment_particles, True))
-          a.setName("lj_rf_endstate_" + str(i+1))
-          b.setName("lj_rf_endstate_" + str(i+1) + "_one_four")
-          c.setName("rf_endstate_" + str(i+1) + "_excluded")
-          d.setName("rf_endstate_" + str(i+1) + "_self_interaction")
-          a.setForceGroup(i+1+self.num_endstates)
-          b.setForceGroup(i+1+self.num_endstates)
-          c.setForceGroup(i+1+self.num_endstates)
-          d.setForceGroup(i+1+self.num_endstates)
-        else:
-          a, b, c, d = (self.custom_reaction_field(i, default_nonbonded_force, active_particles, environment_particles, False))
-          a.setName("lj_rf_environment_environment")
-          b.setName("lj_rf_environment_environment_one_four")
-          c.setName("rf_environment_environment_excluded")
-          d.setName("rf_environment_environment_self_interaction")
-          a.setForceGroup(0)
-          b.setForceGroup(0)
-          c.setForceGroup(0)
-          d.setForceGroup(0)
-
-        
-        self.simulations.system.addForce(a)
-
-        if (b.getNumBonds()):
-            self.simulations.system.addForce(b)
-            
-        if (c.getNumBonds()): 
-            self.simulations.system.addForce(c)
-            
-        if (d.getNumBonds()):
-            self.simulations.system.addForce(d)
-    
-    integration_force_groups = [i+1+self.num_endstates for i in range(self.num_endstates)]
-    integration_force_groups.append(0)
-
-    self.integrators.setIntegrationForceGroups(set(integration_force_groups))
-    """
     self.simulations.context.reinitialize() 
 
     # initialize positions and velocities
@@ -292,21 +246,26 @@ class Reeds:
     custom_integrator.addGlobalVariable("s", s)
     custom_integrator.addPerDofVariable("x1", 0);
     custom_integrator.addUpdateContextState();
-    for i in range(self.num_endstates):
-      custom_integrator.addGlobalVariable("exp" + str(i), 1.0)
-      custom_integrator.addComputeGlobal("exp" + str(i), "min(1e37,exp(-kT*s*(energy" + str(i+1) + "-eoff" + str(i) + ")))")
 
-    sum = "exp0"
-    for i in range(1,self.num_endstates):
-      sum += "+exp" + str(i)
+    custom_integrator.addGlobalVariable("part0", 1.0)
+    custom_integrator.addGlobalVariable("part1", 1.0)
+
+    custom_integrator.addComputeGlobal("part0", "-1/kT*s*(energy1-eoff0)")
+    custom_integrator.addComputeGlobal("part1", "-1/kT*s*(energy2-eoff1)")
+    sum = "max(part0,part1)+log(1+exp(min(part0,part1)-max(part0,part1)))"
+
+    for i in range(2,self.num_endstates):
+      custom_integrator.addGlobalVariable("part"+str(i), 1.0)
+      custom_integrator.addComputeGlobal("part"+str(i), "-1/kT*s*(energy" + str(i+1) + "-eoff" + str(i) + ")")
+      sum = "max(part" + str(i) + "," + sum + ") + log(1+exp(min(part" + str(i) + "," + sum + ") - max(part" + str(i) + "," + sum + ")))"
     
     custom_integrator.addGlobalVariable("expsum", 1.0)
     custom_integrator.addComputeGlobal("expsum", sum)
 
     for i in range(self.num_endstates):
       custom_integrator.addGlobalVariable("scal_" + str(i), 1.0)
-      custom_integrator.addComputeGlobal("scal_" + str(i), "exp" + str(i)+ "/expsum")
-    
+      custom_integrator.addComputeGlobal("scal_" + str(i), "exp(part" + str(i) + "-expsum)")
+      
     custom_integrator.addComputePerDof("v", "v + dt*f0/m")# + dt*(" + sum + ")/m");
     for i in range(1, self.num_endstates+1):
       custom_integrator.addComputePerDof("v", "v + dt * scal_" + str(i-1) + " * f" + str(i) + "/m")
@@ -318,7 +277,7 @@ class Reeds:
     custom_integrator.addConstrainPositions();
     custom_integrator.addComputePerDof("v", "v + (x-x1)/dt");
 
-    custom_integrator.setRandomNumberSeed(1)
+    #custom_integrator.setRandomNumberSeed(42)
 
     return custom_integrator
 
@@ -571,26 +530,9 @@ class Reeds:
       for idx, state in enumerate(self.states):
         # propagate replica at position idx
         self.simulations.context.setState(state)
-        self.integrators.setGlobalVariableByName("s", self.s_values[idx])
-        #for step in range(self.reeds_simulation_variables.num_steps_between_exchanges):
-          # calculate scaling factors for forces
-          #for i in range(self.num_endstates):
-          #  self.simulations.context.setParameter('scaling_' + str(i), 1)
-
-          #scal = self.get_scaling(self.s_values[idx])        
-
-          #for j in range(self.num_endstates):
-          #  self.simulations.context.setParameter('scaling_' + str(j), scal[j])
-
-          # perform a simulation step
-        #print(self.s_values[idx])
-        
+        self.integrators.setGlobalVariableByName("s", self.s_values[idx])        
         self.simulations.step(self.reeds_simulation_variables.num_steps_between_exchanges)
-        #for kk in range(self.integrators.getNumGlobalVariables()):
-        #  print(" ", self.integrators.getGlobalVariableName(kk), self.integrators.getGlobalVariable(kk))
-        #for kk in range(self.integrators.getNumPerDofVariables()):
-        #  print(" ", self.integrators.getPerDofVariableName(kk), self.integrators.getPerDofVariable(kk))
-
+        
         # store state of current replica
         self.states[idx] = self.simulations.context.getState(getPositions=True, getVelocities=True)
 
@@ -603,7 +545,6 @@ class Reeds:
         self.ene_traj_files[idx].write('{0: <14}'.format("{:.4f}".format(time)) + " ")
 
         for i in range(self.num_endstates):
-          #self.simulations.context.setParameter('scaling_' + str(i), 1)
           Vi[idx][i] = self.simulations.context.getState(getEnergy=True, groups=1<<i+1).getPotentialEnergy().value_in_unit(u.kilojoules_per_mole)
           self.ene_traj_files[idx].write('{0: <14}'.format("{:.10f}".format(Vi[idx][i])) + " ")
 
@@ -705,4 +646,3 @@ class Reeds:
         self.repdat.flush()
         self.repdat_gromos.flush()
         sys.stdout.flush()
-
