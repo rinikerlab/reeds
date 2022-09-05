@@ -533,6 +533,8 @@ class Reeds:
       if(not (total_steps % 1000)):
         print("time ", "{:.4f}".format(time))
         sys.stdout.flush()
+        
+      V_R = [0.] * self.num_replicas
 
       for idx, state in enumerate(self.states):
         # propagate replica at position idx
@@ -542,6 +544,7 @@ class Reeds:
         
         # store state of current replica
         self.states[idx] = self.simulations.context.getState(getPositions=True, getVelocities=True)
+        V_R[idx] = -1/(self.beta * self.s_values[idx]) * self.integrators.getGlobalVariableByName("expsum")
 
       # print output to energy trajectories
       time += step_size * self.reeds_simulation_variables.num_steps_between_exchanges
@@ -567,7 +570,7 @@ class Reeds:
             sys.stdout.flush()
           exit()
         
-        self.ene_traj_files[idx].write('{0: <15}'.format("{:.10f}".format(self.reference_state(pos))))
+        self.ene_traj_files[idx].write('{0: <15}'.format("{:.10f}".format(V_R[pos])))
         self.ene_traj_files[idx].write("\n")
 
       # perform replica exchanges      
