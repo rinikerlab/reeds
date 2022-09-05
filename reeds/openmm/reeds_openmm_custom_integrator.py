@@ -230,7 +230,7 @@ class Reeds:
     self.repdat_gromos.write("\n")
 
   def EDS_integrator(self):
-  """
+    """
     creates a mm.CustomIntegrator for EDS integration based on the LangevinMiddleIntegrator based on the code snipped for the custom LangevinMiddleIntegrator (http://docs.openmm.org/latest/api-python/generated/openmm.openmm.CustomIntegrator.html) and the calculation of the exponential terms of https://doi.org/10.1016/S0010-4655(03)00245-5
 
     Returns
@@ -545,6 +545,7 @@ class Reeds:
         # store state of current replica
         self.states[idx] = self.simulations.context.getState(getPositions=True, getVelocities=True)
         V_R[idx] = -1/(self.beta * self.s_values[idx]) * self.integrators.getGlobalVariableByName("expsum")
+        #print(-1/(self.beta * self.s_values[idx]) * self.integrators.getGlobalVariableByName("expsum"), self.reference_state(idx))
 
       # print output to energy trajectories
       time += step_size * self.reeds_simulation_variables.num_steps_between_exchanges
