@@ -81,7 +81,7 @@ class Reeds:
       system = (parmedSys.createSystem(nonbondedMethod=app.CutoffPeriodic, constraints = app.AllBonds))
         
     #create simulation
-    self.integrators = self.custom_integrator()
+    self.integrators = self.EDS_integrator()
     self.simulations = (app.Simulation(parmedSys.topology, system, self.integrators))
     self.simulations.context.setPositions(parmedSys.positions)
 
@@ -229,57 +229,64 @@ class Reeds:
       self.repdat_gromos.write("Vr" + str(i+1) + "\t")
     self.repdat_gromos.write("\n")
 
-  def custom_integrator(self):
+  def EDS_integrator(self):
+  """
+    creates a mm.CustomIntegrator for EDS integration based on the LangevinMiddleIntegrator based on the code snipped for the custom LangevinMiddleIntegrator (http://docs.openmm.org/latest/api-python/generated/openmm.openmm.CustomIntegrator.html) and the calculation of the exponential terms of https://doi.org/10.1016/S0010-4655(03)00245-5
+
+    Returns
+    -------
+    EDS_integrator: mm.CustomIntegrator
+    """
     dt = 0.002 * u.picoseconds
     friction = 1/u.picoseconds
     kB = self.reeds_simulation_variables.kb
     temperature = self.temperature
     s = 1.0
 
-    custom_integrator = mm.CustomIntegrator(dt);
+    EDS_integrator = mm.CustomIntegrator(dt);
 
-    custom_integrator.addGlobalVariable("a", np.exp(-friction*dt));
-    custom_integrator.addGlobalVariable("b", np.sqrt(1-np.exp(-2*friction*dt)));
-    custom_integrator.addGlobalVariable("kT", kB*temperature);
+    EDS_integrator.addGlobalVariable("a", np.exp(-friction*dt));
+    EDS_integrator.addGlobalVariable("b", np.sqrt(1-np.exp(-2*friction*dt)));
+    EDS_integrator.addGlobalVariable("kT", kB*temperature);
     for i in range(self.num_endstates):
-      custom_integrator.addGlobalVariable("eoff" + str(i), self.energy_offsets[i]);
-    custom_integrator.addGlobalVariable("s", s)
-    custom_integrator.addPerDofVariable("x1", 0);
-    custom_integrator.addUpdateContextState();
+      EDS_integrator.addGlobalVariable("eoff" + str(i), self.energy_offsets[i]);
+    EDS_integrator.addGlobalVariable("s", s)
+    EDS_integrator.addPerDofVariable("x1", 0);
+    EDS_integrator.addUpdateContextState();
 
-    custom_integrator.addGlobalVariable("part0", 1.0)
-    custom_integrator.addGlobalVariable("part1", 1.0)
+    EDS_integrator.addGlobalVariable("part0", 1.0)
+    EDS_integrator.addGlobalVariable("part1", 1.0)
 
-    custom_integrator.addComputeGlobal("part0", "-1/kT*s*(energy1-eoff0)")
-    custom_integrator.addComputeGlobal("part1", "-1/kT*s*(energy2-eoff1)")
+    EDS_integrator.addComputeGlobal("part0", "-1/kT*s*(energy1-eoff0)")
+    EDS_integrator.addComputeGlobal("part1", "-1/kT*s*(energy2-eoff1)")
     sum = "max(part0,part1)+log(1+exp(min(part0,part1)-max(part0,part1)))"
 
     for i in range(2,self.num_endstates):
-      custom_integrator.addGlobalVariable("part"+str(i), 1.0)
-      custom_integrator.addComputeGlobal("part"+str(i), "-1/kT*s*(energy" + str(i+1) + "-eoff" + str(i) + ")")
+      EDS_integrator.addGlobalVariable("part"+str(i), 1.0)
+      EDS_integrator.addComputeGlobal("part"+str(i), "-1/kT*s*(energy" + str(i+1) + "-eoff" + str(i) + ")")
       sum = "max(part" + str(i) + "," + sum + ") + log(1+exp(min(part" + str(i) + "," + sum + ") - max(part" + str(i) + "," + sum + ")))"
     
-    custom_integrator.addGlobalVariable("expsum", 1.0)
-    custom_integrator.addComputeGlobal("expsum", sum)
+    EDS_integrator.addGlobalVariable("expsum", 1.0)
+    EDS_integrator.addComputeGlobal("expsum", sum)
 
     for i in range(self.num_endstates):
-      custom_integrator.addGlobalVariable("scal_" + str(i), 1.0)
-      custom_integrator.addComputeGlobal("scal_" + str(i), "exp(part" + str(i) + "-expsum)")
+      EDS_integrator.addGlobalVariable("scal_" + str(i), 1.0)
+      EDS_integrator.addComputeGlobal("scal_" + str(i), "exp(part" + str(i) + "-expsum)")
       
-    custom_integrator.addComputePerDof("v", "v + dt*f0/m")# + dt*(" + sum + ")/m");
+    EDS_integrator.addComputePerDof("v", "v + dt*f0/m")# + dt*(" + sum + ")/m");
     for i in range(1, self.num_endstates+1):
-      custom_integrator.addComputePerDof("v", "v + dt * scal_" + str(i-1) + " * f" + str(i) + "/m")
-    custom_integrator.addConstrainVelocities();
-    custom_integrator.addComputePerDof("x", "x + 0.5*dt*v");
-    custom_integrator.addComputePerDof("v", "a*v + b*sqrt(kT/m)*gaussian");
-    custom_integrator.addComputePerDof("x", "x + 0.5*dt*v");
-    custom_integrator.addComputePerDof("x1", "x");
-    custom_integrator.addConstrainPositions();
-    custom_integrator.addComputePerDof("v", "v + (x-x1)/dt");
+      EDS_integrator.addComputePerDof("v", "v + dt * scal_" + str(i-1) + " * f" + str(i) + "/m")
+    EDS_integrator.addConstrainVelocities();
+    EDS_integrator.addComputePerDof("x", "x + 0.5*dt*v");
+    EDS_integrator.addComputePerDof("v", "a*v + b*sqrt(kT/m)*gaussian");
+    EDS_integrator.addComputePerDof("x", "x + 0.5*dt*v");
+    EDS_integrator.addComputePerDof("x1", "x");
+    EDS_integrator.addConstrainPositions();
+    EDS_integrator.addComputePerDof("v", "v + (x-x1)/dt");
 
-    #custom_integrator.setRandomNumberSeed(42)
+    #EDS_integrator.setRandomNumberSeed(42)
 
-    return custom_integrator
+    return EDS_integrator
 
 
   def custom_reaction_field(self, end_state, original_nonbonded_force, active_particles, environment_particles):
