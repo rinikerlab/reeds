@@ -81,118 +81,127 @@ class Reeds:
       system = (parmedSys.createSystem(nonbondedMethod=app.CutoffPeriodic, constraints = app.AllBonds))
         
     #create simulation
-    self.integrators = self.EDS_integrator()
-    self.simulations = (app.Simulation(parmedSys.topology, system, self.integrators))
-    self.simulations.context.setPositions(parmedSys.positions)
-
-    self.states = []
-
+    self.integrators = []
+    self.simulations = []
     for i in range(self.num_replicas):
-      self.states.append(self.simulations.context.getState(getPositions=True, getVelocities=True))
+      # create system
+      if isinstance(reeds_input_files.coordinate_files, list):
+        parmedSys = (load_file(reeds_input_files.parameter_file, reeds_input_files.coordinate_files[0]))
+        system = (parmedSys.createSystem(nonbondedMethod=app.CutoffPeriodic, constraints = app.AllBonds))
+      else:
+        parmedSys = (load_file(reeds_input_files.parameter_file, reeds_input_files.coordinate_files))
+      system = (parmedSys.createSystem(nonbondedMethod=app.CutoffPeriodic, constraints = app.AllBonds))
+      self.integrators.append(self.EDS_integrator())
+      self.simulations.append(app.Simulation(parmedSys.topology, system, self.integrators[-1]))
+      self.simulations[-1].context.setPositions(parmedSys.positions)
 
     # create distance restraints
-    k = reeds_simulation_variables.distance_restraint_force_constant
-    disres = mm.CustomBondForce("0.5*k*r^2;")
-    disres.addGlobalParameter('k', k)
-    disres.setUsesPeriodicBoundaryConditions(True)
+    for sim in self.simulations:
+      k = reeds_simulation_variables.distance_restraint_force_constant
+      disres = mm.CustomBondForce("0.5*k*r^2;")
+      disres.addGlobalParameter('k', k)
+      #disres.setUsesPeriodicBoundaryConditions(True)
 
-    for pairs in reeds_simulation_variables.distance_restraint_pairs:
-      if reeds_simulation_variables.distance_restraints_start_at_1:
-        disres.addBond(pairs[0]-1,pairs[1]-1)
-      else:
-        disres.addBond(pairs[0],pairs[1])
+      for pairs in reeds_simulation_variables.distance_restraint_pairs:
+        if reeds_simulation_variables.distance_restraints_start_at_1:
+          disres.addBond(pairs[0]-1,pairs[1]-1)
+        else:
+          disres.addBond(pairs[0],pairs[1])
 
-    self.simulations.system.addForce(disres)
+      sim.system.addForce(disres)
     
     # create barostat
     if(not reeds_simulation_variables.pressure is None):
-      baro = mm.MonteCarloBarostat(reeds_simulation_variables.pressure, self.temperature, min(np.ceil(self.reeds_simulation_variables.num_steps_between_exchanges/4), 25))
-      #baro.setRandomNumberSeed(1)
-      self.simulations.system.addForce(baro)
+      for sim in self.simulations:
+        baro = mm.MonteCarloBarostat(reeds_simulation_variables.pressure, self.temperature, min(np.ceil(self.reeds_simulation_variables.num_steps_between_exchanges/4), 25))
+        sim.system.addForce(baro)
   
     # put all forces in force group zero
-    for f in self.simulations.system.getForces():
-      f.setForceGroup(0)
+    for sim in self.simulations:
+      for f in sim.system.getForces():
+        f.setForceGroup(0)
 
     # create custom reaction field
 
     # remove default nonbonded force
-    for i, f in enumerate(self.simulations.system.getForces()):
-      if isinstance(f, mm.NonbondedForce):
-        default_nonbonded_force = deepcopy(f)
-        self.simulations.system.removeForce(i)
+    for sim in self.simulations:
+      for i, f in enumerate(sim.system.getForces()):
+        if isinstance(f, mm.NonbondedForce):
+          default_nonbonded_force = deepcopy(f)
+          sim.system.removeForce(i)
     default_nonbonded_force.setReactionFieldDielectric(reeds_simulation_variables.eps_reaction_field)
     default_nonbonded_force.setCutoffDistance(reeds_simulation_variables.cutoff)
 
     # assumption: end-state molecules are listed consecutively at beginning of the topology, all non end-state particles are environment
     environment_particles = []
-    for mol in self.simulations.context.getMolecules()[self.num_endstates:]:
+    for mol in self.simulations[0].context.getMolecules()[self.num_endstates:]:
         environment_particles.extend(mol)
 
-    active_particles_ = [self.simulations.context.getMolecules()[i] for i in range(self.num_endstates)]
+    active_particles_ = [self.simulations[0].context.getMolecules()[i] for i in range(self.num_endstates)]
     active_particles_.append(environment_particles)            
     
     # custom forces
-    for i, active_particles in enumerate(active_particles_):
+    for sim in self.simulations:
+      for i, active_particles in enumerate(active_particles_):
 
-        if(active_particles != environment_particles):
-          a, b, c, d = (self.custom_reaction_field(i, default_nonbonded_force, active_particles, environment_particles))
-          a.setName("lj_rf_endstate_" + str(i+1))
-          b.setName("lj_rf_endstate_" + str(i+1) + "_one_four")
-          c.setName("rf_endstate_" + str(i+1) + "_excluded")
-          d.setName("rf_endstate_" + str(i+1) + "_self_interaction")
-          a.setForceGroup(i+1)
-          b.setForceGroup(i+1)
-          c.setForceGroup(i+1)
-          d.setForceGroup(i+1)
-        else:
-          a, b, c, d = (self.custom_reaction_field(i, default_nonbonded_force, active_particles, environment_particles))
-          a.setName("lj_rf_environment_environment")
-          b.setName("lj_rf_environment_environment_one_four")
-          c.setName("rf_environment_environment_excluded")
-          d.setName("rf_environment_environment_self_interaction")
-          a.setForceGroup(0)
-          b.setForceGroup(0)
-          c.setForceGroup(0)
-          d.setForceGroup(0)
-        
-        self.simulations.system.addForce(a)
+          if(active_particles != environment_particles):
+            a, b, c, d = (self.custom_reaction_field(i, default_nonbonded_force, active_particles, environment_particles))
+            a.setName("lj_rf_endstate_" + str(i+1))
+            b.setName("lj_rf_endstate_" + str(i+1) + "_one_four")
+            c.setName("rf_endstate_" + str(i+1) + "_excluded")
+            d.setName("rf_endstate_" + str(i+1) + "_self_interaction")
+            a.setForceGroup(i+1)
+            b.setForceGroup(i+1)
+            c.setForceGroup(i+1)
+            d.setForceGroup(i+1)
+          else:
+            a, b, c, d = (self.custom_reaction_field(i, default_nonbonded_force, active_particles, environment_particles))
+            a.setName("lj_rf_environment_environment")
+            b.setName("lj_rf_environment_environment_one_four")
+            c.setName("rf_environment_environment_excluded")
+            d.setName("rf_environment_environment_self_interaction")
+            a.setForceGroup(0)
+            b.setForceGroup(0)
+            c.setForceGroup(0)
+            d.setForceGroup(0)
+          
+          sim.system.addForce(a)
 
-        if (b.getNumBonds()):
-            self.simulations.system.addForce(b)
-            
-        if (c.getNumBonds()): 
-            self.simulations.system.addForce(c)
-            
-        if (d.getNumBonds()):
-            self.simulations.system.addForce(d)
+          if (b.getNumBonds()):
+              sim.system.addForce(b)
+              
+          if (c.getNumBonds()): 
+              sim.system.addForce(c)
+              
+          if (d.getNumBonds()):
+              sim.system.addForce(d)
     
-    self.simulations.context.reinitialize() 
-
+    for sim in self.simulations:
+      sim.context.reinitialize() 
+      
     # initialize positions and velocities
     if(reeds_input_files.state_files is None):
         if isinstance(reeds_input_files.coordinate_files, list):
-          parmedSys = (load_file(reeds_input_files.parameter_file, reeds_input_files.coordinate_files[0]))
-          self.simulations.context.setPositions(parmedSys.positions)
-          self.simulations.context.setVelocitiesToTemperature(self.temperature)
           for i in range(self.num_replicas):
               parmedSys = (load_file(reeds_input_files.parameter_file, reeds_input_files.coordinate_files[i]))
-              self.simulations.context.setPositions(parmedSys.positions)
-              self.states[i] = self.simulations.context.getState(getPositions=True, getVelocities=True)
+              self.simulations[i].context.setPositions(parmedSys.positions)
+              self.simulations[i].context.setVelocitiesToTemperature(self.temperature)
         
         else:
-            self.simulations.context.setPositions(parmedSys.positions)
-            self.simulations.context.setVelocitiesToTemperature(self.temperature)
             for i in range(self.num_replicas):
-                self.states[i] = self.simulations.context.getState(getPositions=True, getVelocities=True)
+                self.simulations[i].context.setPositions(parmedSys.positions)
+                self.simulations[i].context.setVelocitiesToTemperature(self.temperature)
     else:
-        for i in range(self.num_replicas):
-            self.simulations.loadState(reeds_input_files.state_files[i])
-            self.states[i] = self.simulations.context.getState(getPositions=True, getVelocities=True)
+        if isinstance(reeds_input_files.state_files, list):
+          for i in range(self.num_replicas):
+              self.simulations[i].loadState(reeds_input_files.state_files[i])
+        else:
+          for i in range(self.num_replicas):
+              self.simulations[i].loadState(reeds_input_files.state_files)
 
-    #self.simulations.reporters.append(app.PDBReporter("out_" + self.system_name + ".pdb", 10000, enforcePeriodicBox = True))
-    #self.simulations.reporters.append(app.StateDataReporter(sys.stdout, 1000, step=True,
-    #        potentialEnergy=True, temperature=True, kineticEnergy = True))
+    for idx, sim in enumerate(self.simulations):
+      sim.reporters.append(app.PDBReporter("out_" + self.system_name + "_" + str(idx) + ".pdb", 5000, enforcePeriodicBox = True))
+      #sim.reporters.append(app.StateDataReporter(sys.stdout, 1000, step=True, potentialEnergy=True, temperature=True, kineticEnergy = True))
 
     # initialize output files, i.e. energy trajectories and repdat files
     self.ene_traj_filenames = ["ene_traj_" + self.system_name + "_" + str(i) for i in range(1, self.num_replicas +1)]
@@ -483,12 +492,8 @@ class Reeds:
     V_orig = np.array([0.,0.])
     V_exch = np.array([0.,0.])
     for i, p in enumerate(partners):
-      self.simulations.context.setState(self.states[p])
-      
-      #for j in range(self.num_endstates):
-      #  self.simulations.context.setParameter('scaling_' + str(j), 1)
-      
-      Vi = [self.simulations.context.getState(getEnergy=True, groups=1<<j+1).getPotentialEnergy().value_in_unit(u.kilojoules_per_mole) for j in range(self.num_endstates)]
+         
+      Vi = [self.simulations[p].context.getState(getEnergy=True, groups=1<<j+1).getPotentialEnergy().value_in_unit(u.kilojoules_per_mole) for j in range(self.num_endstates)]
       
       # calculate reference state with original s value
       s = self.s_values[p]
@@ -524,9 +529,8 @@ class Reeds:
 
     even = True
     time = self.initial_time
-    step_size = self.integrators.getStepSize()._value
+    step_size = self.integrators[0].getStepSize()._value
     run = 1
-    #np.random.seed(1)
 
     for total_steps in range(0,self.reeds_simulation_variables.total_steps, self.reeds_simulation_variables.num_steps_between_exchanges):
       # print time every 1000th step
@@ -536,27 +540,22 @@ class Reeds:
         
       V_R = [0.] * self.num_replicas
 
-      for idx, state in enumerate(self.states):
+      for idx, sim in enumerate(self.simulations):
         # propagate replica at position idx
-        self.simulations.context.setState(state)
-        self.integrators.setGlobalVariableByName("s", self.s_values[idx])        
-        self.simulations.step(self.reeds_simulation_variables.num_steps_between_exchanges)
-        
-        # store state of current replica
-        self.states[idx] = self.simulations.context.getState(getPositions=True, getVelocities=True)
-        V_R[idx] = -1/(self.beta * self.s_values[idx]) * self.integrators.getGlobalVariableByName("expsum")
-        #print(-1/(self.beta * self.s_values[idx]) * self.integrators.getGlobalVariableByName("expsum"), self.reference_state(idx))
+        self.integrators[idx].setGlobalVariableByName("s", self.s_values[idx])        
+        sim.step(self.reeds_simulation_variables.num_steps_between_exchanges)
+        V_R[idx] = -1/(self.beta * self.s_values[idx]) * self.integrators[idx].getGlobalVariableByName("expsum")
 
       # print output to energy trajectories
       time += step_size * self.reeds_simulation_variables.num_steps_between_exchanges
       Vi = [[0.] * self.num_endstates] * self.num_replicas
     
       for idx, pos in enumerate(self.replica_positions):
-        self.simulations.context.setState(self.states[pos])
+        sim = self.simulations[pos]
         self.ene_traj_files[idx].write('{0: <14}'.format("{:.4f}".format(time)) + " ")
 
         for i in range(self.num_endstates):
-          Vi[idx][i] = self.simulations.context.getState(getEnergy=True, groups=1<<i+1).getPotentialEnergy().value_in_unit(u.kilojoules_per_mole)
+          Vi[idx][i] = sim.context.getState(getEnergy=True, groups=1<<i+1).getPotentialEnergy().value_in_unit(u.kilojoules_per_mole)
           self.ene_traj_files[idx].write('{0: <14}'.format("{:.10f}".format(Vi[idx][i])) + " ")
 
         if(any(np.isnan(Vi[idx]))):
@@ -650,8 +649,7 @@ class Reeds:
       # TODO: add output frequency as ReedsSimulationVariables member
       if(not (total_steps % 1000)):
         for idx, pos in enumerate(self.replica_positions):
-          self.simulations.context.setState(self.states[pos])
-          self.simulations.saveState(self.system_name + "_state_s_" + str(idx))
+          self.simulations[pos].saveState(self.system_name + "_state_s_" + str(idx))
         for idx in range(self.num_replicas):
           self.ene_traj_files[idx].flush()
         self.repdat.flush()
