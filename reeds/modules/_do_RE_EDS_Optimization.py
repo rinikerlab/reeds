@@ -240,17 +240,18 @@ def do_optimization(out_root_dir: str, in_simSystem: fM.System, optimization_nam
         if (iteration > 1):
             try:  # JOB SUBMISSION
                 if (verbose): print("Final Analysis Script")
+                
+                qsys = queueing_system() # inittialize object
 
-                job_submission_system = queueing_system()
                 root_dir = os.getcwd()
                 os.chdir(os.path.dirname(ana_out_dir))
-                _ = job_submission_system.submit_to_queue(command=in_final_analysis_script_path,
-                                                                         jobName=job_name + "_opt" + str(iteration),
-                                                                         outLog=ana_out_dir + "/" + job_name + ".out",
-                                                                         errLog=ana_out_dir + "/" + job_name + ".err",
-                                                                         maxStorage=5000, queue_after_jobID=job_id,
-                                                                         nmpi=1,
-                                                                         verbose=verbose, sumbit_from_file=False)
+                _ = qsys.submit_to_queue(command=in_final_analysis_script_path,
+                                         jobName=job_name + "_opt" + str(iteration),
+                                         outLog=ana_out_dir + "/" + job_name + ".out",
+                                         errLog=ana_out_dir + "/" + job_name + ".err",
+                                         maxStorage=5000, queue_after_jobID=job_id,
+                                         nmpi=1,
+                                         verbose=verbose, sumbit_from_file=True)
                 os.chdir(root_dir)
 
             except Exception as err:
