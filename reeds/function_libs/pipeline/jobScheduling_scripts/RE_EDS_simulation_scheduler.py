@@ -10,8 +10,7 @@ from typing import Iterable
 
 from pygromos.euler_submissions import FileManager as fM
 from pygromos.euler_submissions.FileManager import Simulation_System
-from pygromos.euler_submissions.Submission_Systems import LSF
-from pygromos.euler_submissions.Submission_Systems import _SubmissionSystem
+from pygromos.euler_submissions.Submission_Systems import _SubmissionSystem, LSF, SLURM
 from pygromos.files.coord import cnf
 from pygromos.files.imd import Imd
 from pygromos.utils import bash
@@ -27,7 +26,7 @@ def do(in_simSystem: Simulation_System.System, in_imd_path: str, out_dir_path: s
        work_dir: str = None, force_queue_start_for_analysis: bool = False,
        in_analysis_script_path: str = None, run_analysis_script_every_x_runs: int = 0, initial_command: str = "",
        do_not_doubly_submit_to_queue: bool = True, previous_job_ID: int = None, write_free_energy_traj: bool = False,
-       type_job_submission_system: _SubmissionSystem = LSF, initialize_first_run:bool = True, reinitialize:bool = False, 
+       type_job_submission_system: _SubmissionSystem = SLURM, initialize_first_run:bool = True, reinitialize:bool = False, 
        memory: int= None,
        verbose: bool = False):
     """ RE_EDS_simulation_scheduler

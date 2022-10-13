@@ -6,7 +6,7 @@ from collections import OrderedDict
 from typing import List, Iterable
 
 from pygromos.euler_submissions import FileManager as fM
-from pygromos.euler_submissions.Submission_Systems import _SubmissionSystem, LSF
+from pygromos.euler_submissions.Submission_Systems import _SubmissionSystem, LSF, SLURM
 from pygromos.files import imd
 from pygromos.files.coord import cnf as cnf_cls
 from pygromos.utils import bash
@@ -31,8 +31,8 @@ def do_optimization(out_root_dir: str, in_simSystem: fM.System, optimization_nam
                     lower_bound_dir: str = os.path.abspath("b_lowerBound/analysis/next"),
                     in_gromosXX_bin_dir: str = None, in_gromosPP_bin_dir: str = None,
                     in_ene_ana_lib_path: str = ene_ana_libs.ene_ana_lib_path,
-                    nmpi_per_replica: int = 1, submit: bool = True, duration_per_job: str = "24:00",
-                    queueing_system: _SubmissionSystem = LSF,
+                    nmpi_per_replica: int = 1, submit: bool = True, duration_per_job: str = "24:00:00",
+                    queueing_system: _SubmissionSystem = SLURM,
                     do_not_doubly_submit_to_queue: bool = True,
                     initialize_first_run: bool = True, reinitialize: bool = False, randomize: bool=False, noncontinous: bool = False,
                     memory: int = None,
