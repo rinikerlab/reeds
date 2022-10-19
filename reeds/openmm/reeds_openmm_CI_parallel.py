@@ -152,7 +152,7 @@ class EDSSimulation(app.Simulation):
     self.initialize_positions_and_velocities()
 
     # add pdb reporter
-    self.reporters.append(app.PDBReporter("out_" + self.system_name + ".pdb", 1000, enforcePeriodicBox = True))
+    self.reporters.append(app.PDBReporter(f"out_{self.system_name}.pdb", 1000, enforcePeriodicBox = True))
 
   def create_system(self, platform = None, properties = None):
     # create system
@@ -213,10 +213,10 @@ class EDSSimulation(app.Simulation):
     for i, active_particles in enumerate(active_particles_):
         if(active_particles != environment_particles):
           a, b, c, d = (self.custom_reaction_field(i, default_nonbonded_force, active_particles, environment_particles))
-          a.setName("lj_rf_endstate_" + str(i+1))
-          b.setName("lj_rf_endstate_" + str(i+1) + "_one_four")
-          c.setName("rf_endstate_" + str(i+1) + "_excluded")
-          d.setName("rf_endstate_" + str(i+1) + "_self_interaction")
+          a.setName(f"lj_rf_endstate_{i+1}")
+          b.setName(f"lj_rf_endstate_{i+1}_one_four")
+          c.setName(f"rf_endstate_{i+1}_excluded")
+          d.setName(f"rf_endstate_{i+1}_self_interaction")
           a.setForceGroup(i+1)
           b.setForceGroup(i+1)
           c.setForceGroup(i+1)
@@ -450,10 +450,10 @@ class EDS_integrator(mm.CustomIntegrator):
     sum = "max(part0,part1)+log(1+exp(min(part0,part1)-max(part0,part1)))"
 
     for i in range(2, num_endstates):
-      self.addGlobalVariable("part"+str(i), 1.0)
-      self.addComputeGlobal("part"+str(i), "-beta*s*(energy" + str(i+1) + "-eoff" + str(i) + ")")
+      self.addGlobalVariable(f"part{i}", 1.0)
+      self.addComputeGlobal(f"part{i}", f"-beta*s*(energy{i+1}-eoff{i})")
       sum_ = sum
-      sum = "max(part" + str(i) + "," + sum_ + ") + log(1+exp(min(part" + str(i) + "," + sum_ + ") - max(part" + str(i) + "," + sum_ + ")))"
+      sum = f"max(part{i},{sum_}) + log(1+exp(min(part{i},{sum_}) - max(part{i},{sum_})))"
     
     self.addGlobalVariable("expsum", 1.0)
     self.addComputeGlobal("expsum", sum)
@@ -461,12 +461,12 @@ class EDS_integrator(mm.CustomIntegrator):
     self.addComputeGlobal("vr", "-1/(beta*s) * expsum")
 
     for i in range(num_endstates):
-      self.addGlobalVariable("scal_" + str(i), 1.0)
-      self.addComputeGlobal("scal_" + str(i), "exp(part" + str(i) + "-expsum)")
+      self.addGlobalVariable(f"scal_{i}", 1.0)
+      self.addComputeGlobal(f"scal_{i}", f"exp(part{i}-expsum)")
       
     self.addComputePerDof("v", "v + dt*f0/m")# + dt*(" + sum + ")/m");
     for i in range(1, num_endstates+1):
-      self.addComputePerDof("v", "v + dt * scal_" + str(i-1) + " * f" + str(i) + "/m")
+      self.addComputePerDof("v", f"v + dt * scal_{i-1} * f{i}/m")
     self.addConstrainVelocities()
     self.addComputePerDof("x", "x + 0.5*dt*v")
     self.addComputePerDof("v", "a*v + b*sqrt(kT/m)*gaussian")
@@ -536,20 +536,20 @@ class REEDS:
 
   def initialize_output(self):
     # initialize output files, i.e. energy trajectories and repdat files
-    self.ene_traj_filenames = ["ene_traj_" + self.system_name + "_" + str(i) for i in range(1, self.num_replicas +1)]
+    self.ene_traj_filenames = [f"ene_traj_{self.system_name}_{i}" for i in range(1, self.num_replicas +1)]
     self.ene_traj_files = [open(name, "w") for name in self.ene_traj_filenames]
     if self.rank == 0:
       for file in self.ene_traj_files:
           file.write('{0: <15}'.format("t"))
           for i in range(1, self.EDS_simulation.num_endstates +1):
-              file.write('{0: <15}'.format("V_" + str(i)))
+              file.write('{0: <15}'.format(f"V_{i}"))
           file.write('{0: <15}'.format("V_R") + "\n")
 
-      self.repdat = open("repdat_" + self.system_name, "w")
+      self.repdat = open(f"repdat_{self.system_name}", "w")
       self.repdat.write('{0: <15}'.format("time") + '{0: <15}'.format("partner_i") + '{0: <15}'.format("partner_j")+ '{0: <15}'.format("s_i") + '{0: <15}'.format("s_j")+'{0: <15}'.format("position_i")+'{0: <15}'.format("position_j")+'{0: <15}'.format("probability")+'{0: <15}'.format("exchanged")+"\n")
       
       # repdat in GROMOS format to use with existing analysis script -> remove in the long run
-      self.repdat_gromos = open("repdat_gromos_" + self.system_name, "w")
+      self.repdat_gromos = open(f"repdat_gromos_{self.system_name}", "w")
       self.repdat_gromos.write("#======================\n#REPLICAEXSYSTEM\n#======================\n#Number of temperatures:\t1\n#Dimension of temperature values:\t1")
       self.repdat_gromos.write("#Number of lambda values:\t" + str(self.num_replicas) + "\n")
       self.repdat_gromos.write("#T\t" + str(self.EDS_simulation.temperature) + "\n")
