@@ -599,7 +599,7 @@ class REEDS:
     """
     if self.rank == 0:
       ene_traj = pd.read_csv(self.ene_traj_filenames[s_index], header = [0], delim_whitespace = True)
-      df = [- 1/self.beta * np.log(np.mean(np.exp(-self.beta * (ene_traj["V_" + str(j+1)] - ene_traj["V_R"])))/np.mean(np.exp(-self.beta * (ene_traj["V_" + str(i+1)] - ene_traj["V_R"])))) for i in range(self.num_endstates) for j in range(i+1, self.num_endstates)]
+      df = [- 1/self.EDS_simulation.beta * np.log(np.mean(np.exp(-self.EDS_simulation.beta * (ene_traj["V_" + str(j+1)] - ene_traj["V_R"])))/np.mean(np.exp(-self.EDS_simulation.beta * (ene_traj["V_" + str(i+1)] - ene_traj["V_R"])))) for i in range(self.EDS_simulation.num_endstates) for j in range(i+1, self.EDS_simulation.num_endstates)]
         
     return df
 
@@ -785,7 +785,7 @@ class REEDS:
 
     # replicas != 0 receive their current s values
     else:
-      self.current_svalue = self.comm.recv(source = 0)
+      self.s_value = self.comm.recv(source = 0)
       self.EDS_simulation.energy_offsets = self.comm.recv(source = 0)
       self.EDS_simulation.integrator.setGlobalVariableByName("s", self.EDS_simulation.s_value)
       for i in range(self.EDS_simulation.num_endstates):
