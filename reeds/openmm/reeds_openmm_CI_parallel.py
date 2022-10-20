@@ -7,6 +7,7 @@ from copy import deepcopy
 import numpy as np
 import pandas as pd
 import os
+from collections.abc import Iterable  
 
 from scipy.special import logsumexp
 import time
@@ -64,14 +65,14 @@ class REEDSSimulationVariables:
 
     self.s_values = s_values
     self.num_steps_between_exchanges = num_steps_between_exchanges
-    if isinstance(energy_offsets[0], list):
+    if isinstance(energy_offsets[0], Iterable):
       self.energy_offset_matrix = energy_offsets
     else:
       self.energy_offset_matrix = [energy_offsets] * len(self.s_values)
     
     for i in range(len(s_values)):
       if MPI.COMM_WORLD.Get_rank() == i:
-        if isinstance(energy_offsets[0], list):
+        if isinstance(energy_offsets[0], Iterable):
           self.eds_simulation_variables = EDSSimulationVariables(s_values[i], 
                                                                  energy_offsets[i],
                                                                  distance_restraint_pairs, 
@@ -158,7 +159,8 @@ class EDSSimulation(app.Simulation):
     # create system
     parmed_sys = load_file(self.eds_input_files.parameter_file, self.eds_input_files.coordinate_file)
     system = parmed_sys.createSystem(nonbondedMethod = app.CutoffPeriodic, constraints = app.AllBonds)
-    self.integrator = (EDS_integrator(self.s_value, self.eds_simulation_variables.time_step, self.beta, self.energy_offsets))
+    sys.stdout.flush()
+    self.integrator = (EDSIntegrator(self.s_value, self.eds_simulation_variables.time_step, self.beta, self.energy_offsets))
 
     if properties is not None:
       app.Simulation.__init__(self, parmed_sys.topology, system, self.integrator, platform, platformProperties = properties)
@@ -417,7 +419,7 @@ class EDSSimulation(app.Simulation):
   def get_Vi(self):
     return [self.context.getState(getEnergy=True, groups=1<<i+1).getPotentialEnergy().value_in_unit(u.kilojoules_per_mole) for i in range(self.num_endstates)]
 
-class EDS_integrator(mm.CustomIntegrator):
+class EDSIntegrator(mm.CustomIntegrator):
   """
   creates a mm.CustomIntegrator for EDS integration based on the LangevinMiddleIntegrator 
   based on the code snipped for the custom LangevinMiddleIntegrator 
@@ -475,7 +477,7 @@ class EDS_integrator(mm.CustomIntegrator):
     self.addConstrainPositions()
     self.addComputePerDof("v", "v + (x-x1)/dt")
     
-    #EDS_integrator.setRandomNumberSeed(42)
+    #EDSIntegrator.setRandomNumberSeed(42)
     self.setIntegrationForceGroups({0})
     
 
@@ -494,6 +496,7 @@ class REEDS:
     self.num_replicas = len(self.s_values)
     self.replica_positions = [i for i in range(self.num_replicas)]
     self.reeds_simulation_variables = reeds_simulation_variables
+    self.energy_offset_matrix = self.reeds_simulation_variables.energy_offset_matrix
 
     if(self.comm.Get_size() != self.num_replicas):
       raise Exception(f"not as many MPI cores ({self.comm.Get_size()}) as replicas ({self.num_replicas})")  
@@ -563,7 +566,7 @@ class REEDS:
       for i in range(self.EDS_simulation.num_endstates):
         self.repdat_gromos.write("#eir(s), numstate = " + str(i+1) + " (RE - EDS) ")
         for j in range(self.num_replicas):
-          self.repdat_gromos.write(" " + str(self.reeds_simulation_variables.energy_offset_matrix[j][i]))
+          self.repdat_gromos.write(" " + str(self.energy_offset_matrix[j][i]))
         self.repdat_gromos.write("\n")
       self.repdat_gromos.write("#\n\n")    
       self.repdat_gromos.write("pos\tID\tcoord_ID\tpartner\tpartner_start\tpartner_coord_ID\trun\tEpoti\tEpotj\tp\ts\t")
@@ -608,10 +611,9 @@ class REEDS:
     #  self.simulations.context.setState(state)
     #  self.integrators.setGlobalVariableByName("s", self.s_values[idx])
     #  self.simulations.minimizeEnergy(maxIterations = 10000)
-
     self.sim_time = self.EDS_simulation.initial_time
     step_size = self.EDS_simulation.integrator.getStepSize()._value
-    self.begin_even = 0
+    self.begin = 0
     self.run = 1
     start_time = time.time()
 
@@ -672,10 +674,10 @@ class REEDS:
   def perform_replica_exchanges(self):
     # replica 0 calculates exchange probabilities and sends new s values to other replicas
     if self.rank == 0:
-      if(self.begin_even or self.num_replicas == 2):
-        self.begin_even = 0
+      if(self.begin or self.num_replicas == 2):
+        self.begin = 0
       else:
-        self.begin_even = 1
+        self.begin = 1
         # if first replica doesn't have a partner -> print info to repdat file
         self.repdat_gromos.write("1\t1\t" + str(self.replica_positions[0]+1) + "\t" +  "1\t1\t" + str(self.replica_positions[0]+1) + "\t" + str(self.run) + "\t0\t0\t0\t0")
         for j in range(self.EDS_simulation.num_endstates):
@@ -683,9 +685,10 @@ class REEDS:
         self.repdat_gromos.write("\n")
         if(self.replica_positions[0] != 0):
           self.comm.send(self.s_values[self.replica_positions[0]], dest = self.replica_positions[0])
+          self.comm.send(self.energy_offset_matrix[self.replica_positions[0]], dest = self.replica_positions[0])
             
       # alternate replica partners (i.e. even = s values at 0-1, 2-3, 4-5, ... and odd = s values at 1-2, 3-4, 5-6, ...)    
-      for i in range(self.begin_even, self.num_replicas-1,2):
+      for i in range(self.begin, self.num_replicas-1,2):
         # calculate exchange probability
         p1 = self.replica_positions[i]
         p2 = self.replica_positions[i+1]
@@ -719,6 +722,7 @@ class REEDS:
         if(prob > rnd):
           # perform exchange
           self.s_values[p1], self.s_values[p2] = self.s_values[p2], self.s_values[p1]
+          self.energy_offset_matrix[p1], self.energy_offset_matrix[p2] = self.energy_offset_matrix[p2], self.energy_offset_matrix[p1]
           self.replica_positions[i] = p2
           self.replica_positions[i+1] = p1
 
@@ -747,14 +751,23 @@ class REEDS:
 
         if(p1 != 0):
           self.comm.send(self.s_values[p1], dest = p1)
+          self.comm.send(self.energy_offset_matrix[p1], dest = p1)
         else:
           self.EDS_simulation.s_value = self.s_values[p1]
           self.EDS_simulation.integrator.setGlobalVariableByName("s", self.EDS_simulation.s_value)
+          self.EDS_simulation.energy_offsets = self.energy_offset_matrix[p1]
+          for j in range(self.EDS_simulation.num_endstates):
+            self.EDS_simulation.integrator.setGlobalVariableByName(f"eoff{j}", self.EDS_simulation.energy_offsets[j])
+
         if(p2 != 0):
           self.comm.send(self.s_values[p2], dest = p2)
+          self.comm.send(self.energy_offset_matrix[p2], dest = p2)
         else:
           self.EDS_simulation.s_value = self.s_values[p2]
           self.EDS_simulation.integrator.setGlobalVariableByName("s", self.EDS_simulation.s_value)
+          self.EDS_simulation.energy_offsets = self.energy_offset_matrix[p2]
+          for j in range(self.EDS_simulation.num_endstates):
+            self.EDS_simulation.integrator.setGlobalVariableByName(f"eoff{j}", self.EDS_simulation.energy_offsets[j])
 
         self.repdat.write("\n")
 
@@ -766,12 +779,17 @@ class REEDS:
         self.repdat_gromos.write("\n")
         if self.replica_positions[i+2] != 0:
           self.comm.send(self.s_values[self.replica_positions[i+2]], dest = self.replica_positions[i+2])
-        
+          self.comm.send(self.energy_offset_matrix[self.replica_positions[i+2]], dest = self.replica_positions[i+2])
+          
       self.run += 1
 
     # replicas != 0 receive their current s values
     else:
       self.current_svalue = self.comm.recv(source = 0)
+      self.EDS_simulation.energy_offsets = self.comm.recv(source = 0)
+      self.EDS_simulation.integrator.setGlobalVariableByName("s", self.EDS_simulation.s_value)
+      for i in range(self.EDS_simulation.num_endstates):
+        self.EDS_simulation.integrator.setGlobalVariableByName(f"eoff{i}", self.EDS_simulation.energy_offsets[i])
 
   def save_state(self):
     if self.rank == 0:
