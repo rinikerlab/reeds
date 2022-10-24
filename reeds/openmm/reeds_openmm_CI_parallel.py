@@ -20,7 +20,7 @@ class EDSSimulationVariables:
   """
   def __init__(self, s_value,
                      energy_offsets,
-                     distance_restraint_pairs,
+                     distance_restraint_pairs = [],
                      temperature = 298.15 * u.kelvin, 
                      pressure = 1.01325 * u.bar,
                      cutoff = 1.2 * u.nanometers,
@@ -51,7 +51,7 @@ class REEDSSimulationVariables:
   """
   def __init__(self, s_values,
                      energy_offsets,
-                     distance_restraint_pairs,
+                     distance_restraint_pairs = [],
                      temperature = 298.15 * u.kelvin, 
                      pressure = 1.01325 * u.bar,
                      cutoff = 1.2 * u.nanometers,
@@ -253,7 +253,7 @@ class EDSSimulation(app.Simulation):
       self.context.setPositions(parmed_sys.positions)
       self.context.setVelocitiesToTemperature(self.temperature)
     else:
-      self.simulation.loadState(self.eds_input_files.state_file)
+      self.loadState(self.eds_input_files.state_file)
 
   def custom_reaction_field(self, end_state, original_nonbonded_force, active_particles, environment_particles):
     """
@@ -518,7 +518,6 @@ class REEDS:
                      self.EDS_simulation.context.getPlatform().getName(),
                      self.EDS_simulation.context.getPlatform().getNumPlatforms(),
                      self.EDS_simulation.context.getPlatform().getSpeed())   
-    print(self.rank, self.EDS_simulation.context.getPlatform().getPlatform(self.rank))    
     for name in self.EDS_simulation.context.getPlatform().getPropertyNames():
       print(self.rank, name, self.EDS_simulation.context.getPlatform().getPropertyValue(self.EDS_simulation.context, name))
 
@@ -613,7 +612,7 @@ class REEDS:
     #  self.simulations.minimizeEnergy(maxIterations = 10000)
     self.sim_time = self.EDS_simulation.initial_time
     step_size = self.EDS_simulation.integrator.getStepSize()._value
-    self.begin = 0
+    self.begin = 1
     self.run = 1
     start_time = time.time()
 
@@ -637,10 +636,11 @@ class REEDS:
 
       # store state files every 1000 steps and flush
       # TODO: add output frequency as REEDSSimulationVariables member
-      if(not (total_steps % 1000)):
+      if(not (total_steps % 10000)):
         self.save_state()
    
     print("simulation time: ", time.time() - start_time)
+    self.save_state()
 
   def write_ene_traj(self):
     if self.rank == 0:
@@ -687,6 +687,7 @@ class REEDS:
           self.comm.send(self.s_values[self.replica_positions[0]], dest = self.replica_positions[0])
           self.comm.send(self.energy_offset_matrix[self.replica_positions[0]], dest = self.replica_positions[0])
             
+      i = 0      
       # alternate replica partners (i.e. even = s values at 0-1, 2-3, 4-5, ... and odd = s values at 1-2, 3-4, 5-6, ...)    
       for i in range(self.begin, self.num_replicas-1,2):
         # calculate exchange probability
@@ -785,7 +786,7 @@ class REEDS:
 
     # replicas != 0 receive their current s values
     else:
-      self.s_value = self.comm.recv(source = 0)
+      self.EDS_simulation.s_value = self.comm.recv(source = 0)
       self.EDS_simulation.energy_offsets = self.comm.recv(source = 0)
       self.EDS_simulation.integrator.setGlobalVariableByName("s", self.EDS_simulation.s_value)
       for i in range(self.EDS_simulation.num_endstates):
