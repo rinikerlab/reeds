@@ -155,7 +155,7 @@ class EDSSimulation(app.Simulation):
     self.initialize_positions_and_velocities()
 
     # add pdb reporter
-    self.reporters.append(app.PDBReporter(f"out_{self.system_name}.pdb", 1, enforcePeriodicBox = True))
+    self.reporters.append(app.PDBReporter(f"out_{self.system_name}.pdb", 10000, enforcePeriodicBox = True))
 
   def create_system(self, platform = None, properties = None):
     # create system
