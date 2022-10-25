@@ -7,8 +7,8 @@ The number of MPI processes needs to be euqal to the number of replicas, so the 
 import os
 from reeds.openmm.reeds_openmm_parallel import *
 
-os.makedirs("vacuum", exist_ok = True)
-os.chdir("vacuum")
+os.makedirs("vacuum_parallel", exist_ok = True)
+os.chdir("vacuum_parallel")
 
 s_values = np.array([1.0,0.518,0.393,0.3305,0.268,0.225,0.182,0.1605,0.139,0.1055,0.0887,0.072,0.0546,0.0373,0.0193,0.01])
 energy_offsets = np.array([0.0, -25.13, -94.15, 105.73, 122.62, 139.76])
