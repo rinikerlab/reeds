@@ -1,3 +1,9 @@
+"""
+Example script for parallel execution of RE-EDS simulation with OpenMM
+Each replica EDS simulation is assigned its own MPI process. If one or more GPU is available, the EDS simulations are distributed evenly among the GPUs.
+The number of MPI processes needs to be euqal to the number of replicas, so the script should be called as 'mpiexec -np 16 python set_A_water_parallel.py'
+"""
+
 import os
 from reeds.openmm.reeds_openmm_parallel import *
 
