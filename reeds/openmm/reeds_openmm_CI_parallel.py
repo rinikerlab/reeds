@@ -27,6 +27,7 @@ class EDSSimulationVariables:
                      eps_reaction_field = 78.5,
                      distance_restraint_force_constant = 5000 *u.kilojoule_per_mole/(u.nanometer*u.nanometer),
                      distance_restraints_start_at_1 = True,
+                     minimize = False,
                      time_step = 0.002 * u.picoseconds,
                      total_steps = 250000,
                      initial_time = 0):
@@ -41,6 +42,7 @@ class EDSSimulationVariables:
     self.distance_restraint_force_constant = distance_restraint_force_constant
     self.distance_restraint_pairs = distance_restraint_pairs
     self.distance_restraints_start_at_1 = distance_restraints_start_at_1
+    self.minimize = minimize
     self.time_step = time_step
     self.total_steps = total_steps
     self.initial_time = initial_time
@@ -58,6 +60,7 @@ class REEDSSimulationVariables:
                      eps_reaction_field = 78.5,
                      distance_restraint_force_constant = 5000 *u.kilojoule_per_mole/(u.nanometer*u.nanometer),
                      distance_restraints_start_at_1 = True,
+                     minimize = False,
                      num_steps_between_exchanges = 20,
                      time_step = 0.002 * u.picoseconds,
                      total_steps = 250000,
@@ -82,6 +85,7 @@ class REEDSSimulationVariables:
                                                                  eps_reaction_field,
                                                                  distance_restraint_force_constant,
                                                                  distance_restraints_start_at_1,
+                                                                 minimize,
                                                                  time_step,
                                                                  total_steps,
                                                                  initial_time)
@@ -95,6 +99,7 @@ class REEDSSimulationVariables:
                                                                  eps_reaction_field,
                                                                  distance_restraint_force_constant,
                                                                  distance_restraints_start_at_1,
+                                                                 minimize,
                                                                  time_step,
                                                                  total_steps,
                                                                  initial_time)
@@ -606,10 +611,9 @@ class REEDS:
     """
     perform a RE-EDS simulation
     """
-    #for idx, state in enumerate(self.states):
-    #  self.simulations.context.setState(state)
-    #  self.integrators.setGlobalVariableByName("s", self.s_values[idx])
-    #  self.simulations.minimizeEnergy(maxIterations = 10000)
+    if self.reeds_simulation_variables.eds_simulation_variables.minimize:
+      self.EDS_simulation.minimizeEnergy(maxIterations = 100000)
+      
     self.sim_time = self.EDS_simulation.initial_time
     step_size = self.EDS_simulation.integrator.getStepSize()._value
     self.begin = 1
