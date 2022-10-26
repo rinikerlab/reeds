@@ -33,7 +33,7 @@ With slurm, you can submit the serial scripts using
 
 After execution you can analyze the simulation using
 
-    sbatch --wrap 'python analysis.py
+    sbatch --wrap 'python analysis.py'
 
 #### parallel implementation
 
@@ -48,4 +48,4 @@ Of course, you can also reduce the number of requested gpus. In the above exampl
 
 After execution you can analyze the simulation using
 
-    sbatch --wrap 'python analysis_parallel.py 
+    sbatch --wrap 'python analysis_parallel.py' 
