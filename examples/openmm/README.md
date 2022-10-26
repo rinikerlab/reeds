@@ -2,7 +2,7 @@
 
 In your conda environment, add the reeds module to your path with
 
-    `conda develop /path/to/reeds`
+    conda develop /path/to/reeds
 
 You will need to install the following packages for the serial implementation
 
@@ -28,12 +28,12 @@ In this implementation, the replicas are executed one after the other for the nu
 
 With slurm, you can submit the serial scripts using
 
-    `sbatch --gpus=1 --wrap 'python set_A_water.py'`
-    `sbatch --wrap 'python set_A_vacuum.py'`
+    sbatch --gpus=1 --wrap 'python set_A_water.py'
+    sbatch --wrap 'python set_A_vacuum.py'
 
 After execution you can analyze the simulation using
 
-    `sbatch --wrap 'python analysis.py`
+    sbatch --wrap 'python analysis.py
 
 #### parallel implementation
 
@@ -41,8 +41,8 @@ In this implementation, the replicas are executed in parallel. Each replica is a
 
 With slurm, you can submit the parallel scripts using
 
-    `sbatch --gpus=8 -n 16 --wrap 'mpirun -np 16 python set_A_water_parallel.py'`
-    `sbatch -n 16 --wrap 'mpirun -np 16 python set_A_vacuum_parallel.py'`
+    sbatch --gpus=8 -n 16 --wrap 'mpirun -np 16 python set_A_water_parallel.py'
+    sbatch -n 16 --wrap 'mpirun -np 16 python set_A_vacuum_parallel.py'
     
 Of course, you can also reduce the number of requested gpus. In the above example with 16 replicas, if you request 8 GPUs, each GPU will be responsible for 2 simulations. If you only request e.g. 2 GPUs, each GPU will be responsible for 8 simulations.
 
