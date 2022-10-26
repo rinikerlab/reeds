@@ -2,7 +2,7 @@
 
 In your conda environment, add the reeds module to your path with
 
-conda develop /path/to/reeds
+    `conda develop /path/to/reeds`
 
 You will need to install the following packages for the serial implementation
 
