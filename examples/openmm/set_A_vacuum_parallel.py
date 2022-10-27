@@ -26,5 +26,6 @@ reeds_input_files = REEDSInputFiles(param_file, crd_files)
 reeds_simulation = REEDS("set_A_vacuum", reeds_simulation_variables, reeds_input_files)
 reeds_simulation.run()
 
-df = reeds_simulation.calculate_free_energy_differences(0) # calculate free-energy differences at s=1
-print("free energies: ", df)
+if MPI.COMM_WORLD.Get_rank() == 0:
+  df = reeds_simulation.calculate_free_energy_differences(0) # calculate free-energy differences at s=1
+  print("free energies: ", df)
