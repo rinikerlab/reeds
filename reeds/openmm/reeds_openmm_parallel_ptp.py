@@ -155,7 +155,7 @@ class EDSSimulation(app.Simulation):
     self.initialize_positions_and_velocities()
 
     # add pdb reporter
-    self.reporters.append(app.PDBReporter(f"out_{self.system_name}.pdb", 10000, enforcePeriodicBox = True))
+    self.reporters.append(app.PDBReporter(f"{self.system_name}.pdb", 10000, enforcePeriodicBox = True))
 
   def create_system(self, platform = None, properties = None):
     # create system
@@ -787,13 +787,17 @@ class REEDS:
     #create simulation
     n_gpu = self.get_num_gpus()
     print("ngpu", n_gpu)
+    if(self.comm.Get_size() > 1):
+      eds_system_name = f"{system_name}_{self.rank}"
+    else:
+      eds_system_name = system_name
     if(n_gpu):
       platform = mm.Platform.getPlatformByName("CUDA")
       os.environ['CUDA_LAUNCH_BLOCKING'] = '0'
       properties = {'DeviceIndex': str(self.rank % n_gpu)}
-      self.EDS_simulation = EDSSimulation(f"{system_name}_{self.rank}", reeds_simulation_variables.eds_simulation_variables, reeds_input_files.eds_input_files, platform, properties)
+      self.EDS_simulation = EDSSimulation(eds_system_name, reeds_simulation_variables.eds_simulation_variables, reeds_input_files.eds_input_files, platform, properties)
     else:
-      self.EDS_simulation = EDSSimulation(f"{system_name}_{self.rank}", reeds_simulation_variables.eds_simulation_variables, reeds_input_files.eds_input_files)
+      self.EDS_simulation = EDSSimulation(eds_system_name, reeds_simulation_variables.eds_simulation_variables, reeds_input_files.eds_input_files)
 
     # print some infos
     print("rank", self.rank, "num_endstates", self.EDS_simulation.num_endstates, "num_replicas ", self.num_replicas)
@@ -821,7 +825,10 @@ class REEDS:
 
   def initialize_output(self):
     # initialize output files, i.e. energy trajectories and repdat files
-    self.ene_traj_filenames = [f"ene_traj_{self.system_name}_{i}" for i in range(1, self.num_replicas +1)]
+    if(self.num_replicas > 1):
+      self.ene_traj_filenames = [f"ene_traj_{self.system_name}_{i}" for i in range(1, self.num_replicas + 1)]
+    else:
+      self.ene_traj_filenames = [f"ene_traj_{self.system_name}"]
     self.ene_traj_files = [open(name, "w") for name in self.ene_traj_filenames]
     if self.rank == 0:
       for file in self.ene_traj_files:
@@ -925,7 +932,7 @@ class REEDS:
           self.ene_traj_files[idx].write('{0: <14}'.format("{:.10f}".format(self.Vi_all[idx][i])) + " ")
 
         if(any(np.isnan(Vi_))):
-          print(f"Error: there is a nan in the energies of replica {idx}: {Vi_}")
+          print(f"Error: there is a nan in the energies of replica {idx} (s = {self.EDS_simulation.s_value}): {Vi_}")
           sys.stdout.flush()
           self.comm.Abort()
       
@@ -1049,11 +1056,14 @@ class REEDS:
 
   def save_state(self):
     if self.rank == 0:
-      for idx, pos in enumerate(self.replica_positions):
-        if pos == 0:
-          self.EDS_simulation.saveState(self.system_name + "_state_s_" + str(idx))
-        else:
-          self.comm.send(idx, dest = pos)
+      if self.comm.Get_size() == 1:
+        self.EDS_simulation.saveState(self.system_name)
+      else:
+        for idx, pos in enumerate(self.replica_positions):
+          if pos == 0:
+            self.EDS_simulation.saveState(self.system_name + "_state_s_" + str(idx))
+          else:
+            self.comm.send(idx, dest = pos)
       for idx in range(self.num_replicas):
         self.ene_traj_files[idx].flush()
       self.repdat.flush()
