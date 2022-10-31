@@ -320,7 +320,8 @@ if(step == "a"):
     ER[i] = 500
     plot_sampling_distribution(num_endstates, ene_trajs[i], ER, "sampling_distribution_state_" + str(int(states[i])+1) + ".png")
   
-  plot_ene_trajs(ene_trajs, svalues)
+  plot_svalues = [f"1 (end-state {i+1})" for i in range(num_endstates)]
+  plot_ene_trajs(ene_trajs, plot_svalues)
   
   physical_state_occurrence_treshold = find_physical_sampling_pot_tresh(ene_trajs, _vacuum_simulation=vacuum_simulation)
 
@@ -349,11 +350,11 @@ elif(step == "b"):
   for i in range(len(ene_traj_files)):
     plot_sampling_distribution(num_endstates, ene_trajs[i], ER, "sampling_distribution_s_" + svals[i] + ".png")
   
-  plot_ene_trajs(ene_trajs, svalues)
+  plot_ene_trajs(ene_trajs, svals)
   
   state_undersampling_pot_treshold = find_undersampling_pot_tresh(ene_traj_csvs=ene_trajs, verbose = True, sampling_fraction_treshold = 0.95)
 
-  sampling_analysis_results, out_plot_dirs = reeds.function_libs.analysis.sampling.detect_undersampling(out_path = ".",
+  sampling_analysis_results, out_plot_dirs = sampling_ana.detect_undersampling(out_path = ".",
                                                                                                        ene_traj_csvs = ene_trajs, eoffs= [0 for _ in 
                                                                                                        range(num_endstates)],
                                                                                                        s_values = [float(s) for s in svals],
@@ -426,7 +427,7 @@ elif(step == "c"):
   for i in range(len(ene_traj_files)):
     plot_sampling_distribution(num_endstates, ene_trajs[i], ER[0], "sampling_distribution_s_" + str(svals[i]) + ".png", undersampling_thresh_file = undersampling_file, physical_thresh_file = physical_sampling_file)
   
-  plot_ene_trajs(ene_trajs, svalues)
+  plot_ene_trajs(ene_trajs, svals)
   
   (sampling_results, out_dir) = sampling_ana.detect_undersampling(out_path = ".", ene_traj_csvs = ene_trajs,_visualize=True, 
                                                                             s_values = svals, eoffs=ER, 
