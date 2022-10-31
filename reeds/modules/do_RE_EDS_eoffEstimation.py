@@ -20,7 +20,6 @@ import reeds.function_libs.pipeline.module_functions
 from pygromos.euler_submissions import FileManager as fM
 from pygromos.utils import bash
 from reeds.data import imd_templates
-from reeds.function_libs.file_management import file_management as fileReeds
 from reeds.function_libs.pipeline.jobScheduling_scripts import RE_EDS_simulation_scheduler
 from reeds.function_libs.pipeline.module_functions import adapt_imd_template_eoff
 from reeds.function_libs.pipeline.worker_scripts.analysis_workers import RE_EDS_general_analysis
@@ -31,17 +30,15 @@ def do(out_root_dir: str, in_simSystem: fM.System, in_ene_ana_lib: str,
        in_template_imd_path: str = imd_templates.reeds_md_path,
        optimized_states: str = os.path.abspath("a_optimizedState/analysis/next"),
        sval_file: str = None, ssm_approach:bool = True,
-       undersampling_fraction_threshold:float = 0.9,
+       undersampling_fraction_threshold:float = 0.9, randomize_seed: bool = False,
        state_physical_occurrence_potential_threshold: List[float] = None,
        state_undersampling_occurrence_potential_threshold: List[float] = None,
        gromosXX_bin_dir: str = None, gromosPP_bin_dir: str = None,
-       exclude_residues: list = [], nmpi_per_replica: int = 1, num_simulation_runs: int = 2,
-       num_equilibration_runs: int = 1, equilibration_trial_num: int = None,
-       queueing_sys: object = None, work_dir: str = None,
-       submit: bool = True, duration_per_job: str = "24:00", 
-       initialize_first_run: bool = True, reinitialize: bool = False, randomize: bool=False,
+       nmpi_per_replica: int = 1, num_simulation_runs: int = 2,
+       num_equilibration_runs: int = 1, work_dir: str = None, trials_per_run: int = 12500,
+       submit: bool = True, duration_per_job: str = "24:00:00", 
+       initialize_first_run: bool = True, reinitialize: bool = False,
        do_not_doubly_submit_to_queue: bool = True,
-       single_bath: bool = False,
        memory: str = None,
        verbose: bool = True):
     """do Energy Offsets estimation
@@ -81,6 +78,8 @@ state_undersampling_occurrence_potential_threshold : List[float], optional
     potential thresholds for occurrence sampling (default: read in from step b)
 undersampling_fraction_threshold : float, optional
     fraction threshold for physical/occurrence sampling (default: 0.9)
+randomize_seed
+    randomize initial velocities
 equilibration_trial_num
     how many long shall the equil time be? equil?
 s_num
@@ -165,9 +164,8 @@ int
 
         ##adapt imd_templates
         if (verbose): print("Writing imd_templates")
-        imd_file = adapt_imd_template_eoff(system=simSystem, imd_out_path=in_imd_path, imd_path=in_template_imd_path,
-                                           old_svals=s_values, non_ligand_residues=exclude_residues, randomize=randomize,
-                                           single_bath = single_bath)
+        imd_file = adapt_imd_template_eoff(system=simSystem, imd_out_path=in_imd_path, in_template_imd_path=in_template_imd_path,
+                                           trials_per_run=trials_per_run, input_svals=s_values, randomize=randomize_seed)
         in_imd_path = imd_file.path
         svals = imd_file.REPLICA_EDS.RES
         numstates = imd_file.REPLICA_EDS.NUMSTATES
@@ -321,7 +319,7 @@ if __name__ == "__main__":
     print(spacer + "\t\tRE-EDS ENERGY OFFSET ESTIMATION \n" + spacer + "\n")
     requiers_gromos_files = [("in_top_path", "input topology .top file."),
                              ("in_coord_path", "input coordinate .cn file."),
-                             ("in_perttop_path", "input pertubation topology .ptp file."),
+                             ("in_perttop_path", "input perturbation topology .ptp file."),
                              ("in_disres_path", "input distance restraint .dat file.")]
 
     execute_module_via_bash(__doc__, do, requiers_gromos_files)

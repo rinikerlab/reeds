@@ -6,7 +6,7 @@ from matplotlib import pyplot as plt
 
 from reeds.function_libs.visualization import plots_style as ps
 from reeds.function_libs.visualization.utils import discard_high_energy_points
-
+from reeds.function_libs.visualization.utils import determine_vrange
 
 def plot_optimized_states_potential_energies(outfile:str,
                                              ene_trajs:pd.DataFrame,):
@@ -27,6 +27,8 @@ def plot_optimized_states_potential_energies(outfile:str,
     """
 
     nstates = len(ene_trajs)
+    
+    v_range = determine_vrange(ene_trajs, nstates)
 
     colors = ps.active_qualitative_map_mligs(nstates)
 
@@ -72,7 +74,7 @@ def plot_optimized_states_potential_energies(outfile:str,
         # formatting:
         axes[row_num, col_num].legend(loc='upper right', fontsize=12, edgecolor='black')
 
-        axes[row_num, col_num].set_xlim([-1250, 0])
+        axes[row_num, col_num].set_xlim(v_range)
         axes[row_num, col_num].set_ylim([0, 1.35 * max(hist1[0])])
 
         axes[row_num, col_num].set_ylabel('Count')
@@ -432,7 +434,10 @@ def plot_ref_pot_energy_distribution(energy_trajs: List[pd.DataFrame],
         hist1 = axes[row_num, col_num].hist(up_energies, bins = 100, label = legend, color = 'firebrick')
         axes[row_num, col_num].legend(loc='upper right', fontsize=12, edgecolor='black')
         #
-        axes[row_num, col_num].set_xlim([min(up_energies) - 100, upper_threshold])
+        xmax = upper_threshold
+        if max(up_energies)+100 < upper_threshold: xmax = max(up_energies)+100
+
+        axes[row_num, col_num].set_xlim([min(up_energies) - 100, xmax])
         axes[row_num, col_num].set_ylim([0, 1.35 * max(hist1[0])])
         axes[row_num, col_num].set_ylabel('Count')
         axes[row_num, col_num].set_xlabel(r'$V_{R}$ [kJ/mol]')

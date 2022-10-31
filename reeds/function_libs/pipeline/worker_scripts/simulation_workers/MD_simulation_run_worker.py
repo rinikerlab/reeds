@@ -26,7 +26,7 @@ def work(out_dir: str, in_coord: str, in_imd_path: str, in_topo_path: str, in_pe
     in_topo_path : str
         input topology
     in_perttopo_path : str
-        input pertubation
+        input perturbation
     in_disres_path : str
         input disres
     nmpi : int, optional
@@ -103,7 +103,7 @@ if __name__ == "__main__":
     parser.add_argument('-imd', type=str, required=True, help="give .imd file which should be used.")
     parser.add_argument('-top', type=str, required=True, help="give input .top - file.")
     parser.add_argument('-coord', type=str, required=True, help="give input coordinates .cnf file.")
-    parser.add_argument('-perttop', type=str, required=True, help="give input pertubation topology.")
+    parser.add_argument('-perttop', type=str, required=True, help="give input perturbation topology.")
     parser.add_argument('-disres', type=str, required=False, default=False, help="give input distance restraints.")
 
     parser.add_argument('-nmpi', type=int, required=False, default=1, help="number of MPI threads for the sopt_job.")

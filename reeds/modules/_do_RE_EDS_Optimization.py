@@ -6,7 +6,7 @@ from collections import OrderedDict
 from typing import List, Iterable
 
 from pygromos.euler_submissions import FileManager as fM
-from pygromos.euler_submissions.Submission_Systems import _SubmissionSystem, LSF
+from pygromos.euler_submissions.Submission_Systems import _SubmissionSystem, LSF, SLURM
 from pygromos.files import imd
 from pygromos.files.coord import cnf as cnf_cls
 from pygromos.utils import bash
@@ -26,13 +26,13 @@ def do_optimization(out_root_dir: str, in_simSystem: fM.System, optimization_nam
                     non_ligand_residues: list = [],
                     state_physical_occurrence_potential_threshold:List[float]=None,
                     state_undersampling_occurrence_potential_threshold: List[float]=None,
-                    equil_runs: int = 0, steps_between_trials: int = 20, trials_per_run: int = 12500,
+                    equil_runs: int = 1, prod_runs: int = 1, steps_between_trials: int = 50, trials_per_run: int = 12500,
                     optimized_states_dir: str = os.path.abspath("a_optimizedState/analysis/next"),
                     lower_bound_dir: str = os.path.abspath("b_lowerBound/analysis/next"),
                     in_gromosXX_bin_dir: str = None, in_gromosPP_bin_dir: str = None,
                     in_ene_ana_lib_path: str = ene_ana_libs.ene_ana_lib_path,
-                    nmpi_per_replica: int = 1, submit: bool = True, duration_per_job: str = "24:00",
-                    queueing_system: _SubmissionSystem = LSF,
+                    nmpi_per_replica: int = 1, submit: bool = True, duration_per_job: str = "24:00:00",
+                    queueing_system: _SubmissionSystem = SLURM,
                     do_not_doubly_submit_to_queue: bool = True,
                     initialize_first_run: bool = True, reinitialize: bool = False, randomize: bool=False, noncontinous: bool = False,
                     memory: int = None,
@@ -141,7 +141,7 @@ def do_optimization(out_root_dir: str, in_simSystem: fM.System, optimization_nam
     #################
     ## Loop vars
     job_id = None  # id for chaining
-    repetitions = 1  # needed to elongate simulation length
+    repetitions = prod_runs  # needed to elongate simulation length
     standard_name = simSystem.name
     iteration_sopt_job = None
     add_replicas_mode = sOpt_add_replicas
@@ -198,7 +198,8 @@ def do_optimization(out_root_dir: str, in_simSystem: fM.System, optimization_nam
                                                              pot_tresh=state_physical_occurrence_potential_threshold,
                                                              duration_per_job=duration_per_job,
                                                              num_simulation_runs=repetitions,
-                                                             memory = memory)
+                                                             memory = memory, 
+                                                             optimized_states_dir = optimized_states_dir)
 
         except Exception as err:
             print("#####################################################################################")
@@ -235,25 +236,22 @@ def do_optimization(out_root_dir: str, in_simSystem: fM.System, optimization_nam
             print()
             traceback.print_exception(*sys.exc_info())
             raise Exception("ERROR during job job-submissoin")
-        if(run_eoffRB and not run_NLRTO and not run_NGRTO):
-          repetitions=1
-        else:
-          repetitions = repetitions + 1 if (repetitions < 3) else 3  # limit the simulation time accumulation to 1.2ns
-          
+        
         if (iteration > 1):
             try:  # JOB SUBMISSION
                 if (verbose): print("Final Analysis Script")
+                
+                qsys = queueing_system() # inittialize object
 
-                job_submission_system = queueing_system()
                 root_dir = os.getcwd()
                 os.chdir(os.path.dirname(ana_out_dir))
-                _ = job_submission_system.submit_to_queue(command=in_final_analysis_script_path,
-                                                                         jobName=job_name + "_opt" + str(iteration),
-                                                                         outLog=ana_out_dir + "/" + job_name + ".out",
-                                                                         errLog=ana_out_dir + "/" + job_name + ".err",
-                                                                         maxStorage=5000, queue_after_jobID=job_id,
-                                                                         nmpi=1,
-                                                                         verbose=verbose, sumbit_from_file=False)
+                _ = qsys.submit_to_queue(command=in_final_analysis_script_path,
+                                         jobName=job_name + "_opt" + str(iteration),
+                                         outLog=ana_out_dir + "/" + job_name + ".out",
+                                         errLog=ana_out_dir + "/" + job_name + ".err",
+                                         maxStorage=5000, queue_after_jobID=job_id,
+                                         nmpi=1,
+                                         verbose=verbose, sumbit_from_file=True)
                 os.chdir(root_dir)
 
             except Exception as err:

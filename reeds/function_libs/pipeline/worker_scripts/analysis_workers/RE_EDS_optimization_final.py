@@ -1,6 +1,7 @@
 import glob
 import os
 import pickle
+import re
 
 import numpy as np
 import pandas as pd
@@ -79,7 +80,6 @@ def analyse_optimization_iteration(repdat_path: str, out_dir: str, title: str, t
     sopt_it.update({"s_values": s_values[repOff:]})
 
     sorted_dominating_state_samping =   np.array([sopt_it["state_maxContributing_sampling"][x] for x in sorted( sopt_it["state_maxContributing_sampling"], key=lambda x: int(x.replace("Vr","")) )])
-    print(sorted_dominating_state_samping)
 
     optimal_samp =1/len(sorted_dominating_state_samping)*100
     iteration_norm = np.round(sorted_dominating_state_samping / np.sum(sorted_dominating_state_samping) * 100, 2)
@@ -172,12 +172,17 @@ def do(project_dir: str, optimization_name:str,
     sopt_data = {}
     repdat_files = {}
     converged = False
-    print(sopt_dirs)
-    for iteration_folder in sorted(sopt_dirs):
+    
+    for iteration_folder in sorted(sopt_dirs, key = lambda x: int(re.sub("[^0-9]", "", x))):
         if("sopt" in iteration_folder):
             iteration = int(iteration_folder.replace("sopt", ""))
+            prefix = "sopt"
         elif("eoffRB" in iteration_folder):
             iteration = int(iteration_folder.replace("eoffRB", ""))
+            prefix = "eoffRB"
+        elif("mixedOpt" in iteration_folder):
+            iteration = int(iteration_folder.replace("mixedOpt", ""))
+            prefix = "mixedOpt"
         else:
             raise Exception("OHOH!")
 
@@ -206,7 +211,6 @@ def do(project_dir: str, optimization_name:str,
             continue
         # round trip time efficiency
         if (iteration > 1):
-            prefix = "sopt" if("sopt" in list(sopt_data.keys())[0]) else "eoffRB"
             opt_it_stats.update({"avg_rountrip_duration_optimization_efficiency": sopt_data[prefix+str(iteration- 1)]["avg_rountrip_durations"] -opt_it_stats["avg_rountrip_durations"]})
 
         #assign convergence in an conserative fasion.

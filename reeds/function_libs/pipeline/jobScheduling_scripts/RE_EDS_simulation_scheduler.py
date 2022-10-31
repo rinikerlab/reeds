@@ -10,8 +10,7 @@ from typing import Iterable
 
 from pygromos.euler_submissions import FileManager as fM
 from pygromos.euler_submissions.FileManager import Simulation_System
-from pygromos.euler_submissions.Submission_Systems import LSF
-from pygromos.euler_submissions.Submission_Systems import _SubmissionSystem
+from pygromos.euler_submissions.Submission_Systems import _SubmissionSystem, LSF, SLURM
 from pygromos.files.coord import cnf
 from pygromos.files.imd import Imd
 from pygromos.utils import bash
@@ -27,7 +26,7 @@ def do(in_simSystem: Simulation_System.System, in_imd_path: str, out_dir_path: s
        work_dir: str = None, force_queue_start_for_analysis: bool = False,
        in_analysis_script_path: str = None, run_analysis_script_every_x_runs: int = 0, initial_command: str = "",
        do_not_doubly_submit_to_queue: bool = True, previous_job_ID: int = None, write_free_energy_traj: bool = False,
-       type_job_submission_system: _SubmissionSystem = LSF, initialize_first_run:bool = True, reinitialize:bool = False, 
+       type_job_submission_system: _SubmissionSystem = SLURM, initialize_first_run:bool = True, reinitialize:bool = False, 
        memory: int= None,
        verbose: bool = False):
     """ RE_EDS_simulation_scheduler
@@ -115,11 +114,6 @@ int
         if (initial_command != ""):
             prefix_command += initial_command + "\n\n"
         
-        # Candide: I comment out this line to see what happens !
-        # For the production it needs to be commented out.
-
-        #prefix_command += " cp " + in_imd_path + " " + prepared_imd + " && "
-
         # sim vars logs
         out_prefix = jobname
         slave_script = workerScript.__file__
@@ -128,15 +122,22 @@ int
         if (verbose): print("in: " + str(prepared_imd))
         check_path_warn_paths = []
         check_path_dependencies_paths = [slave_script, simSystem.top.top_path, 
-                                         simSystem.top.pertubation_path,
+                                         simSystem.top.perturbation_path,
                                          out_dir_path, ]  # Coord file is used by repex in_imd_path prepared_imd
               
         # accounting for the different types of restraint used:
+        if not hasattr(simSystem.top, 'refpos_path'):
+            simSystem.top.refpos_path = None
+        if not hasattr(simSystem.top, 'posres_path'):
+            simSystem.top.posres_path = None
+        if(not ((simSystem.top.disres_path is None) or (simSystem.top.disres_path == "None"))):
+                            check_path_dependencies_paths.append(simSystem.top.disres_path)
+        
+        if(not (simSystem.top.refpos_path is None and simSystem.top.posres_path is None)):
+            check_path_dependencies_paths.append(simSystem.top.posres_path)
+            check_path_dependencies_paths.append(simSystem.top.refpos_path)
         if(not simSystem.top.disres_path is None):
               check_path_dependencies_paths.append(simSystem.top.disres_path)
-        if(not (simSystem.top.refpos_path is None and imSystem.top.posres_path is None)):
-              check_path_dependencies_paths.append(simSystem.top.posres_path)
-              check_path_dependencies_paths.append(simSystem.top.refpos_path)
 
         # optional paths
         if (not isinstance(work_dir, type(None)) and work_dir != "None"):
@@ -276,8 +277,8 @@ int
                     spacer + "\n submit ANA part " + str(num_simulation_runs + num_equilibration_runs) + "\n")
                 try:
                     if (verbose): print("\tFINAL ANALYSIS")
-                    outLog = out_dir_path + "/" + jobname + "_Ana.out"
-                    errLog = out_dir_path + "/" + jobname + "_Ana.err"
+                    outLog = os.path.dirname(out_dir_path) + "/" + jobname + "_Ana.out"
+                    errLog = os.path.dirname(out_dir_path) + "/" + jobname + "_Ana.err"
                     previous_job_ID = job_submission_system.submit_to_queue(command=in_analysis_script_path,
                                                                             jobName=tmp_ana_jobname,
                                                                             submit_from_dir=out_dir_path,
@@ -322,7 +323,7 @@ if __name__ == "__main__":
         additional_argparse_argument(name='in_coord_path', type=str, required=True, desc="input coordinate .cn file."),
         additional_argparse_argument(name='in_top_path', type=str, required=True, desc="input topology .top file."),
         additional_argparse_argument(name='in_perttop_path', type=str, required=True,
-                                     desc="input pertubation topology .ptp file."),
+                                     desc="input perturbation topology .ptp file."),
         additional_argparse_argument(name='in_disres_path', type=str, required=True,
                                      desc="input distance restraint .dat file.")
     ]
@@ -341,7 +342,7 @@ if __name__ == "__main__":
     in_disres_path = args.disres
     in_perttopo_path = args.perttop
 
-    top = fM.Topology(top_path=in_topo_path, disres_path=in_disres_path, pertubation_path=in_perttopo_path)
+    top = fM.Topology(top_path=in_topo_path, disres_path=in_disres_path, perturbation_path=in_perttopo_path)
     system = Simulation_System.System(top=top, coordinates=in_coord_path, name=in_system_name)
 
     # do everything in here :)

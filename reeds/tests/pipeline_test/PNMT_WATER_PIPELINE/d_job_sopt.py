@@ -19,7 +19,7 @@ in_name = name+"_sopt"
 out_sopt_dir = bash.make_folder(out_sopt_dir)
 
 #In-Files
-topology = fM.Topology(top_path=in_top_file,    disres_path=in_disres_file, pertubation_path=in_pert_file)
+topology = fM.Topology(top_path=in_top_file,    disres_path=in_disres_file, perturbation_path=in_pert_file)
 coords = glob.glob(next_sopt_dir+"/*cnf")
 system =fM.System(coordinates=coords, name=in_name, top=topology)
 
