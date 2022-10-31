@@ -354,7 +354,7 @@ elif(step == "b"):
   
   state_undersampling_pot_treshold = find_undersampling_pot_tresh(ene_traj_csvs=ene_trajs, verbose = True, sampling_fraction_treshold = 0.95)
 
-  sampling_analysis_results, out_plot_dirs = sampling_ana.detect_undersampling(out_path = ".",
+  sampling_analysis_results, out_plot_dirs = sampling_ana.detect_undersampling(out_path = ".",  undersampling_occurence_sampling_tresh = 0.95,
                                                                                                        ene_traj_csvs = ene_trajs, eoffs= [0 for _ in 
                                                                                                        range(num_endstates)],
                                                                                                        s_values = [float(s) for s in svals],
