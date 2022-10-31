@@ -1,5 +1,8 @@
 ## RE-EDS with OpenMM
 
+In the current directory, there is a simple example to run a RE-EDS production to calculate the relative hydration free-energy differences for a set of six benzene derivatives (see https://doi.org/10.1063/5.0107935). This will help you test and familiarize yourself with the code. In the subdirectory pipeline, you will find the instruction to run the whole RE-EDS pipeline for two test systems (the aforementioned set of six benzene derivatives, as well as a CHK1 complex with five end-state ligands described in https://doi.org/10.1007/s10822-021-00436-z)
+
+### Preparation
 In your conda environment, add the reeds module to your path with
 
     conda develop /path/to/reeds
