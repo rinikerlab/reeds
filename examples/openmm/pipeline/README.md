@@ -58,10 +58,10 @@ Next, we can run the energy offset rebalancing. This will also automatically sub
 
     python submit.py e
 
-This will create a direcotry `e_rebal` containing a subdirectory for each energy offset rebalancing iteration. Each of these subdirectories contains an equilibration, a simulation, and an analysis directory.
+This will create a direcotry `e_eoff_rebal` containing a subdirectory for each energy offset rebalancing iteration. Each of these subdirectories contains an equilibration, a simulation, and an analysis directory.
 
 Finally, we can run the production run. This will also automatically submit the analysis script. The number of production iterations is defined in `global_definitions.py`. By default, each iteration corresponds to a simulation time of 500ps, and simulations will be concatenated for the analysis. Note that the s-values are taken from the analysis directory of the s-optimization iteration that corresponds to the `sopt_iterations` variable of the global definitions (e.g., if `sopt_iterations = 2`, the s-values are taken from `d_sopt/s_opt_2/analysis`). If the number of energy offset rebalancing iterations is larger than zero, the energy offsets are taken from the analysis directory of the energy offset rebalancing iteration that corresponds to the `rebal_iterations` of the global definitions. Otherwise, they are taken from the analysis of the energy offset estimation directory.
 
     python submit.py f
 
-This will create a directory `f_prod` containing a subdirectory for each production iteration (will be concatenated for the analysis) and one for the analysis. Additionally to the usual plots, the analysis directory containts a csv file with the free-energy differences of all end-state pairs.
+This will create a directory `f_production` containing a subdirectory for each production iteration (will be concatenated for the analysis) and one for the analysis. Additionally to the usual plots, the analysis directory containts a csv file with the free-energy differences of all end-state pairs.
