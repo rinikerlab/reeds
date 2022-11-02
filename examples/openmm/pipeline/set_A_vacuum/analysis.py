@@ -354,7 +354,7 @@ elif(step == "b"):
   
   state_undersampling_pot_treshold = find_undersampling_pot_tresh(ene_traj_csvs=ene_trajs, verbose = True, sampling_fraction_treshold = 0.95)
 
-  sampling_analysis_results, out_plot_dirs = sampling_ana.detect_undersampling(out_path = ".",  undersampling_occurence_sampling_tresh = 0.95,
+  sampling_analysis_results, out_plot_dirs = sampling_ana.detect_undersampling(out_path = ".", undersampling_occurence_sampling_tresh = 0.95,
                                                                                                        ene_traj_csvs = ene_trajs, eoffs= [0 for _ in 
                                                                                                        range(num_endstates)],
                                                                                                        s_values = [float(s) for s in svals],
@@ -506,7 +506,7 @@ elif(step == "d"):
   
   svals = parameter_optimization.optimize_s(in_file=f"../simulation/repdat_gromos_{system_name}", out_dir=".",
                                                                                    title_prefix="s_opt",
-                                                                                   add_s_vals=4, 
+                                                                                   add_s_vals=num_added_svalues_sopt, 
                                                                                    run_NLRTO=True, run_NGRTO=False,
                                                                                    verbose=True)
    

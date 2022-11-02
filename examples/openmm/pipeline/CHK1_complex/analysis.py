@@ -506,7 +506,7 @@ elif(step == "d"):
   
   svals = parameter_optimization.optimize_s(in_file=f"../simulation/repdat_gromos_{system_name}", out_dir=".",
                                                                                    title_prefix="s_opt",
-                                                                                   add_s_vals=4, 
+                                                                                   add_s_vals=num_added_svalues_sopt, 
                                                                                    run_NLRTO=True, run_NGRTO=False,
                                                                                    verbose=True)
    
