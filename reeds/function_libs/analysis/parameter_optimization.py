@@ -218,13 +218,13 @@ def get_s_optimization_transitions(out_dir: str,
                                                out_path= out_dir + "/transitions_trace_maxContrib"+str(i)+".png"
                                                )
         
-        re_plots.plot_replica_trace_numSampled(transitions.loc[i],
-                                               num_states,
-                                               svals,
-                                               title = title_prefix,
-                                               undersampling_thres = undersampling_thresholds,
-                                               out_path= out_dir + "/transitions_trace_numSampled"+str(i)+".png"
-                                              )
+        #re_plots.plot_replica_trace_numSampled(transitions.loc[i],
+        #                                       num_states,
+        #                                       svals,
+        #                                       title = title_prefix,
+        #                                       undersampling_thres = undersampling_thresholds,
+        #                                       out_path= out_dir + "/transitions_trace_numSampled"+str(i)+".png"
+        #                                      )
     
     if verbose: print("\t\t draw combined replica traces ")
 
@@ -248,19 +248,6 @@ def get_s_optimization_transitions(out_dir: str,
                                       cut_1_replicas=True, 
                                       xBond=(0, 250)
                                      )
-    
-    
-    
-    # Temporary comment out of the older plot showing the same data
-    # single trace replica
-    #if verbose: print("\t\t draw single replica trace ")
-    #for replica in range(1, len(repdat.system.s) + 1): 
-    #    single_transition_trace = transitions.loc[transitions.replicaID == replica]
-    #    re_plots.plot_replica_transitions_min_states(single_transition_trace, s_values=svals,
-    #                                                                                   out_path=out_dir + "/transitions_trace_" + str(replica) + ".png",
-    #                                                                                   title_prefix=title_prefix,
-    #                                                                                   cut_1_replicas=True)
-
 
 def get_s_optimization_roundtrips_per_replica(data: Dict[int, Dict[str,List[float]]],
                                               max_pos: int,
