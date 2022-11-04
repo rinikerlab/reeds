@@ -194,7 +194,14 @@ int
                                          "write_eoff": False,
                                          "write_s": False,
                                      }
-                                     }
+                                     },
+            "eoffset": {"do":False,
+                "sub": {
+                        "eoff_estimation": False,
+                        "sampling_plot": False,
+                        "eoffset_rebalancing": False,
+                        }
+                        }
         }
 
         # Generate execution Scripts
