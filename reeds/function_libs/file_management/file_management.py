@@ -33,7 +33,8 @@ def _thread_worker_cat_trc(job: int,
                            time: float = 0,
                            verbose: bool = False,
                            boundary_conditions: str = "r cog",
-                           include_all: bool = False):
+                           include_all: bool = False, 
+                           s1_only = True):
     """_thread_worker_cat_trc
         This thread worker_scripts concatenates all .trc files of one replica into one file.
 
@@ -59,9 +60,11 @@ def _thread_worker_cat_trc(job: int,
         boundary conditions (default "r cog")
     include_all : bool, optional
         include SOLVENT? (default: False)
+    s1_only: 
+        concatenate data for s = 1 only (it assumes file with prefix_1.trc is s = 1)
     verbose : bool
         verbosity?
-
+    
     Returns
     -------
     None
@@ -71,6 +74,8 @@ def _thread_worker_cat_trc(job: int,
     start_dir = os.getcwd()
     if (verbose): print("JOB " + str(job) + ": range " + str(list(replicaID_range)))
     for replicaID in replicaID_range:
+        if s1_only and replicaID != 1:
+            continue
         out_path = out_prefix + str(replicaID) + ".trc"
         compress_out_path = out_path + ".gz"
 
@@ -933,6 +938,10 @@ def project_concatenation(in_folder: str,
     out_cnfs = out_tres = out_trcs = out_dcd = out_repdat = None
     p_conv = p_cnf = p_repdat = p_trc = p_tre = p_ene_ana = False
     submitted_trc_job = submitted_tre_job = False
+    
+    # Whether to concatenate only the first of the trajectories.
+    # This should always be false here.
+    s1_only = False
 
     if (n_processes > 1):
         p = mult.Pool(n_processes)
@@ -974,7 +983,7 @@ def project_concatenation(in_folder: str,
             out_trcs = manager.dict()
             distributed_jobs = [
                 (n, range(n, len(trc_files) + 1, n_processes), trc_files, out_prefix, in_topology_path, out_trcs,
-                 dt_trc, starting_time, verbose, include_water_in_trc) for n in range(1, n_processes + 1)]
+                 dt_trc, starting_time, verbose, include_water_in_trc, s1_only) for n in range(1, n_processes + 1)]
             # _async
             p_trc = p.starmap(_thread_worker_cat_trc, distributed_jobs)
             p.close()
@@ -986,7 +995,7 @@ def project_concatenation(in_folder: str,
                                    trc_files=trc_files, out_prefix=out_prefix, dt=dt_trc, time=starting_time,
                                    out_trcs=out_trcs,
                                    verbose=verbose, boundary_conditions=boundary_conditions,
-                                   include_all=include_water_in_trc)
+                                   include_all=include_water_in_trc, s1_only=s1_only)
 
     if (control_dict["cat_tre"]):
         print("\tStart Tre Cat")
@@ -1103,6 +1112,7 @@ def reeds_project_concatenation(in_folder: str,
                                 gromosPP_bin_dir: str = None,
                                 nofinal=False,
                                 boundary_conditions: str = "r cog",
+                                s1_only: bool = True,
                                 verbose: bool = False) -> dict:
     """reeds_project_concatenation 
     wrapper for the concatenation for REEDS
@@ -1141,6 +1151,8 @@ def reeds_project_concatenation(in_folder: str,
         (default False)
     boundary_condition : str, optional
         boundary condition for gromos++ frameout (default "r cog")
+    s1_only: bool, optional
+        whether to concatenate only the trajectory at s = 1
     verbose : bool, optional
         verbose output (default False)
 
@@ -1208,7 +1220,7 @@ def reeds_project_concatenation(in_folder: str,
             out_trcs = manager.dict()
             distributed_jobs = [(
                 n, range(n, len(trc_files) + 1, n_processes), trc_files, out_prefix, in_topology_path, out_trcs,
-                dt_trc, starting_time, verbose, boundary_conditions, include_water_in_trc) for n in
+                dt_trc, starting_time, verbose, boundary_conditions, include_water_in_trc, s1_only) for n in
                 range(1, n_processes + 1)]
             p = mult.Pool(n_processes)
             p_trc = p.starmap(_thread_worker_cat_trc, distributed_jobs)
@@ -1220,7 +1232,7 @@ def reeds_project_concatenation(in_folder: str,
                                    trc_files=trc_files, out_prefix=out_prefix, dt=dt_trc, time=starting_time,
                                    out_trcs=out_trcs,
                                    verbose=verbose, boundary_conditions=boundary_conditions,
-                                   include_all=include_water_in_trc)
+                                   include_all=include_water_in_trc, s1_only=s1_only)
 
     if (control_dict["cat_tre"]):
         print("\tStart Tre Cat")
