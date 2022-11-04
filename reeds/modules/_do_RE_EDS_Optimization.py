@@ -146,6 +146,7 @@ def do_optimization(out_root_dir: str, in_simSystem: fM.System, optimization_nam
     iteration_sopt_job = None
     add_replicas_mode = sOpt_add_replicas
     cur_svals = num_svals
+    
     ## Prepare final analysis:
     ana_out_dir = out_root_dir + "/analysis"
     job_name = in_simSystem.name + "_final_" + optimization_name
@@ -156,11 +157,16 @@ def do_optimization(out_root_dir: str, in_simSystem: fM.System, optimization_nam
         "optimization_name": optimization_name,
         "out_dir": ana_out_dir
     })
+    
     in_final_analysis_script_path = write_job_script(
         out_script_path=out_root_dir + "/job_final_analysis.py",
         target_function=RE_EDS_optimization_final.do,
         variable_dict=analysis_vars)
+    
     bash.execute("chmod +x " + in_final_analysis_script_path)  # make executables
+    
+    os.mkdir(ana_out_dir)
+
     # generate each iteration folder && submission
     for iteration in range(1, iterations + 1):
         print("\n\nITERATION: " + str(iteration))
@@ -242,17 +248,16 @@ def do_optimization(out_root_dir: str, in_simSystem: fM.System, optimization_nam
                 if (verbose): print("Final Analysis Script")
                 
                 qsys = queueing_system() # inittialize object
-
-                root_dir = os.getcwd()
-                os.chdir(os.path.dirname(ana_out_dir))
+                
                 _ = qsys.submit_to_queue(command=in_final_analysis_script_path,
                                          jobName=job_name + "_opt" + str(iteration),
                                          outLog=ana_out_dir + "/" + job_name + ".out",
                                          errLog=ana_out_dir + "/" + job_name + ".err",
                                          maxStorage=5000, queue_after_jobID=job_id,
                                          nmpi=1,
-                                         verbose=verbose, sumbit_from_file=True)
-                os.chdir(root_dir)
+                                         verbose=verbose, 
+                                         sumbit_from_file=True, 
+                                         submit_from_dir = out_root_dir) 
 
             except Exception as err:
                 print("#####################################################################################")
