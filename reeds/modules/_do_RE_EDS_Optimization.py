@@ -58,22 +58,27 @@ def do_optimization(out_root_dir: str, in_simSystem: fM.System, optimization_nam
                 raise IOError("could not find initial IMD with path: \n\t" + last_data_folder + "/next.imd")
         else:
             imd_path_last = in_template_imd
+        imd_file = imd.Imd(imd_path_last)
 
         if (isinstance(simSystem.coordinates, Iterable)):
             new_coords = []
-            for coordinate_file_path in simSystem.coordinates:
-                new_file_path = bash.copy_file(coordinate_file_path,
+            # if single cnf file, make copies to match number of replicas
+            if len(simSystem.coordinates)==1:
+                svals = imd_file.REPLICA_EDS.RES
+                for i in range(len(svals)):
+                    new_file_path = bash.copy_file(simSystem.coordinates[0],
+                                               sopt_input + "/" + "REEDS_coordinate_replica_" + str(i+1) + ".cnf")
+                    new_coords.append(new_file_path)
+            else:
+                for coordinate_file_path in simSystem.coordinates:
+                    new_file_path = bash.copy_file(coordinate_file_path,
                                                sopt_input + "/" + os.path.basename(coordinate_file_path))
-                new_coords.append(new_file_path)
-            setattr(simSystem, "coordinates", new_coords)
+                    new_coords.append(new_file_path)
+            setattr(simSystem, "coordinates", new_coords)        
 
-        elif (isinstance(simSystem.coordinates, str)):
-            new_coord = bash.copy_file(simSystem.coordinates,
-                                       sopt_input + "/" + os.path.basename(simSystem.coordinates))
-            setattr(simSystem, "coordinates", new_coord)
         else:
             raise IOError(
-                "Could not copy system coordinates into input folder! please give them as str or List[str]. \n GOT: " + str(
+                "Could not copy system coordinates into input folder! please give them as List[str]. \n GOT: " + str(
                     simSystem.coordinates))
 
         last_data_folder = sopt_input
@@ -87,7 +92,6 @@ def do_optimization(out_root_dir: str, in_simSystem: fM.System, optimization_nam
         if (verbose): print("\tResidues: ", residues)
         if (verbose): print()
 
-        imd_file = imd.Imd(imd_path_last)
         # get number of s-vals from imd:
         num_svals = int(imd_file.REPLICA_EDS.NRES)
         num_states = int(imd_file.REPLICA_EDS.NUMSTATES)
