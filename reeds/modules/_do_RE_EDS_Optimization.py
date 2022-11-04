@@ -6,7 +6,7 @@ from collections import OrderedDict
 from typing import List, Iterable
 
 from pygromos.euler_submissions import FileManager as fM
-from pygromos.euler_submissions.Submission_Systems import _SubmissionSystem, LSF
+from pygromos.euler_submissions.Submission_Systems import _SubmissionSystem, LSF, SLURM
 from pygromos.files import imd
 from pygromos.files.coord import cnf as cnf_cls
 from pygromos.utils import bash
@@ -31,8 +31,8 @@ def do_optimization(out_root_dir: str, in_simSystem: fM.System, optimization_nam
                     lower_bound_dir: str = os.path.abspath("b_lowerBound/analysis/next"),
                     in_gromosXX_bin_dir: str = None, in_gromosPP_bin_dir: str = None,
                     in_ene_ana_lib_path: str = ene_ana_libs.ene_ana_lib_path,
-                    nmpi_per_replica: int = 1, submit: bool = True, duration_per_job: str = "24:00",
-                    queueing_system: _SubmissionSystem = LSF,
+                    nmpi_per_replica: int = 1, submit: bool = True, duration_per_job: str = "24:00:00",
+                    queueing_system: _SubmissionSystem = SLURM,
                     do_not_doubly_submit_to_queue: bool = True,
                     initialize_first_run: bool = True, reinitialize: bool = False, randomize: bool=False, noncontinous: bool = False,
                     memory: int = None,
@@ -146,6 +146,7 @@ def do_optimization(out_root_dir: str, in_simSystem: fM.System, optimization_nam
     iteration_sopt_job = None
     add_replicas_mode = sOpt_add_replicas
     cur_svals = num_svals
+    
     ## Prepare final analysis:
     ana_out_dir = out_root_dir + "/analysis"
     job_name = in_simSystem.name + "_final_" + optimization_name
@@ -156,11 +157,16 @@ def do_optimization(out_root_dir: str, in_simSystem: fM.System, optimization_nam
         "optimization_name": optimization_name,
         "out_dir": ana_out_dir
     })
+    
     in_final_analysis_script_path = write_job_script(
         out_script_path=out_root_dir + "/job_final_analysis.py",
         target_function=RE_EDS_optimization_final.do,
         variable_dict=analysis_vars)
+    
     bash.execute("chmod +x " + in_final_analysis_script_path)  # make executables
+    
+    os.mkdir(ana_out_dir)
+
     # generate each iteration folder && submission
     for iteration in range(1, iterations + 1):
         print("\n\nITERATION: " + str(iteration))
@@ -240,18 +246,18 @@ def do_optimization(out_root_dir: str, in_simSystem: fM.System, optimization_nam
         if (iteration > 1):
             try:  # JOB SUBMISSION
                 if (verbose): print("Final Analysis Script")
-
-                job_submission_system = queueing_system()
-                root_dir = os.getcwd()
-                os.chdir(os.path.dirname(ana_out_dir))
-                _ = job_submission_system.submit_to_queue(command=in_final_analysis_script_path,
-                                                                         jobName=job_name + "_opt" + str(iteration),
-                                                                         outLog=ana_out_dir + "/" + job_name + ".out",
-                                                                         errLog=ana_out_dir + "/" + job_name + ".err",
-                                                                         maxStorage=5000, queue_after_jobID=job_id,
-                                                                         nmpi=1,
-                                                                         verbose=verbose, sumbit_from_file=False)
-                os.chdir(root_dir)
+                
+                qsys = queueing_system() # inittialize object
+                
+                _ = qsys.submit_to_queue(command=in_final_analysis_script_path,
+                                         jobName=job_name + "_opt" + str(iteration),
+                                         outLog=ana_out_dir + "/" + job_name + ".out",
+                                         errLog=ana_out_dir + "/" + job_name + ".err",
+                                         maxStorage=5000, queue_after_jobID=job_id,
+                                         nmpi=1,
+                                         verbose=verbose, 
+                                         sumbit_from_file=True, 
+                                         submit_from_dir = out_root_dir) 
 
             except Exception as err:
                 print("#####################################################################################")

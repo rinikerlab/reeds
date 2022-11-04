@@ -29,7 +29,7 @@ import sys
 import traceback
 
 import reeds.function_libs.pipeline.module_functions
-from pygromos.euler_submissions import gen_Euler_LSF_jobarray, FileManager as fM
+from pygromos.euler_submissions import gen_Euler_LSF_jobarray, gen_Euler_slurm_jobarray ,FileManager as fM
 from pygromos.files.coord.cnf import Cnf 
 from pygromos.utils import bash
 from reeds.data import ene_ana_libs
@@ -45,7 +45,7 @@ def do(out_root_dir: str,
        submit: bool = True, 
        verbose: bool = True,
        memory: int = None, 
-       job_duration: str = "4:00", 
+       job_duration: str = "4:00:00", 
        nmpi_per_replica:int = 1) -> int:
     """      Generate Optimized structures with EDS
 
@@ -121,16 +121,16 @@ def do(out_root_dir: str,
         setattr(system, "coordinates", cnf_array)
 
         # GENERATE array scripts
-        if (verbose): print("generating LSF-Bashscripts")
+        if (verbose): print("Generating job submissions scripts")
 
         ## build: worker_scripts-script - Old... but works :)
-        worker_script = gen_Euler_LSF_jobarray.build_worker_script_multImds(
+        worker_script = gen_Euler_slurm_jobarray.build_worker_script_multImds(
             out_script_path=input_dir + "/worker_scripts.sh", out_dir=sim_dir,
             job_name=system.name + "_work", in_system=system,
             in_imd_prefix=imd_template_path, cores=nmpi_per_replica, gromosXX_bin=in_gromosXX_bin_dir)
 
         ## build: sopt_job array_schedule script - Old... but works :)
-        job_array_script = gen_Euler_LSF_jobarray.build_jobarray(script_out_path=out_root_dir + "/job_array.sh",
+        job_array_script = gen_Euler_slurm_jobarray.build_jobarray(script_out_path=out_root_dir + "/job_array.sh",
                                                                  output_dir=sim_dir, duration=job_duration,
                                                                  run_script=worker_script,
                                                                  array_length=states_num,

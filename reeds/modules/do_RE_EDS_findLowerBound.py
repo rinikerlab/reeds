@@ -24,7 +24,7 @@ import sys
 import traceback
 
 import reeds.function_libs.pipeline.module_functions
-from pygromos.euler_submissions import gen_Euler_LSF_jobarray, FileManager as fM
+from pygromos.euler_submissions import gen_Euler_LSF_jobarray, gen_Euler_slurm_jobarray, FileManager as fM
 from pygromos.files import coord
 from pygromos.utils import bash
 from reeds.data import ene_ana_libs
@@ -40,7 +40,7 @@ def do(out_root_dir: str, in_simSystem: fM.System, undersampling_occurrence_frac
        gromosXX_bin: str = None, gromosPP_bin: str = None,
        ene_ana_lib: str = ene_ana_libs.ene_ana_lib_path,
        submit: bool = True, s_values = None, randomize_seed: bool = False,
-       simulation_steps: int = 100000, job_duration: str = "4:00", memory: int = None, nmpi_per_replica: int = 4,
+       simulation_steps: int = 100000, job_duration: str = "24:00:00", memory: int = None, nmpi_per_replica: int = 4,
        verbose: bool = True) -> int:
     """ Find lower S-bound for EDS System
          - Description:\n
@@ -134,10 +134,10 @@ int
         setattr(system, "coord_seeds", cnf_array)
 
         # GENERATE array scripts
-        if (verbose): print("generating LSF-Bashscripts")
+        if (verbose): print("generating job array scripts")
 
         # build: worker_scripts-script
-        worker_script = gen_Euler_LSF_jobarray.build_worker_script_multImds(
+        worker_script = gen_Euler_slurm_jobarray.build_worker_script_multImds(
             out_script_path=input_dir + "/worker_scripts.sh", gromosXX_bin=gromosXX_bin,
             out_dir=sim_dir, job_name=system.name + "_work", in_system=system,
             in_imd_prefix=imd_template_path, cores=nmpi_per_replica)
@@ -158,7 +158,7 @@ int
                                                                                                  variable_dict=analysis_vars)
 
         # build: sopt_job array_schedule script
-        job_array_script = gen_Euler_LSF_jobarray.build_jobarray(script_out_path=out_root_dir + "/job_array.sh",
+        job_array_script = gen_Euler_slurm_jobarray.build_jobarray(script_out_path=out_root_dir + "/job_array.sh",
                                                                  output_dir=sim_dir, run_script=worker_script,
                                                                  array_length=len(s_values), array_name=system.name,
                                                                  cpu_per_job=nmpi_per_replica,
