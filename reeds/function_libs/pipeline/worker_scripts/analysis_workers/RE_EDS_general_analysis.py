@@ -27,7 +27,7 @@ template_control_dict = OrderedDict({  # this dictionary is controlling the post
     "concat": {"do": True,
                "sub": {
                    "cp_cnf": True,
-                   "cat_trc": False,
+                   "cat_trc": True,
                    "cat_tre": False,
                    "ene_ana": True,
                    "convert_trcs": False,
@@ -311,7 +311,8 @@ def do_Reeds_analysis(in_folder: str, out_folder: str, gromos_path: str,
                                                                 n_processes=n_processors, gromosPP_bin_dir=gromos_path,
                                                                 verbose=False,
                                                                 additional_properties=additional_properties,
-                                                                boundary_conditions=boundary_conditions)
+                                                                boundary_conditions=boundary_conditions, 
+                                                                s1_only=True)
         if (verbose): print("Done\n")
 
     # intermezzo generating plots_folder
