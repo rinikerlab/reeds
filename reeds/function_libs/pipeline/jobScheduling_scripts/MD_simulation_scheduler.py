@@ -107,9 +107,9 @@ def do(in_simSystem: fM.System, in_imd_path: str,
         check_path_dependencies_paths = [slave_script, in_simSystem.top.top_path, out_dir_path,
                                          programm_path, ]  # Coord file is used by repex in_imd_path prepared_im
         ##variable paths
-        if (not isinstance(in_simSystem.top.pertubation_path,
-                           type(None)) and not in_simSystem.top.pertubation_path == "None"):
-            check_path_dependencies_paths.append(in_simSystem.top.pertubation_path)
+        if (not isinstance(in_simSystem.top.perturbation_path,
+                           type(None)) and not in_simSystem.top.perturbation_path == "None"):
+            check_path_dependencies_paths.append(in_simSystem.top.perturbation_path)
         if (not isinstance(in_simSystem.top.disres_path, type(None)) and not in_simSystem.top.disres_path == "None"):
             check_path_dependencies_paths.append(in_simSystem.top.disres_path)
         if (not isinstance(work_dir, type(None)) and work_dir != "None"):
@@ -169,7 +169,7 @@ def do(in_simSystem: fM.System, in_imd_path: str,
                 # formulate commands
                 md_script_command = prefix_command + " && python " + slave_script + " -imd " + tmp_in_imd + " -top " + in_simSystem.top.top_path + " -disres " + str(
                     in_simSystem.top.disres_path) + " -perttop " + str(
-                    in_simSystem.top.pertubation_path) + " -coord " + in_simSystem.coordinates + " -nmpi " + str(
+                    in_simSystem.top.perturbation_path) + " -coord " + in_simSystem.coordinates + " -nmpi " + str(
                     nmpi) + " -nomp " + str(nomp) \
                                     + " -bin " + programm_path + " -outdir " + tmp_outdir + " -workdir " + str(
                     work_dir) + add_options

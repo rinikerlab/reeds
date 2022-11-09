@@ -130,11 +130,11 @@ int
         # accounting for the different types of restraint used:
         if(not simSystem.top.disres_path is None):
                 check_path_dependencies_paths = [slave_script, simSystem.top.top_path, simSystem.top.disres_path,
-                                         simSystem.top.pertubation_path,
+                                         simSystem.top.perturbation_path,
                                          out_dir_path, ]  # Coord file is used by repex in_imd_path prepared_imd
         else:
                 check_path_dependencies_paths = [slave_script, simSystem.top.top_path, simSystem.top.posres_path, simSystem.top.refpos_path,
-                                         simSystem.top.pertubation_path,
+                                         simSystem.top.perturbation_path,
                                          out_dir_path, ]  # Coord file is used by repex in_imd_path prepared_imd
 
         # optional paths
@@ -321,7 +321,7 @@ if __name__ == "__main__":
         additional_argparse_argument(name='in_coord_path', type=str, required=True, desc="input coordinate .cn file."),
         additional_argparse_argument(name='in_top_path', type=str, required=True, desc="input topology .top file."),
         additional_argparse_argument(name='in_perttop_path', type=str, required=True,
-                                     desc="input pertubation topology .ptp file."),
+                                     desc="input perturbation topology .ptp file."),
         additional_argparse_argument(name='in_disres_path', type=str, required=True,
                                      desc="input distance restraint .dat file.")
     ]
@@ -340,7 +340,7 @@ if __name__ == "__main__":
     in_disres_path = args.disres
     in_perttopo_path = args.perttop
 
-    top = fM.Topology(top_path=in_topo_path, disres_path=in_disres_path, pertubation_path=in_perttopo_path)
+    top = fM.Topology(top_path=in_topo_path, disres_path=in_disres_path, perturbation_path=in_perttopo_path)
     system = Simulation_System.System(top=top, coordinates=in_coord_path, name=in_system_name)
 
     # do everything in here :)

@@ -223,6 +223,6 @@ if __name__ == "__main__":
     print(spacer + "\t\tRE-EDS ENERGY OFFSET ESTIMATION \n" + spacer + "\n")
     requiers_gromos_files = [("in_top_path", "input topology .top file."),
                              ("in_coord_path", "input coordinate .cn file."),
-                             ("in_perttop_path", "input pertubation topology .ptp file."),
+                             ("in_perttop_path", "input perturbation topology .ptp file."),
                              ("in_disres_path", "input distance restraint .dat file.")]
     execute_module_via_bash(__doc__, do, requiers_gromos_files)
