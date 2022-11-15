@@ -70,7 +70,8 @@ template_control_dict = OrderedDict({  # this dictionary is controlling the post
                                  "eoff_to_sopt": False,
                                  "write_eoffRB": False,
                                  "write_eoffEstm": False,
-                                 "write_s": True
+                                 "write_s": True,
+                                 "ssm_next_cnf": False
                              },
                              }
 })
@@ -242,7 +243,6 @@ def do_Reeds_analysis(in_folder: str, out_folder: str, gromos_path: str,
     """
 
     eoff_statistic = {}
-    svals = {}
     dFs = {}
 
     print("Starting RE-EDS analysis:")
@@ -412,7 +412,6 @@ def do_Reeds_analysis(in_folder: str, out_folder: str, gromos_path: str,
                                                                                                     temperature_property="solvtemp2")
 
             if (verbose): print("DONE\n")
-        # del energy_trajectories -- remove if memory without this is fine
 
     if (control_dict["phys_sampling"]["do"] and not state_physical_occurrence_potential_threshold is None):
         # parsing_ene_traj_csvs 
@@ -490,17 +489,17 @@ def do_Reeds_analysis(in_folder: str, out_folder: str, gromos_path: str,
         transitions = exchange_data.get_replica_traces() 
 
         if (sub_control["run_RTO"]):
-            svals = parameter_optimization.optimize_s(in_file=in_file, 
-                                                      out_dir=out_dir,
-                                                      title_prefix="s_opt", 
-                                                      in_imd=in_imd,
-                                                      add_s_vals=add_s_vals, 
-                                                      trial_range=s_opt_trial_range,
-                                                      state_weights=state_weights,
-                                                      run_NLRTO=sub_control["run_NLRTO"], 
-                                                      run_NGRTO=sub_control["run_NGRTO"],
-                                                      verbose=verbose
-                                                     )
+            new_svals = parameter_optimization.optimize_s(in_file=in_file, 
+                                                          out_dir=out_dir,
+                                                          title_prefix="s_opt", 
+                                                          in_imd=in_imd,
+                                                          add_s_vals=add_s_vals, 
+                                                          trial_range=s_opt_trial_range,
+                                                          state_weights=state_weights,
+                                                          run_NLRTO=sub_control["run_NLRTO"], 
+                                                          run_NGRTO=sub_control["run_NGRTO"],
+                                                          verbose=verbose
+                                                         )
 
         if (sub_control["visualize_transitions"]):
             print("\t\tvisualize transitions")
@@ -548,86 +547,44 @@ def do_Reeds_analysis(in_folder: str, out_folder: str, gromos_path: str,
         next_dir = bash.make_folder(out_folder + "/next", "-p")
         next_imd = next_dir + "/next.imd"
         
+        if (sub_control["eoff_to_sopt"]):
+            new_svals = sdist.generate_preoptimized_sdist(s_values, num_states, exchange_freq, s_values[sampling_results['undersamplingThreshold']+2])
+
         # add new cnf s for the new S-distribution
         print("Place the proper conformations (.cnf) files in analysis/next")
-        if (sub_control["eoff_to_sopt"]):  # if the s_dist should be converted from eoff to sopt
-            svals = sdist.generate_preoptimized_sdist(svals[0], num_states, exchange_freq, svals[1][sampling_results['undersamplingThreshold']+2])
 
         input_cnfs = os.path.dirname(in_imd) + "/coord"
-           
-        # Put the proper cnfs in place        
-        if(len(svals)==0):
-            sopt_type_switch = 0
-        else:    
-            sopt_type_switch = 2 if(svals[1] is None or len(svals[1]) == 0 ) else 1
-        print("Switch (algorithm for conformations): ", sopt_type_switch)
-        if(len(svals)==0):
-            svals = {0:s_values}
-            sopt_type_switch = 0
-            cnfs = list(sorted(glob.glob(concat_file_folder+"/*.cnf"), key=lambda x: int(x.split("_")[-1].split(".")[0])))
-            for i, cnf in enumerate(cnfs):
-                bash.copy_file(cnf, next_dir+"/"+title_prefix+"_"+str(i+1)+".cnf")
+        
+        # possible sets of conformations to provide for next simulation
 
+        sort_cnfs = lambda x: int(x.split("_")[-1].split(".")[0])
 
-        elif (sub_control["eoff_to_sopt"]):
-            if (not os.path.isdir(optimized_eds_state_folder)):
-                raise IOError("Could not find optimized state output dir: " + optimized_eds_state_folder)
-            
-            opt_state_cnfs = sorted(glob.glob(optimized_eds_state_folder+'/*.cnf'), 
-                                    key=lambda x: int(x.split("_")[-1].replace(".cnf", "")))
-            for i in range(1, len(svals[sopt_type_switch])+1):
-                bash.copy_file(opt_state_cnfs[(i-1)%num_states], next_dir + '/sopt_run_' + str(i) + '.cnf')
+        final_cnfs = sorted(glob.glob(concat_file_folder+"/*.cnf"), key=sort_cnfs)
+        opt_state_cnfs = sorted(glob.glob(optimized_eds_state_folder+'/*.cnf'), key=sort_cnfs)
 
-        elif (len(list(set(svals[0]))) > len(list(set(svals[sopt_type_switch])))):
-            if verbose: print("reduce coordinate Files:")
-            
+        #
+        # Put the proper cnfs in place
+        # 
+
+        if (sub_control["eoff_to_sopt"]):
             if (not os.path.isdir(optimized_eds_state_folder)):
                 raise IOError("Could not find optimized state output dir: " + optimized_eds_state_folder)
 
-            file_management.reduce_cnf_eoff(in_num_states=num_states, in_opt_struct_cnf_dir=optimized_eds_state_folder,
-                                            in_current_sim_cnf_dir=input_cnfs,
-                                            in_old_svals=s_values, in_new_svals=svals[sopt_type_switch],
-                                            out_next_cnfs_dir=next_dir)
-        elif (len(svals[0]) < len(svals[sopt_type_switch]) and sopt_type_switch==2):
-            if verbose: print("copy coordinates for GRTO")
-            cnfs = list(sorted(glob.glob(concat_file_folder+"/*.cnf"), key=lambda x: int(x.split("_")[-1].split(".")[0])))
-            for i, cnf in enumerate(cnfs):
-                bash.copy_file(cnf, next_dir+"/"+title_prefix+"_"+str(i+1)+".cnf")
-
-            for addI in range(1, add_s_vals+1):
-                bash.copy_file(cnfs[-1], next_dir+"/"+title_prefix+"_"+str(len(cnfs)+addI)+".cnf")
-
-
-        elif (len(svals[0]) < len(svals[sopt_type_switch])  and sopt_type_switch==1):
-            if verbose: print("reduce coordinate Files:")
+        if len(new_svals) == len(s_values) or len(new_svals) < len(s_values):
+            if sub_control["ssm_next_cnf"] or sub_control["eoff_to_sopt"]:
+                for i in range(len(new_svals)):
+                    bash.copy_file(opt_state_cnfs[(i)%num_states], f'{next_dir}/ssm_next_{i+1}.cnf')
+            else:
+                # call code to place final cnfs
+                for cnf in range(final_cnfs):
+                    bash.copy_file(cnf, f'{next_dir}/next_{i+1}.cnf')
+       
+        # When we have more replicas, we need to add coordinates (takes cnf from closest neighbour)
+        elif len(s_values) < len(new_svals):
             file_management.add_cnf_sopt_LRTOlike(in_dir=concat_file_folder, out_dir=next_dir, in_old_svals=s_values,
                                                   cnf_prefix=title_prefix,
-                                                  in_new_svals=svals[sopt_type_switch], replica_add_scheme=adding_new_sReplicas_Scheme,
+                                                  in_new_svals=new_svals, replica_add_scheme=adding_new_sReplicas_Scheme,
                                                   verbose=verbose)
-
-        else:
-            if verbose: print("same ammount of s_vals -> simply copying output:")
-            
-            if ssm_next_cnfs: # This is a quick fix for doing reeds both with and without ssm, should be done differently
-                if (not os.path.isdir(optimized_eds_state_folder)):
-                    warnings.warn("Could not find optimized state output dir: " + optimized_eds_state_folder)
-                    print ('Copying the final conformations for next simulation')
-                    cnfs = list(sorted(glob.glob(concat_file_folder+"/*.cnf"), key=lambda x: int(x.split("_")[-1].split(".")[0])))
-                    for i, cnf in enumerate(cnfs):
-                        bash.copy_file(cnf, next_dir+"/"+title_prefix+"_"+str(i+1)+".cnf")
-                elif (control_dict["sopt"]["sub"]["run_RTO"] or control_dict["eoffset"]["eoffset_rebalancing"]):
-                    print ('Copying the SSM conformations for next simulation')
-
-                    opt_state_cnfs = sorted(glob.glob(optimized_eds_state_folder+'/*.cnf'),
-                                            key=lambda x: int(x.split("_")[-1].replace(".cnf", "")))
-                    for i in range(1, len(svals[sopt_type_switch])+1):
-                        bash.copy_file(opt_state_cnfs[(i-1)%num_states], next_dir+"/"+title_prefix+"_"+str(i)+".cnf")
-            
-            else:
-                print ('Copying the final conformations for next simulation')
-                cnfs = list(sorted(glob.glob(concat_file_folder+"/*.cnf"), key=lambda x: int(x.split("_")[-1].split(".")[0])))
-                for i, cnf in enumerate(cnfs):
-                    bash.copy_file(cnf, next_dir+"/"+title_prefix+"_"+str(i+1)+".cnf")
 
         # write next_imd.
         print("Writing out the next .imd file ")
@@ -645,7 +602,7 @@ def do_Reeds_analysis(in_folder: str, out_folder: str, gromos_path: str,
 
         ##New S-Values?=
         if (sub_control["write_s"] and control_dict["sopt"]["sub"]["run_RTO"]) or sub_control["eoff_to_sopt"]:
-            imd_file.edit_REEDS(SVALS=svals[sopt_type_switch])
+            imd_file.edit_REEDS(SVALS=new_svals)
         elif (sub_control["write_s"] and not control_dict["sopt"]["sub"]["run_RTO"]):
             warnings.warn("Could not set s-values to imd, as not calculated in this run!")
 
