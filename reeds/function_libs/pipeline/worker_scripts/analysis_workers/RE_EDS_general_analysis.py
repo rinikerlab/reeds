@@ -35,7 +35,7 @@ template_control_dict = OrderedDict({  # this dictionary is controlling the post
                },
     "plot_property_timeseries": {"do": True,
                                  "sub": {
-                                    "pot_ene_by_state":True,
+                                    "pot_ene_by_state":False,
                                     "pot_ene_by_replica":False,
                                     "pot_ene_timeseries": False,
                                     "pot_ene_grid_timeseries": True,
