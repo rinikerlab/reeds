@@ -139,7 +139,7 @@ def generate_preoptimized_sdist(eoff_s_values, num_states, exchange_freq, unders
     if (len(lower) == 0):
         print ('\n\nWarning: There are no s-values in the lower part of the distribution')
         print ('    this may be because the undersamping detection failed, or that somehow')
-        print ('    the particular system was very low exchanges in the undersampling region.')
+        print ('    the particular system has very low exchanges in the undersampling region.')
 
     # 2: Now that the extrema have been defined, we can build our new distribution.
     # This distribution will keep exactly the same values in the upper and lower s-ranges
