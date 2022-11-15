@@ -210,8 +210,11 @@ def do(out_analysis_dir: str, system_name: str,
 
     # Coordinates:
     cnfs = glob.glob(data_dir + "/*.cnf")
+
+    # Place conformations for the next step (those will typically be overwritten later on):
     if(len(s_values) != len(cnfs)):
-        fM.adapt_cnfs_to_new_sDistribution(in_old_svals=s_values[:u_idx], in_new_svals=new_sdist, in_cnf_files=cnfs[:u_idx], out_cnf_dir=out_analysis_next_dir, cnf_prefix=system_name+"_lower_bound")
+        for i in range(len(new_sdist)):
+            bash.copy_file(cnfs[(i)%len(new_sdist)], f'{out_analysis_next_dir}/next_{i+1}.cnf')
 
     # compress out_trc/out_tre Files & simulation dir
     trx_files = glob.glob(data_dir + "/*.tr?")
