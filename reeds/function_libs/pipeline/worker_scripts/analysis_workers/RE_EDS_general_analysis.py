@@ -553,8 +553,6 @@ def do_Reeds_analysis(in_folder: str, out_folder: str, gromos_path: str,
         # add new cnf s for the new S-distribution
         print("Place the proper conformations (.cnf) files in analysis/next")
 
-        input_cnfs = os.path.dirname(in_imd) + "/coord"
-        
         # possible sets of conformations to provide for next simulation
 
         sort_cnfs = lambda x: int(x.split("_")[-1].split(".")[0])
@@ -576,7 +574,7 @@ def do_Reeds_analysis(in_folder: str, out_folder: str, gromos_path: str,
                     bash.copy_file(opt_state_cnfs[(i)%num_states], f'{next_dir}/ssm_next_{i+1}.cnf')
             else:
                 # call code to place final cnfs
-                for cnf in final_cnfs:
+                for i, cnf in enumerate(final_cnfs):
                     bash.copy_file(cnf, f'{next_dir}/next_{i+1}.cnf')
        
         # When we have more replicas, we need to add coordinates (takes cnf from closest neighbour)
