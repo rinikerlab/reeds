@@ -422,7 +422,7 @@ def do_Reeds_analysis(in_folder: str, out_folder: str, gromos_path: str,
         out_dir = bash.make_folder(out_folder + "/state_sampling")
 
         (sampling_results, out_dir) = sampling_ana.sampling_analysis(out_path=out_dir,
-                                                                     ene_traj_csvs=energy_trajectories,
+                                                                     ene_trajs=energy_trajectories,
                                                                      eoffs=Eoff,
                                                                      s_values=s_values,
                                                                      state_potential_treshold=state_physical_occurrence_potential_threshold)

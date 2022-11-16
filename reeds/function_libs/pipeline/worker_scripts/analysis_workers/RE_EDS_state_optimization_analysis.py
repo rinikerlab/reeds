@@ -165,8 +165,11 @@ def do(in_simulation_dir: str, in_topology_path: str, in_imd_path: str,
     ## write pot_treshholds to next
     physical_state_occurrence_treshold = sampling.get_all_physical_occurence_potential_threshold_distribution_based(ene_trajs, _vacuum_simulation=vacuum_simulation)
 
-    sampling.sampling_analysis(out_path=out_analysis_plot_dir, ene_traj_csvs=ene_trajs, s_values=s_values,
-                                state_potential_treshold=physical_state_occurrence_treshold, eoffs=eoffs)
+    sampling.sampling_analysis(out_path=out_analysis_plot_dir, 
+                               ene_trajs=ene_trajs, 
+                               s_values=s_values,
+                               state_potential_treshold=physical_state_occurrence_treshold, 
+                               eoffs=eoffs)
 
     # Plot of all of the potential energy distributions in a single plot:
     reeds.function_libs.visualization.pot_energy_plots.plot_optimized_states_potential_energies(outfile=out_analysis_plot_dir + "/optimized_states_potential_energies.png",

@@ -8,7 +8,7 @@ import pandas as pd
 import reeds.function_libs.visualization.sampling_plots
 
 
-def undersampling_occurence_potential_threshold_densityClustering(ene_traj_csvs: List[pd.DataFrame],
+def undersampling_occurence_potential_threshold_densityClustering(ene_trajs: List[pd.DataFrame],
                                                                   max_distance_kJ: float = 300,
                                                                   sampling_fraction_treshold: float = 0.9)->List[float]:
     """
@@ -19,7 +19,7 @@ def undersampling_occurence_potential_threshold_densityClustering(ene_traj_csvs:
 
     Parameters
     ----------
-    ene_traj_csvs : List[pd.Dataframe]
+    ene_trajs : List[pd.Dataframe]
         a list of pandas dataframes containing the energy data of each state eX
     max_distance_kJ : float, optional
         the maximum distance between two points for dbscan clustering (eps) (default:300kJ).
@@ -38,16 +38,16 @@ def undersampling_occurence_potential_threshold_densityClustering(ene_traj_csvs:
 
     pot_tresh_pre_rep = []
 
-    state_names = [i for i in ene_traj_csvs[0].columns if (i.startswith("e") and not i == "eR")]
-    num_s_values = len(ene_traj_csvs)
+    state_names = [i for i in ene_trajs[0].columns if (i.startswith("e") and not i == "eR")]
+    num_s_values = len(ene_trajs)
     num_states = len(state_names)
 
-    total_step_num = ene_traj_csvs[0].shape[0]
+    total_step_num = ene_trajs[0].shape[0]
     threshold_fulfilled = [True for j in range(num_s_values)]
 
     v_pot_sampling = [[0 for y in state_names] for x in range(num_s_values)]
 
-    for i, replica_data in enumerate(ene_traj_csvs):
+    for i, replica_data in enumerate(ene_trajs):
         # print("")
         # print("replica " + str(i + 1) + ":")
         pot_tresh = []
@@ -74,7 +74,7 @@ def undersampling_occurence_potential_threshold_densityClustering(ene_traj_csvs:
     return pot_thresh_per_state
 
 
-def undersampling_occurence_potential_threshold_distribution_based(ene_traj_csvs: List[pd.DataFrame],
+def undersampling_occurence_potential_threshold_distribution_based(ene_trajs: List[pd.DataFrame],
                                                                    sampling_fraction_treshold: float = 0.9,
                                                                     verbose:bool = False)->List[float]:
     """undersampling_occurence_potential_threshold_distribution_based
@@ -84,7 +84,7 @@ def undersampling_occurence_potential_threshold_distribution_based(ene_traj_csvs
 
     Parameters
     ----------
-    ene_traj_csvs : List[pd.Dataframe]
+    ene_trajs : List[pd.Dataframe]
         a list of pandas dataframes containing the energy data of each state eX
     sampling_fraction_treshold : float, optional
         the sampling threshold for detecting undersampling (default: 0.9).
@@ -95,15 +95,15 @@ def undersampling_occurence_potential_threshold_distribution_based(ene_traj_csvs
         list of individual identified potential thresholds
     """
     pot_tresh_pre_rep = []
-    state_names = [i for i in ene_traj_csvs[0].columns if (i.startswith("e") and not i == "eR")]
+    state_names = [i for i in ene_trajs[0].columns if (i.startswith("e") and not i == "eR")]
     num_states = len(state_names)
 
     #remove first 10% as equilibration
-    total_step_num = ene_traj_csvs[0].shape[0] - 0.1*ene_traj_csvs[0].shape[0]
-    std = [6*np.std(ene_traj_csvs[-1][state][int(len(ene_traj_csvs[-1][state])/10):len(ene_traj_csvs[-1][state])]) for state in state_names]
+    total_step_num = ene_trajs[0].shape[0] - 0.1*ene_trajs[0].shape[0]
+    std = [6*np.std(ene_trajs[-1][state][int(len(ene_trajs[-1][state])/10):len(ene_trajs[-1][state])]) for state in state_names]
 
-    #mean_potential = [np.mean(ene_traj_csvs[-1][state]) for state in state_names]
-    for i, replica_data in enumerate(ene_traj_csvs):
+    #mean_potential = [np.mean(ene_trajs[-1][state]) for state in state_names]
+    for i, replica_data in enumerate(ene_trajs):
         if(verbose): print("replica " + str(i + 1) + ":")
         mean_potential = [np.min(replica_data[state][int(len(replica_data[state])/10):len(replica_data[state])]) for state in state_names]
         thresholds = [m+s for m, s in zip(mean_potential, std)]
@@ -137,7 +137,7 @@ def undersampling_occurence_potential_threshold_distribution_based(ene_traj_csvs
         pot_thresh_per_state = [0 for x in range(num_states)]
     return pot_thresh_per_state
 
-def physical_occurence_potential_threshold_distribution_based(ene_traj_csv: pd.DataFrame, equilibrate_dominationState:float=0.01, _vacuum_simulation:bool=False,  verbose:bool=False)->List[float]:
+def physical_occurence_potential_threshold_distribution_based(ene_trajs: pd.DataFrame, equilibrate_dominationState:float=0.01, _vacuum_simulation:bool=False,  verbose:bool=False)->List[float]:
 
     """physical_occurence_potential_threshold_distribution_based
     This function is estimating the pot_tresh for all states by testing if around the minimal energy 90% of the data is located in a threshold of  max_distance_kJ.
@@ -146,7 +146,7 @@ def physical_occurence_potential_threshold_distribution_based(ene_traj_csv: pd.D
 
     Parameters
     ----------
-    ene_traj_csv : pd.Dataframe
+    ene_trajs : pd.Dataframe
         a pandas dataframe containing the energy data of each state eX
     equilibrate_dominationState : int, optional
         equilibrate the domination state for this fraction
@@ -160,9 +160,9 @@ def physical_occurence_potential_threshold_distribution_based(ene_traj_csv: pd.D
         list of individual identified potential thresholds
     """
 
-    state_names = [i for i in ene_traj_csv.columns if (i.startswith("e") and not i == "eR")]
-    total_step_num = ene_traj_csv.shape[0]
-    data =ene_traj_csv
+    state_names = [i for i in ene_trajs.columns if (i.startswith("e") and not i == "eR")]
+    total_step_num = ene_trajs.shape[0]
+    data = ene_trajs
 
     # iterate over states, identify all undersampling replicas, calc fraction
     pot_tresh = []
@@ -212,7 +212,7 @@ def get_all_physical_occurence_potential_threshold_distribution_based(ene_trajs:
         opt_pot_tresh.append(pot_tresh_state[key])
     return opt_pot_tresh
 
-def calculate_sampling_distributions(ene_traj_csvs: List[pd.DataFrame], eoffs: List[List[float]],
+def calculate_sampling_distributions(ene_trajs: List[pd.DataFrame], eoffs: List[List[float]],
                                      potential_treshold: List[float]) -> Dict[int, Dict[str, Dict[int, float]]]:
     """calculate_sampling_distributions
     This function is using the dominating state sampling and occurrence state sampling definition, to calculate
@@ -221,7 +221,7 @@ def calculate_sampling_distributions(ene_traj_csvs: List[pd.DataFrame], eoffs: L
 
     Parameters
     ----------
-    ene_traj_csvs: List[pd.Dataframe]
+    ene_trajs: List[pd.Dataframe]
         a list of pandas dataframes containing the energy data of each state eX
     potential_treshold: List[float]
         a list of potential thresholds for undersampling
@@ -237,9 +237,9 @@ def calculate_sampling_distributions(ene_traj_csvs: List[pd.DataFrame], eoffs: L
     """
 
     replica_sampling_dist = {}
-    num_states = sum([1 for i in ene_traj_csvs[0].columns if (i.startswith("e") and not i == "eR")])
+    num_states = sum([1 for i in ene_trajs[0].columns if (i.startswith("e") and not i == "eR")])
     states = ["e" + str(s) for s in range(1, 1 + num_states)]
-    for ind, replica in enumerate(ene_traj_csvs):
+    for ind, replica in enumerate(ene_trajs):
         total_number_steps = replica.shape[0]
 
         # Domination sampling
@@ -269,7 +269,7 @@ def calculate_sampling_distributions(ene_traj_csvs: List[pd.DataFrame], eoffs: L
 
     return replica_sampling_dist
 
-def sampling_analysis(ene_traj_csvs: List[pd.DataFrame],
+def sampling_analysis(ene_trajs: List[pd.DataFrame],
                       state_potential_treshold: List[float], eoffs: List[List[float]],
                       s_values: List[float],
                       out_path: str = None,
@@ -283,7 +283,7 @@ def sampling_analysis(ene_traj_csvs: List[pd.DataFrame],
     ----------
     out_path :  str
         path out for the plotfiles
-    ene_traj_csvs : List[pd.DataFrame]
+    ene_trajs : List[pd.DataFrame]
         contains the energy data
     s_values :  List[float]
         list of s_values
@@ -318,9 +318,9 @@ def sampling_analysis(ene_traj_csvs: List[pd.DataFrame],
     # show_presence of undersampling
     if (verbose): print("\n\n Sampling Timeseries\n\n")
     if(isinstance(eoffs[0], Number)): #only 1D eoff vector given!
-        eoffs = [eoffs for x in range(len(ene_traj_csvs))]
+        eoffs = [eoffs for x in range(len(ene_trajs))]
 
-    for ind, replica in enumerate(ene_traj_csvs):
+    for ind, replica in enumerate(ene_trajs):
         if (verbose): print("\t replica " + replica.s)
 
         minV_state_sampling = replica[select_states].idxmin(axis=1).replace("e", "", regex=True)
@@ -350,7 +350,7 @@ def sampling_analysis(ene_traj_csvs: List[pd.DataFrame],
 
     # SamplingMatrix by kays
     if (verbose): print("\n\n Calculate Sampling Distributions\n\n")
-    replica_sampling_distributions = calculate_sampling_distributions(ene_traj_csvs=ene_traj_csvs, eoffs=eoffs,
+    replica_sampling_distributions = calculate_sampling_distributions(ene_trajs=ene_trajs, eoffs=eoffs,
                                                                       potential_treshold=state_potential_treshold)
 
     if (_visualize):
@@ -387,7 +387,7 @@ def detect_undersampling(ene_trajs: List[pd.DataFrame],
     ----------
     out_path :  str
         path out for the plotfiles
-    ene_traj_csvs : List[pd.DataFrame]
+    ene_trajs : List[pd.DataFrame]
         contains the energy data
     s_values :  List[float]
         list of s_values
@@ -413,7 +413,7 @@ def detect_undersampling(ene_trajs: List[pd.DataFrame],
     if (verbose): print("\n\n Potential Threshold\n\n")
 
     ##glob vars
-    sampling_stat, out_path = sampling_analysis(ene_traj_csvs=ene_trajs,
+    sampling_stat, out_path = sampling_analysis(ene_trajs=ene_trajs,
                                                 state_potential_treshold=state_potential_treshold,
                                                 s_values=s_values, eoffs=eoffs,
                                                 out_path=out_path,
