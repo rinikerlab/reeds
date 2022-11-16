@@ -107,8 +107,7 @@ def generate_preoptimized_sdist(eoff_s_values, num_states, exchange_freq, unders
     Returns
     ----------
     new_sval: List[List[float]] 
-        A list containing the list of new s_values (from the energy offset run)
-        to use for the 1st iteration of s-optmization.   
+        A list containing the list of new s_values to use for the 1st iteration of s-optmization.   
     """    
     # 1: Find the upper and lower s-values of the gap region from the exchange frequencies
 

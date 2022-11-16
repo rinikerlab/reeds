@@ -570,7 +570,7 @@ def do_Reeds_analysis(in_folder: str, out_folder: str, gromos_path: str,
             if (not os.path.isdir(optimized_eds_state_folder)):
                 raise IOError("Could not find optimized state output dir: " + optimized_eds_state_folder)
 
-        if len(new_svals) == len(s_values) or len(new_svals) < len(s_values):
+        if len(new_svals) == len(s_values) or len(new_svals) < len(s_values) or sub_control["eoff_to_sopt"]:
             if sub_control["ssm_next_cnf"] or sub_control["eoff_to_sopt"]:
                 for i in range(len(new_svals)):
                     bash.copy_file(opt_state_cnfs[(i)%num_states], f'{next_dir}/ssm_next_{i+1}.cnf')
@@ -620,4 +620,4 @@ def do_Reeds_analysis(in_folder: str, out_folder: str, gromos_path: str,
         file_management.compress_folder(in_paths=compress_list)
         if (verbose): print("Done\n")
 
-    return eoff_statistic, svals, dFs
+    return eoff_statistic, new_svals, dFs
