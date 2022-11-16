@@ -372,7 +372,7 @@ def sampling_analysis(ene_traj_csvs: List[pd.DataFrame],
 
 
 
-def detect_undersampling(ene_traj_csvs: List[pd.DataFrame],
+def detect_undersampling(ene_trajs: List[pd.DataFrame],
                          state_potential_treshold: List[float],
                          s_values: List[float], eoffs: List[List[float]],
                          out_path: str = None,
@@ -413,7 +413,7 @@ def detect_undersampling(ene_traj_csvs: List[pd.DataFrame],
     if (verbose): print("\n\n Potential Threshold\n\n")
 
     ##glob vars
-    sampling_stat, out_path = sampling_analysis(ene_traj_csvs=ene_traj_csvs,
+    sampling_stat, out_path = sampling_analysis(ene_traj_csvs=ene_trajs,
                                                 state_potential_treshold=state_potential_treshold,
                                                 s_values=s_values, eoffs=eoffs,
                                                 out_path=out_path,
@@ -422,7 +422,6 @@ def detect_undersampling(ene_traj_csvs: List[pd.DataFrame],
                                                 verbose = verbose, _usample_run=True)
 
     ##get undersampling id:
-    found_undersampling = False
     undersampling_idx = None
     replica_sampling_distributions = sampling_stat["samplingDistributions"]
     for i in replica_sampling_distributions:
@@ -430,11 +429,11 @@ def detect_undersampling(ene_traj_csvs: List[pd.DataFrame],
         undersampling_criterium = True if (all([occ >= undersampling_occurence_sampling_tresh for occ in replica_sampling_distributions[i]["occurence_state"].values()])) else False
         sampling_stat["samplingDistributions"][i].update({"undersampling":undersampling_criterium})
 
-        if (undersampling_criterium):
+        if undersampling_criterium:
             undersampling_idx = i
             break
 
-    if (not found_undersampling):
+    if undersampling_idx is None:
         warnings.warn("Could not find undersampling!")
 
     if (_visualize):

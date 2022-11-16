@@ -443,10 +443,13 @@ def do_Reeds_analysis(in_folder: str, out_folder: str, gromos_path: str,
             raise IOError("could not find needed energies (contains all ene ana .dats) folder in:\n " + out_folder)
         
         # plot if states are sampled and minimal state
-        (sampling_results, out_dir) = sampling_ana.detect_undersampling(out_path = out_dir, ene_traj_csvs = energy_trajectories,_visualize=sub_control["sampling_plot"], 
-                                                                            s_values = s_values, eoffs=Eoff, 
-                                                                            state_potential_treshold= state_undersampling_occurrence_potential_threshold, 
-                                                                            undersampling_occurence_sampling_tresh=undersampling_frac_thresh)
+        (sampling_results, out_dir) = sampling_ana.detect_undersampling(out_path = out_dir, 
+                                                                        ene_trajs = energy_trajectories,
+                                                                        _visualize=sub_control["sampling_plot"], 
+                                                                        s_values = s_values, eoffs=Eoff, 
+                                                                        state_potential_treshold= state_undersampling_occurrence_potential_threshold, 
+                                                                        undersampling_occurence_sampling_tresh=undersampling_frac_thresh)
+                                                                        
         if(sub_control["eoff_estimation"] and sub_control["eoffset_rebalancing"]):
             raise Exception("can not have eoff_estimation and eoff Rebalancing turned on at the same time!")
 
