@@ -274,7 +274,7 @@ def adapt_imd_template_eoff(system: fM.System, imd_out_path: str, in_template_im
     imd.edit_REEDS(EIR=0.0)
     imd.STEP.NSTLIM = 50
     imd_out_path = imd.write(imd_out_path)
-    if (verbose): print(imd.REPLICA_EDS)
+    #if (verbose): print(imd.REPLICA_EDS)
     return imd
 
 
