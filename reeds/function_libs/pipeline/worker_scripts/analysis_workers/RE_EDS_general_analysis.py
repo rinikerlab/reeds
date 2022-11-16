@@ -568,7 +568,7 @@ def do_Reeds_analysis(in_folder: str, out_folder: str, gromos_path: str,
             if (not os.path.isdir(optimized_eds_state_folder)):
                 raise IOError("Could not find optimized state output dir: " + optimized_eds_state_folder)
 
-        if len(new_svals) == len(s_values) or len(new_svals) < len(s_values) or sub_control["eoff_to_sopt"]:
+        if len(new_svals) <= len(s_values) or sub_control["eoff_to_sopt"]:
             if sub_control["ssm_next_cnf"] or sub_control["eoff_to_sopt"]:
                 for i in range(len(new_svals)):
                     bash.copy_file(opt_state_cnfs[(i)%num_states], f'{next_dir}/ssm_next_{i+1}.cnf')
@@ -580,7 +580,7 @@ def do_Reeds_analysis(in_folder: str, out_folder: str, gromos_path: str,
         # When we have more replicas, we need to add coordinates (takes cnf from closest neighbour)
         elif len(s_values) < len(new_svals):
             file_management.add_cnf_sopt_LRTOlike(in_dir=concat_file_folder, out_dir=next_dir, in_old_svals=s_values,
-                                                  cnf_prefix=title_prefix,
+                                                  cnf_prefix='next',
                                                   in_new_svals=new_svals, replica_add_scheme=adding_new_sReplicas_Scheme,
                                                   verbose=verbose)
 
