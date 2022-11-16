@@ -36,6 +36,7 @@ def do_optimization(out_root_dir: str, in_simSystem: fM.System, optimization_nam
                     do_not_doubly_submit_to_queue: bool = True,
                     initialize_first_run: bool = True, reinitialize: bool = False, randomize: bool=False, noncontinous: bool = False,
                     memory: int = None,
+                    ssm_next_cnf: bool = False,
                     verbose: bool = True):
 
     try:
@@ -208,7 +209,8 @@ def do_optimization(out_root_dir: str, in_simSystem: fM.System, optimization_nam
                                                              pot_tresh=state_physical_occurrence_potential_threshold,
                                                              duration_per_job=duration_per_job,
                                                              num_simulation_runs=repetitions,
-                                                             memory = memory, 
+                                                             memory = memory,
+                                                             ssm_next_cnf = ssm_next_cnf, 
                                                              optimized_states_dir = optimized_states_dir)
 
         except Exception as err:

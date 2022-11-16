@@ -291,7 +291,9 @@ def build_optimization_step_dir(iteration: int,  iteration_folder_prefix: str, p
                                 run_NLRTO:bool=True, run_NGRTO: bool=False, run_eoffRB:bool = False,
                                 optimized_states_dir:str = "../../a_optimizedState/analysis/next",
                                 memory: int = None,
-                                old_sopt_job: optimization_job = False, verbose: bool = False) -> optimization_job:
+                                old_sopt_job: optimization_job = False, 
+                                ssm_next_cnf: bool = False, 
+                                verbose: bool = False) -> optimization_job:
     """
         This function is setting up the folder structure of an s-optimization iteration, copies some files and builds an settings object of the sopt-iteration.
 
@@ -329,6 +331,8 @@ def build_optimization_step_dir(iteration: int,  iteration_folder_prefix: str, p
         potential threshold for occurrence sampling
     old_sopt_job : sopt_job, optional
         last soptimization job namedtuple, contains all settings of previous run
+    ssm_next_cnf: 
+        whether or not to pass ssm conformations again for next iteration (defualt False)
     memory : int, optional
         how much memory to use for job submission
     verbose : bool, optional
@@ -406,7 +410,8 @@ def build_optimization_step_dir(iteration: int,  iteration_folder_prefix: str, p
                                      "eoff_to_sopt": False,
                                      "write_eoffRB": run_eoffRB,
                                      "write_eoffEstm": False,
-                                     "write_s": run_NLRTO or run_NGRTO
+                                     "write_s": run_NLRTO or run_NGRTO,
+                                     "ssm_next_cnf": ssm_next_cnf
                                  },
                                  }
     }
