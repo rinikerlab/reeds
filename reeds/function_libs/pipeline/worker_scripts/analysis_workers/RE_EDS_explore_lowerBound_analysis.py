@@ -208,14 +208,6 @@ def do(out_analysis_dir: str, system_name: str,
     out_file.write("\n")
     out_file.close()
 
-    # Coordinates:
-    cnfs = glob.glob(data_dir + "/*.cnf")
-
-    # Place conformations for the next step (those will typically be overwritten later on):
-    if(len(s_values) != len(cnfs)):
-        for i in range(len(new_sdist)):
-            bash.copy_file(cnfs[(i)%len(new_sdist)], f'{out_analysis_next_dir}/next_{i+1}.cnf')
-
     # compress out_trc/out_tre Files & simulation dir
     trx_files = glob.glob(data_dir + "/*.tr?")
     for trx in trx_files:
