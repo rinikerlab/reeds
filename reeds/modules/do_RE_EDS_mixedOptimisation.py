@@ -54,7 +54,7 @@ def do(out_root_dir: str, in_simSystem: fM.System, in_template_imd: str = None,
        do_not_doubly_submit_to_queue: bool = True,
        initialize_first_run: bool = True, reinitialize: bool = False, randomize:bool=False,
        memory: int = None,
-       ssm_next_cnf: bool = True,
+       ssm_next_cnf: bool = False,
        verbose: bool = True):
     """
     Parameters
