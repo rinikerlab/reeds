@@ -576,7 +576,7 @@ def do_Reeds_analysis(in_folder: str, out_folder: str, gromos_path: str,
                     bash.copy_file(opt_state_cnfs[(i)%num_states], f'{next_dir}/ssm_next_{i+1}.cnf')
             else:
                 # call code to place final cnfs
-                for cnf in range(final_cnfs):
+                for cnf in final_cnfs:
                     bash.copy_file(cnf, f'{next_dir}/next_{i+1}.cnf')
        
         # When we have more replicas, we need to add coordinates (takes cnf from closest neighbour)
