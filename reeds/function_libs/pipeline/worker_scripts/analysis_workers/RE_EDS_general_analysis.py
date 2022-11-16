@@ -338,16 +338,23 @@ def do_Reeds_analysis(in_folder: str, out_folder: str, gromos_path: str,
             if (verbose): print("\n\tPlotting end state potential energy distributions (by state)\n")        
             for state_num in range(1, num_states+1):
                 outfile = plot_folder_path + '/' + title_prefix + '_pot_ene_state_' + str(state_num) + '.png'
-                pot_energy_plots.plot_energy_distribution_by_state(energy_trajectories, outfile, state_num, s_values,
-                                                                                                     manual_xlim = None, shared_xaxis = True)
+                pot_energy_plots.plot_energy_distribution_by_state(energy_trajectories, 
+                                                                   outfile, 
+                                                                   state_num, 
+                                                                   s_values,
+                                                                   manual_xlim = None, 
+                                                                   shared_xaxis = True)
         
         if sub_control["pot_ene_by_replica"]:
             if (verbose): print("\n\tPlotting end state potential energy distributions (by replica)\n")
             for replica_num in range(1, len(energy_trajectories) + 1):
                 outfile =  plot_folder_path + '/' + title_prefix + '_pot_ene_replica_' + str(replica_num) + '.png'
-                pot_energy_plots.plot_energy_distribution_by_replica(energy_trajectories[replica_num - 1], outfile,
-                                                                                                       replica_num, s_values[replica_num-1],
-                                                                                                       manual_xlim = None, shared_xaxis = True)
+                pot_energy_plots.plot_energy_distribution_by_replica(energy_trajectories[replica_num - 1], 
+                                                                     outfile,
+                                                                     replica_num, 
+                                                                     s_values[replica_num-1],
+                                                                     manual_xlim = None, 
+                                                                     shared_xaxis = True)
         
         # this variable allows to access particular elements in the pandas DataFrame
         singleStates = ['e' + str(i) for i in range(1, num_states+1)]
@@ -356,10 +363,11 @@ def do_Reeds_analysis(in_folder: str, out_folder: str, gromos_path: str,
         for i, ene_traj in enumerate(energy_trajectories):
             if sub_control["pot_ene_timeseries"]:
                 out_path = plot_folder_path + "/edsState_potential_timeseries_" + str(ene_traj.s) + ".png"
-                pot_energy_plots.plot_potential_timeseries(time=ene_traj.time, potentials=ene_traj[singleStates],
-                                                                                             y_range=v_range, 
-                                                                                             title="EDS_stateV_scatter",
-                                                                                             out_path=out_path)
+                pot_energy_plots.plot_potential_timeseries(time=ene_traj.time, 
+                                                           potentials=ene_traj[singleStates],
+                                                           y_range=v_range, 
+                                                           title="EDS_stateV_scatter",
+                                                           out_path=out_path)
              
             if sub_control["pot_ene_grid_timeseries"]:
                 out_path = plot_folder_path + '/' + title_prefix + '_pot_ene_timeseries_' + str(i+1) + '.png'
@@ -388,28 +396,30 @@ def do_Reeds_analysis(in_folder: str, out_folder: str, gromos_path: str,
                 out_path = plot_folder_path + "/distance_restraints_" + str(ene_traj.s) + ".png"
                 singleStates = ["totdisres"]
 
-                pot_energy_plots.plot_potential_timeseries(time=ene_traj["time"], potentials=ene_traj[singleStates],
-                                                                                             title="EDS disres Potential s" + str(ene_traj.s), y_label="E/[kj/mol]",
-                                                                                             x_label="t/[ps]",
-                                                                                             out_path=out_path)
+                pot_energy_plots.plot_potential_timeseries(time=ene_traj["time"], 
+                                                           potentials=ene_traj[singleStates],
+                                                           title="EDS disres Potential s" + str(ene_traj.s), 
+                                                           y_label="E/[kj/mol]",
+                                                           x_label="t/[ps]",
+                                                           out_path=out_path)
 
         if (sub_control["temperature_2d_plot"]):
             print("\tPLOT temperature 2D histogram:\t")
 
             if (isinstance(imd_file.MULTIBATH, type(None)) and not isinstance(imd_file.STOCHDYN, type(None))):
                 pot_energy_plots.plot_replicaEnsemble_property_2D(ene_trajs=energy_trajectories,
-                                                                                                    out_path=plot_folder_path + "/temperature_heatMap.png",
-                                                                                                    temperature_property="solutemp2")
+                                                                  out_path=plot_folder_path + "/temperature_heatMap.png",
+                                                                  temperature_property="solutemp2")
 
             elif (not isinstance(imd_file.MULTIBATH, type(None)) and imd_file.MULTIBATH.NBATHS == 1):
                 pot_energy_plots.plot_replicaEnsemble_property_2D(ene_trajs=energy_trajectories,
-                                                                                                    out_path=plot_folder_path + "/temperature_heatMap.png",
-                                                                                                    temperature_property="solutemp2")
+                                                                  out_path=plot_folder_path + "/temperature_heatMap.png",
+                                                                  temperature_property="solutemp2")
                 
             else:
                 pot_energy_plots.plot_replicaEnsemble_property_2D(ene_trajs=energy_trajectories,
-                                                                                                    out_path=plot_folder_path + "/temperature_heatMap.png",
-                                                                                                    temperature_property="solvtemp2")
+                                                                  out_path=plot_folder_path + "/temperature_heatMap.png",
+                                                                  temperature_property="solvtemp2")
 
             if (verbose): print("DONE\n")
         # del energy_trajectories -- remove if memory without this is fine
@@ -537,9 +547,12 @@ def do_Reeds_analysis(in_folder: str, out_folder: str, gromos_path: str,
         if energy_trajectories is None:
             energy_trajectories = parse_csv_energy_trajectories(concat_file_folder, ene_trajs_prefix)
 
-        free_energy.free_energy_convergence_analysis(ene_ana_trajs=energy_trajectories, out_dir=dfmult_convergence_folder,
-                                                                                  out_prefix=title_prefix, in_prefix=ene_trajs_prefix, verbose=verbose,
-                                                                                  dfmult_all_replicas=dfmult_all_replicas)
+        free_energy.free_energy_convergence_analysis(ene_trajs=energy_trajectories, 
+                                                     out_dir=dfmult_convergence_folder,
+                                                     out_prefix=title_prefix, 
+                                                     in_prefix=ene_trajs_prefix, 
+                                                     verbose=verbose,
+                                                     dfmult_all_replicas=dfmult_all_replicas)
 
     # When we reach here, we no longer need the data in energy_trajectories, memory can be freed.
     del energy_trajectories

@@ -143,7 +143,7 @@ def multi_lig_dfmult(num_replicas: int,
     return results_dict
 
 
-def free_energy_convergence_analysis(ene_ana_trajs: List[pd.DataFrame],
+def free_energy_convergence_analysis(ene_trajs: List[pd.DataFrame],
                                      out_dir: str,
                                      in_prefix: str = "",
                                      out_prefix: str = "energy_convergence",
@@ -156,7 +156,7 @@ def free_energy_convergence_analysis(ene_ana_trajs: List[pd.DataFrame],
 
     Parameters
     ----------
-    ene_ana_trajs:  List[pd.DataFrame]
+    ene_trajs:  List[pd.DataFrame]
         a list of pandas dataframes containing the energy data of each state eX
     out_dir : str
         path where the plots and data should be stored
@@ -179,7 +179,7 @@ def free_energy_convergence_analysis(ene_ana_trajs: List[pd.DataFrame],
     """
 
     if (verbose): print("start dfmult")
-    ene_trajs = {int(ene_ana_traj.s.replace("s", "")): ene_ana_traj for ene_ana_traj in ene_ana_trajs}
+    e_trajs = {int(ene_ana_traj.s.replace("s", "")): ene_ana_traj for ene_ana_traj in ene_trajs}
 
     # DF Convergence
     if (verbose): print("Calc conf")
@@ -194,17 +194,17 @@ def free_energy_convergence_analysis(ene_ana_trajs: List[pd.DataFrame],
 
         if (verbose): print("CALCULATE")
         if dfmult_all_replicas:
-            svals_for_analysis = sorted(ene_trajs)
+            svals_for_analysis = sorted(e_trajs)
         else:
             svals_for_analysis = [1]  # just do s = 1.
 
         for s_index in svals_for_analysis:
             replica_key = "replica_" + str(s_index)
-            ene_traj = ene_trajs[s_index]
+            ene_traj = e_trajs[s_index]
             if (verbose): print("\n\nREPLICA: ", s_index)
 
             # CALC_ Free Energy
-            dF_time = eds_dF_time_convergence_dfmult(eds_eneTraj=ene_traj, out_dir=out_dir, time_blocks=time_blocks,
+            dF_time = eds_dF_time_convergence_dfmult(ene_traj=ene_traj, out_dir=out_dir, time_blocks=time_blocks,
                                                      verbose=verbose)
             dF_conv_all_replicas.update({replica_key: dF_time})
 
@@ -225,7 +225,7 @@ def free_energy_convergence_analysis(ene_ana_trajs: List[pd.DataFrame],
     out_dfmult.close()
 
 
-def eds_dF_time_convergence_dfmult(eds_eneTraj: pd.DataFrame,
+def eds_dF_time_convergence_dfmult(ene_traj: pd.DataFrame,
                                    out_dir: str,
                                    time_blocks: int = 10,
                                    gromos_bindir: str = None,
@@ -235,7 +235,7 @@ def eds_dF_time_convergence_dfmult(eds_eneTraj: pd.DataFrame,
 
     Parameters
     ----------
-    eds_eneTraj : pd.DataFrame
+    ene_traj : pd.DataFrame
         pandas dataframe containing energy trajectories
     out_dir : str
         path for the output directory
@@ -255,7 +255,7 @@ def eds_dF_time_convergence_dfmult(eds_eneTraj: pd.DataFrame,
 
     if (not os.path.exists(out_dir)):
         os.mkdir(out_dir)
-    traj_length = eds_eneTraj["time"].size
+    traj_length = ene_traj["time"].size
     if (verbose): print("traj length: " + str(traj_length))
 
     step_size = traj_length // time_blocks
@@ -264,27 +264,27 @@ def eds_dF_time_convergence_dfmult(eds_eneTraj: pd.DataFrame,
     data_chunk_indices.insert(0, 10)  # add a very small time interval at the beginning
 
     if (verbose): print("\nGATHER ", time_blocks, "time _blocks in steps of ", step_size, "\tleading to final: ",
-                        eds_eneTraj["time"][traj_length - 1], "\n")
+                        ene_traj["time"][traj_length - 1], "\n")
     if (verbose): print("data chunks: ")
     if (verbose): print(data_chunk_indices)
 
     # STEP1: generate files with blocked data
     properties_timesolv = {}
-    for property in sorted(filter(lambda x: x.startswith("e"), eds_eneTraj.columns)):
+    for property in sorted(filter(lambda x: x.startswith("e"), ene_traj.columns)):
         # chunk data
         if (verbose): print("\t", property)
         sub_ste = []
         for step, end_step in enumerate(data_chunk_indices):
             if (verbose): print(step, " ", end_step, end="\t")
             out_path = out_dir + "/tmp_" + property + "_step" + str(step) + ".dat"
-            eds_eneTraj[["time", property]][:end_step].to_csv(out_path, sep="\t", header=["# time", property],
+            ene_traj[["time", property]][:end_step].to_csv(out_path, sep="\t", header=["# time", property],
                                                               index=False)
             sub_ste.append(out_path)
 
         if (end_step != traj_length):
             if (verbose): print(step + 1, " ", end_step, end="\t")
             out_path = out_dir + "/tmp_" + property + "_step" + str(step + 1) + ".dat"
-            eds_eneTraj[["time", property]].to_csv(out_path, sep="\t", header=["# time", property], index=False)
+            ene_traj[["time", property]].to_csv(out_path, sep="\t", header=["# time", property], index=False)
             sub_ste.append(out_path)
             bash.wait_for_fileSystem(out_path)
         if (verbose): print()
@@ -320,7 +320,7 @@ def eds_dF_time_convergence_dfmult(eds_eneTraj: pd.DataFrame,
                     dF_timewise.update({key_v: {}})
                 h, meanDF, errDF = line.split()
                 dF_timewise[key_v].update(
-                    {float(eds_eneTraj["time"][stop_index - 1]): {"mean": float(meanDF), "err": float(errDF)}})
+                    {float(ene_traj["time"][stop_index - 1]): {"mean": float(meanDF), "err": float(errDF)}})
 
         # STEP 3: CLEAN
         Vi.append(Vr)
