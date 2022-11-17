@@ -373,7 +373,7 @@ def build_optimization_step_dir(iteration: int,  iteration_folder_prefix: str, p
         need_to_be_created = True
         pre_in_imd_path = last_data_folder + "/next*.imd"
         last_coord_in = old_sopt_job.check_analysis_files
-        last_coord_file_path = input_dir + "/coord/*.cnf"
+        last_coord_file_path = input_dir + "/coord/" + old_sopt_job.sim_system.name + "*.cnf"
         setattr(in_simSystem, "coordinates", last_coord_file_path)
         print(last_coord_in)
 
