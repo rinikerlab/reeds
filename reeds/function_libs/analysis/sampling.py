@@ -432,6 +432,7 @@ def detect_undersampling(ene_traj_csvs: List[pd.DataFrame],
 
         if (undersampling_criterium):
             undersampling_idx = i
+            found_undersampling = True
             break
 
     if (not found_undersampling):
