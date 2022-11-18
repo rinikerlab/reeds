@@ -152,20 +152,24 @@ def optimize_s(in_file: str,
     
     if verbose: print("Optimization of the s-values: done!\n\n")
 
+    if run_NGRTO and run_NLRTO:
+        warnings.warn("Analysis with both RTO algorithms requested. Output of the two programs will be generated, however priority will be given to N-GRTO for preparation of input files for next step.")
+
     # output of svals NGRTO
     if (run_NGRTO):
         output_file = open(out_dir + "/" + title_prefix + "_NGRTO.out", "w")
         output_file.write(str(NGRTO))
         output_file.close()
 
-        return data[2]
-
     # output of svals NLRTO
-    elif (run_NLRTO):
+    if run_NLRTO:
         output_file = open(out_dir + "/" + title_prefix + "_NLRTO.out", "w")
         output_file.write(str(NLRTO))
         output_file.close()
 
+    if run_NGRTO:
+        return data[2]
+    elif run_NLRTO:
         return data[1]
 
     return data[0]

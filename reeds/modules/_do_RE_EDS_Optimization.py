@@ -1,7 +1,4 @@
-import copy
-import os
-import sys
-import traceback
+import os, sys, copy, traceback, warnings
 from collections import OrderedDict
 from typing import List, Iterable
 
@@ -20,7 +17,7 @@ def do_optimization(out_root_dir: str, in_simSystem: fM.System, optimization_nam
                     iterations: int = 4,
                     eoffEstimation_undersampling_fraction_threshold: float = 0.9,
                     sOpt_add_replicas: int = 4, sOpt_adding_new_sReplicas_Scheme: adding_Scheme_new_Replicas = adding_Scheme_new_Replicas.from_below,
-                    run_NLRTO: bool = True, run_NGRTO: bool = False, run_eoffRB: bool=False,
+                    run_NLRTO: bool = False, run_NGRTO: bool = True, run_eoffRB: bool=False,
                     eoffRB_learningFactors:List[float]=None, eoffRB_pseudocount:float=None,
                     eoffRB_correctionPerReplica: bool=False,
                     non_ligand_residues: list = [],
@@ -39,6 +36,10 @@ def do_optimization(out_root_dir: str, in_simSystem: fM.System, optimization_nam
                     ssm_next_cnf: bool = False,
                     verbose: bool = True):
 
+
+    if run_NGRTO and run_NLRTO:
+        warnings.warn("You have asked for optimization with both LRTO and GRTO algorithms.\nPlease note that priority is given to the GRTO algorithm (preparation of output for future iterations).")
+        print ("Output of the LRTO will still be printed in path/to/analysis/s_optimization/ for comparison.")
     try:
         simSystem = copy.deepcopy(in_simSystem)
         sopt_input = out_root_dir + "/input"

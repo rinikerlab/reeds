@@ -579,6 +579,9 @@ def do_Reeds_analysis(in_folder: str, out_folder: str, gromos_path: str,
        
         # When we have more replicas, we need to add coordinates (takes cnf from closest neighbour)
         elif len(s_values) < len(new_svals):
+            if control_dict["sopt"]["sub"]["run_NGRTO"]:
+                warnings.warn("The function add_cnf_sopt_LRTOlike() was not meant to be used with GRTO + addition of replicas.\nThe code will run and provide .cnf files but probably not trustworthy ones.")
+            
             file_management.add_cnf_sopt_LRTOlike(in_dir=concat_file_folder, out_dir=next_dir, in_old_svals=s_values,
                                                   cnf_prefix=title_prefix,
                                                   in_new_svals=new_svals, replica_add_scheme=adding_new_sReplicas_Scheme,
