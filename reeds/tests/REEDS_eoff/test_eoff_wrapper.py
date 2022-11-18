@@ -47,11 +47,11 @@ class test_Eoff_wrapper(unittest.TestCase):
         print ('testing we get the same results with BRD4 data')
 
         #find Files
-        ene_ana_trajs = fM.parse_csv_energy_trajectories(in_folder=in_BRD4_7ligs, ene_trajs_prefix="energies_")
+        ene_trajs = fM.parse_csv_energy_trajectories(in_folder=in_BRD4_7ligs, ene_trajs_prefix="energies_")
 
         sampling_stat = {"state_undersampling_potTresh":  [0,0,0,0,0,0,0],
                          "undersampling_occurence_sampling_tresh": 0.9}
-        new_eoffs, all_eoffs = eds_energy_offsets.estimate_energy_offsets(ene_ana_trajs, initial_offsets = init_Eoff, 
+        new_eoffs, all_eoffs = eds_energy_offsets.estimate_energy_offsets(ene_trajs, initial_offsets = init_Eoff, 
                                                                           s_values = s_values, out_path = None,  sampling_stat=sampling_stat,
                                                                           temp = T, trim_beg = 0.0, undersampling_idx = 0, 
                                                                           plot_results = False, calc_clara = False
@@ -102,11 +102,11 @@ class test_Eoff_wrapper(unittest.TestCase):
         print ('testing we get the same results with BRD4 data')
 
         #find Files
-        ene_ana_trajs = fM.parse_csv_energy_trajectories(in_folder=in_PNMT_9ligs, ene_trajs_prefix="energies_")
+        ene_trajs = fM.parse_csv_energy_trajectories(in_folder=in_PNMT_9ligs, ene_trajs_prefix="energies_")
 
         sampling_stat = {"state_undersampling_potTresh":  [0,0,0,0,0,0,0,0,0],
                          "undersampling_occurence_sampling_tresh": 0.9}
-        new_eoffs, all_eoffs = eds_energy_offsets.estimate_energy_offsets(ene_ana_trajs, initial_offsets = init_Eoff,
+        new_eoffs, all_eoffs = eds_energy_offsets.estimate_energy_offsets(ene_trajs, initial_offsets = init_Eoff,
                                                                           s_values = s_values, out_path = None, sampling_stat=sampling_stat,
                                                                           temp = T, trim_beg = 0.0, undersampling_idx = 0,
                                                                           plot_results = False, calc_clara = False
@@ -133,12 +133,12 @@ class test_Eoff_wrapper(unittest.TestCase):
                          "undersampling_occurence_sampling_tresh": 0.9}
 
         #find Files
-        ene_ana_trajs = fM.parse_csv_energy_trajectories(in_folder=in_PNMT_9ligs, ene_trajs_prefix="energies_")
+        ene_trajs = fM.parse_csv_energy_trajectories(in_folder=in_PNMT_9ligs, ene_trajs_prefix="energies_")
 
         #sampling style
         import reeds.function_libs.analysis.sampling as sampling_ana
         (sampling_results, out_dir) = sampling_ana.detect_undersampling(out_path="",
-                                                                        ene_traj_csvs=ene_ana_trajs,
+                                                                        ene_trajs=ene_trajs,
                                                                         s_values=s_values,
                                                                         eoffs = init_Eoff,
                                                                         state_potential_treshold=sampling_stat['state_undersampling_potTresh'],
@@ -159,12 +159,12 @@ class test_Eoff_wrapper(unittest.TestCase):
                          "undersampling_occurence_sampling_tresh": 0.9}
 
         #find Files
-        ene_ana_trajs = fM.parse_csv_energy_trajectories(in_folder=in_PNMT_9ligs, ene_trajs_prefix="energies_")
+        ene_trajs = fM.parse_csv_energy_trajectories(in_folder=in_PNMT_9ligs, ene_trajs_prefix="energies_")
 
         #sampling style
         import reeds.function_libs.analysis.sampling as sampling_ana
         (sampling_results, out_dir) = sampling_ana.detect_undersampling(out_path="",
-                                                                        ene_traj_csvs=ene_ana_trajs,
+                                                                        ene_trajs=ene_trajs,
                                                                         s_values=s_values,
                                                                         eoffs=init_Eoff,
                                                                         state_potential_treshold=sampling_stat['state_undersampling_potTresh'],
@@ -172,7 +172,7 @@ class test_Eoff_wrapper(unittest.TestCase):
                                                                         undersampling_occurence_sampling_tresh=sampling_stat['undersampling_occurence_sampling_tresh'])
 
         print(sampling_results['undersamplingThreshold'])
-        new_eoffs, all_eoffs = eds_energy_offsets.estimate_energy_offsets(ene_trajs=ene_ana_trajs,
+        new_eoffs, all_eoffs = eds_energy_offsets.estimate_energy_offsets(ene_trajs=ene_trajs,
                                                                           initial_offsets=init_Eoff,
                                                                           sampling_stat=sampling_results,
                                                                           s_values=s_values,

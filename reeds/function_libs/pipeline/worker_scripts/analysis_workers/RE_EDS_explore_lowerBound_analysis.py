@@ -6,14 +6,15 @@ import numpy as np
 
 from pygromos.files import imd
 from pygromos.utils import bash
+
 from reeds.function_libs.analysis.sampling import undersampling_occurence_potential_threshold_distribution_based as find_undersampling_pot_tresh
+from reeds.function_libs.analysis.sampling import detect_undersampling
 
 from reeds.function_libs.visualization.utils import determine_vrange
 
 import reeds.function_libs.analysis.sampling
 import reeds.function_libs.visualization.pot_energy_plots
 from reeds.function_libs.file_management import file_management as fM
-from reeds.function_libs.analysis.sampling import sampling_analysis
 import reeds.function_libs.utils.s_log_dist as s_log_dist
 
 np.set_printoptions(suppress=True,formatter={'float_kind':'{:0.7f}'.format})
@@ -141,11 +142,11 @@ def do(out_analysis_dir: str, system_name: str,
 
     state_undersampling_pot_treshold = find_undersampling_pot_tresh(ene_traj_csvs=ene_trajs, sampling_fraction_treshold = undersampling_occurrence_fraction_threshold)
 
-    sampling_analysis_results, out_plot_dirs = reeds.function_libs.analysis.sampling.detect_undersampling(out_path = out_analysis_plot_dir,
-                                                                                                       ene_traj_csvs = ene_trajs,
-                                                                                                       s_values = s_values[:succsessful_sim_count],
-                                                                                                       state_potential_treshold=state_undersampling_pot_treshold, 
-                                                                                                       eoffs = eoffs)
+    sampling_analysis_results, out_plot_dirs = detect_undersampling(out_path = out_analysis_plot_dir,
+                                                                    ene_trajs = ene_trajs,
+                                                                    s_values = s_values[:succsessful_sim_count],
+                                                                    state_potential_treshold=state_undersampling_pot_treshold, 
+                                                                    eoffs = eoffs)
     
     v_range = determine_vrange(ene_trajs, num_states) 
 
@@ -184,7 +185,7 @@ def do(out_analysis_dir: str, system_name: str,
     bash.make_folder(out_analysis_next_dir, "-p")
 
     #print(sampling_analysis_results)
-    u_idx = sampling_analysis_results["undersamplingThreshold"]-1 #candide: fix index convention
+    u_idx = sampling_analysis_results["undersamplingThreshold"]
     
     # Make the new s-distribution based on this 
     print("undersampling found after replica: " + str(u_idx+1) + ' with s = ' + str(s_values[u_idx]))    
