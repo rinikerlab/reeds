@@ -26,7 +26,7 @@ production_dir = root_dir + "/f_production"
 eps_reaction_field = 78.5
 pressure = 1.01325 * u.bar
 
-sopt_iterations = 5
+sopt_iterations = 4
 rebal_iterations = 5
 production_iterations = 5
 
@@ -40,5 +40,5 @@ dataset_name = "CHK1"
 
 n_gpus = 4
 time_eds = "4:00:00"
-time_parameter_search = "24:00:00"
-time_production = "24:00:00"
+time_parameter_search = "1:00:00"
+time_production = "1:00:00"
