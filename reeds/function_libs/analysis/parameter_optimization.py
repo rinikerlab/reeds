@@ -149,12 +149,11 @@ def optimize_s(in_file: str,
         data = {0: stat.raw_s_values, 1: new_svals_NLRTO, 2: new_svals_NGRTO}
     else:
         data = {0: stat.s_values, 1: NLRTO.opt_replica_parameters, 2: NGRTO.opt_replica_parameters}
+    
+    if verbose: print("Optimization of the s-values: done!\n\n")
 
-    # output of svals NLRTO
-    if (run_NLRTO):
-        output_file = open(out_dir + "/" + title_prefix + "_NLRTO.out", "w")
-        output_file.write(str(NLRTO))
-        output_file.close()
+    if run_NGRTO and run_NLRTO:
+        warnings.warn("Analysis with both RTO algorithms requested. Output of the two programs will be generated, however priority will be given to N-GRTO for preparation of input files for next step.")
 
     # output of svals NGRTO
     if (run_NGRTO):
@@ -162,9 +161,18 @@ def optimize_s(in_file: str,
         output_file.write(str(NGRTO))
         output_file.close()
 
-    if verbose: print("Done!\n\n")
+    # output of svals NLRTO
+    if run_NLRTO:
+        output_file = open(out_dir + "/" + title_prefix + "_NLRTO.out", "w")
+        output_file.write(str(NLRTO))
+        output_file.close()
 
-    return data
+    if run_NGRTO:
+        return data[2]
+    elif run_NLRTO:
+        return data[1]
+
+    return data[0]
 
 
 def get_s_optimization_transitions(out_dir: str,

@@ -213,7 +213,8 @@ int
                      "eoff_to_sopt": True,
                      "write_eoffRB": False,
                      "write_eoffEstm": True,
-                     "write_s": False
+                     "write_s": False,
+                     "ssm_next_cnf": True
                  },
             }
         }

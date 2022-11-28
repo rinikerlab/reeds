@@ -274,7 +274,7 @@ def adapt_imd_template_eoff(system: fM.System, imd_out_path: str, in_template_im
     imd.edit_REEDS(EIR=0.0)
     imd.STEP.NSTLIM = 50
     imd_out_path = imd.write(imd_out_path)
-    if (verbose): print(imd.REPLICA_EDS)
+    #if (verbose): print(imd.REPLICA_EDS)
     return imd
 
 
@@ -291,7 +291,9 @@ def build_optimization_step_dir(iteration: int,  iteration_folder_prefix: str, p
                                 run_NLRTO:bool=True, run_NGRTO: bool=False, run_eoffRB:bool = False,
                                 optimized_states_dir:str = "../../a_optimizedState/analysis/next",
                                 memory: int = None,
-                                old_sopt_job: optimization_job = False, verbose: bool = False) -> optimization_job:
+                                old_sopt_job: optimization_job = False, 
+                                ssm_next_cnf: bool = False, 
+                                verbose: bool = False) -> optimization_job:
     """
         This function is setting up the folder structure of an s-optimization iteration, copies some files and builds an settings object of the sopt-iteration.
 
@@ -329,6 +331,8 @@ def build_optimization_step_dir(iteration: int,  iteration_folder_prefix: str, p
         potential threshold for occurrence sampling
     old_sopt_job : sopt_job, optional
         last soptimization job namedtuple, contains all settings of previous run
+    ssm_next_cnf: 
+        whether or not to pass ssm conformations again for next iteration (defualt False)
     memory : int, optional
         how much memory to use for job submission
     verbose : bool, optional
@@ -369,7 +373,7 @@ def build_optimization_step_dir(iteration: int,  iteration_folder_prefix: str, p
         need_to_be_created = True
         pre_in_imd_path = last_data_folder + "/next*.imd"
         last_coord_in = old_sopt_job.check_analysis_files
-        last_coord_file_path = input_dir + "/coord/" + old_sopt_job.sim_system.name + "*.cnf"  # "_"+str(old_sopt_job.num_simulation_runs+old_sopt_job.num_equilibration_runs)+
+        last_coord_file_path = input_dir + "/coord/" + old_sopt_job.sim_system.name + "*.cnf"
         setattr(in_simSystem, "coordinates", last_coord_file_path)
         print(last_coord_in)
 
@@ -406,7 +410,8 @@ def build_optimization_step_dir(iteration: int,  iteration_folder_prefix: str, p
                                      "eoff_to_sopt": False,
                                      "write_eoffRB": run_eoffRB,
                                      "write_eoffEstm": False,
-                                     "write_s": run_NLRTO or run_NGRTO
+                                     "write_s": run_NLRTO or run_NGRTO,
+                                     "ssm_next_cnf": ssm_next_cnf
                                  },
                                  }
     }

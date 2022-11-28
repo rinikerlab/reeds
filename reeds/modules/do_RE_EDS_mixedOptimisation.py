@@ -33,7 +33,7 @@ def do(out_root_dir: str, in_simSystem: fM.System, in_template_imd: str = None,
 
        learningFactors : List[float]= None, pseudocount: float=None, individualCorrection: bool=False,
         
-       run_NLRTO: bool = False, run_NGRTO:bool = True, sOpt_add_replicas: int = 4, 
+       run_NLRTO: bool = False, run_NGRTO:bool = True, sOpt_add_replicas: int = 0, 
        sOpt_adding_new_sReplicas_Scheme: adding_Scheme_new_Replicas = adding_Scheme_new_Replicas.from_below, 
 
        noncontinous: bool = False,
@@ -54,6 +54,7 @@ def do(out_root_dir: str, in_simSystem: fM.System, in_template_imd: str = None,
        do_not_doubly_submit_to_queue: bool = True,
        initialize_first_run: bool = True, reinitialize: bool = False, randomize:bool=False,
        memory: int = None,
+       ssm_next_cnf: bool = False,
        verbose: bool = True):
     """
     Parameters
@@ -145,6 +146,7 @@ def do(out_root_dir: str, in_simSystem: fM.System, in_template_imd: str = None,
                             do_not_doubly_submit_to_queue=do_not_doubly_submit_to_queue,
                             initialize_first_run=initialize_first_run, reinitialize=reinitialize, randomize=randomize, noncontinous=noncontinous,
                             memory = memory,
+                            ssm_next_cnf = ssm_next_cnf,
                             verbose=verbose)
 
     return job_id
