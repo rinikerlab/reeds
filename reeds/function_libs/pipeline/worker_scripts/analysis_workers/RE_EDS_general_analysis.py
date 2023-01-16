@@ -483,6 +483,8 @@ def do_Reeds_analysis(in_folder: str, out_folder: str, gromos_path: str,
             new_eoffs_rb = new_eoffs_rb.T
             
         if (verbose): print("Done\n")
+    
+    new_svals = None
 
     if (control_dict["sopt"]["do"]):
         print ('\nANALYSIS of the S-DISTRIBUTION')
@@ -583,6 +585,9 @@ def do_Reeds_analysis(in_folder: str, out_folder: str, gromos_path: str,
         if (sub_control["eoff_to_sopt"]):
             if (not os.path.isdir(optimized_eds_state_folder)):
                 raise IOError("Could not find optimized state output dir: " + optimized_eds_state_folder)
+        
+        if new_svals is None:
+            new_svals = s_values
 
         if len(new_svals) <= len(s_values) or sub_control["eoff_to_sopt"]:
             if sub_control["ssm_next_cnf"] or sub_control["eoff_to_sopt"]:
