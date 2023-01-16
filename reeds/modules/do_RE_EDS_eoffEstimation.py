@@ -171,12 +171,14 @@ int
         numstates = imd_file.REPLICA_EDS.NUMSTATES
 
         # Coordinates
+        
+        sort_cnfs = lambda x: int(x.split("_")[-1].split(".")[0])
 
         cnf_prefix = "REEDS_eoff_run"
         if(ssm_approach):
             # Use coordinates from the optimized states as starting cnf
             os.chdir(out_root_dir)
-            optimized_coordinates = glob.glob(optimized_states + "/*.cnf")
+            optimized_coordinates = sorted(glob.glob(optimized_states + "/*.cnf"), key = sort_cnfs)
             print("found coords: ", optimized_coordinates)
             if (len(optimized_coordinates) == 0):
                 raise IOError("Could not find any optimized coordinates. Did the simulation finish?")

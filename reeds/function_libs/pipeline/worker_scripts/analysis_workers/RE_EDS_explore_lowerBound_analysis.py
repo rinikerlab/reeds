@@ -140,7 +140,7 @@ def do(out_analysis_dir: str, system_name: str,
     bash.make_folder(out_analysis_plot_dir, "-p")
     ene_trajs = fM.parse_csv_energy_trajectories(data_dir, out_prefix)  # gather potentials
 
-    state_undersampling_pot_treshold = find_undersampling_pot_tresh(ene_traj_csvs=ene_trajs, sampling_fraction_treshold = undersampling_occurrence_fraction_threshold)
+    state_undersampling_pot_treshold = find_undersampling_pot_tresh(ene_trajs=ene_trajs, sampling_fraction_treshold = undersampling_occurrence_fraction_threshold)
 
     sampling_analysis_results, out_plot_dirs = detect_undersampling(out_path = out_analysis_plot_dir,
                                                                     ene_trajs = ene_trajs,
@@ -192,7 +192,7 @@ def do(out_analysis_dir: str, system_name: str,
     print('New s distribution will place ' + str(num_states) + ' replicas between  s = ' + str(s_values[u_idx]) + ' and s = ' +str(s_values[u_idx+2]))
  
     new_sdist = s_values[:u_idx]
-    lower_sdist = s_log_dist.get_log_s_distribution_between(s_values[u_idx], s_values[u_idx+2], num_states)
+    lower_sdist = s_log_dist.get_log_s_distribution_between(s_values[u_idx], s_values[u_idx+2], num = 8)# num = num_states)
     new_sdist.extend(lower_sdist)  
     
     print ('new s-dist: ' + str(new_sdist))
