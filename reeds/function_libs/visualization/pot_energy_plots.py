@@ -27,13 +27,10 @@ def plot_optimized_states_potential_energies(outfile:str,
     """
 
     nstates = len(ene_trajs)
-    
     v_range = determine_vrange(ene_trajs, nstates)
-
     colors = ps.active_qualitative_map_mligs(nstates)
 
     # Split the different states in subplots:
-
     ncols = 4 if nstates > 11 else 3
     nrows = int(np.ceil(nstates/ncols))
 
@@ -41,15 +38,11 @@ def plot_optimized_states_potential_energies(outfile:str,
     fig, axes = plt.subplots(ncols=ncols, nrows=nrows, figsize=figsize)
 
     fig.suptitle('Potential Energy Distribution for optimized States', fontsize = 20)
-
-    row_num = 0 # this starts at 0, and gets updated when col_num = ncols
-    col_num = 0
+    
+    axes = axes.flatten()
 
     for i in range(nstates):
-        if col_num == ncols-1: row_num +=1
-        col_num = i % ncols
         state_num = i+1
-
         # data to plot
         energies = np.array(ene_trajs[i]["e" + str(state_num)])
 
@@ -67,18 +60,18 @@ def plot_optimized_states_potential_energies(outfile:str,
         legend += "n: "   + str(len(up_energies))  + "\n"
         legend += "avg: " + str(round(avg, 2))  + "\n"
         legend += "std: " + str(round(std, 2))
-
+        
         # plot the actual data now:
-        hist1 = axes[row_num, col_num].hist(up_energies, bins = 100, label = legend, color=colors[i%len(colors)])
+        hist1 = axes[i].hist(up_energies, bins = 100, label = legend, color=colors[i%len(colors)])
 
         # formatting:
-        axes[row_num, col_num].legend(loc='upper right', fontsize=12, edgecolor='black')
+        axes[i].legend(loc='upper right', fontsize=12, edgecolor='black')
 
-        axes[row_num, col_num].set_xlim(v_range)
-        axes[row_num, col_num].set_ylim([0, 1.35 * max(hist1[0])])
+        axes[i].set_xlim(v_range)
+        axes[i].set_ylim([0, 1.35 * max(hist1[0])])
 
-        axes[row_num, col_num].set_ylabel('Count')
-        axes[row_num, col_num].set_xlabel(r'$V_{i}$ [kJ/mol]')
+        axes[i].set_ylabel('Count')
+        axes[i].set_xlabel(r'$V_{i}$ [kJ/mol]')
 
     # Done plotting everything, save the figure
 
@@ -162,14 +155,11 @@ def plot_energy_distribution_by_replica(traj_data : pd.DataFrame,
 
     fig.suptitle('Average Potential Energy - Replica ' + str(replica_num)
                  + ' - s = ' + str(s_value), fontsize = 20, y=0.995)
+    
+    axes = axes.flatten()
 
     # Plot each histogram one by one:
-    row_num = 0 # this starts at 0, and gets updated when col_num = ncols
-    col_num = 0
-
     for i in range(nstates):
-        if col_num == ncols-1: row_num +=1
-        col_num = i % ncols
         state_num = i+1
 
         # get data, and discard high energies
@@ -189,9 +179,8 @@ def plot_energy_distribution_by_replica(traj_data : pd.DataFrame,
         legend += "std: " + str(round(std, 2))
 
         # Plot the data:
-        hist1 = axes[row_num, col_num].hist(up_energies, bins = 250, label = legend, color=colors[i%len(colors)])
-
-        axes[row_num, col_num].legend(loc='upper right', fontsize=12, edgecolor='black')
+        hist1 = axes[i].hist(up_energies, bins = 250, label = legend, color=colors[i%len(colors)])
+        axes[i].legend(loc='upper right', fontsize=12, edgecolor='black')
 
         # Use the correct set of x-limits
         if manual_xlim is None: xlimits = [-1250, upper_threshold]
@@ -206,16 +195,16 @@ def plot_energy_distribution_by_replica(traj_data : pd.DataFrame,
         
         # Draw a vertical line to delimit physical and undersampling if requested. 
         if sampling_thresholds is not None:
-            axes[row_num, col_num].axvline(x=sampling_thresholds[i], color = 'black', lw = 1, ls = '--')
+            axes[i].axvline(x=sampling_thresholds[i], color = 'black', lw = 1, ls = '--')
         if undersampling_thresholds is not None:
-            axes[row_num, col_num].axvline(x=undersampling_thresholds[i], color = 'grey', lw = 1, ls = '--')
+            axes[i].axvline(x=undersampling_thresholds[i], color = 'grey', lw = 1, ls = '--')
         
-        axes[row_num, col_num].set_xlim(xlimits)
-        axes[row_num, col_num].set_ylabel('Count')
-        axes[row_num, col_num].set_xlabel(r'$V_{i}$ [kJ/mol]')
+        axes[i].set_xlim(xlimits)
+        axes[i].set_ylabel('Count')
+        axes[i].set_xlabel(r'$V_{i}$ [kJ/mol]')
 
         # Set the ylim so the legend can be read well / no overlap with the plot
-        axes[row_num, col_num].set_ylim([0, 1.35 * max(hist1[0])])
+        axes[i].set_ylim([0, 1.35 * max(hist1[0])])
 
     # Done plotting everything, save the figure
 
@@ -224,7 +213,7 @@ def plot_energy_distribution_by_replica(traj_data : pd.DataFrame,
     if(outfile_path is None):
         fig.show()
     else:
-        fig.savefig(outfile_path, facecolor='white')
+        fig.savefig(outfile_path, ) #facecolor='white')
         plt.close()
 
     return outfile_path
@@ -299,15 +288,11 @@ def plot_energy_distribution_by_state(energy_trajs : List[pd.DataFrame],
 
     fig, axes = plt.subplots(ncols=ncols, nrows=nrows, figsize=figsize)
     fig.suptitle('Average Potential Energy - State ' + str(state_num) + '\n', fontsize = 20, y = 0.995)
+    
+    axes = axes.flatten()
 
     # Plot each histogram one by one:
-
-    row_num = 0 # this starts at 0, and gets updated when col_num = ncols
-    col_num = 0
-
     for i in range(n_replicas):
-        if col_num == ncols-1: row_num +=1
-        col_num = i % ncols
         replica_num = i+1
 
         # data to plot
@@ -330,8 +315,8 @@ def plot_energy_distribution_by_state(energy_trajs : List[pd.DataFrame],
 
         # Plot the data:
 
-        hist1 = axes[row_num, col_num].hist(up_energies, bins = 100, label = legend, color = color)
-        axes[row_num, col_num].legend(loc='upper left', fontsize=12, edgecolor='black')
+        hist1 = axes[i].hist(up_energies, bins = 100, label = legend, color = color)
+        axes[i].legend(loc='upper left', fontsize=12, edgecolor='black')
 
         # Use the correct set of x-limits
         if manual_xlim is None: xlimits = [-1250, upper_threshold]
@@ -344,14 +329,14 @@ def plot_energy_distribution_by_state(energy_trajs : List[pd.DataFrame],
             high_lim = high_lim + 0.1* abs(high_lim)
             xlimits  = [low_lim, high_lim]
 
-        axes[row_num, col_num].set_xlim(xlimits)
+        axes[i].set_xlim(xlimits)
 
-        axes[row_num, col_num].set_ylabel('Count')
-        axes[row_num, col_num].set_xlabel(r'$V_{i}$ [kJ/mol]')
-        axes[row_num, col_num].set_title('Replica ' + str(replica_num) + ' - s = ' + str(s_values[i]))
+        axes[i].set_ylabel('Count')
+        axes[i].set_xlabel(r'$V_{i}$ [kJ/mol]')
+        axes[i].set_title('Replica ' + str(replica_num) + ' - s = ' + str(s_values[i]))
 
         # Set the ylim so the legend can be read well / no overlap with the plot
-        axes[row_num, col_num].set_ylim([0, 1.35 * max(hist1[0])])
+        axes[i].set_ylim([0, 1.35 * max(hist1[0])])
 
     # Done plotting everything, save the figure
 
@@ -404,13 +389,9 @@ def plot_ref_pot_energy_distribution(energy_trajs: List[pd.DataFrame],
     fig.suptitle('Potential Energy Distribution of the Reference State', fontsize = 20, y =0.995)
 
     # Plot each histogram one by one:
-
-    row_num = 0 # this starts at 0, and gets updated when col_num = ncols
-    col_num = 0
+    axes = axes.flatten()
 
     for i in range(n_replicas):
-        if col_num == ncols-1: row_num +=1
-        col_num = i % ncols
         replica_num = i+1
 
         # data to plot
@@ -431,22 +412,21 @@ def plot_ref_pot_energy_distribution(energy_trajs: List[pd.DataFrame],
 
         # Plot the data:
 
-        hist1 = axes[row_num, col_num].hist(up_energies, bins = 100, label = legend, color = 'firebrick')
-        axes[row_num, col_num].legend(loc='upper right', fontsize=12, edgecolor='black')
+        hist1 = axes[i].hist(up_energies, bins = 100, label = legend, color = 'firebrick')
+        axes[i].legend(loc='upper right', fontsize=12, edgecolor='black')
         #
         xmax = upper_threshold
         if max(up_energies)+100 < upper_threshold: xmax = max(up_energies)+100
 
-        axes[row_num, col_num].set_xlim([min(up_energies) - 100, xmax])
-        axes[row_num, col_num].set_ylim([0, 1.35 * max(hist1[0])])
-        axes[row_num, col_num].set_ylabel('Count')
-        axes[row_num, col_num].set_xlabel(r'$V_{R}$ [kJ/mol]')
+        axes[i].set_xlim([min(up_energies) - 100, xmax])
+        axes[i].set_ylim([0, 1.35 * max(hist1[0])])
+        axes[i].set_ylabel('Count')
+        axes[i].set_xlabel(r'$V_{R}$ [kJ/mol]')
 
         if optimized_state :
-            axes[row_num, col_num].set_title('System biased to state ' + str(replica_num))
+            axes[i].set_title('System biased to state ' + str(replica_num))
         else :
-            axes[row_num, col_num].set_title('Replica ' + str(replica_num) +
-                ' - s = ' + str(s_values[i]))
+            axes[i].set_title('Replica ' + str(replica_num) + ' - s = ' + str(s_values[i]))
 
     # Done plotting everything, save the figure
 
@@ -496,32 +476,27 @@ def plot_ref_pot_ene_timeseries(ene_trajs: List[pd.DataFrame],
     fig, axes = plt.subplots(ncols=ncols, nrows=nrows, figsize=figsize)
 
     fig.suptitle('Potential Energy Timeseries of the Reference State', fontsize = 20, y=0.995)
+    
+    axes = axes.flatten()
 
     # Plot each histogram one by one:
-
-    row_num = 0 # this starts at 0, and gets updated when col_num = ncols
-    col_num = 0
-
     for i in range(n_replicas):
-        if col_num == ncols-1: row_num +=1
-        col_num = i % ncols
         replica_num = i+1
 
         # Plot the data
         e_ref = np.array(ene_trajs[i]['eR'])
         t = np.array(ene_trajs[i]['time'])
 
-        axes[row_num, col_num].scatter(t, e_ref, color='firebrick', s = 4, marker = 'D')
-        axes[row_num, col_num].set_xlabel('time [ps]')
-        axes[row_num, col_num].set_ylabel(r'$V_{R}$ [kJ/mol]')
+        axes[i].scatter(t, e_ref, color='firebrick', s = 4, marker = 'D')
+        axes[i].set_xlabel('time [ps]')
+        axes[i].set_ylabel(r'$V_{R}$ [kJ/mol]')
 
-        axes[row_num, col_num].set_ylim(min(e_ref)-100,max(e_ref)+100 )
+        axes[i].set_ylim(min(e_ref)-100,max(e_ref)+100 )
 
         if optimized_state :
-            axes[row_num, col_num].set_title('System biased to state ' + str(replica_num))
+            axes[i].set_title('System biased to state ' + str(replica_num))
         else :
-            axes[row_num, col_num].set_title('Replica ' + str(replica_num) +
-                ' - s = ' + str(s_values[i]))
+            axes[i].set_title('Replica ' + str(replica_num) + ' - s = ' + str(s_values[i]))
 
     # Done plotting everything, save the figure
 
