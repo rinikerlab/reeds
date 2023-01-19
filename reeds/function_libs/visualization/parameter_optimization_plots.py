@@ -1,5 +1,7 @@
 from typing import List, Union
 
+import re
+
 import numpy as np
 from matplotlib import pyplot as plt
 
@@ -156,8 +158,10 @@ def visualization_s_optimization_summary(s_opt_data: dict,
     
     # Format data properly for plotting:
     
-    for i, key in enumerate(sorted(s_opt_data)):
-        
+    sort_dirs = lambda s: int(re.sub("[^0-9]", "", s))    
+
+    for i, key in enumerate(sorted(s_opt_data, key = sort_dirs)):
+        print (f'{key=}') 
         opti = s_opt_data[key]
         num_roundtrips.append(opti['avg_nRoundtripsPerNs'])
             
