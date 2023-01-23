@@ -347,12 +347,12 @@ def do_Reeds_analysis(in_folder: str, out_folder: str, gromos_path: str,
         
         if sub_control["pot_ene_by_replica"]:
             if (verbose): print("\n\tPlotting end state potential energy distributions (by replica)\n")
-            for replica_num in range(1, len(energy_trajectories) + 1):
-                outfile =  plot_folder_path + '/' + title_prefix + '_pot_ene_replica_' + str(replica_num) + '.png'
-                pot_energy_plots.plot_energy_distribution_by_replica(energy_trajectories[replica_num - 1], 
-                                                                     outfile,
-                                                                     replica_num, 
-                                                                     s_values[replica_num-1],
+            for i, ene_traj in enumerate(energy_trajectories):
+                outfile =  plot_folder_path + '/' + title_prefix + '_pot_ene_replica_' + str(i+1) + '.png'
+                pot_energy_plots.plot_energy_distribution_by_replica(ene_traj, 
+                                                                     i+1, 
+                                                                     s_values[i],
+                                                                     outfile, 
                                                                      manual_xlim = None, 
                                                                      shared_xaxis = True)
         

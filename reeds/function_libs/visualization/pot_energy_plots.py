@@ -213,7 +213,7 @@ def plot_energy_distribution_by_replica(traj_data : pd.DataFrame,
     if(outfile_path is None):
         fig.show()
     else:
-        fig.savefig(outfile_path, ) #facecolor='white')
+        fig.savefig(outfile_path) #facecolor='white')
         plt.close()
 
     return outfile_path
@@ -340,8 +340,8 @@ def plot_energy_distribution_by_state(energy_trajs : List[pd.DataFrame],
 
     # Done plotting everything, save the figure
 
-    plt.tight_layout()
-    plt.savefig(outfile, facecolor='white')
+    fig.tight_layout()
+    fig.savefig(outfile, facecolor='white')
     plt.close()
 
     return None
