@@ -965,9 +965,11 @@ def addExclusions(core_top, lig1_atoms):
             # We need to add to the 1,2/1,3 exclusions and all atoms belonging to residues N and above 
             full_excl = sorted(neigh12+neigh13)
             
-            # Do not add the exclusions with other ligands to test (see if ptp does that automatically)
-            # to do so, uncomment next line
-            full_excl.extend(range(last_atoms[atom.MRES-1]+1, last_atoms[-1]+1))
+            # Do not add the exclusions with other ligands to test (gromos recognizes this from ptp file)
+            # this saves quite a bit of computer time when generating pair-list.
+
+            # if you wanted to do it anyways, uncomment next line:
+            # full_excl.extend(range(last_atoms[atom.MRES-1]+1, last_atoms[-1]+1))
             
             atom.INEvalues = [x for x in full_excl if x > atom.ATNM]
             atom.INE = len(atom.INEvalues)
