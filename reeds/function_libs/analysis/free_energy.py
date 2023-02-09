@@ -1,12 +1,15 @@
-import json
-import os
+import json, os, copy
 from typing import List, Dict
 
+import numpy as np
 import pandas as pd
 from pygromos.gromos import gromosPP
 from pygromos.utils import bash
 
-import reeds.function_libs.visualization.free_energy_plots
+from reeds.function_libs.visualization.free_energy_plots import plot_mbar_convergence, plot_dF_conv
+
+from scipy import constants as const
+from scipy.special import logsumexp
 
 
 def multi_lig_dfmult(num_replicas: int,
@@ -212,8 +215,7 @@ def free_energy_convergence_analysis(ene_trajs: List[pd.DataFrame],
             if (verbose): print("Plotting")
             updated_keys = {str(replica_key) + "_" + str(key): value for key, value in
                             dF_conv_all_replicas[replica_key].items()}
-            reeds.function_libs.visualization.free_energy_plots.plot_dF_conv(updated_keys, title="Free energy convergence",
-                                                                             out_path=out_dir + "/" + out_prefix + "_" + str(replica_key), show_legend=True)
+            plot_dF_conv(updated_keys, title="Free energy convergence", out_path=out_dir + "/" + out_prefix + "_" + str(replica_key), show_legend=True)
             json.dump(dF_conv_all_replicas, fp=open(out_dir + "/tmp_dF_" + str(s_index) + ".dat", "w"), indent=4)
 
         json.dump(dF_conv_all_replicas, fp=open(summary_file_path, "w"), indent=4)
@@ -428,3 +430,192 @@ def gen_results_string(results_dict: dict) -> str:
         result_string += "\n"
     result_string += "\n"
     return result_string
+
+def reformat_trajs_for_mbar(ene_trajs, s_values, eoffs, temp, l = 1, with_decorrelation=True):
+    """
+    Reformats a gromos energy trajectory to fit the expected input of pymbar (u_kln)
+    
+    This function re-evaluates the reference potential using the reference potential 
+    parameters of every other replica (i.e. using different values for s and eoffs)
+
+    Note: If l = 1, this applying M-BAR in this way is equivalent to using the Zwanzig equation (information from other replicas are not used).
+    # we could potentially remove completely dependence on dfmult and calculate all free energies with MBAR (faster) in future if code is stable
+
+    Parameters
+    ----------
+    ene_trajs: List [pd.DataFrame] 
+        contains all replicas potential energies 
+    s_values: List[float]
+        the set of s-values used in the simulation which generated this data
+    eoffs: List[List[float]]
+        the set of energy offsets used in the simulation which generated this data (for all s values)
+    temp: float
+        temperature of the simulation
+    l: int
+        number of replicas to include in the MBAR calculation, if 1 equivalent to Zwanzig eqn.
+    with_decorrelation: bool
+        determines if the input timeseries are subsampled to remove correlated data-points.
+        with M-BAR input timeseries should be decorellated. 
+
+    Returns
+    -------
+        u_kn, N_k 
+        reduced potential energies for all thermodynamic states
+        number of samples for each state 
+        this output can be given directly to pymbar
+    
+    """
+    
+    from pymbar.timeseries import subsample_correlated_data
+
+    kt = (temp * const.k * const.Avogadro) / 1000
+    beta =  1 / kt
+    
+    num_states = len(eoffs[0])
+    end_states = [f'e{i+1}' for i in range(num_states)]
+    
+    # a little bit ugly we do work twice here
+    if with_decorrelation:
+        n = [len(subsample_correlated_data(traj['eR'])) for traj in ene_trajs[:l]]
+        idx_ns = np.append([0], np.cumsum(n))
+    else:
+        n = [len(ene_trajs[0]['eR'])] * l
+        idx_ns = np.append([0], np.cumsum(n))
+
+    k_tot = num_states + l # we will always have l additional states (all different Vrs)
+    
+    u_kn = np.zeros([k_tot, np.sum(n)]) # energies evaluated at all states k for all n samples
+    N_k = np.zeros(k_tot) # number of samples from states k
+    
+    for i, traj in enumerate(ene_trajs):
+        if i == l:
+            break
+
+        beg = idx_ns[i]
+        end = idx_ns[i+1]
+        
+        # Reformat the data
+        vr = np.array(traj['eR'])
+
+        if with_decorrelation:
+            idx_subsample = subsample_correlated_data(vr)
+            
+            vr = vr[idx_subsample]
+            vis = np.array(traj[end_states])[idx_subsample]
+        else:
+            vis = np.array(traj[end_states])      
+
+        # Add the potential energies of the end states
+        for k, vk in enumerate(vis.T): 
+            u_kn[k, beg:end] = vk
+        
+        # Add the potential energies of the reference states at simulated 
+        for k in range(num_states, num_states+l):
+            idx_params = (k-num_states)
+            if idx_params == i:
+                u_kn[k, beg:end] = vr
+            else: #recalc ref potential at all other values of s-values/eoffs
+                s = s_values[idx_params]
+                _eoffs = eoffs[idx_params]                
+                expterm =  - (beta*s) * np.subtract(vis,  _eoffs).T
+                u_kn[k, beg:end] = -1/(beta*s) * logsumexp(expterm, axis=0)
+            
+        N_k[i+num_states] = len(vr)
+    
+    # Convert to reduced potential energies
+    u_kn *= beta
+    
+    return u_kn, N_k 
+
+def calc_free_energies_with_mbar(ene_trajs, s_values, eoffs, out_dir, temp=298, num_replicas=1, ) -> None:
+    """
+    Calculate the free energies between all end states and the uppermost reference state (i.e. s = 1) by using 
+    information from more than 1 replica. The amount of replicas to use can be determined with the parameter num_replicas
+    and using a single replica leads to identical results as using the Zwanzig formula. 
+    
+    All returned free energies are dG ( i-> R ) in numpy array format. This is in my opinion the best way to return results 
+    as MBAR solves the system of equation up to an additive constant. Additionaly, this allows to calculate more meaningful 
+    errors when running simulations with different replicates (with different starting velocities).
+
+    Additionally, I print out in text format the full MBAR matrix as well as errors. Those can be re-opened in python with:
+    np.loadtxt('/path/to/file.txt')
+
+    Note: statistical errors from within the simulation are printed for the full matrix 
+    they could also be accessed for all free energies i>R with: 
+        results['dDelta_f'][num_states][0:num_states] * kt # in kJ/mol
+
+
+    Parameters
+    ----------
+    ene_trajs: List [pd.DataFrame] 
+        contains all replicas potential energies 
+    s_values: List[float]
+        the set of s-values used in the simulation which generated this data
+    initial_offsets: List[List[float]]
+        the set of energy offsets used in the simulation which generated this data (for all s values)
+    out_dir: str
+        path to which the results will be printed out.    
+    temp: float
+        temperature of the simulation
+    num_replicas:
+        number of replicas to include in the MBAR calculation, if 1 equivalent to Zwanzig eqn.
+
+    Returns
+    -------
+    None
+
+    """
+
+    try:
+        import pymbar
+        from pymbar import MBAR
+        if int(pymbar.__version__.split('.')[0]) < 4:
+            print('\nThe version of pymbar you have installed is < 4.0.1. Please update your pymbar to version 4.0.1 or higher.')
+            raise Exception()
+    except:
+        print ('\nCould not find pymbar module, free energies will only be calculated with dfmult (Zwanzig formula).\n')
+        return None
+
+    kt = (temp * const.k * const.Avogadro) / 1000 # in kJ/mol
+    num_states = len(eoffs[0])
+
+    # Doing the actual work (will also do a convergence analysis)
+    percents = np.arange(10, 101, 10)
+
+    num_points = len(percents)
+    mbar_convergence = np.zeros((num_points, num_states))
+
+    size_ene = len(ene_trajs[0])
+
+    for i, percent in enumerate(percents):
+        imax = int(size_ene * percent/100)
+        tmp =  [ t[0:imax] for t in copy.deepcopy(ene_trajs)]
+
+        try:
+            u_kn, N_k = reformat_trajs_for_mbar(tmp, s_values, eoffs, temp, l=num_replicas, with_decorrelation=True)
+            
+            mbar = MBAR(u_kn, N_k)
+            results = mbar.compute_free_energy_differences()
+            mbar_convergence[i] = results['Delta_f'][num_states][0:num_states] * kt # convert back to kJ/mol
+        except:
+            print ('Got an error during the calculation of the free energies with M-BAR.')
+
+
+    # Print the free energies (using 100% of the simulation and at all intermediate points to evaluate convergence)
+    np.save(f'{out_dir}/deltaGs_mbar.npy', mbar_convergence[-1])
+    np.save(f'{out_dir}/deltaGs_mbar_convergence.npy', mbar_convergence)
+
+    # Also print the full MBAR matrix including errors. 
+    header =  '\t'.join(([f'state{i}' for i in range(1, num_states+1)] + [f'ref{i}' for i in range(1, num_replicas+1)]))
+
+    np.savetxt(f'{out_dir}/mbar_full_matrix.txt', results['Delta_f']*kt, header=header, fmt='%.2f', delimiter ='\t')
+    np.savetxt(f'{out_dir}/mbar_errors_full_matrix.txt', results['dDelta_f']*kt, header=header, fmt='%.2f', delimiter = '\t')
+
+
+    # Make a convergence plot 
+    tmax = (ene_trajs[0]['time'].iloc[-1] + ene_trajs[0]['time'].iloc[1]) / 1000
+    time = percents /100 * tmax
+
+    plot_mbar_convergence(time, mbar_convergence, num_states, f'{out_dir}/mbar_convergence.png')
+
+    return None 

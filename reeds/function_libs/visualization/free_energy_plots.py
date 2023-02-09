@@ -162,3 +162,35 @@ def plot_thermcycle_dF_convergence(dF_time : Dict,
     if (out_path != None): fig.savefig(out_path)
 
     return fig, axes
+
+
+def plot_mbar_convergence(time, mbar_convergence, num_states, out_path):
+
+    # could make selection better here.
+
+    ncols = 5
+    nrows = int(num_states/5) + (num_states % 5 > 0)
+
+    fig, axes = plt.subplots(ncols=ncols, nrows=nrows, figsize=[4*ncols, 4*nrows])
+
+    for i, ax in enumerate(axes.ravel()):
+        if i == num_states: break
+        
+        # Here i will be the state 
+        ax.set_title(r'Convergence of $\Delta{}G$ '+ str(i+1) + r' $\rightarrow{}$ R', fontsize=18)
+    
+        ax.plot(time, mbar_convergence.T[i], label = 'M-BAR', color = 'orange')
+
+        ax.legend(loc='lower right', fontsize = 18)
+            
+        ax.set_xlabel('time [ns]', fontsize = 18)
+        ax.set_ylabel(r'$\Delta{}G$ [kJ/mol]', fontsize = 18)
+        ax.tick_params(axis='both', which='major', labelsize=18)
+        ax.set_ylim([mbar_convergence.T[i][-1]-5, mbar_convergence.T[i][-1]+5])
+            
+
+    fig.tight_layout()
+
+    fig.savefig(out_path)
+
+    return 

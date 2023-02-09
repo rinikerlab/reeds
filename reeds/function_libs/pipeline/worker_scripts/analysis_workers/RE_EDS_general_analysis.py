@@ -268,7 +268,7 @@ def do_Reeds_analysis(in_folder: str, out_folder: str, gromos_path: str,
     # if(verbose): print("Reading imd: "+in_imd)
     imd_file = imd.Imd(in_imd)
     s_values = list(map(float, imd_file.REPLICA_EDS.RES))
-    Eoff = np.array(list(map(lambda vec: list(map(float, vec)), imd_file.REPLICA_EDS.EIR))).T
+    eoffs = np.array(list(map(lambda vec: list(map(float, vec)), imd_file.REPLICA_EDS.EIR))).T
     num_states = int(imd_file.REPLICA_EDS.NUMSTATES)
 
     try:
@@ -432,7 +432,7 @@ def do_Reeds_analysis(in_folder: str, out_folder: str, gromos_path: str,
 
         (sampling_results, out_dir) = sampling_ana.sampling_analysis(out_path=out_dir,
                                                                      ene_trajs=energy_trajectories,
-                                                                     eoffs=Eoff,
+                                                                     eoffs=eoffs,
                                                                      s_values=s_values,
                                                                      state_potential_treshold=state_physical_occurrence_potential_threshold)
     elif(control_dict["phys_sampling"]["do"]):
@@ -455,7 +455,7 @@ def do_Reeds_analysis(in_folder: str, out_folder: str, gromos_path: str,
         (sampling_results, out_dir) = sampling_ana.detect_undersampling(out_path = out_dir, 
                                                                         ene_trajs = energy_trajectories,
                                                                         _visualize=sub_control["sampling_plot"], 
-                                                                        s_values = s_values, eoffs=Eoff, 
+                                                                        s_values = s_values, eoffs=eoffs, 
                                                                         state_potential_treshold= state_undersampling_occurrence_potential_threshold, 
                                                                         undersampling_occurence_sampling_tresh=undersampling_frac_thresh)
                                                                         
@@ -465,19 +465,19 @@ def do_Reeds_analysis(in_folder: str, out_folder: str, gromos_path: str,
         elif (sub_control["eoff_estimation"]):
             print("calc Eoff: ")
             # WARNING ASSUMPTION THAT ALL EOFF VECTORS ARE THE SAME!
-            print("\tEoffs(" + str(len(Eoff[0])) + "): ", Eoff[0])
+            print("\tEoffs(" + str(len(eoffs[0])) + "): ", eoffs[0])
             print("\tS_values(" + str(len(s_values)) + "): ", s_values)
             print("\tsytsemTemp: ", temp)
             # set trim_beg to 0.1 when analysing non equilibrated data
 
             # Decrement the value of undersampling_idx by 1. As indexing followed a different convention. 
-            new_eoffs_estm, all_eoffs = eds_energy_offsets.estimate_energy_offsets(ene_trajs = energy_trajectories, initial_offsets = Eoff[0], sampling_stat=sampling_results, s_values = s_values,
+            new_eoffs_estm, all_eoffs = eds_energy_offsets.estimate_energy_offsets(ene_trajs = energy_trajectories, initial_offsets = eoffs[0], sampling_stat=sampling_results, s_values = s_values,
                                                                                    out_path = out_dir, temp = temp, trim_beg = 0., undersampling_idx = sampling_results['undersamplingThreshold']-1,
                                                                                    plot_results = True, calc_clara = False)
             print("ENERGY OFFSETS ESTIMATION:\n") 
             print("new_eoffs_estm: " + str(np.round(new_eoffs_estm, 2)))
         elif(sub_control["eoffset_rebalancing"]):
-            new_eoffs_rb = rebalance_eoffs_directCounting(sampling_stat=sampling_results['samplingDistributions'], old_eoffs=Eoff,
+            new_eoffs_rb = rebalance_eoffs_directCounting(sampling_stat=sampling_results['samplingDistributions'], old_eoffs=eoffs,
                                                        learningFactor=eoffRebalancing_learningFactor, pseudo_count=eoffRebalancing_pseudocount,
                                                        correct_for_s1_only=not eoffRebalancing_correctionPerReplica)
             new_eoffs_rb = new_eoffs_rb.T
@@ -548,12 +548,16 @@ def do_Reeds_analysis(in_folder: str, out_folder: str, gromos_path: str,
         if energy_trajectories is None:
             energy_trajectories = parse_csv_energy_trajectories(concat_file_folder, ene_trajs_prefix)
 
+        free_energy.calc_free_energies_with_mbar(energy_trajectories, s_values, eoffs, dfmult_convergence_folder, temp, num_replicas=len(energy_trajectories))
+
         free_energy.free_energy_convergence_analysis(ene_trajs=energy_trajectories, 
                                                      out_dir=dfmult_convergence_folder,
                                                      out_prefix=title_prefix, 
                                                      in_prefix=ene_trajs_prefix, 
                                                      verbose=verbose,
                                                      dfmult_all_replicas=dfmult_all_replicas)
+
+        
 
     # When we reach here, we no longer need the data in energy_trajectories, memory can be freed.
     del energy_trajectories
