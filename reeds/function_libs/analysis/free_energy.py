@@ -527,20 +527,22 @@ def reformat_trajs_for_mbar(ene_trajs, s_values, eoffs, temp, l = 1, with_decorr
     
     return u_kn, N_k 
 
-
 def calc_free_energies_with_mbar(ene_trajs, s_values, eoffs, out_dir, temp=298, num_replicas=1, ) -> None:
     """
     Calculate the free energies between all end states and the uppermost reference state (i.e. s = 1) by using 
     information from more than 1 replica. The amount of replicas to use can be determined with the parameter num_replicas
     and using a single replica leads to identical results as using the Zwanzig formula. 
     
-    All returned free energies are dG ( i-> R ). The relative free energies (i -> j) can be recovered simply from 
-    the subset printed out. This is in my opinion the best way to return results as MBAR solves the system of equation 
-    up to an additive constant. Additionaly, this allows to calculate more meaningful errors when running simulations
-    with different replicates (with different starting velocities).
+    All returned free energies are dG ( i-> R ) in numpy array format. This is in my opinion the best way to return results 
+    as MBAR solves the system of equation up to an additive constant. Additionaly, this allows to calculate more meaningful 
+    errors when running simulations with different replicates (with different starting velocities).
 
-    Note: statistical errors from within the simulation are not printed but can easily be accessed with: 
-        results['dDelta_f'][num_states][0:num_states] * kt # convert back to kJ/mol
+    Additionally, I print out in text format the full MBAR matrix as well as errors. Those can be re-opened in python with:
+    np.loadtxt('/path/to/file.txt')
+
+    Note: statistical errors from within the simulation are printed for the full matrix 
+    they could also be accessed for all free energies i>R with: 
+        results['dDelta_f'][num_states][0:num_states] * kt # in kJ/mol
 
 
     Parameters
@@ -563,10 +565,16 @@ def calc_free_energies_with_mbar(ene_trajs, s_values, eoffs, out_dir, temp=298, 
     None
 
     """
+
     try:
+        import pymbar
         from pymbar import MBAR
+        if int(pymbar.__version__.split('.')[0]) < 4:
+            print('\nThe version of pymbar you have installed is < 4.0.1. Please update your pymbar to version 4.0.1 or higher.')
+            raise Exception()
     except:
-        print ('could not find pymbar module, free energies will only be calculated with dfmult (Zwanzig formula).\n')
+        print ('\nCould not find pymbar module, free energies will only be calculated with dfmult (Zwanzig formula).\n')
+        return None
 
     kt = (temp * const.k * const.Avogadro) / 1000 # in kJ/mol
     num_states = len(eoffs[0])
@@ -596,6 +604,13 @@ def calc_free_energies_with_mbar(ene_trajs, s_values, eoffs, out_dir, temp=298, 
     # Print the free energies (using 100% of the simulation and at all intermediate points to evaluate convergence)
     np.save(f'{out_dir}/deltaGs_mbar.npy', mbar_convergence[-1])
     np.save(f'{out_dir}/deltaGs_mbar_convergence.npy', mbar_convergence)
+
+    # Also print the full MBAR matrix including errors. 
+    header =  '\t'.join(([f'state{i}' for i in range(1, num_states+1)] + [f'ref{i}' for i in range(1, num_replicas+1)]))
+
+    np.savetxt(f'{out_dir}/mbar_full_matrix.txt', results['Delta_f']*kt, header=header, fmt='%.2f', delimiter ='\t')
+    np.savetxt(f'{out_dir}/mbar_errors_full_matrix.txt', results['dDelta_f']*kt, header=header, fmt='%.2f', delimiter = '\t')
+
 
     # Make a convergence plot 
     tmax = (ene_trajs[0]['time'].iloc[-1] + ene_trajs[0]['time'].iloc[1]) / 1000
