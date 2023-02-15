@@ -1142,6 +1142,14 @@ def constructPerturbedTopology(hybrid_topology, single_topologies, out_path,
 
     return None
 
+def suppress_singularities(cnf):
+    for ind, atom in enumerate(cnf.POSITION.content):
+        if atom.resName == 'WAT' or atom.resName == 'SOLV':
+            break
+        atom.xp = atom.xp + 10 ** (-5) * ind
+        atom.yp = atom.yp + 10 ** (-5) * ind
+        atom.zp = atom.zp + 10 ** (-5) * ind
+
 def constructHybridConformation(new_ligand_tops, connecting_points, input_cnfs, path_out_cnf):
     """
         This function will create a Hybrid Conformation, based on the hybrid topology, 
@@ -1226,7 +1234,8 @@ def constructHybridConformation(new_ligand_tops, connecting_points, input_cnfs, 
 
         # also increment for the waters 
         if pos.resName in ['SOLV', 'WAT'] and pos.atomType == "H2": curResID += 1
-
+    
+    suppress_singularities(new_hybrid_cnf)
     new_hybrid_cnf.write(path_out_cnf)
     new_hybrid_cnf.write_pdb(path_out_cnf.replace('.cnf', '.pdb'))
     return None
