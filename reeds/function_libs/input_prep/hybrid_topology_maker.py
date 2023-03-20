@@ -16,6 +16,11 @@ gromos_aas = [ 'GLU', 'LEU', 'VAL', 'GLN', 'GLY', 'ALA', 'LYS', 'ILE']
 
 print ('WARNING: THIS CODE IS MEANT TO WORK WITH A PYGROMOS3 VERSION !!!')
 
+# Some helper functions
+
+
+
+
 def reduceConformations(path_cnf, out_path, contains_protein=False, remove_solvent=False):
     """
     This function will make a cnf for each possible ligand (alone in water or in complex)
@@ -103,7 +108,7 @@ class PerturbedAtom:
         self.new_id = new_id
 
     def __str__(self):
-        return ('atom: ' + self.atom + '   ' + 'initial ligand: ' + str(self.init_lig)
+        return ('atom: ' + str(self.atom) + '   ' + 'initial ligand: ' + str(self.init_lig)
               + '  initial id: ' + str(self.init_id) + '   new_id: ' + str(self.new_id))
 
 
@@ -147,7 +152,7 @@ def find_new_id(atom_mapping, init_lig, init_id):
 # Functions used after MCS search to set-up the list of PerturbedAtom(s)
 # which we carry throughout the rest of the Hybrid Topology creation
 
-def getCoreBondHList(top, core_mapping, connection_point):
+def getCoreBondHList(top, core_mapping, connection_point, force_hydrogen_connect):
     """
         Returns the list of X-H covalent bonds
         in the core
@@ -163,6 +168,8 @@ def getCoreBondHList(top, core_mapping, connection_point):
                 second element is the atom (or list of atoms) in the rgroup
                 We use this to avoid adding "core hydrogens" 
                 if we want them not to be part of the core ( e.g. -H -> -F perturbation)
+            force_hydrogen_connect:
+                if True, will not add the hydrogens bound to a "connecting point"
 
         Returns
         --------
@@ -176,8 +183,9 @@ def getCoreBondHList(top, core_mapping, connection_point):
     # We also need to do this for BOND as openFF miscategorizes (because of mass)
     for bh in top.BONDH.content + top.BOND.content:
         if bh.IB in connection_point[0] or bh.JB in connection_point[0]:
-            #print ('skipping: ' + str(bh))
-            continue # skip, those atoms need to be included explicitely later   
+            if force_hydrogen_connect:
+                print ('not including this hydrogen as part of core: ' + str(bh))
+                continue
 
         type1 = top.SOLUTEATOM.content[bh.IB-1].PANM
         type2 = top.SOLUTEATOM.content[bh.JB-1].PANM
@@ -236,7 +244,7 @@ def addCoreHydrogens(perturbed_atoms, core_bondsH, lig_bondsH, init_lig_id):
     return perturbed_atoms
 
 
-def initializePerturbedAtoms(tops, core_mappings, connection_points):
+def initializePerturbedAtoms(tops, core_mappings, connection_points, force_hydrogen_connect=False):
     """
     This function will initialize the list of PerturbedAtoms    
     
@@ -257,6 +265,9 @@ def initializePerturbedAtoms(tops, core_mappings, connection_points):
             mapping between each of the topologies found by the MCS
         connection_points:
             keeps track of atoms belonmging to core and -R group
+        force_hydrogen_connect:
+            if True, hydrogen atoms bound to a "connecting point" will be present 
+            explicitely for all ligands.
 
     Returns
     --------
@@ -266,11 +277,16 @@ def initializePerturbedAtoms(tops, core_mappings, connection_points):
     
     perturbed_atoms = []
     
-    core_bondsH = getCoreBondHList(tops[0], core_mappings[0], connection_points[0])
-    
+    core_bondsH = getCoreBondHList(tops[0], core_mappings[0], connection_points[0], force_hydrogen_connect)
+    #print (f'{core_bondsH=}')
+
     # We can skip the first ligand
     for i, (top, cmap) in enumerate(zip(tops[1:], core_mappings[1:])):        
-        for atom_newlig, atom_core in zip(cmap, core_mappings[0]):            
+        for atom_newlig, atom_core in zip(cmap, core_mappings[0]):
+            
+            if atom_newlig == -1:
+                continue
+            
             pa = PerturbedAtom(atom = top.SOLUTEATOM.content[atom_newlig-1].PANM, 
                                init_lig = i+2, 
                                init_id = atom_newlig, 
@@ -281,7 +297,7 @@ def initializePerturbedAtoms(tops, core_mappings, connection_points):
         # Add the mappings of the Hydrogens (as those were not in the core) that are part of the core.
         # as we need those to have proper 1,3 and 1,4 exclusions. Ensure no duplicates are entered.
         
-        lig_bondsH = getCoreBondHList(top, cmap, connection_points[i+1])
+        lig_bondsH = getCoreBondHList(top, cmap, connection_points[i+1], force_hydrogen_connect)
         perturbed_atoms = addCoreHydrogens(perturbed_atoms, core_bondsH, lig_bondsH, i+2)
         
     return perturbed_atoms
@@ -1014,13 +1030,46 @@ def adjustMasses(topology):
             
     return topology
 
+def findLigandSpecificCore(atom_mappings, num_ligands):
+    """
+    This function finds and returns the list of atoms
+    which are mapped onto the reference (ligand 1) core. 
+    It allows to define topologies were the substructure core
+    is different for every ligand.
+    
+    IMPORTANT NOTE:
+        This function assumes that the atom_mappings object is sorted such 
+        that each perturbed atom are listed in order of increasing ligand number
+        with the core matched first, followed by the R groups. This is how the function
+        initializePerturbedAtoms creates the list, so it must not be shuffled or resorted.
+
+    """
+    ligand1_cores = []
+    
+    current_lig = 2
+    tmp = []
+    
+    for pa in atom_mappings:
+        if current_lig != pa.init_lig:
+            ligand1_cores.append(sorted(tmp))
+            tmp = []
+            if current_lig > pa.init_lig:
+                break
+            current_lig = pa.init_lig
+        if pa.init_id != -1:
+            tmp.append(pa.new_id)
+    
+    return ligand1_cores
+
 #
 # Main functions coordinating everything
 #
 
 def constructPerturbedTopology(hybrid_topology, single_topologies, out_path, 
                                connection_points, perturbed_atoms, 
-                               alphalj = 1.0, alphacrf = 1.0, replace_core_params=True):
+                               alphalj = 1.0, alphacrf = 1.0, 
+                               replace_core_params=True, 
+                               verbose = True):
 
     """
         This function will create the perturbed topology for our hybrid topology. 
@@ -1044,7 +1093,7 @@ def constructPerturbedTopology(hybrid_topology, single_topologies, out_path,
             connection_points:
                 keeps track of atoms belonmging to core and -R group
             perturbed_atoms:
-                List of PerturbedAtoms keeping track of how ligands were mapping into the hybrid topology             
+                List of PerturbedAtoms keeping track of how ligands were mapped onto one another into the hybrid topology             
             alphalj: float
                 alpha parameter for the LJ interaction
             alphacrf: float
@@ -1052,7 +1101,9 @@ def constructPerturbedTopology(hybrid_topology, single_topologies, out_path,
             replace_core_params: 
                 If true core parameters will be taken from rach individual single top 
                 (else copied from top of ligand1)
-             
+            verbose:
+                print out some info
+
         Returns
         -------
             None
@@ -1061,12 +1112,15 @@ def constructPerturbedTopology(hybrid_topology, single_topologies, out_path,
     
     # count number of residues
     num_atoms = hybrid_topology.SOLUTEATOM.content[-1].ATNM
-    num_states = hybrid_topology.SOLUTEATOM.content[-1].MRES
+    num_states = len(single_topologies)
 
     dummy_iac = hybrid_topology.ATOMTYPENAME.content[0][0] # assumes dummy iac is always last
     
     # Get the atoms belonging to the core of (ligand1)
-    lig1_core, lig1_r = findAtomsInCoreAndRGroup(single_topologies[0], connection_points[0])
+    lig1_cores = findLigandSpecificCore(perturbed_atoms, len(single_topologies))
+    
+    if verbose:
+        print (f'{lig1_cores=}')
 
     # open the output file.
     f = open(out_path, 'w')
@@ -1098,23 +1152,28 @@ def constructPerturbedTopology(hybrid_topology, single_topologies, out_path,
     # Loop over topology atoms to include in the ptp
 
     for atom in hybrid_topology.SOLUTEATOM.content:
-
         ptp_str = '\t' + str(atom.ATNM) + '\t' + str(atom.PANM) +'\t'
 
         # charge offset to make formating look good
         q_offset = ' ' if atom.CG > 0 else ''
+        if atom.MRES == 1 and any(atom.ATNM in core for core in lig1_cores):
+            if verbose:
+                print (f'working on atom {atom.ATNM}:')
 
-        if atom.MRES == 1 and atom.ATNM in lig1_core:
             for i in range(num_states): 
                 if i == 0 or not replace_core_params:
                     ptp_str += str(atom.IAC) + '\t' + q_offset + "{:.5f}".format(atom.CG) + '\t'
                 else: # write parameters of the core from other topologies
                     try:
                         idx_singletop = find_old_id(perturbed_atoms, init_lig = i+1, new_id = atom.ATNM)
-                        tmp_iac = single_topologies[i].SOLUTEATOM.content[idx_singletop-1].IAC
-                        tmp_q = single_topologies[i].SOLUTEATOM.content[idx_singletop-1].CG
-                    
-                        q_offset = ' ' if tmp_q > 0 else ''
+                        if idx_singletop == -1:
+                            tmp_iac = dummy_iac
+                            tmp_q = 0.0
+                        else:
+                            tmp_iac = single_topologies[i].SOLUTEATOM.content[idx_singletop-1].IAC
+                            tmp_q = single_topologies[i].SOLUTEATOM.content[idx_singletop-1].CG
+
+                        q_offset = ' ' if tmp_q >= 0 else ''
                     
                         ptp_str += str(tmp_iac) + '\t' + q_offset + "{:.5f}".format(tmp_q) + '\t'
                     except: 
@@ -1122,7 +1181,6 @@ def constructPerturbedTopology(hybrid_topology, single_topologies, out_path,
                         # Here we just set it as a dummy atom
                         war_str = ' '.join(str(atom).split())
                         print (f'WARNING:\n {war_str} : does not exist for ligand {i+1}')
-                            
                         ptp_str += str(dummy_iac) + '\t' + q_offset + "{:.5f}".format(0) + '\t'
         
         else: # Dealing with -R groups (params already good in the perturbed top)
@@ -1184,8 +1242,9 @@ def constructHybridConformation(new_ligand_tops, connecting_points, input_cnfs, 
 
     # Remove all non-ligand residues (We will add them back at the end) 
     for resname in list(new_hybrid_cnf.residues.keys()):
-        if 'L' in resname and resname not in gromos_aas: continue
+        if 'L' in resname and resname not in gromos_aas and resname != 'SOLV': continue
         new_hybrid_cnf.delete_residue(resName=resname)
+
 
     new_hybrid_pos = new_hybrid_cnf.POSITION.content
 
@@ -1197,7 +1256,6 @@ def constructHybridConformation(new_ligand_tops, connecting_points, input_cnfs, 
         newResId = i+2
 
         lig_core, lig_rgroup = findAtomsInCoreAndRGroup(new_ligand_tops[i], connecting_points[i+1])
-
         for pos in lig_cnf.POSITION.content:
             if pos.resID == 2: break
 
@@ -1282,9 +1340,6 @@ def constructHybridTopology(core_top, new_ligand_tops, atom_mappings, connecting
     
     new_core = copy.deepcopy(core_top)
     lig1_atoms = findAtomsInCoreAndRGroup(core_top, connecting_points[0])
-    
-    if verbose:
-        print (f'{lig1_atoms= }')
 
     # 1: Add all of the topologies together
     
