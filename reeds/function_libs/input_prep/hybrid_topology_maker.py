@@ -1043,21 +1043,18 @@ def findLigandSpecificCore(atom_mappings, num_ligands):
         with the core matched first, followed by the R groups. This is how the function
         initializePerturbedAtoms creates the list, so it must not be shuffled or resorted.
 
-    """
+   """
+   
     ligand1_cores = []
-    
-    current_lig = 2
     tmp = []
     
-    for pa in atom_mappings:
-        if current_lig != pa.init_lig:
-            ligand1_cores.append(sorted(tmp))
-            tmp = []
-            if current_lig > pa.init_lig:
-                break
-            current_lig = pa.init_lig
-        if pa.init_id != -1:
-            tmp.append(pa.new_id)
+    for ligand_id in range(2, num_ligands+1):
+        for pa in atom_mappings:
+            if pa.init_id != -1 and pa.new_id not in tmp:
+                tmp.append(pa.new_id)
+        
+        ligand1_cores.append(sorted(tmp))
+        tmp = []
     
     return ligand1_cores
 
