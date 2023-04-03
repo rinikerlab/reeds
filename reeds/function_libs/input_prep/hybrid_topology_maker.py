@@ -1040,7 +1040,7 @@ def findLigandSpecificCore(atom_mappings, num_ligands):
 
    """
    
-    ligand1_cores = []
+    core_mappings = []
     tmp = []
     
     for ligand_id in range(2, num_ligands+1):
@@ -1048,10 +1048,10 @@ def findLigandSpecificCore(atom_mappings, num_ligands):
             if pa.init_id != -1 and pa.new_id not in tmp:
                 tmp.append(pa.new_id)
         
-        ligand1_cores.append(sorted(tmp))
+        core_mappings.append(sorted(tmp))
         tmp = []
     
-    return ligand1_cores
+    return core_mappings
 
 #
 # Main functions coordinating everything
