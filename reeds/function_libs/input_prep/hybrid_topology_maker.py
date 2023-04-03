@@ -1036,12 +1036,7 @@ def findLigandSpecificCore(atom_mappings, num_ligands):
     which are mapped onto the reference (ligand 1) core. 
     It allows to define topologies were the substructure core
     is different for every ligand.
-    
-    IMPORTANT NOTE:
-        This function assumes that the atom_mappings object is sorted such 
-        that each perturbed atom are listed in order of increasing ligand number
-        with the core matched first, followed by the R groups. This is how the function
-        initializePerturbedAtoms creates the list, so it must not be shuffled or resorted.
+
 
    """
    
@@ -1114,10 +1109,10 @@ def constructPerturbedTopology(hybrid_topology, single_topologies, out_path,
     dummy_iac = hybrid_topology.ATOMTYPENAME.content[0][0] # assumes dummy iac is always last
     
     # Get the atoms belonging to the core of (ligand1)
-    lig1_cores = findLigandSpecificCore(perturbed_atoms, len(single_topologies))
+    core_mappings = findLigandSpecificCore(perturbed_atoms, len(single_topologies))
     
     if verbose:
-        print (f'{lig1_cores=}')
+        print (f'{core_mappings=}')
 
     # open the output file.
     f = open(out_path, 'w')
@@ -1153,7 +1148,7 @@ def constructPerturbedTopology(hybrid_topology, single_topologies, out_path,
 
         # charge offset to make formating look good
         q_offset = ' ' if atom.CG > 0 else ''
-        if atom.MRES == 1 and any(atom.ATNM in core for core in lig1_cores):
+        if atom.MRES == 1 and any(atom.ATNM in core for core in core_mappings):
             if verbose:
                 print (f'working on atom {atom.ATNM}:')
 
@@ -1169,7 +1164,6 @@ def constructPerturbedTopology(hybrid_topology, single_topologies, out_path,
                         else:
                             tmp_iac = single_topologies[i].SOLUTEATOM.content[idx_singletop-1].IAC
                             tmp_q = single_topologies[i].SOLUTEATOM.content[idx_singletop-1].CG
-
                         q_offset = ' ' if tmp_q >= 0 else ''
                     
                         ptp_str += str(tmp_iac) + '\t' + q_offset + "{:.5f}".format(tmp_q) + '\t'
