@@ -113,7 +113,6 @@ def optimize_s(repdat: Repdat,
     # do soptimisation
     if verbose:
         print("RUN sopt")
-        print("\tRead in repdat: " + in_file)
     stat = parseS.generate_PathStatistic_from_file(repdat, trial_range=trial_range)
 
     if (in_imd != None):
