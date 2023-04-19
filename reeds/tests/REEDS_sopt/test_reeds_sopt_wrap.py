@@ -121,10 +121,9 @@ class test_RTOs(unittest.TestCase):
     def test_NGRTO_dsidler_file_adding_4(self):
         
         repdat = Repdat(in_repdat2)
-        
         add_n_s=4
         expected_s = [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.0842, 0.0682, 0.0522, 0.0362, 0.0202, 0.0075, 0.001]
-        stat = generate_PathStatistic_from_file(in_repdat)
+        stat = generate_PathStatistic_from_file(repdat)
         s_vals, NGRTO = opt.calc_NGRTO(stat, add_n_s, verbose=True)
 
         print(NGRTO)
