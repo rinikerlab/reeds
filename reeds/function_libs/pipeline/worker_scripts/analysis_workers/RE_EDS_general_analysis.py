@@ -472,7 +472,7 @@ def do_Reeds_analysis(in_folder: str, out_folder: str, gromos_path: str,
 
             # Decrement the value of undersampling_idx by 1. As indexing followed a different convention. 
             new_eoffs_estm, all_eoffs = eds_energy_offsets.estimate_energy_offsets(ene_trajs = energy_trajectories, initial_offsets = eoffs[0], sampling_stat=sampling_results, s_values = s_values,
-                                                                                   out_path = out_dir, temp = temp, trim_beg = 0., undersampling_idx = sampling_results['undersamplingThreshold']-1,
+                                                                                   out_path = out_dir, temp = temp, undersampling_idx = sampling_results['undersamplingThreshold']-1,
                                                                                    plot_results = True, calc_clara = False)
             print("ENERGY OFFSETS ESTIMATION:\n") 
             print("new_eoffs_estm: " + str(np.round(new_eoffs_estm, 2)))
