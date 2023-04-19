@@ -19,7 +19,7 @@ from reeds.function_libs.file_management.file_management import parse_csv_energy
 
 
 
-def analyse_optimization_iteration(repdat_path: str, out_dir: str, title: str, time: float, pot_tresh=0) -> dict:
+def analyse_optimization_iteration(repdat_path: str, out_dir: str, title: str, time: float, pot_tresh=0, trim_equil=0.1) -> dict:
     """
         analysis of a single optimization iteration.
         - analyse sampling, round trips, round trip time
@@ -37,8 +37,8 @@ def analyse_optimization_iteration(repdat_path: str, out_dir: str, title: str, t
         total simulation time
     pot_tresh : Union[float, List[float]], optional
         potential threshold for observing
-    
-
+    trim_equil: float
+        corresponds to the fraction of data to remove for equilibration
     Returns
     -------
     dict
@@ -47,22 +47,22 @@ def analyse_optimization_iteration(repdat_path: str, out_dir: str, title: str, t
     """
     # repdat file
 
-    repdat_file = repdat.Repdat(repdat_path)
+    exchange_data = repdat.Repdat(repdat_path, trim_equil=trim_equil)
 
-    s_values = repdat_file.system.s
-    trans_dict = repdat_file.get_replica_traces()
+    s_values = exchange_data.system.s
+    trans_dict = exchange_data.get_replica_traces()
     repOff = s_values.count(1)-1
 
     # ouput_struct
     sopt_it = {}
 
     # state Sampling
-    domination_counts, max_pos, min_pos, occurrence_counts = samplingAnalysisFromRepdat(pot_tresh, repOff, repdat_file)
+    domination_counts, max_pos, min_pos, occurrence_counts = samplingAnalysisFromRepdat(pot_tresh, repOff, exchange_data)
 
     sopt_it.update({"state_occurence_sampling": occurrence_counts})
     sopt_it.update({"state_maxContributing_sampling": domination_counts})
 
-    del repdat_file
+    del exchange_data
 
     reeds.function_libs.visualization.re_plots.plot_repPos_replica_histogramm(out_path=out_dir + "/" + title.replace(" ", "_") + "replicaPositions_hist.png",
                                                                               data=trans_dict, title=title,
@@ -105,17 +105,17 @@ def analyse_optimization_iteration(repdat_path: str, out_dir: str, title: str, t
     return sopt_it
 
 
-def samplingAnalysisFromRepdat(pot_tresh, repOff, repdat_file):
-    states = repdat_file.DATA.state_potentials.iloc[0].keys()
-    eoffs = repdat_file.system.state_eir
+def samplingAnalysisFromRepdat(pot_tresh, repOff, exchange_data):
+    states = exchange_data.DATA.state_potentials.iloc[0].keys()
+    eoffs = exchange_data.system.state_eir
     occurrence_counts = {state: 0 for state in states}
     maxContributing_counts = {state: 0 for state in states}
 
-    print("cols: ", repdat_file.DATA.columns)
-    all_pos = list(sorted(np.unique(repdat_file.DATA.ID)))
+    print("cols: ", exchange_data.DATA.columns)
+    all_pos = list(sorted(np.unique(exchange_data.DATA.ID)))
     min_pos, max_pos = (all_pos[repOff], all_pos[-1])
     print("extremePos: ", min_pos, max_pos)
-    replica1 = repdat_file.DATA.loc[repdat_file.DATA.ID == 1]
+    replica1 = exchange_data.DATA.loc[repdat_file.DATA.ID == 1]
     if (isinstance(pot_tresh, float)):
         pot_tresh = {x: pot_tresh for x in replica1.iloc[0].state_potentials}
     elif (isinstance(pot_tresh, float)):
