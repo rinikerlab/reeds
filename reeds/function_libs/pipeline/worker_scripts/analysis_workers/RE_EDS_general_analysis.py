@@ -175,7 +175,8 @@ def do_Reeds_analysis(in_folder: str, out_folder: str, gromos_path: str,
                       grom_file_prefix: str = "test", title_prefix: str = "test", ene_ana_prefix="ey_sx.dat",
                       repdat_prefix: str = "run_repdat.dat",
                       n_processors: int = 1, verbose=False, dfmult_all_replicas=False,
-                      ssm_next_cnfs: bool = True, 
+                      ssm_next_cnfs: bool = True,
+                      trim_equil:float = 0.1,
                       control_dict: Dict[str, Union[bool, Dict[str, bool]]] = None) -> (
         dict, dict, dict):
     """
@@ -230,6 +231,8 @@ def do_Reeds_analysis(in_folder: str, out_folder: str, gromos_path: str,
     ssm_next_cnfs: bool
         if true, the conformations placed in /analysis/next will be SSM conformations
         if false, the conformations will be the last conformations of the simulation
+    trim_equil : float between 0 and 1.
+                         corresponds to the fraction of data to remove for equilibration
     control_dict : dict, optional
         control dict for analysis
 
@@ -327,9 +330,7 @@ def do_Reeds_analysis(in_folder: str, out_folder: str, gromos_path: str,
 
         if (verbose): print("\tParse the data:\n")
         
-        # No need to check if trajectories are parsed here, as it is the first access point. 
-        energy_trajectories = parse_csv_energy_trajectories(concat_file_folder, ene_trajs_prefix)
-        
+        energy_trajectories = parse_csv_energy_trajectories(concat_file_folder, ene_trajs_prefix, trim_equil=trim_equil)
         v_range = determine_vrange(energy_trajectories, num_states)
 
         # Plots related to the potential energy distributions of the end states.
@@ -426,7 +427,7 @@ def do_Reeds_analysis(in_folder: str, out_folder: str, gromos_path: str,
     if (control_dict["phys_sampling"]["do"] and not state_physical_occurrence_potential_threshold is None):
         # parsing_ene_traj_csvs 
         if energy_trajectories is None:
-            energy_trajectories = parse_csv_energy_trajectories(concat_file_folder, ene_trajs_prefix)
+            energy_trajectories = parse_csv_energy_trajectories(concat_file_folder, ene_trajs_prefix, trim_equil=trim_equil)
      
         out_dir = bash.make_folder(out_folder + "/state_sampling")
 
@@ -446,7 +447,7 @@ def do_Reeds_analysis(in_folder: str, out_folder: str, gromos_path: str,
 
         # parsing_ene_traj_csvs 
         if energy_trajectories is None:
-            energy_trajectories = parse_csv_energy_trajectories(concat_file_folder, ene_trajs_prefix)
+            energy_trajectories = parse_csv_energy_trajectories(concat_file_folder, ene_trajs_prefix, trim_equil=trim_equil)
 
         if (not os.path.exists(concat_file_folder)):
             raise IOError("could not find needed energies (contains all ene ana .dats) folder in:\n " + out_folder)
@@ -468,7 +469,6 @@ def do_Reeds_analysis(in_folder: str, out_folder: str, gromos_path: str,
             print("\tEoffs(" + str(len(eoffs[0])) + "): ", eoffs[0])
             print("\tS_values(" + str(len(s_values)) + "): ", s_values)
             print("\tsytsemTemp: ", temp)
-            # set trim_beg to 0.1 when analysing non equilibrated data
 
             # Decrement the value of undersampling_idx by 1. As indexing followed a different convention. 
             new_eoffs_estm, all_eoffs = eds_energy_offsets.estimate_energy_offsets(ene_trajs = energy_trajectories, initial_offsets = eoffs[0], sampling_stat=sampling_results, s_values = s_values,
@@ -546,7 +546,7 @@ def do_Reeds_analysis(in_folder: str, out_folder: str, gromos_path: str,
             bash.make_folder(dfmult_convergence_folder, "-p")
 
         if energy_trajectories is None:
-            energy_trajectories = parse_csv_energy_trajectories(concat_file_folder, ene_trajs_prefix)
+            energy_trajectories = parse_csv_energy_trajectories(concat_file_folder, ene_trajs_prefix, trim_equil=trim_equil)
 
         free_energy.calc_free_energies_with_mbar(energy_trajectories, s_values, eoffs, dfmult_convergence_folder, temp, num_replicas=len(energy_trajectories))
 
