@@ -268,9 +268,9 @@ def adapt_imd_template_eoff(system: fM.System, imd_out_path: str, in_template_im
     states_num = int(read_ptp(system.top.perturbation_path)['MPERTATOM']['NPTB'])
     if(randomize): imd.randomize_seed()
     # build REEDS Block
-    imd.add_block(block=imd_blocks.NEW_REPLICA_EDS(REEDS=1, NRES=len(svals), NUMSTATES=states_num, NEOFF=len(svals),
-                                                    RES=svals, EIR=0, NRETRIAL=trials_per_run, NREQUIL=0, EDS_STAT_OUT=1,
-                                                    CONT=1, PERIODIC=0))
+    imd.add_block(block=imd_blocks.REPLICA_EDS(REEDS=1, NRES=len(svals), NUMSTATES=states_num, NEOFF=len(svals),
+                                               RES=svals, EIR=0, NRETRIAL=trials_per_run, NREQUIL=0, EDS_STAT_OUT=1,
+                                               CONT=1, PERIODIC=0))
     imd.edit_REEDS(EIR=0.0)
     imd.STEP.NSTLIM = 50
     imd_out_path = imd.write(imd_out_path)
