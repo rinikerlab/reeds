@@ -504,7 +504,7 @@ def do_Reeds_analysis(in_folder: str, out_folder: str, gromos_path: str,
         transitions = exchange_data.get_replica_traces() 
 
         if (sub_control["run_RTO"]):
-            new_svals = parameter_optimization.optimize_s(in_file=in_file, 
+            new_svals = parameter_optimization.optimize_s(repdat=exchange_data, 
                                                           out_dir=out_dir,
                                                           title_prefix="s_opt", 
                                                           in_imd=in_imd,
