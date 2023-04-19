@@ -791,14 +791,15 @@ def find_header(path: str) -> int:
     return comment_lines
 
 
-def parse_csv_energy_trajectory(in_ene_traj_path: str, verbose: bool = False) -> pd.DataFrame:
+def parse_csv_energy_trajectory(in_ene_traj_path: str, trim_equil:float = 0.0, verbose: bool = False) -> pd.DataFrame:
     """parse_csv_energy_trajectory
 
     Parameters
     ----------
     in_ene_traj_path : str
         path to input file
-
+    trim_equil : float between 0 and 1.
+        corresponds to the fraction of data to remove for equilibration
     verbose : bool, optional
         verbose output (default False)
 
@@ -810,13 +811,19 @@ def parse_csv_energy_trajectory(in_ene_traj_path: str, verbose: bool = False) ->
     if (verbose): print("deal with: ", in_ene_traj_path)
     ene_traj = pd.read_csv(in_ene_traj_path, header=find_header(in_ene_traj_path), delim_whitespace=True)
     ene_traj.columns = [x.replace("#", "").strip() for x in ene_traj.columns]
+    n = int(ene_traj.shape[0] * trim_equil)
+    ene_traj = ene_traj.iloc[n:]
+    ene_traj.reset_index(drop=True, inplace=True)
+    
     setattr(ene_traj, "in_path", in_ene_traj_path)
     return ene_traj
 
 
 def parse_csv_energy_trajectories(in_folder: str,
                                   ene_trajs_prefix: str,
-                                  verbose: bool = False) -> List[pd.DataFrame]:
+                                  trim_equil: float = 0.0,
+                                  verbose: bool = False
+                                 ) -> List[pd.DataFrame]:
     """parse_csv_energy_trajectories
     searches a directory and loads energy eds csvs as pandas dataframes.
 
@@ -826,6 +833,8 @@ def parse_csv_energy_trajectories(in_folder: str,
         folder with energy_traj - csvs
     ene_trajs_prefix : str
         prefix name
+    trim_equil : float between 0 and 1.
+        corresponds to the fraction of data to remove for equilibration
     verbose : bool, optional
         verbose output (default False)
 
@@ -842,11 +851,10 @@ def parse_csv_energy_trajectories(in_folder: str,
     if (verbose): print("FOUND: ", "\n".join(in_ene_traj_paths))
 
     for in_ene_traj_path in in_ene_traj_paths:
-        ene_traj = parse_csv_energy_trajectory(in_ene_traj_path, verbose=verbose)
+        ene_traj = parse_csv_energy_trajectory(in_ene_traj_path, trim_equil=trim_equil, verbose=verbose)
+        
         if (verbose): print("csv columns: \t", ene_traj.columns)
-        # note: the previous version created problems for filenames which contained periods
-        #setattr(ene_traj, "s", ((ene_traj.in_path.split("."))[0]).split("_")[-1])
-        #setattr(ene_traj, "replicaID", int(((ene_traj.in_path.split("."))[0]).split("_")[-1].replace("s", "")))
+        
         setattr(ene_traj, "s", ((ene_traj.in_path.split("."))[-2]).split("_")[-1])
         setattr(ene_traj, "replicaID", int(((ene_traj.in_path.split("."))[-2]).split("_")[-1].replace("s", "")))
         ene_trajs.append(ene_traj)
