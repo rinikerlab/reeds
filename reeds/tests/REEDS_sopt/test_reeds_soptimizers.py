@@ -2,8 +2,10 @@ import unittest
 import os
 from reeds.function_libs.optimization.src import sopt_Pathstatistic as stat, s_optimizer as opt
 
-in_repdat= os.path.dirname(__file__)+"/data/in_REEDS_repdat2_short.dat"
-in_repdat2= os.path.dirname(__file__)+"/data/in_REEDS_repdat3_dsidler_iter1_sopt.dat"
+from pygromos.files.repdat import Repdat
+
+in_repdat= Repdat(os.path.dirname(__file__)+"/data/in_REEDS_repdat2_short.dat")
+in_repdat2= Repdat(os.path.dirname(__file__)+"/data/in_REEDS_repdat3_dsidler_iter1_sopt.dat")
 
 class test_optimizerFunctions(unittest.TestCase):
     def test_RTO_nice_svals(self):
