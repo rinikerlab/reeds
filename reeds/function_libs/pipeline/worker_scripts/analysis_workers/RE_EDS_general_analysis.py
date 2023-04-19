@@ -499,7 +499,7 @@ def do_Reeds_analysis(in_folder: str, out_folder: str, gromos_path: str,
         # Repdat is read here once and passed to all subfuncions.
         # Similarly transitions are calculated here so its only done once.
 
-        exchange_data = repdat.Repdat(in_file)
+        exchange_data = repdat.Repdat(in_file, trim_equil=trim_equil)
         exchange_freq = repex.calculate_exchange_freq(exchange_data)
         transitions = exchange_data.get_replica_traces() 
 
