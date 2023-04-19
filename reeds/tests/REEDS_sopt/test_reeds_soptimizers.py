@@ -4,11 +4,12 @@ from reeds.function_libs.optimization.src import sopt_Pathstatistic as stat, s_o
 
 from pygromos.files.repdat import Repdat
 
-in_repdat= Repdat(os.path.dirname(__file__)+"/data/in_REEDS_repdat2_short.dat")
+in_repdat= (os.path.dirname(__file__)+"/data/in_REEDS_repdat2_short.dat")
 in_repdat2= Repdat(os.path.dirname(__file__)+"/data/in_REEDS_repdat3_dsidler_iter1_sopt.dat")
 
 class test_optimizerFunctions(unittest.TestCase):
     def test_RTO_nice_svals(self):
+        repdat = Repdat(in_repdat)
         stat_file = stat.generate_PathStatistic_from_file(in_repdat)
 
         stat_file.s_values[-1] = 0.000316
