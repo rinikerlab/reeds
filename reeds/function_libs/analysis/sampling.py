@@ -227,8 +227,6 @@ def calculate_sampling_distributions(ene_trajs: List[pd.DataFrame], eoffs: List[
         a list of potential thresholds for undersampling
     eoffs : List[List[float]]
         energy offsets for each replica
-    undersampling_occurence_sampling_tresh: float, optional
-        threshold for the fraction of the energies which has to be below the threshold (default 0.75)
 
     Returns
     -------
