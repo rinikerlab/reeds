@@ -21,7 +21,7 @@ def calculate_exchange_freq(exchange_data):
         the array has length (N-1), with N being the number of s-values.
     """
     n_replicas = len(exchange_data.system.s)
-    exchange_trials = int(len(exchange_data.DATA.run)/len(exchange_data.system.s))
+    exchange_trials = 0.5 * len(exchange_data.DATA.run)/n_replicas
 
     exchanges = np.zeros(n_replicas-1)
     for i, row in exchange_data.DATA.iterrows():
