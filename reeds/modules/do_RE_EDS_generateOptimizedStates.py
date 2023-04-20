@@ -48,7 +48,7 @@ def do(out_root_dir: str, in_simSystem: fM.System,
        in_gromosXX_bin_dir: str = None,
        in_gromosPP_bin_dir: str = None,
        ene_ana_lib: str = ene_ana_libs.ene_ana_lib_path,
-       simulation_steps: int = 1000000,
+       simulation_steps: int = 500000,
        nmpi_per_replica: int = 4, submit: bool = True, verbose: bool = True,
        vacuum_simulation:bool =False,
        memory: int = None, job_duration: str = "24:00:00", randomize_seed: bool = False) -> int:
