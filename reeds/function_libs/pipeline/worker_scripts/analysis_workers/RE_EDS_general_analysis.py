@@ -249,6 +249,8 @@ def do_Reeds_analysis(in_folder: str, out_folder: str, gromos_path: str,
     dFs = {}
 
     print("Starting RE-EDS analysis:")
+    print(f'\tThe first {int(trim_equil*100)} % of the simulation will be discarded for equilibration.')
+    print('\tIf you wish to discard more/less, please change the input variable "trim_equil"\n')
 
     # subfolder for clearer structure
     plot_folder_path = out_folder + "/plots"
