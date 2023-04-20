@@ -254,7 +254,7 @@ def get_s_optimization_transitions(out_dir: str,
                                       out_path=out_dir + "/transitions_cutted_250.png",
                                       title_prefix=title_prefix, 
                                       cut_1_replicas=True, 
-                                      xBond=(0, 250)
+                                      xBond=(transitions.iloc[0].trial, transitions.iloc[0].trial+250)
                                      )
 
 def get_s_optimization_roundtrips_per_replica(data: Dict[int, Dict[str,List[float]]],
