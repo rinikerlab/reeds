@@ -115,7 +115,7 @@ def samplingAnalysisFromRepdat(pot_tresh, repOff, exchange_data):
     all_pos = list(sorted(np.unique(exchange_data.DATA.ID)))
     min_pos, max_pos = (all_pos[repOff], all_pos[-1])
     print("extremePos: ", min_pos, max_pos)
-    replica1 = exchange_data.DATA.loc[repdat_file.DATA.ID == 1]
+    replica1 = exchange_data.DATA.loc[exchange_data.DATA.ID == 1]
     if (isinstance(pot_tresh, float)):
         pot_tresh = {x: pot_tresh for x in replica1.iloc[0].state_potentials}
     elif (isinstance(pot_tresh, float)):
