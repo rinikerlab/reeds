@@ -78,6 +78,9 @@ def reduceConformations(path_cnf, out_path, contains_protein=False, remove_solve
         if remove_solvent:
             tmp_cnf.delete_residue(resName="SOLV")
             tmp_cnf.delete_residue(resName="WAT")
+            # also remove potential ions
+            tmp_cnf.delete_residue(resName="Na+")
+            tmp_cnf.delete_residue(resName="Cl-")
 
         # 3: Print results to a file
         if contains_protein:
