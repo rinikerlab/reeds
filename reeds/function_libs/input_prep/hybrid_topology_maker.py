@@ -1341,6 +1341,12 @@ def constructHybridTopology(core_top, new_ligand_tops, atom_mappings, connecting
         lig_core, lig_rgroup = findAtomsInCoreAndRGroup(lig_top, connecting_points[i+1])     
         print ('Working on addition of ligand ' + str(i+2) + ' has: ' + str(len(lig_rgroup)) + ' atoms.')
         
+        if verbose:
+            print (f'{lig_core=}')
+            print (f'{lig_rgroup=}')
+            print ('\n\n')
+        
+
         try:
             (new_core, atom_mappings) = addLigandToTopology(new_core, lig_top, lig_rgroup, atom_mappings)        
         except Exception as e:
@@ -1348,11 +1354,6 @@ def constructHybridTopology(core_top, new_ligand_tops, atom_mappings, connecting
             print (e)
             traceback.print_exc()
             return atom_mappings
-
-        if verbose: 
-            print (f'{lig_core=}')
-            print (f'{lig_rgroup=}') 
-            print ('\n\n')
  
     # 2: Reset the proper exclusions given new bonds added.
     new_core = addExclusions(new_core, lig1_atoms)
