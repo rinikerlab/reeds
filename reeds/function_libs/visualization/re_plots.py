@@ -73,10 +73,10 @@ def plot_replica_trace_maxContrib(trace_data, num_states, eoffs, svals, title, o
                    color = colors[i], s = 8, marker = 's', 
                    label = 'state ' + str(i+1) + ': ' + f'{percent_sampl:.0f} % ', 
                    zorder =1)
-        
+
     # Set the limits correctly
     ax.set_ylim([-len(svals)+0.5, 0.5])
-    ax.set_xlim([0, len(trace_data)])       
+    ax.set_xlim([0, trace_data.iloc[-1]['trial']])       
 
     # connect all the dots with a line    
     plt.plot(xtrace, ytrace, lw = 2, color = 'lightgrey', alpha = 0.5, zorder =2)
@@ -161,7 +161,7 @@ def plot_replica_trace_numSampled(trace_data, num_states, svals, title, undersam
         
     # Set the limits correctly
     ax.set_ylim([-len(svals)+0.5, 0.5])
-    ax.set_xlim([0, len(trace_data)]) # change to len(dataframe)      
+    ax.set_xlim([0, trace_data.iloc[-1]['trial'] ])
 
     # connect all the dots with a line    
     plt.plot(xtrace, ytrace, lw = 2, color = 'lightgrey', alpha = 0.5, zorder =2)
