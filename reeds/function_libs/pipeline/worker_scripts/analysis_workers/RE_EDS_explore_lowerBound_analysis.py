@@ -96,6 +96,8 @@ def do(out_analysis_dir: str, system_name: str,
             eoff_state_values[index] = float(item)
         eoffs.append(eoff_state_values)
 
+    eoffs = np.array(eoffs)
+
     # Count the number of simulations wich were succesful
     if (verbose): print("START file organization")
     if (os.path.exists(in_simulation_dir)):
