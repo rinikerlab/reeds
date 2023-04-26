@@ -173,10 +173,10 @@ def findUnderSamplingPotentialEnergyThresholds(ene_trajs: List[pd.DataFrame], eo
         potential energy thresholds for each state
     """
     
-    undersampling_thresholds = - np.Inf * np.ones(len(eoffs))
-
     state_names = [i for i in ene_trajs[0].columns if (i.startswith("e") and not i == "eR")]
     num_states = len(state_names)
+
+    undersampling_thresholds = - np.Inf * np.ones(num_states)
 
     fraction = sampling_fraction * len(ene_trajs[-1])
 
