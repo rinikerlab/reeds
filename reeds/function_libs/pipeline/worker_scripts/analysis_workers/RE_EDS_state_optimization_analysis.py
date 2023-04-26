@@ -163,7 +163,7 @@ def do(in_simulation_dir: str, in_topology_path: str, in_imd_path: str,
     bash.make_folder(out_analysis_plot_dir, "-p")
 
     ## write pot_treshholds to next
-    physical_state_occurrence_treshold = sampling.get_all_physical_occurence_potential_threshold_distribution_based(ene_trajs, _vacuum_simulation=vacuum_simulation)
+    physical_state_occurrence_treshold = sampling.findPhysicalSamplingThresholds(ene_trajs, eoffs)
 
     sampling.sampling_analysis(out_path=out_analysis_plot_dir, 
                                ene_trajs=ene_trajs, 
