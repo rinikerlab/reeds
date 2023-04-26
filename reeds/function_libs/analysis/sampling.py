@@ -180,8 +180,8 @@ def findUnderSamplingPotentialEnergyThresholds(ene_trajs: List[pd.DataFrame], eo
 
     fraction = sampling_fraction * len(ene_trajs[-1])
 
-    for traj in ene_trajs:
-        thres = findOccurenceSamplingThreshold(traj, eoffs, filter_maxContrib=False)
+    for k, traj in enumerate(ene_trajs):
+        thres = findOccurenceSamplingThreshold(traj, eoffs[k], filter_maxContrib=False)
         
         pot_ene = np.array(traj[state_names])
         thres[thres > 1000] = 0 
