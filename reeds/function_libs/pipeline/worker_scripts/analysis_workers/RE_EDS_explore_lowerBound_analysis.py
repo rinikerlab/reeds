@@ -140,7 +140,7 @@ def do(out_analysis_dir: str, system_name: str,
     bash.make_folder(out_analysis_plot_dir, "-p")
     ene_trajs = fM.parse_csv_energy_trajectories(data_dir, out_prefix)  # gather potentials
 
-    state_undersampling_pot_treshold = findUnderSamplingPotentialEnergyThresholds(ene_trajs=ene_trajs, eoffs=eoffs, sampling_fraction_treshold = undersampling_occurrence_fraction_threshold)
+    state_undersampling_pot_treshold = findUnderSamplingPotentialEnergyThresholds(ene_trajs=ene_trajs, eoffs=eoffs, sampling_fraction = undersampling_occurrence_fraction_threshold)
 
     sampling_analysis_results, out_plot_dirs = detect_undersampling(out_path = out_analysis_plot_dir,
                                                                     ene_trajs = ene_trajs,
