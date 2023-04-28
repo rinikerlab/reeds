@@ -137,6 +137,16 @@ def generate_preoptimized_sdist(eoff_s_values, num_states, exchange_freq, unders
         print ('\n\nWarning: There are no s-values in the lower part of the distribution')
         print ('    this may be because the undersamping detection failed, or that somehow')
         print ('    the particular system has very low exchanges in the undersampling region.')
+    
+    if lower_gap_s == 0:
+        print ('\n\nWarning: Undersampling was found to start above the gap region (this may occur if phase space)')
+        print ('overlap is relatively small. Here we just set the bottom gap as the lower value for the s-distribution.\n')
+        # Here we just find the point before the gap and keep that as the lower value.
+        for i, f in reversed(list(enumerate(exchange_freq))):
+            if f < 0.8:
+                lower_gap_s = eoff_s_values[i+1]
+                break
+        lower = []
 
     # 2: Now that the extrema have been defined, we can build our new distribution.
     # This distribution will keep exactly the same values in the upper and lower s-ranges
@@ -146,6 +156,7 @@ def generate_preoptimized_sdist(eoff_s_values, num_states, exchange_freq, unders
     num_svals_gap = num_svals - len(upper) - len(lower) 
 
     new_s_distrib = np.zeros(0)
+
     gap = get_log_s_distribution_between(start = upper_gap_s, end = lower_gap_s, num= num_svals_gap)
 
     new_s_distrib = np.append(new_s_distrib, upper)
