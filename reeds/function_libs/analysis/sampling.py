@@ -74,126 +74,63 @@ def undersampling_occurence_potential_threshold_densityClustering(ene_trajs: Lis
     return pot_thresh_per_state
 
 
-def undersampling_occurence_potential_threshold_distribution_based(ene_trajs: List[pd.DataFrame],
-                                                                   sampling_fraction_treshold: float = 0.9,
-                                                                    verbose:bool = False)->List[float]:
-    """undersampling_occurence_potential_threshold_distribution_based
-    This function is estimating the pot_tresh for all states by testing if around the minimal energy 90% of the data is located in a threshold of  max_distance_kJ.
-    The mean and std of the density region will result in pot_tresh = min(V)+6*std(V
-    This function has low demand in performance.
+def findOccurenceSamplingThreshold(traj, eoffs, trim_equil=0.1, filter_maxContrib=False):
 
-    Parameters
-    ----------
-    ene_trajs : List[pd.Dataframe]
-        a list of pandas dataframes containing the energy data of each state eX
-    sampling_fraction_treshold : float, optional
-        the sampling threshold for detecting undersampling (default: 0.9).
-
-    Returns
-    -------
-    List[float]
-        list of individual identified potential thresholds
-    """
-    pot_tresh_pre_rep = []
-    state_names = [i for i in ene_trajs[0].columns if (i.startswith("e") and not i == "eR")]
-    num_states = len(state_names)
-
-    #remove first 10% as equilibration
-    total_step_num = ene_trajs[0].shape[0] - 0.1*ene_trajs[0].shape[0]
-    std = [6*np.std(ene_trajs[-1][state][int(len(ene_trajs[-1][state])/10):len(ene_trajs[-1][state])]) for state in state_names]
-
-    #mean_potential = [np.mean(ene_trajs[-1][state]) for state in state_names]
-    for i, replica_data in enumerate(ene_trajs):
-        if(verbose): print("replica " + str(i + 1) + ":")
-        mean_potential = [np.min(replica_data[state][int(len(replica_data[state])/10):len(replica_data[state])]) for state in state_names]
-        thresholds = [m+s for m, s in zip(mean_potential, std)]
-        if(verbose): print("Checkout std: ", thresholds)
-        # iterate over states, identify all undersampling replicas, calc fraction
-        pot_tresh = []
-        for k, state in enumerate(state_names):
-            vec = np.array(replica_data[state]).reshape(-1, 1)
-            treshold =  thresholds[k]
-            #remove first 10% as equilibration
-            vec = vec[int(len(vec)/10) : len(vec)]
-
-            below_thresh = vec[vec < treshold]
-            below_thresh_fraction = len(below_thresh) / total_step_num
-            if(verbose): print("\t belowTresh: ", state, sampling_fraction_treshold < below_thresh_fraction)
-            if (sampling_fraction_treshold < below_thresh_fraction):
-                threshold = np.mean(below_thresh) + 3 * np.std(below_thresh)
-                pot_tresh.append(threshold)
-
-        # only save undersampling pot_threshes
-        if (len(pot_tresh) == num_states):
-            pot_tresh_pre_rep.append(pot_tresh)
-
-    # final averaging.
-    pot_thresh_per_state_and_replica = np.array([t for t in pot_tresh_pre_rep if (len(t) == num_states)]).T
+    """findOccurenceSamplingThreshold
+    This function finds the potential energy threshold which can be used to determine if a state is sampled according 
+    to the occurence sampling definition based on a set of simulation data. A threshold is determined for each state 
+    and the value of 0 is returned if that state was never sampled (according the maximally contributing criteria) in the simulation.
     
-    #print(pot_thresh_per_state_and_replica)
-    if (len(pot_thresh_per_state_and_replica) > 0):
-        pot_thresh_per_state = np.min(pot_thresh_per_state_and_replica, axis=1) + np.std(pot_thresh_per_state_and_replica, axis=1)
-    else:
-        pot_thresh_per_state = [0 for x in range(num_states)]
-    return pot_thresh_per_state
-
-def physical_occurence_potential_threshold_distribution_based(ene_trajs: pd.DataFrame, equilibrate_dominationState:float=0.01, _vacuum_simulation:bool=False,  verbose:bool=False)->List[float]:
-
-    """physical_occurence_potential_threshold_distribution_based
-    This function is estimating the pot_tresh for all states by testing if around the minimal energy 90% of the data is located in a threshold of  max_distance_kJ.
-    The mean and std of the density region will result in pot_tresh = mean+3*std
-    This function is cheap in performance.
-
     Parameters
     ----------
     ene_trajs : pd.Dataframe
         a pandas dataframe containing the energy data of each state eX
-    equilibrate_dominationState : int, optional
-        equilibrate the domination state for this fraction
-    _vacuum_simulation=vacuum_simulation: bool, optional
-        this flag switches the algorithm to use all potential energies of a state, instead of only the domination sampling.
-    verbose: bool, optional
-        print fun
+    eoffs : List[float]
+        energy offsets for each state in this simulation
+    filter_maxContrib: 
+        pre-filter the data to remove non-sampled points (important for end-state)
+    
+    trim_equil: float
+        fraction of the simulation to remove for "equilibration"
+
     Returns
     -------
     List[float]
         list of individual identified potential thresholds
     """
 
-    state_names = [i for i in ene_trajs.columns if (i.startswith("e") and not i == "eR")]
-    total_step_num = ene_trajs.shape[0]
-    data = ene_trajs
-
-    # iterate over states, identify all undersampling replicas, calc fraction
-    pot_tresh = []
+    state_names = [i for i in traj.columns if (i.startswith("e") and not i == "eR")]
+    num_steps = traj.shape[0]
+    
+    v_min_eoff = np.array(traj[state_names]) - eoffs
+    v_min_eoff = v_min_eoff[int(trim_equil*num_steps):]
+    
+    pot_tresh = np.zeros(len(state_names))
     for k, state in enumerate(state_names):
-        #get only the sampling, in which the target state is dominating: pre-filter noise!
-        if(_vacuum_simulation):
-            state_domination_sampling = data
+        if filter_maxContrib: # Extract data points where column k is the minimum
+            idx = np.where(np.argmin(v_min_eoff, axis=1) ==k)
+            pot_ene = (v_min_eoff[idx, k] + eoffs[k]).flatten()
         else:
-            state_domination_sampling = data.where(data[state_names].min(axis=1) == data[state]).dropna()
-        start_after_eq = int(np.round(equilibrate_dominationState*state_domination_sampling.shape[0]))
-        state_domination_sampling = state_domination_sampling.iloc[start_after_eq:]
-
-        if(verbose):
-            below_thresh_fraction = state_domination_sampling.shape[0] / total_step_num
-            print("State "+str(state)+" - Domination state sampling fraction ", below_thresh_fraction)
-
-        #calculate threshold
-        threshold = np.min(state_domination_sampling[state]) + 6 * np.std(state_domination_sampling[state])
-        pot_tresh.append(threshold)
-
+            pot_ene = (v_min_eoff[:, k] + eoffs[k]).flatten()
+        
+        if len(pot_ene) == 0:
+            pot_tresh[k] = 0
+        else:
+            pot_tresh[k] = np.min(pot_ene) + 6 * np.std(pot_ene)
     return pot_tresh
 
-
-def get_all_physical_occurence_potential_threshold_distribution_based(ene_trajs: List[pd.DataFrame], _vacuum_simulation:bool=False,)->List[float]:
+def findPhysicalSamplingThresholds(ene_trajs: List[pd.DataFrame], eoffs: List[List[float]])->List[float]:
     """
-        This function is used in the state optimization approach and gives the physical potential energy threshold for occurrence sampling back, that is estimated from the optimized EDS-System.
+        This function is used in the end state generation stage of the pipeline and finds 
+        the potential energy threshold under which each state state can be considered to be sampled "physically"
+        according to the occurrence sampling definition.
 
     Parameters
     ----------
     ene_trajs: List[pd.DataFrame]
-        energy trajectories from all end state optimizations
+        energy trajectories from all end state generation.
+    eoffs: List [List[float]]
+        Energy offsets for each state in each of the independent end state generation simulations.
     _vacuum_simulation=vacuum_simulation: bool, optional
         this flag switches the algorithm to use all potential energies of a state, instead of only the domination sampling.
     Returns
@@ -202,15 +139,61 @@ def get_all_physical_occurence_potential_threshold_distribution_based(ene_trajs:
         list of potential energy thresholds.
     """
     opt_pot_tresh = []
-    for key, traj in enumerate(ene_trajs):
-        #print(key)
-        pot_tresh_state = physical_occurence_potential_threshold_distribution_based(traj, _vacuum_simulation=_vacuum_simulation)
+    for key, (traj, sub_eoffs) in enumerate(zip(ene_trajs, eoffs)):
+        pot_tresh_state = findOccurenceSamplingThreshold(traj, sub_eoffs, filter_maxContrib=True)
 
-        #print(pot_tresh_state)
         if (np.isnan(pot_tresh_state[key])):
             warnings.warn("A state potential threshold was NaN -> This hints on that you did not sample the state as a dominating one! Please check your simulatigons!")
         opt_pot_tresh.append(pot_tresh_state[key])
     return opt_pot_tresh
+
+def findUnderSamplingPotentialEnergyThresholds(ene_trajs: List[pd.DataFrame], eoffs: List[List[float]],
+                                               sampling_fraction: float = 0.95)->List[float]:
+    """findUnderSamplingPotentialEnergyThresholds
+    This function determines the potential energy values under which a state can be considered to be in undersampling. 
+    There is one threshold per state, and a replica is considered to be in undersampling the potential energies of all
+    states in the given configuration are below their respective thresholds.
+
+    This is done in two steps, first by finding an occurence sampling threshold for each state (just as for the end state generation), 
+    which assumes that all states are sampled with a "narrow" distribution of energies. Then very large thresholds which occur when we are not
+    sampling certain states are simply replaced by an arbitary value (1000 kJ/mol).
+
+    Parameters
+    ----------
+    ene_trajs : List[pd.Dataframe]
+        potential energies of all of the end states
+    eoffs: List [List[float]]
+        Energy offsets for each state in each of the independent end state generation simulations.
+    sampling_fraction : float, optional
+        the sampling threshold for detecting undersampling (default: 0.95).
+
+    Returns
+    -------
+    List[float]
+        potential energy thresholds for each state
+    """
+    
+    state_names = [i for i in ene_trajs[0].columns if (i.startswith("e") and not i == "eR")]
+    num_states = len(state_names)
+
+    undersampling_thresholds = - np.Inf * np.ones(num_states)
+
+    fraction = sampling_fraction * len(ene_trajs[-1])
+
+    for k, traj in enumerate(ene_trajs):
+        thres = findOccurenceSamplingThreshold(traj, eoffs[k], filter_maxContrib=False)
+        
+        pot_ene = np.array(traj[state_names])
+        thres[thres > 1000] = 0 
+        n_below_thres = [np.sum(pot_ene[:, i] < thres[i]) for i in range(num_states)]
+        
+        if np.all(np.array(n_below_thres) > fraction):
+            # Get thresholds according to this replica
+            sub_thres = [np.round(np.min(pot_ene[:, i]) + 6 * np.std(pot_ene[:, i]), 2) for i in range(num_states)]
+            # Keep max as the overall threshold (to be a bit more conservative)         
+            undersampling_thresholds = np.maximum(sub_thres, undersampling_thresholds)
+
+    return undersampling_thresholds
 
 def calculate_sampling_distributions(ene_trajs: List[pd.DataFrame], eoffs: List[List[float]],
                                      potential_treshold: List[float]) -> Dict[int, Dict[str, Dict[int, float]]]:

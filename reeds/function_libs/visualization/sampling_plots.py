@@ -103,7 +103,7 @@ def plot_t_statepres(data: dict,
                      xlim: List[int] = False):
     """plot_t_statepres
     gives out a plot, showing the if a state is undersampling or the
-    dominating (min state) of a system at given t.
+    maximally contributing of a system at given t.
 
     Parameters
     ----------
@@ -278,7 +278,7 @@ def plot_stateOccurence_matrix(data: dict,
     occurrence_sampling_matrix = np.array(
         [np.array([data[replica]["occurence_state"][key] for key in sorted(data[replica]["occurence_state"])])
          for replica in sorted(data)]).T
-    domination_sampling_matrix = np.array(
+    maxcontrib_sampling_matrix = np.array(
         [np.array([data[replica]["max_contributing_state"][key] for key in sorted(data[replica]["max_contributing_state"])])
          for replica in sorted(data)]).T
 
@@ -325,16 +325,15 @@ def plot_stateOccurence_matrix(data: dict,
         fig.savefig(out_dir + '/sampling_undersample_matrix.png', bbox_inches='tight')
         plt.close()
 
-    # Plot domination samp:
     ##Title setting
-    title = "dominating state sampling"
+    title = "maxContrib Sampling"
     if title_suffix is not None:
         title += title_suffix
 
     fig = plt.figure(figsize=ps.figsize_doubleColumn)
     ax = fig.add_subplot(111)
 
-    mappable = ax.matshow(domination_sampling_matrix, cmap="Reds")
+    mappable = ax.matshow(maxcontrib_sampling_matrix, cmap="Reds")
 
     ## set ticks
     ax.set_yticks(range(0, states_num))
