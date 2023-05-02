@@ -7,7 +7,7 @@ import numpy as np
 from pygromos.files import imd
 from pygromos.utils import bash
 
-from reeds.function_libs.analysis.sampling import undersampling_occurence_potential_threshold_distribution_based as find_undersampling_pot_tresh
+from reeds.function_libs.analysis.sampling import findUnderSamplingPotentialEnergyThresholds
 from reeds.function_libs.analysis.sampling import detect_undersampling
 
 from reeds.function_libs.visualization.utils import determine_vrange
@@ -22,7 +22,7 @@ from reeds.data import ene_ana_libs
 
 def do(out_analysis_dir: str, system_name: str,
        in_simulation_dir: str, in_topology_path: str, in_imd_path: str,
-       undersampling_occurrence_fraction_threshold: float = 0.9,
+       undersampling_occurrence_fraction_threshold: float = 0.95,
        gromosPP_bin: str = None,
        in_ene_ana_lib: str = ene_ana_libs.ene_ana_lib_path,
        verbose: bool = True):
@@ -96,6 +96,8 @@ def do(out_analysis_dir: str, system_name: str,
             eoff_state_values[index] = float(item)
         eoffs.append(eoff_state_values)
 
+    eoffs = np.array(eoffs)
+
     # Count the number of simulations wich were succesful
     if (verbose): print("START file organization")
     if (os.path.exists(in_simulation_dir)):
@@ -140,7 +142,7 @@ def do(out_analysis_dir: str, system_name: str,
     bash.make_folder(out_analysis_plot_dir, "-p")
     ene_trajs = fM.parse_csv_energy_trajectories(data_dir, out_prefix)  # gather potentials
 
-    state_undersampling_pot_treshold = find_undersampling_pot_tresh(ene_trajs=ene_trajs, sampling_fraction_treshold = undersampling_occurrence_fraction_threshold)
+    state_undersampling_pot_treshold = findUnderSamplingPotentialEnergyThresholds(ene_trajs=ene_trajs, eoffs=eoffs, sampling_fraction = undersampling_occurrence_fraction_threshold)
 
     sampling_analysis_results, out_plot_dirs = detect_undersampling(out_path = out_analysis_plot_dir,
                                                                     ene_trajs = ene_trajs,
