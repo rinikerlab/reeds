@@ -64,7 +64,7 @@ def energyOffset_time_convergence(ene_ana_trajs, out_dir: str, Eoff: List[float]
     return state_time_dict
 
 
-def optimize_s(in_file: str,
+def optimize_s(repdat: Repdat,
                add_s_vals: int,
                out_dir: str,
                title_prefix: str = "sOpt",
@@ -80,8 +80,9 @@ def optimize_s(in_file: str,
 
     Parameters
     ----------
-    in_file : str
-        input path to repdat-file
+    repdat: Repdat
+        Redat object containing the information regarding the replica exchange trials in the 
+        RE-EDS simulation (parsed prior to this function).
     add_s_vals : int
         number of s_values to be added
     out_dir : str
@@ -112,8 +113,7 @@ def optimize_s(in_file: str,
     # do soptimisation
     if verbose:
         print("RUN sopt")
-        print("\tRead in repdat: " + in_file)
-    stat = parseS.generate_PathStatistic_from_file(in_file, trial_range=trial_range)
+    stat = parseS.generate_PathStatistic_from_file(repdat, trial_range=trial_range)
 
     if (in_imd != None):
         imd = Imd(in_imd)
@@ -254,7 +254,7 @@ def get_s_optimization_transitions(out_dir: str,
                                       out_path=out_dir + "/transitions_cutted_250.png",
                                       title_prefix=title_prefix, 
                                       cut_1_replicas=True, 
-                                      xBond=(0, 250)
+                                      xBond=(transitions.iloc[0].trial, transitions.iloc[0].trial+250)
                                      )
 
 def get_s_optimization_roundtrips_per_replica(data: Dict[int, Dict[str,List[float]]],

@@ -2,12 +2,15 @@ import unittest
 import os
 from reeds.function_libs.optimization.src import sopt_Pathstatistic as stat, s_optimizer as opt
 
+from pygromos.files.repdat import Repdat
+
 in_repdat= os.path.dirname(__file__)+"/data/in_REEDS_repdat2_short.dat"
 in_repdat2= os.path.dirname(__file__)+"/data/in_REEDS_repdat3_dsidler_iter1_sopt.dat"
 
 class test_optimizerFunctions(unittest.TestCase):
     def test_RTO_nice_svals(self):
-        stat_file = stat.generate_PathStatistic_from_file(in_repdat)
+        repdat = Repdat(in_repdat)
+        stat_file = stat.generate_PathStatistic_from_file(repdat)
 
         stat_file.s_values[-1] = 0.000316
         NLRTO = opt.N_LRTO(stat_file)
@@ -17,7 +20,8 @@ class test_optimizerFunctions(unittest.TestCase):
         print(new_s)
 
     def test_NGRTO_calc_c_prime(self):
-        stat_file = stat.generate_PathStatistic_from_file(in_repdat)
+        repdat = Repdat(in_repdat)
+        stat_file = stat.generate_PathStatistic_from_file(repdat)
         NGRTO = opt.N_GRTO(stat_file)
         expected_c_prime = 2.414668163253696 #old c_prime if not divided by numstates in the weights: 0.9126587798163391
 
@@ -30,7 +34,8 @@ class test_optimizerFunctions(unittest.TestCase):
         self.assertAlmostEqual(expected_c_prime,c_prime, len(str(ds)), msg="Values do not fit.")
 
     def test_NGRTO_calc_c_prime2(self):
-        stat_file = stat.generate_PathStatistic_from_file(in_repdat2)
+        repdat = Repdat(in_repdat2)
+        stat_file = stat.generate_PathStatistic_from_file(repdat)
         NGRTO = opt.N_GRTO(stat_file)
         expected_c_prime = 0.8419764136870403 #old c_prime if not divided by numstates in the weights:0.2806587438559297
 
@@ -43,7 +48,8 @@ class test_optimizerFunctions(unittest.TestCase):
         self.assertAlmostEqual(expected_c_prime,c_prime, len(str(ds)), msg="Values do not fit.")
 
     def test_OneGRTO_calc_c_prime(self):
-        stat_file = stat.generate_PathStatistic_from_file(in_repdat)
+        repdat = Repdat(in_repdat)
+        stat_file = stat.generate_PathStatistic_from_file(repdat)
         OneGRTO = opt.One_GRTO(stat_file)
         expected_c_prime =0.962742673126844
 
@@ -56,7 +62,8 @@ class test_optimizerFunctions(unittest.TestCase):
         self.assertAlmostEqual(expected_c_prime,c_prime, len(str(ds)), msg="Values do not fit.")
 
     def test_OneGRTO_calc_c_prime2(self):
-        stat_file = stat.generate_PathStatistic_from_file(in_repdat2)
+        repdat = Repdat(in_repdat2)
+        stat_file = stat.generate_PathStatistic_from_file(repdat)
         OneGRTO = opt.One_GRTO(stat_file)
         expected_c_prime = 0.801909959350048
 
@@ -69,7 +76,8 @@ class test_optimizerFunctions(unittest.TestCase):
         self.assertAlmostEqual(expected_c_prime,c_prime, len(str(ds)), msg="Values do not fit.")
 
     def test_NGRTO_calc_c_prime_old_integral(self):
-        stat_file = stat.generate_PathStatistic_from_file(in_repdat)
+        repdat = Repdat(in_repdat)
+        stat_file = stat.generate_PathStatistic_from_file(repdat)
         NGRTO = opt.N_GRTO(stat_file)
         expected_c_prime = 2.414668163253711 #old c_prime if not divided by numstates in the weights: 0.9126587798163391
 
@@ -82,7 +90,8 @@ class test_optimizerFunctions(unittest.TestCase):
         self.assertAlmostEqual(expected_c_prime,c_prime, len(str(ds)), msg="Values do not fit.")
 
     def test_NGRTO_calc_c_prime2_old_integral(self):
-        stat_file = stat.generate_PathStatistic_from_file(in_repdat2)
+        repdat = Repdat(in_repdat2)
+        stat_file = stat.generate_PathStatistic_from_file(repdat)
         NGRTO = opt.N_GRTO(stat_file)
         expected_c_prime = 0.8419764136870506 #old c_prime if not divided by numstates in the weights:0.2806587438559297
 
@@ -95,7 +104,8 @@ class test_optimizerFunctions(unittest.TestCase):
         self.assertAlmostEqual(expected_c_prime,c_prime, len(str(ds)), msg="Values do not fit.")
 
     def test_NGRTO_calc_sDist_area(self):
-        stat_file = stat.generate_PathStatistic_from_file(in_repdat2)
+        repdat = Repdat(in_repdat2)
+        stat_file = stat.generate_PathStatistic_from_file(repdat)
         NGRTO = opt.N_GRTO(stat_file)
         expected_s = [ 1, 0.0629, 0.0257, 0.001]
 

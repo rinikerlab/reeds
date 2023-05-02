@@ -53,7 +53,7 @@ class test_Eoff_wrapper(unittest.TestCase):
                          "undersampling_occurence_sampling_tresh": 0.9}
         new_eoffs, all_eoffs = eds_energy_offsets.estimate_energy_offsets(ene_trajs, initial_offsets = init_Eoff, 
                                                                           s_values = s_values, out_path = None,  sampling_stat=sampling_stat,
-                                                                          temp = T, trim_beg = 0.0, undersampling_idx = 0, 
+                                                                          temp = T, undersampling_idx = 0, 
                                                                           plot_results = False, calc_clara = False
                                                                           )
         # do the comparison with the previous data
@@ -108,7 +108,7 @@ class test_Eoff_wrapper(unittest.TestCase):
                          "undersampling_occurence_sampling_tresh": 0.9}
         new_eoffs, all_eoffs = eds_energy_offsets.estimate_energy_offsets(ene_trajs, initial_offsets = init_Eoff,
                                                                           s_values = s_values, out_path = None, sampling_stat=sampling_stat,
-                                                                          temp = T, trim_beg = 0.0, undersampling_idx = 0,
+                                                                          temp = T, undersampling_idx = 0,
                                                                           plot_results = False, calc_clara = False
                                                                           )
         # do the comparison with the previous data
@@ -176,7 +176,7 @@ class test_Eoff_wrapper(unittest.TestCase):
                                                                           initial_offsets=init_Eoff,
                                                                           sampling_stat=sampling_results,
                                                                           s_values=s_values,
-                                                                          out_path=None, temp=T, trim_beg=0.,
+                                                                          out_path=None, temp=T, 
                                                                           undersampling_idx=sampling_results['undersamplingThreshold'],
                                                                           plot_results=False, calc_clara=False)
 

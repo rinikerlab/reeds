@@ -195,13 +195,14 @@ class PathStatistic:
         self.paths.sort(key=lambda sl: sl.level)
 
 
-def generate_PathStatistic_from_file(file_name: str, trial_range: tuple = None, verbose: bool = False) -> PathStatistic:
+def generate_PathStatistic_from_file(repdat: Repdat, trial_range: tuple = None, verbose: bool = False) -> PathStatistic:
     """Reads GROMOS repdat file and generates the path statistic.
 
     Parameters
     ----------
-    file_names :    List[str]
-        input Files
+    repdat: Repdat
+        Redat object containing the information regarding the replica exchange trials in the 
+        RE-EDS simulation (parsed prior to this function).
     trial_range :   tuple
         give a range of trials to be evaluated (time dimension)
     verbose :   bool
@@ -223,9 +224,6 @@ def generate_PathStatistic_from_file(file_name: str, trial_range: tuple = None, 
     else:
         raise IOError("could not translate the trial range option in read_gromos_file.")
 
-    # read first file
-    if (verbose): print("Parse Repdat: " + file_name)
-    repdat = Repdat(file_name)
     s_values = repdat.system.s
     num_states = len(repdat.system.state_eir)
     num_replicas = len(s_values)

@@ -19,8 +19,8 @@ from typing import List
 def estimate_energy_offsets(ene_trajs: List[pd.DataFrame], initial_offsets: List[float],
                             sampling_stat:dict,
                             s_values: List[float], out_path: str, temp: float = 298.0,
-                            trim_beg: float = 0.1, undersampling_idx: int = None,
-                            plot_results: bool = True, calc_clara: bool = False) -> (np.array, np.array):
+                            undersampling_idx: int = None, plot_results: bool = True, 
+                            calc_clara: bool = False) -> (np.array, np.array):
 
     """
     This function will estimate the energy offsets one should use to    
@@ -47,8 +47,6 @@ def estimate_energy_offsets(ene_trajs: List[pd.DataFrame], initial_offsets: List
         path to the file in which the results will be printed out.    
     temp: float
         temperature of the simulation
-    trim_beg: float
-        fraction of the values to remove at the begining for "equilibration"
     undersampling_idx: int
         index of the first replica which can be considered to be undersampling
     plot_results: bool
@@ -75,9 +73,9 @@ def estimate_energy_offsets(ene_trajs: List[pd.DataFrame], initial_offsets: List
     
     # Calculate the Energy Offsets for reach replica
     for i in range(num_replicas):
-        all_eoffs[i] = calc_offsets(ene_trajs[i], temp, trim_beg, num_states)
+        all_eoffs[i] = calc_offsets(ene_trajs[i], temp, num_states)
         if calc_clara:
-            (all_eoffs_clara[i], converged, steps) = calc_offsets_clara_eqn(ene_trajs[i], temp, num_states, initial_offsets, trim_beg)
+            (all_eoffs_clara[i], converged, steps) = calc_offsets_clara_eqn(ene_trajs[i], temp, num_states, initial_offsets)
 
     f.writelines(format_as_jnb_table("Energy offsets predicted for each replica\n", s_values, all_eoffs, 2))
     if calc_clara:
@@ -116,7 +114,7 @@ def estimate_energy_offsets(ene_trajs: List[pd.DataFrame], initial_offsets: List
 # Functions calculating the energy offsets by aplying the equations
 #
 
-def calc_offsets(energy_trajectory: pd.DataFrame, temp:float, trim_beg:float, num_states:int) -> np.array:
+def calc_offsets(energy_trajectory: pd.DataFrame, temp:float, num_states:int) -> np.array:
 
     """
     This function applies eqn. 6  of Sidler et al., J. Chem. Phys. 2016, 145, 154114 
@@ -131,8 +129,6 @@ def calc_offsets(energy_trajectory: pd.DataFrame, temp:float, trim_beg:float, nu
             contains the potential energies of the end state and the ref. state
         temp: float
             temperature in Kelvin
-        trim_beg: float
-            fraction of the values to remove at the begining for "equilibration"
         num_states: int
             number of end states in our RE-EDS simulation
                 
@@ -150,18 +146,15 @@ def calc_offsets(energy_trajectory: pd.DataFrame, temp:float, trim_beg:float, nu
     
     # note exp_term is a vector (each element is a timestep) 
     # containing the term to be exponentiated
-    trim_beg = int(trim_beg*len(energy_trajectory['e1']))
-
     for i in range(num_states):
-            v_i = np.array(energy_trajectory['e' + str(i+1)])[trim_beg:]
-            v_r = np.array(energy_trajectory['eR'])[trim_beg:]
+            v_i = np.array(energy_trajectory['e' + str(i+1)])
+            v_r = np.array(energy_trajectory['eR'])
             exp_term = - beta * (v_i - v_r)
             new_eoffs[i] =  -(1/beta) * special.logsumexp(exp_term)
 
     return (new_eoffs - new_eoffs[0])
 
-def calc_offsets_clara_eqn(energy_trajectory, temp:float, num_states:int, initial_offsets:List[float], 
-                           trim_beg:float) -> (np.array, bool, int):
+def calc_offsets_clara_eqn(energy_trajectory, temp:float, num_states:int, initial_offsets:List[float]) -> (np.array, bool, int):
     """
     This function applies eqn. 5 of Sidler et al., J. Chem. Phys. 2016, 145, 154114 
     to estimate the energy offsets for a specific replica.
@@ -177,8 +170,6 @@ def calc_offsets_clara_eqn(energy_trajectory, temp:float, num_states:int, initia
             contains the potential energies of the end state and the ref. state
         temp: float
             temperature in Kelvin
-        trim_beg: float
-            fraction of the values to remove at the begining for "equilibration"
         num_states: int
             number of end states in our RE-EDS simulation
         initial_offsets: List [float]        
@@ -200,17 +191,15 @@ def calc_offsets_clara_eqn(energy_trajectory, temp:float, num_states:int, initia
     converged = False
     steps = 0 
     
-    trim_beg = int(trim_beg*len(energy_trajectory['e1']))
-
     while not converged: 
         tmp_eoffs = copy.copy(new_eoffs)        
         for i in range(num_states):
-            v_i = np.array(energy_trajectory['e' + str(i+1)])[trim_beg:]
+            v_i = np.array(energy_trajectory['e' + str(i+1)])
             e_i = tmp_eoffs[i]
             deltaV = np.zeros(len(v_i))
             for j in range(num_states):
                 if i == j: continue           
-                v_j = np.array(energy_trajectory['e' + str(j+1)])[trim_beg:]
+                v_j = np.array(energy_trajectory['e' + str(j+1)])
                 e_j = tmp_eoffs[j]
                     
                 deltaV += (v_j - v_i) - (e_j - e_i)
