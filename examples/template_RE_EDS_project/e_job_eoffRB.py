@@ -40,10 +40,8 @@ memory = 10
 ## EoffRB - Params
 learningFactors = None
 individualCorrection = False
-### Pseudocount
-num_states = 9
+### Intensity factor
 intensity_factor = 5
-pseudocount = (1/num_states)/intensity_factor
 
 
 last_jobID = eoffRB.do(out_root_dir=out_sopt_dir,
@@ -59,7 +57,7 @@ last_jobID = eoffRB.do(out_root_dir=out_sopt_dir,
                         trials_per_run = 1000,
                         optimized_states_dir = optimized_states_dir,
                         lower_bound_dir = lower_bound_dir,
-                        pseudocount = pseudocount,
+                        intensity_factor = intensity_factor,
                         in_gromosPP_bin_dir=gromosPP_bin,
                         in_gromosXX_bin_dir=gromosXX_bin
                       )
