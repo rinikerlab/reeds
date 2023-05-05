@@ -185,14 +185,12 @@ def findUnderSamplingPotentialEnergyThresholds(ene_trajs: List[pd.DataFrame], eo
         
         pot_ene = np.array(traj[state_names])
         thres[thres > 1000] = 0 
-        n_below_thres = [np.sum(pot_ene[:, i] < thres[i]) for i in range(num_states)]
         
+        n_below_thres = [np.sum(pot_ene[:, i] < thres[i]) for i in range(num_states)]
         if np.all(np.array(n_below_thres) > fraction):
-            # Get thresholds according to this replica
-            sub_thres = [np.round(np.min(pot_ene[:, i]) + 6 * np.std(pot_ene[:, i]), 2) for i in range(num_states)]
             # Keep max as the overall threshold (to be a bit more conservative)         
-            undersampling_thresholds = np.maximum(sub_thres, undersampling_thresholds)
-
+            undersampling_thresholds = np.maximum(thres, undersampling_thresholds)
+    
     return undersampling_thresholds
 
 def calculate_sampling_distributions(ene_trajs: List[pd.DataFrame], eoffs: List[List[float]],
