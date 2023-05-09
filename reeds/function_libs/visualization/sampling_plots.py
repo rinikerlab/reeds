@@ -282,7 +282,7 @@ def plot_stateOccurence_matrix(data: dict,
         [np.array([data[replica]["max_contributing_state"][key] for key in sorted(data[replica]["max_contributing_state"])])
          for replica in sorted(data)]).T
 
-    # Plot occurence:
+    # Plot occurrence:
     ##Title setting
     title = "occurrence sampling"
     if title_suffix is not None:
@@ -293,17 +293,24 @@ def plot_stateOccurence_matrix(data: dict,
 
     mappable = ax.matshow(occurrence_sampling_matrix, cmap="Blues")
 
-    ## set ticks
+    ## add title for axes
+    ax.set_title(title)
+  
+    ## set y-ticks, tick labels, label axis
     ax.set_yticks(range(0, states_num))
     ax.set_yticklabels(range(1, states_num + 1))
-
-    # nice s-value x-axis
+    ax.set_ylabel("states")
+    
+    ## set x-ticks, tick labels, label axis
+    ax.xaxis.set_ticks_position("bottom")
     if (not s_values is None):
         ax.set_xticks(np.arange(0, len(s_values) - 0.25))
-        if len(set(s_values)) == 1: # change to number of states if in step a
-            ax.set_xticklabels(range(1, states_num + 1), rotation=45)
+        if len(set(s_values)) == 1: # change labels to number of states if in step a
+            ax.set_xticklabels(range(1, states_num + 1))
+            ax.set_xlabel("simulation biased to")
         else: 
-            ax.set_xticklabels(nice_s_vals(s_values), rotation=45)
+            ax.set_xticklabels(nice_s_vals(s_values), rotation=45) # else add s-values as labels
+            ax.set_xlabel("s-values")
 
     ##set colorbar
     cax = fig.add_axes([ax.get_position().x1 + 0.1, ax.get_position().y0, 0.02, ax.get_position().height])
@@ -315,22 +322,14 @@ def plot_stateOccurence_matrix(data: dict,
             if (data[undersampling_ind]["undersampling"]):
                 break
         ax.vlines(x=undersampling_ind - 1.5, ymin=-0.5, ymax=states_num - 0.5, color="red", lw=3, label="undersampling")
-
-    ##labelling
-    ax.set_title(title)
-    if len(set(s_values)) == 1: # If step a of pipeline (all s=1) change label
-        ax.set_xlabel("biased to")
-    else: 
-        ax.set_xlabel("s-values")
-    ax.set_ylabel("states")
-    ax.xaxis.set_ticks_position("bottom")
-
+        
     #fig.tight_layout()
 
     if (not out_dir is None):
         fig.savefig(out_dir + '/sampling_undersample_matrix.png', bbox_inches='tight')
         plt.close()
-
+    
+    # Plot MaxContrib:
     ##Title setting
     title = "maxContrib Sampling"
     if title_suffix is not None:
@@ -338,21 +337,27 @@ def plot_stateOccurence_matrix(data: dict,
 
     fig = plt.figure(figsize=ps.figsize_doubleColumn)
     ax = fig.add_subplot(111)
-
+    
     mappable = ax.matshow(maxcontrib_sampling_matrix, cmap="Reds")
-
-    ## set ticks
+    
+    ## add title for axes
+    ax.set_title(title)
+    
+    ## set y-ticks, tick labels, label axis
     ax.set_yticks(range(0, states_num))
     ax.set_yticklabels(range(1, states_num + 1))
-
+    ax.set_ylabel("states")
+    
+    ## set x-ticks, tick labels, label axis
+    ax.xaxis.set_ticks_position("bottom")
     if (not s_values is None):
         ax.set_xticks(range(0, len(s_values)))
         if len(set(s_values)) == 1: # change labels to number of states if in step a
-            ax.set_xticklabels(range(1, states_num + 1), rotation=45)
+            ax.set_xticklabels(range(1, states_num + 1))
+            ax.set_xlabel("simulation biased to")
         else:
             ax.set_xticklabels(nice_s_vals(s_values), rotation=45)
-
-        
+            ax.set_xlabel("s-values")
 
     ##set colorbar
     cax = fig.add_axes([ax.get_position().x1 + 0.1, ax.get_position().y0, 0.02, ax.get_position().height])
@@ -364,15 +369,6 @@ def plot_stateOccurence_matrix(data: dict,
             if (data[undersampling_ind]["undersampling"]):
                 break
         ax.vlines(x=undersampling_ind - 1.5, ymin=-0.5, ymax=states_num - 0.5, color="k", lw=3, label="undersampling")
-
-    ##labelling
-    ax.set_title(title)
-    if len(set(s_values)) == 1: # If step a of pipeline (all s=1) change label
-        ax.set_xlabel("biased to")
-    else: 
-        ax.set_xlabel("s-values")
-    ax.set_ylabel("states")
-    ax.xaxis.set_ticks_position("bottom")
 
     #fig.tight_layout()
 
