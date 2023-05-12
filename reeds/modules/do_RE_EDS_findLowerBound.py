@@ -35,7 +35,7 @@ from reeds.function_libs.utils.structures import spacer
 from scipy import rand
 
 
-def do(out_root_dir: str, in_simSystem: fM.System, undersampling_occurrence_fraction: float = 0.9,
+def do(out_root_dir: str, in_simSystem: fM.System, undersampling_occurrence_fraction: float = 0.95,
        template_imd: str = None,
        gromosXX_bin: str = None, gromosPP_bin: str = None,
        ene_ana_lib: str = ene_ana_libs.ene_ana_lib_path,
