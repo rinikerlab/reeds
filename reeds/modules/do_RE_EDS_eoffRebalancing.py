@@ -27,7 +27,7 @@ from reeds.modules._do_RE_EDS_Optimization import do_optimization
 def do(out_root_dir: str, in_simSystem: fM.System, in_template_imd: str = None,
        iterations: int = 4,
 
-       learningFactors : List[float]= None, pseudocount: float=None, individualCorrection: bool=False,
+       learningFactors : List[float]= None, intensity_factor: float=5.0, individualCorrection: bool=False,
 
        noncontinous: bool = False,
        optimized_states_dir: str = os.path.abspath("a_optimizedState/analysis/next"),
@@ -126,6 +126,11 @@ int
     run_NLRTO = False
     run_NGRTO = False
     adding_new_sReplicas_Scheme=adding_Scheme_new_Replicas.from_below
+
+    imd = Imd(in_template_imd)
+    num_states = int(imd.REPLICA_EDS.NUMSTATES)
+    
+    pseudocount = (1/num_states)/intensity_factor
 
     job_id = do_optimization(out_root_dir=out_root_dir, in_simSystem=in_simSystem, optimization_name=optimization_name, in_template_imd=in_template_imd,
                             iterations=iterations,

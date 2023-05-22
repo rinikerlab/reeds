@@ -18,6 +18,9 @@ import os
 from typing import List
 
 from pygromos.euler_submissions import FileManager as fM
+
+from pygromos.files.imd import Imd
+
 from pygromos.euler_submissions.Submission_Systems import LSF, SLURM
 # todo! make the queueing system exchangeable
 from pygromos.euler_submissions.Submission_Systems import _SubmissionSystem
@@ -31,7 +34,7 @@ from reeds.modules._do_RE_EDS_Optimization import do_optimization
 def do(out_root_dir: str, in_simSystem: fM.System, in_template_imd: str = None,
        iterations: int = 4,
 
-       learningFactors : List[float]= None, pseudocount: float=None, individualCorrection: bool=False,
+       learningFactors : List[float]= None, intensity_factor: float=5.0, individualCorrection: bool=False,
         
        run_NLRTO: bool = False, run_NGRTO:bool = True, sOpt_add_replicas: int = 0, 
        sOpt_adding_new_sReplicas_Scheme: adding_Scheme_new_Replicas = adding_Scheme_new_Replicas.from_below, 
@@ -126,6 +129,11 @@ def do(out_root_dir: str, in_simSystem: fM.System, in_template_imd: str = None,
     if(run_NGRTO and run_NLRTO or (not run_NGRTO and not run_NLRTO)):
         raise Exception("Please specify either NLRTO or NGRTO!")
     
+    imd = Imd(in_template_imd)
+    num_states = int(imd.REPLICA_EDS.NUMSTATES)
+    
+    pseudocount = (1/num_states)/intensity_factor
+
     job_id = do_optimization(out_root_dir=out_root_dir, in_simSystem=in_simSystem, optimization_name=optimization_name, in_template_imd=in_template_imd,
                             iterations=iterations,
                             eoffEstimation_undersampling_fraction_threshold=undersampling_fraction_threshold,
