@@ -410,6 +410,7 @@ def detect_undersampling(ene_trajs: List[pd.DataFrame],
 
         if undersampling_criterium:
             undersampling_idx = i
+            found_undersampling = True
             break
 
     if undersampling_idx is None:

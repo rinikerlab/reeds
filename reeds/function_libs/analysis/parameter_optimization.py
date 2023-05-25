@@ -122,7 +122,8 @@ def optimize_s(repdat: Repdat,
         setattr(stat, "raw_s_values", sorted(svals, reverse=True))
 
     else:
-        warnings.warn("Careful no imd given, the accuracy of repdat s_vals is very low!")
+        warnings.warn("Careful no imd given, the accuracy of repdat s_vals is very low (disregard warning when using OpenMM)!")
+        setattr(stat, "raw_s_values", sorted(stat.s_values, reverse=True))
 
     if verbose: print("\n\tOptimize S-Dist")
     # NLRTO
