@@ -1048,7 +1048,7 @@ def findLigandSpecificCore(atom_mappings, num_ligands):
     
     for ligand_id in range(2, num_ligands+1):
         for pa in atom_mappings:
-            if pa.init_id != -1 and pa.new_id not in tmp:
+            if pa.init_id != -1 and pa.new_id not in tmp and pa.init_lig == ligand_id:
                 tmp.append(pa.new_id)
         
         core_mappings.append(sorted(tmp))
