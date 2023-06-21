@@ -912,10 +912,14 @@ def find_14_neighbours(atomID, bonds, neigh12, neigh13):
         
     # Now we need to remove any potential "false" 3rd neighbour
     # which occur for cyclic systems.
-    
+    to_remove = []
     for neigh in neigh14:
-        if neigh in neigh13 or neigh in neigh12: neigh14.remove(neigh)
+        if neigh in neigh13 or neigh in neigh12: 
+            to_remove.append(neigh)
     
+    for atom in to_remove:
+        neigh14.remove(atom)
+
     return sorted(list(set(neigh14)))
 
 
