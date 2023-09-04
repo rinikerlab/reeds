@@ -131,7 +131,7 @@ int
                     os.path.basename(system.coordinates).replace(".cnf", "_" + str(ind+1) + ".cnf"))
 
         cnf_array = coord_dir + "/" + os.path.basename(system.coordinates).replace(".cnf", "_${RUNID}.cnf")
-        setattr(system, "coord_seeds", cnf_array)
+        setattr(system, "coordinates", cnf_array)
 
         # GENERATE array scripts
         if (verbose): print("generating job array scripts")
