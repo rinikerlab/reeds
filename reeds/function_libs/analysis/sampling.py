@@ -353,7 +353,6 @@ def sampling_analysis(ene_trajs: List[pd.DataFrame],
 def analyse_state_transitions(repdat: Repdat, normalize: bool = False, bidirectional: bool = False):
     """
     Count the number of times a transition occurs between pairs of states, based on the repdat info.
-
     Parameters
     ----------
     repdat: Repdat
@@ -363,7 +362,6 @@ def analyse_state_transitions(repdat: Repdat, normalize: bool = False, bidirecti
         Normalize the transitions by the total number of outgoing transitions per state
     bidirectional: bool, optional
         Count the transitions symmetrically (state A to B together with state B to A)
-
     Returns
     -------
     np.ndarray
@@ -371,7 +369,7 @@ def analyse_state_transitions(repdat: Repdat, normalize: bool = False, bidirecti
     """
     if normalize and bidirectional:
         raise Exception("Transitions cannot be normalized w.r.t leaving state and bidirectional")
-    
+        
     num_replicas = len(repdat.system.s)
     repdat_eoffs = repdat.system.state_eir
     num_states = len(repdat_eoffs)
@@ -383,7 +381,7 @@ def analyse_state_transitions(repdat: Repdat, normalize: bool = False, bidirecti
     values_to_subtract = np.array([eoffs[int(s_val_index-1)] for s_val_index in repdat.DATA['ID'].values])
 
     corrected_Vi_array = Vi.values - values_to_subtract
-    corrected_Vi = pd.DataFrame(corrected_Vi_array, columns=[f"Vr{i+1}" for i in range(5)])
+    corrected_Vi = pd.DataFrame(corrected_Vi_array, columns=[f"Vr{i+1}" for i in range(num_states)])
     max_contrib = corrected_Vi.idxmin(axis=1)
     max_contrib.name = "Vmin"
     enhanced_repdat = pd.concat([repdat.DATA, corrected_Vi, max_contrib], axis=1)
@@ -392,13 +390,15 @@ def analyse_state_transitions(repdat: Repdat, normalize: bool = False, bidirecti
     transition_counts = np.zeros((num_states, num_states))
 
     for replica in range(1, num_replicas+1):
-        state_trajectory = enhanced_repdat.query(f"coord_ID == {replica}")[["Vmin", "run"]].reset_index(drop=True)
+        state_repdat = enhanced_repdat.query(f"coord_ID == {replica}")
+            
+        state_trajectory = state_repdat[["Vmin", "run"]].reset_index(drop=True)
 
         # Count the transitions between different states
         for i in range(len(state_trajectory) - 1):
-            current_state = int(state_trajectory["Vmin"][i][-1]) # Take the i in Vri
-            next_state = int(state_trajectory["Vmin"][i + 1][-1])
-            current_run = state_trajectory["run"][i] # To check in case the trajectory is spliced
+            current_state = int("".join([char for char in state_trajectory["Vmin"][i] if char.isdigit()])) # Take the i in Vri
+            next_state = int("".join([char for char in state_trajectory["Vmin"][i + 1] if char.isdigit()]))
+            current_run = state_trajectory["run"][i] # Check whether you are actually comparing consecutive exchanges
             next_run = state_trajectory["run"][i+1]
             if next_run == current_run +1 and current_state != next_state:
                 transition_counts[current_state-1][next_state-1] += 1
