@@ -350,7 +350,7 @@ def sampling_analysis(ene_trajs: List[pd.DataFrame],
 
     return final_results, out_path
 
-def analyse_state_transitions(repdat: Repdat, normalize: bool = False, bidirectional: bool = False):
+def analyse_state_transitions(repdat: Repdat, min_s: int = None, normalize: bool = False, bidirectional: bool = False):
     """
     Count the number of times a transition occurs between pairs of states, based on the repdat info.
     Parameters
@@ -358,6 +358,8 @@ def analyse_state_transitions(repdat: Repdat, normalize: bool = False, bidirecti
     repdat: Repdat
         Redat object containing the information regarding the replica exchange trials in the 
         RE-EDS simulation.
+    min_s: int, optional
+        Index of the lowest s_value to consider for the transitions. If None, consider all s values.
     normalize: bool, optional
         Normalize the transitions by the total number of outgoing transitions per state
     bidirectional: bool, optional
@@ -390,7 +392,10 @@ def analyse_state_transitions(repdat: Repdat, normalize: bool = False, bidirecti
     transition_counts = np.zeros((num_states, num_states))
 
     for replica in range(1, num_replicas+1):
-        state_repdat = enhanced_repdat.query(f"coord_ID == {replica}")
+        if min_s:
+            state_repdat = enhanced_repdat.query(f"coord_ID == {replica} & ID <= {min_s}")
+        else:
+            state_repdat = enhanced_repdat.query(f"coord_ID == {replica}")
             
         state_trajectory = state_repdat[["Vmin", "run"]].reset_index(drop=True)
 
