@@ -19,6 +19,7 @@ dependencies:
   - pandas
   - pytables
   - matplotlib
+  - plotlty
 
 
     # Pip-only installs
