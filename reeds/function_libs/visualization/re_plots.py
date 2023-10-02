@@ -591,7 +591,7 @@ def plot_exchange_freq(s_values:List[float], exchange_freq:List[float], outfile:
 
     return None
 
-def plot_exchange_freq_per_state(s_values:List[float], exchange_freq:Dict[int,List[float]], outfile:str = None,
+def plot_exchange_prob_per_state(s_values:List[float], exchange_freq:Dict[int,List[float]], outfile:str = None,
                                  title:str = None, colors: Union[List[str], Colormap] =  ps.qualitative_tab_map):
     """
     Plot the exchange frequency individually for each endstate, to see if the location of the
