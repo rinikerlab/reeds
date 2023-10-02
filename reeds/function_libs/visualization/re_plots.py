@@ -1,9 +1,10 @@
-from typing import List
+from typing import Dict, List, Union
 
 import numpy as np
 import pandas as pd
+import math
 from matplotlib import pyplot as plt
-from matplotlib.cm import get_cmap
+from matplotlib.colors import Colormap
 
 
 from reeds.function_libs.visualization import plots_style as ps
@@ -589,3 +590,93 @@ def plot_exchange_freq(s_values:List[float], exchange_freq:List[float], outfile:
         plt.close()
 
     return None
+
+def plot_exchange_freq_per_state(s_values:List[float], exchange_freq:Dict[int,List[float]], outfile:str = None,
+                                 title:str = None, colors: Union[List[str], Colormap] =  ps.qualitative_tab_map):
+    """
+    Plot the exchange frequency individually for each endstate, to see if the location of the
+    bottleneck region differs depending on which endstate is being sampled.
+    
+    Parameters
+    ----------
+    s_values: List [float]
+        List of the s-values used in the RE-EDS simulation
+    exchange_freq: Dict[List[float]]
+        Exchange frequencies obtained from calculate_exchange_probability_per_endstate()
+    outfile: str, optional
+        path to where the plot is printed out. If None is given, the fig object is returned
+    title: str, optional
+        title to give the plot
+    colors: Union[List[str], Colormap], optional
+        if you don't like the default colors
+        
+    Returns
+    ----------
+    None or fig
+        matplotlib figure if if was not saved
+    """
+    num_states = len(exchange_freq)
+    plots_per_row = 3
+    n_rows = math.ceil(num_states / plots_per_row)
+    x_size = 8/13 * len(s_values)
+    y_size = 3 * n_rows
+    fig, axes = plt.subplots(n_rows, plots_per_row, sharey=True, figsize = [x_size,y_size])
+    
+    if isinstance(colors, Colormap):
+        colors = [colors(i) for i in np.linspace(0, 1, num_states)]
+    elif len(colors) < num_states:
+        raise Exception("Insufficient colors to plot all states")
+
+    x = np.arange(1, len(s_values)+1) + 0.5
+    
+    for (state, freq), color, ax in zip(exchange_freq.items(), colors, axes.flatten()):
+        freq = np.append(freq, 0)
+        plt.grid(axis='y', lw = 1, ls = 'dashed')
+        ax.set_axisbelow(True)
+
+        ax.bar(x, freq, width=0.45, color=color, edgecolor = 'black', alpha = 0.7)
+
+        # Set the x and y-limits properly
+        ax.set_xlim(x[0]-1, x[len(x)-1])
+        ax.set_ylim(0, 1.3)
+        ax.text(max(x)/2-3, 1.1, f"State {state}", fontsize=24)
+        
+    plt.subplots_adjust(wspace=0, hspace=0)
+    
+    # Add ticks on last row
+    labels = []
+    for i in range(len(s_values)):
+        labels.append(str(s_values[i]))
+    for i in range(1, 4):
+        axes.flatten()[-i].set_xticks((x-0.5)[::2])
+        axes.flatten()[-i].set_xticklabels(labels[::2], fontsize = 10)
+        plt.setp(axes.flatten()[-i].get_xticklabels(), rotation=45, ha="right",
+             rotation_mode="anchor")
+    
+    # Remove unused plots
+    n_plots = plots_per_row * n_rows
+    n_unused = n_plots - num_states
+    for i in range(1,n_unused+1):
+        axes.flatten()[-i].remove()
+        if num_states > 3:
+            axes.flatten()[-i-3].set_xticks((x-0.5)[::2])
+            axes.flatten()[-i-3].set_xticklabels(labels[::2], fontsize = 10)
+            plt.setp(axes.flatten()[-i-3].get_xticklabels(), rotation=45, ha="right",
+                 rotation_mode="anchor")
+    
+    # Create big subplot for common label
+    fig.add_subplot(111, frameon=False)
+    # hide tick and tick label of the big axes
+    plt.tick_params(labelcolor='none', top=False, bottom=False, left=False, right=False)
+    plt.grid(False)
+    plt.ylabel(r'$P_{exchange}$', fontsize = 24)
+    
+    if title is None: title = 'Exchange frequency in the RE-EDS simulation'
+    plt.title(title, fontsize = 24)
+    plt.close()
+
+    if outfile:
+        fig.savefig(outfile)
+        return None
+    else:
+        return fig

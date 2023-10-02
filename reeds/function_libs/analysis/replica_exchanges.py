@@ -1,9 +1,8 @@
-import warnings
 from typing import List, Dict
 
 import numpy as np
 
-import reeds.function_libs.visualization.re_plots
+from reeds.submodules.pygromos.pygromos.files.repdat import ExpandedRepdat
 
 def calculate_exchange_freq(exchange_data):
     """
@@ -32,3 +31,33 @@ def calculate_exchange_freq(exchange_data):
     exchanges /=  exchange_trials
     return exchanges
 
+def calculate_exchange_probability_per_endstate(expanded_repdat: ExpandedRepdat):
+    """
+    This function calculates the average exchange probability between each pair of s-values for each end-state.
+    
+    Parameters
+    ----------
+    expanded_repdat: ExpandedRepdat
+        ExpandedRepdat object which contains all the exchange information of a 
+        RE-EDS simulation plus the potential energies of the end-states
+    Returns
+    ----------
+    exchanges: Dict[List[float]]
+       dictionary containing the exchange frequencies for each state
+    """
+    states = expanded_repdat.system.state_eir.keys()
+    s_values = sorted(expanded_repdat.DATA["ID"].unique())
+    state_exchanges = {}
+    
+    for state in states:
+        # Get all exchanges involving the state and skip cases where no exchange is attempted
+        state_repdat = expanded_repdat.DATA.query(f"Vmin == 'Vr{state}' & Epoti != 0")
+        exchange_probabilities = []
+        for s_val in s_values[:-1]:
+            # Get exchanges from s to s+1 and from s+1 to s
+            s_val_exchanges = state_repdat.query(f"(ID == {s_val} & partner == {s_val+1}) \
+            | (ID == {s_val+1} & partner == {s_val})")
+            exchange_probabilities.append(np.mean(s_val_exchanges["p"]))
+        state_exchanges[state] = exchange_probabilities
+        
+    return state_exchanges
