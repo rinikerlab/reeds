@@ -6,7 +6,7 @@ import numpy as np
 import pandas as pd
 
 import reeds.function_libs.visualization.sampling_plots
-from pygromos.files.repdat import Repdat
+from pygromos.files.repdat import ExpandedRepdat
 
 
 def undersampling_occurence_potential_threshold_densityClustering(ene_trajs: List[pd.DataFrame],
@@ -350,14 +350,14 @@ def sampling_analysis(ene_trajs: List[pd.DataFrame],
 
     return final_results, out_path
 
-def analyse_state_transitions(repdat: Repdat, min_s: int = None, normalize: bool = False, bidirectional: bool = False):
+def analyse_state_transitions(repdat: ExpandedRepdat, min_s: int = None, normalize: bool = False, bidirectional: bool = False):
     """
     Count the number of times a transition occurs between pairs of states, based on the repdat info.
     Parameters
     ----------
-    repdat: Repdat
-        Redat object containing the information regarding the replica exchange trials in the 
-        RE-EDS simulation.
+    repdat: ExpandedRepdat
+        ExpandedRepdat object (created from a Repdat) which contains all the exchange information of a 
+        RE-EDS simulation plus the potential energies of the end-states
     min_s: int, optional
         Index of the lowest s_value to consider for the transitions. If None, consider all s values.
     normalize: bool, optional
@@ -373,37 +373,24 @@ def analyse_state_transitions(repdat: Repdat, min_s: int = None, normalize: bool
         raise Exception("Transitions cannot be normalized w.r.t leaving state and bidirectional")
         
     num_replicas = len(repdat.system.s)
-    repdat_eoffs = repdat.system.state_eir
-    num_states = len(repdat_eoffs)
-    eoffs = [[repdat_eoffs[state][s] for state in repdat_eoffs] for s in range(len(repdat_eoffs[1]))]
-
-    # Add end-state potentials as individual columns (this is pretty slow)
-
-    Vi = repdat.DATA["state_potentials"].apply(pd.Series)
-    values_to_subtract = np.array([eoffs[int(s_val_index-1)] for s_val_index in repdat.DATA['ID'].values])
-
-    corrected_Vi_array = Vi.values - values_to_subtract
-    corrected_Vi = pd.DataFrame(corrected_Vi_array, columns=[f"Vr{i+1}" for i in range(num_states)])
-    max_contrib = corrected_Vi.idxmin(axis=1)
-    max_contrib.name = "Vmin"
-    enhanced_repdat = pd.concat([repdat.DATA, corrected_Vi, max_contrib], axis=1)
+    num_states = len(repdat.system.state_eir)
 
     # Initialize transition counts to zero for all pairs of states
     transition_counts = np.zeros((num_states, num_states))
 
     for replica in range(1, num_replicas+1):
+        # Get exchange data per state
         if min_s:
-            state_repdat = enhanced_repdat.query(f"coord_ID == {replica} & ID <= {min_s}")
+            state_repdat = repdat.DATA.query(f"coord_ID == {replica} & ID <= {min_s}")
         else:
-            state_repdat = enhanced_repdat.query(f"coord_ID == {replica}")
-            
-        state_trajectory = state_repdat[["Vmin", "run"]].reset_index(drop=True)
+            state_repdat = repdat.DATA.query(f"coord_ID == {replica}")
+        state_trajectory = state_repdat[["Vmin", "run"]].reset_index(drop=True).copy()
 
         # Count the transitions between different states
         for i in range(len(state_trajectory) - 1):
             current_state = int("".join([char for char in state_trajectory["Vmin"][i] if char.isdigit()])) # Take the i in Vri
             next_state = int("".join([char for char in state_trajectory["Vmin"][i + 1] if char.isdigit()]))
-            current_run = state_trajectory["run"][i] # Check whether you are actually comparing consecutive exchanges
+            current_run = state_trajectory["run"][i] # Check that you are actually comparing consecutive exchanges
             next_run = state_trajectory["run"][i+1]
             if next_run == current_run +1 and current_state != next_state:
                 transition_counts[current_state-1][next_state-1] += 1
