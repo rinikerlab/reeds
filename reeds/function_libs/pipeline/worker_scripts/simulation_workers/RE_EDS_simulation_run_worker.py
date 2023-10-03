@@ -65,11 +65,13 @@ def work(out_dir: str, in_coord: str, in_imd_path: str, in_topo_path: str, in_pe
         if 'LSB_HOSTS' in os.environ: 
             hosts = os.environ['LSB_HOSTS'].split()
             multi_node = True if len(hosts) > 1 else False
+        elif 'SLURM_NTASKS' in os.environ:
+            multi_node = True if int(os.environ['SLURM_NNODES']) > 1 else False
         else:
             multi_node = False
-        
-        # run a euler script to create tmpdir on all nodes
-        if multi_node:
+
+        # run a euler script to create tmpdir on all nodes (LSF only)
+        if multi_node and 'LSB_HOSTS' in os.environ:
             os.system('remote_tmpdir create')
         elif not os.path.isdir(work_dir): # when we specify a local directory, ensure it exists
             bash.make_folder(work_dir)
@@ -126,8 +128,10 @@ def work(out_dir: str, in_coord: str, in_imd_path: str, in_topo_path: str, in_pe
         # This part of the code (which copies all files back)
         # must be reached after succesful and unsuccesful runs.
         if (out_dir != work_dir):
-            if not multi_node: 
+            if not multi_node:
                 os.system("mv " + work_dir + "/*  " + out_dir)
+            elif 'SLURM_NTASKS' in os.environ:
+                os.system(f'srun sh -c "cp $TMPDIR/* {out_dir}"  ')
             else: 
                 # when copying the data back from multiple nodes, data has to be copied back manually from all nodes.
                 for host in hosts:
