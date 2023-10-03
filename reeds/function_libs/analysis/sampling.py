@@ -6,6 +6,7 @@ import numpy as np
 import pandas as pd
 
 import reeds.function_libs.visualization.sampling_plots
+from pygromos.files.repdat import ExpandedRepdat
 
 
 def undersampling_occurence_potential_threshold_densityClustering(ene_trajs: List[pd.DataFrame],
@@ -349,7 +350,66 @@ def sampling_analysis(ene_trajs: List[pd.DataFrame],
 
     return final_results, out_path
 
+def analyse_state_transitions(repdat: ExpandedRepdat, min_s: int = None, normalize: bool = False, bidirectional: bool = False):
+    """
+    Count the number of times a transition occurs between pairs of states, based on the repdat info.
+    Parameters
+    ----------
+    repdat: ExpandedRepdat
+        ExpandedRepdat object (created from a Repdat) which contains all the exchange information of a 
+        RE-EDS simulation plus the potential energies of the end-states
+    min_s: int, optional
+        Index of the lowest s_value to consider for the transitions. If None, consider all s values.
+    normalize: bool, optional
+        Normalize the transitions by the total number of outgoing transitions per state
+    bidirectional: bool, optional
+        Count the transitions symmetrically (state A to B together with state B to A)
+    Returns
+    -------
+    np.ndarray
+        number of transitions between all pairs of states
+    """
+    if normalize and bidirectional:
+        raise Exception("Transitions cannot be normalized w.r.t leaving state and bidirectional")
+        
+    num_replicas = len(repdat.system.s)
+    num_states = len(repdat.system.state_eir)
 
+    # Initialize transition counts to zero for all pairs of states
+    transition_counts = np.zeros((num_states, num_states))
+
+    for replica in range(1, num_replicas+1):
+        # Get exchange data per state
+        if min_s:
+            state_repdat = repdat.DATA.query(f"coord_ID == {replica} & ID <= {min_s}")
+        else:
+            state_repdat = repdat.DATA.query(f"coord_ID == {replica}")
+        state_trajectory = state_repdat[["Vmin", "run"]].reset_index(drop=True).copy()
+
+        # Count the transitions between different states
+        for i in range(len(state_trajectory) - 1):
+            current_state = int("".join([char for char in state_trajectory["Vmin"][i] if char.isdigit()])) # Take the i in Vri
+            next_state = int("".join([char for char in state_trajectory["Vmin"][i + 1] if char.isdigit()]))
+            current_run = state_trajectory["run"][i] # Check that you are actually comparing consecutive exchanges
+            next_run = state_trajectory["run"][i+1]
+            if next_run == current_run +1 and current_state != next_state:
+                transition_counts[current_state-1][next_state-1] += 1
+
+    if normalize: 
+        # Normalize by total number of transitions per state
+        tot_trans = np.sum(transition_counts, axis=1)
+        transition_counts = transition_counts / tot_trans[:, np.newaxis]
+
+    elif bidirectional:
+        # Consider exchanges in both directions together
+        bidirectional_counts = np.zeros((num_states, num_states))
+        for state1 in range(len(transition_counts)):
+            for state2 in range(len(transition_counts[state1])):
+                bidirectional_counts[state1][state2] += transition_counts[state1][state2]
+                bidirectional_counts[state2][state1] += transition_counts[state1][state2]
+        transition_counts = bidirectional_counts
+
+    return transition_counts
 
 def detect_undersampling(ene_trajs: List[pd.DataFrame],
                          state_potential_treshold: List[float],
