@@ -631,7 +631,7 @@ def plot_exchange_prob_per_state(s_values:List[float], exchange_freq:Dict[int,Li
     
     for (state, freq), color, ax in zip(exchange_freq.items(), colors, axes.flatten()):
         freq = np.append(freq, 0)
-        plt.grid(axis='y', lw = 1, ls = 'dashed')
+        ax.grid(axis='y', lw = 1, ls = 'dashed')
         ax.set_axisbelow(True)
 
         ax.bar(x, freq, width=0.45, color=color, edgecolor = 'black', alpha = 0.7)
@@ -646,11 +646,11 @@ def plot_exchange_prob_per_state(s_values:List[float], exchange_freq:Dict[int,Li
     # Add ticks on last row
     labels = []
     for i in range(len(s_values)):
-        labels.append(str(s_values[i]))
+        labels.append('{:.5f}'.format(s_values[i]))
     for i in range(1, 4):
         axes.flatten()[-i].set_xticks((x-0.5)[::2])
         axes.flatten()[-i].set_xticklabels(labels[::2], fontsize = 10)
-        plt.setp(axes.flatten()[-i].get_xticklabels(), rotation=45, ha="right",
+        plt.setp(axes.flatten()[-i].get_xticklabels(), rotation=55, ha="right",
              rotation_mode="anchor")
     
     # Remove unused plots
@@ -661,7 +661,7 @@ def plot_exchange_prob_per_state(s_values:List[float], exchange_freq:Dict[int,Li
         if num_states > 3:
             axes.flatten()[-i-3].set_xticks((x-0.5)[::2])
             axes.flatten()[-i-3].set_xticklabels(labels[::2], fontsize = 10)
-            plt.setp(axes.flatten()[-i-3].get_xticklabels(), rotation=45, ha="right",
+            plt.setp(axes.flatten()[-i-3].get_xticklabels(), rotation=55, ha="right",
                  rotation_mode="anchor")
     
     # Create big subplot for common label
