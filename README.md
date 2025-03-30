@@ -16,6 +16,8 @@ The enhanced sampling method Replica Exchange was added by Sidler et al. to spee
 The repository aims to make the RE-EDS pipeline accessible to everyone!
 
 For more on RE-EDS checkout:
+* [Multistate Method to Efficiently Account for Tautomerism and Protonation in Alchemical Free-Energy Calculations; Candide Champion, Philippe H. Hünenberger, and Sereina Riniker* (2024)](https://doi.org/10.1021/acs.jctc.4c00370)
+* [Accelerating Alchemical Free Energy Prediction Using a Multistate Method: Application to Multiple Kinases, Candide Champion, René Gall, Benjamin Ries, Salomé R. Rieder, Emilia P. Barros, Sereina Riniker* (2023)]()
 * [Leveraging the sampling efficiency of RE-EDS in OpenMM using a shifted reaction-field with an atom-based cutoff; Salomé R. Rieder, Benjamin Ries, Alžbeta Kubincová, Candide Champion, Emilia P. Barros, Philippe H. Hünenberger, and Sereina Riniker* (2022).](https://doi.org/10.1063/5.0107935)
  * [Replica-Exchange Enveloping Distribution Sampling Using Generalized AMBER Force-Field Topologies: Application to Relative Hydration Free-Energy Calculations for Large Sets of Molecules; Salomé R. Rieder, Benjamin Ries, Kay Schaller, Candide Champion, Emilia P. Barros, Philippe H. Hünenberger*, and Sereina Riniker* (2022). ](https://doi.org/10.1021/acs.jcim.2c00383)
  * [RestraintMaker: a graph-based approach to select distance restraints in free-energy calculations with dual topology; Benjamin Ries^, Salomé Rieder^, Clemens Rhiner, Philippe H. Hünenberger and Sereina Riniker (2022). ](https://doi.org/10.1007/s10822-022-00445-6)
