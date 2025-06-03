@@ -21,7 +21,7 @@ jobs:
       matrix:
         os: [ ubuntu-latest, macOS-latest] #macOS-latest, windows-latest
 
-        python-version: [3.7]
+        python-version: [3.10]
 
     steps:
     - uses: actions/checkout@v2
@@ -36,15 +36,14 @@ jobs:
         ulimit -a
 
 
-    - uses: conda-incubator/setup-miniconda@v2
+    - uses: conda-incubator/setup-miniconda@v3
       with:
         python-version: ${{ matrix.python-version }}
         environment-file:  devtools/conda-envs/test_env.yaml
         channels: conda-forge,defaults
-        
+        auto-activate-base: false
         activate-environment: test
         auto-update-conda: true
-        auto-activate-base: false
         show-channel-urls: true
 
     - name: Install package
